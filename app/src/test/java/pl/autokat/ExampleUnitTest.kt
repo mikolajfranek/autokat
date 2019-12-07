@@ -1,4 +1,4 @@
-package com.example.autokat
+package pl.autokat
 
 import org.junit.Test
 

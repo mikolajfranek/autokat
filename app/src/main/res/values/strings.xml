@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">AutoKat</string>
+    <string name="app_name">AUTO-KAT</string>
+    <string name="activity_main_text_hint">Wprowadź nazwę użytkownika</string>
+    <string name="activity_main_button_text">Zaloguj</string>
+    <string name="menu_toolbar_list_configuration_values">Wartości kursów</string>
+    <string name="menu_toolbar_list_update">Aktualizacja</string>
+    <string name="activity_result_hint_text">Wprowadź nazwę do filtrowania</string>
 </resources>
