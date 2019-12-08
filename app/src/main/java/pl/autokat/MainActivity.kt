@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         MySharedPreferences.init(this)
 
 
-        //this.openResultActivity()
+        this.openResultActivity()
     }
 
     //navigate up

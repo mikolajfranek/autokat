@@ -28,17 +28,11 @@
         android:background="@drawable/drawable_edit_text_background"
         />
 
-    <ScrollView
-        android:id="@+id/activity_result_scrollView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
 
-        <ListView
-            android:id="@+id/activity_result_listView"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp" />
-    </ScrollView>
+    <ListView
+        android:id="@+id/activity_result_listView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp" />
 
 </LinearLayout>
