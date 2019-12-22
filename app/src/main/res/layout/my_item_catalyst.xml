@@ -1,25 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:orientation="vertical" android:layout_width="match_parent"
-android:layout_height="match_parent">
-<TableLayout
+
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-    <TableRow
-        android:id="@+id/tableRow_0"
-        android:layout_marginTop="5dp"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@drawable/drawable_my_item_catalyst"
-        android:gravity="center">
+    android:layout_height="match_parent">
+
+    <TableRow android:layout_weight="0" android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp">
+
         <TextView
-            android:id="@+id/item_text"
-            android:textSize="20dp"
-            android:textColor="@color/colorPrimary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/item_id_picture"
+            android:gravity="end"
+            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
             android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/item_brand"
+            android:layout_weight="4" />
+
+        <TextView
+            android:id="@+id/item_type"
+            android:gravity="end"
+            android:layout_weight="3" />
     </TableRow>
+
+    <TableRow android:layout_weight="0"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp">
+
+        <TextView
+            android:text="Nazwa:"
+            android:gravity="end"
+            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/item_name"
+            android:layout_weight="4" />
+
+        <TextView android:layout_weight="3" />
+    </TableRow>
+
+    <TableRow android:layout_weight="0"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp">
+
+        <TextView
+            android:text="Waga:"
+            android:gravity="end"
+            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/item_weight"
+            android:layout_weight="4" />
+
+        <TextView android:layout_weight="3" />
+    </TableRow>
+
+    <TableRow android:layout_weight="0"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp">
+
+        <TextView
+            android:text="Platyna:"
+            android:gravity="end"
+            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/item_platinum"
+            android:layout_weight="4" />
+
+
+        <TextView android:layout_weight="3" />
+
+    </TableRow>
+
+    <TableRow android:layout_weight="0"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp">
+
+        <TextView
+            android:text="Paladium:"
+            android:gravity="end"
+            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/item_palladium"
+            android:layout_weight="4" />
+
+        <TextView
+            android:id="@+id/item_price_euro"
+            android:textColor="@android:color/holo_green_light"
+            android:gravity="end"
+            android:layout_weight="3" />
+    </TableRow>
+
+    <TableRow android:layout_weight="0" android:layout_marginBottom="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp">
+
+        <TextView
+            android:text="Rod:"
+            android:gravity="end"
+            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/item_rhodium"
+            android:layout_weight="4" />
+
+        <TextView
+            android:id="@+id/item_price_pl"
+            android:textColor="@android:color/holo_green_light"
+            android:gravity="end"
+            android:layout_weight="3" />
+
+    </TableRow>
+
 </TableLayout>
-</LinearLayout>

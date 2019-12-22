@@ -1,16 +1,13 @@
 package pl.autokat
 
 import android.content.Context
+import android.graphics.Color
 
 class MyConfiguration {
     companion object {
-        //file
-        val FILE_APPLICATION_NEW_VERSION : String = "autokat_version_" + (MyConfiguration.DATABASE_VERSION + 1) + ".apk"
-
         //databases
-        val DATABASE_VERSION : Int = 2
+        val DATABASE_VERSION : Int = 1
         val DATABASE_NAME_OF_FILE : String = "autokat.db"
-        val DATABASE_FILE_PATH_ASSETS : String = "databases/" + MyConfiguration.DATABASE_NAME_OF_FILE
         val DATABASE_PAGINATE_LIMIT : String = "50"
 
         //table catalyst
@@ -28,13 +25,22 @@ class MyConfiguration {
         //shared preferences
         val MY_SHARED_PREFERENCES_NAME : String = "MyKatSharedPreferences"
         val MY_SHARED_PREFERENCES_MODE = Context.MODE_PRIVATE
+        val MY_SHARED_PREFERENCES_KEY_LOGIN : String = "Login"
+        val MY_SHARED_PREFERENCES_KEY_LICENCE_DATE : String = "LicenceDate"
+        val MY_SHARED_PREFERENCES_KEY_LICENCE_END : String = "LicenceEnd"
+        val MY_SHARED_PREFERENCES_KEY_DISCOUNT : String = "Discount"
+
+        //info color
+        val INFO_MESSAGE_COLOR_FAILED:  Int = Color.RED
+        val INFO_MESSAGE_COLOR_SUCCESS: Int = Color.GRAY
 
         //info message
-        val INFO_MESSAGE_WAIT_UPDATE : String = "Trwa sprawdzanie aktualizacji..."
-
-        //exception message
-        val EXCEPTION_MESSAGE_UNHANDLED_EXCEPTION : String = "Wystąpił nieobsłużony błąd"
-        val EXCEPTION_MESSAGE_APPLICATION_IS_UP_TO_DATE : String = "Aplikacja jest aktualna"
+        val INFO_MESSAGE_WAIT_AUTHENTICATE : String = "Trwa uwierzytelnianie..."
+        val INFO_MESSAGE_USER_NEVER_LOGGED : String = "Wprowadź nazwę użytkownika"
+        val INFO_MESSAGE_UNHANDLED_EXCEPTION : String = "Wystąpił nieobsłużony błąd"
+        val INFO_MESSAGE_USER_FAILED_LOGIN: String = "Błędna nazwa użytkownika"
+        val INFO_MESSAGE_USER_FAILED_SERIAL: String = "Błędne urządzenie"
+        val INFO_MESSAGE_USER_FAILED_LICENCE: String = "Brak licencji"
 
         //spreadsheet
         val MY_SPREADSHEET_OUTPUT_JSON : String = "out:json"
