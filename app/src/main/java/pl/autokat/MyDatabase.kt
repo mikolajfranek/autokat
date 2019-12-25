@@ -9,6 +9,15 @@ import java.io.FileOutputStream
 
 class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.DATABASE_NAME_OF_FILE, null, MyConfiguration.DATABASE_VERSION){
 
+    fun getCountCatalyst() : Int {
+        val cursor = readableDatabase.rawQuery("SELECT count(*) as count FROM " + MyConfiguration.DATABASE_TABLE_CATALYST, null)
+        var count : Int = 0
+        if(cursor != null && cursor.moveToFirst()){
+            count = cursor.getInt(cursor.getColumnIndex("count"))
+        }
+        return count
+    }
+
     fun getDataCatalyst(nameCatalystOrBrandCar:String): ArrayList<ItemCatalyst> {
         val result : ArrayList<ItemCatalyst> = ArrayList<ItemCatalyst>()
 

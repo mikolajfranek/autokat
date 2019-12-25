@@ -14,17 +14,191 @@
 
 
     <TextView
-        android:text="VALUES"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="15dp"
+        android:layout_margin="10dp"
+        android:id="@+id/activity_configuration_values_about_licence"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Dane o pierwiastkach"/>
+
+    <TableLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TableRow android:layout_weight="0" android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp">
+
+            <TextView
+                android:text="Rodzaj"
+                android:gravity="center"
+                android:layout_weight="2" />
+
+            <TextView
+                android:text="Wartość"
+                android:gravity="center"
+                android:layout_weight="4" />
+
+            <TextView
+                android:text="Aktualizowano"
+                android:gravity="center"
+                android:layout_weight="1" />
+        </TableRow>
+
+        <TableRow android:layout_weight="0" android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp">
+
+            <TextView
+                android:text="platyna"
+                android:gravity="center"
+                android:layout_weight="2" />
+
+            <TextView
+                android:id="@+id/activity_configuration_values_element_platinum"
+                android:gravity="center"
+                android:layout_weight="4" />
+
+            <TextView
+                android:id="@+id/activity_configuration_values_element_platinum_date"
+                android:gravity="center"
+                android:layout_weight="1" />
+        </TableRow>
+        <TableRow android:layout_weight="0" android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp">
+
+            <TextView
+                android:text="paladium"
+                android:gravity="center"
+                android:layout_weight="2" />
+
+            <TextView
+                android:id="@+id/activity_configuration_values_element_palladium"
+                android:gravity="center"
+                android:layout_weight="4" />
+
+            <TextView
+                android:id="@+id/activity_configuration_values_element_palladium_date"
+                android:gravity="center"
+                android:layout_weight="1" />
+        </TableRow>
+        <TableRow android:layout_weight="0" android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp">
+
+            <TextView
+                android:text="rod"
+                android:gravity="center"
+                android:layout_weight="2" />
+
+            <TextView
+                android:id="@+id/activity_configuration_values_element_rhodium"
+                android:gravity="center"
+                android:layout_weight="4" />
+
+            <TextView
+                android:id="@+id/activity_configuration_values_element_rhodium_date"
+                android:gravity="center"
+                android:layout_weight="1" />
+        </TableRow>
+
+    </TableLayout>
+
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:textColor="@color/colorGray"
-        android:textSize="48sp"
-        android:gravity="center"
-        android:textStyle="italic"
-        />
+        android:layout_marginBottom="10dp"
+        android:text="Dane o kursach walut"/>
+
+    <TableLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TableRow android:layout_weight="0" android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp">
+
+            <TextView
+                android:text="Rodzaj"
+                android:gravity="center"
+                android:layout_weight="2" />
+
+            <TextView
+                android:text="Wartość"
+                android:gravity="center"
+                android:layout_weight="4" />
+
+            <TextView
+                android:text="Aktualizowano"
+                android:gravity="center"
+                android:layout_weight="1" />
+        </TableRow>
+
+        <TableRow android:layout_weight="0" android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp">
+
+            <TextView
+                android:text="USD -> PLN"
+                android:gravity="center"
+                android:layout_weight="2" />
+
+            <TextView
+                android:id="@+id/activity_configuration_values_element_usd_pln"
+                android:gravity="center"
+                android:layout_weight="4" />
+
+            <TextView
+                android:id="@+id/activity_configuration_values_element_usd_pln_date"
+                android:gravity="center"
+                android:layout_weight="1" />
+        </TableRow>
+        <TableRow android:layout_weight="0" android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp">
+
+            <TextView
+                android:text="EUR -> PLN"
+                android:gravity="center"
+                android:layout_weight="2" />
+
+            <TextView
+                android:id="@+id/activity_configuration_values_element_eur_pln"
+                android:gravity="center"
+                android:layout_weight="4" />
+
+            <TextView
+                android:id="@+id/activity_configuration_values_element_eur_pln_date"
+                android:gravity="center"
+                android:layout_weight="1" />
+        </TableRow>
+
+    </TableLayout>
 
 </LinearLayout>

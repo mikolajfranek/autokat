@@ -11,8 +11,10 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.activity_result.*
 import kotlinx.android.synthetic.main.my_item_catalyst.view.*
@@ -33,7 +35,10 @@ class ResultActivity : AppCompatActivity() {
         setSupportActionBar(toolbar as Toolbar?)
         //navigate up
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        //init databases
+        //init shared preferences
+        MySharedPreferences.init(this)
+
+        //init database object
         database = MyDatabase(applicationContext)
         //init listener on change text
         activity_result_edittext.addTextChangedListener(object : TextWatcher{
@@ -45,12 +50,7 @@ class ResultActivity : AppCompatActivity() {
                 this@ResultActivity.refreshListView()
             }
         })
-
-
-
-
-
-
+        //init database adapter
         databaseAdapter = object : ArrayAdapter<ItemCatalyst>(applicationContext, R.layout.my_item_catalyst) {
             @SuppressLint("ViewHolder")
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -62,9 +62,9 @@ class ResultActivity : AppCompatActivity() {
                 view.item_type.text = itemCatalyst.type
                 view.item_name.text = itemCatalyst.name
                 view.item_weight.text = itemCatalyst.weight.toString() + " kg"
-                view.item_platinum.text = itemCatalyst.platinum.toString() + " g (1g/kg)"
-                view.item_palladium.text = itemCatalyst.palladium.toString() + " g (1g/kg)"
-                view.item_rhodium.text = itemCatalyst.rhodium.toString() + " g (1g/kg)"
+                view.item_platinum.text = itemCatalyst.platinum.toString() + " g"
+                view.item_palladium.text = itemCatalyst.palladium.toString() + " g"
+                view.item_rhodium.text = itemCatalyst.rhodium.toString() + " g"
 
                 itemCatalyst.countPrice(itemCatalyst.platinum, itemCatalyst.palladium, itemCatalyst.rhodium)
                 view.item_price_euro.text = (String.format("%.2f", itemCatalyst.priceEuro) + " EUR")
@@ -74,11 +74,6 @@ class ResultActivity : AppCompatActivity() {
             }
         }
         activity_result_listView.setAdapter(databaseAdapter)
-
-
-        val result = database.getDataCatalyst("")
-        databaseAdapter.clear()
-        databaseAdapter.addAll(result)
 
     }
 
@@ -92,10 +87,14 @@ class ResultActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        //check if licence ends
-        if(MySpreadsheet.checkIfLicenceEnd(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE))){
+        //check licence
+        if(MyConfiguration.checkLicence() == false){
             this.openMainActivity()
         }
+
+        //make async task and execute
+        val task = TryUpdate()
+        task.execute()
     }
 
     //toolbar option menu
@@ -146,36 +145,86 @@ class ResultActivity : AppCompatActivity() {
 
 
 
-
-
     //async class which check if exists update of app
-    private inner class SearchCatalystOrBrandCar() : AsyncTask<Void, Int, MyProcessStep>() {
+    private inner class TryUpdate() : AsyncTask<Void, Void, Void>() {
+
+        private var updateCourses : Boolean = false
+        private var updateCatalyst : Boolean = false
 
         //pre execute
         override fun onPreExecute() {
             super.onPreExecute()
+
+            //disable user interface on process application
+            MyUserInterface.enableActivity(this@ResultActivity.activity_result_linearlayout, false)
         }
 
         //do in async mode - in here can't modify user interface
-        override fun doInBackground(vararg p0: Void?): MyProcessStep {
+        override fun doInBackground(vararg p0: Void?): Void? {
             try{
+                //modify flag if could be update courses
 
-                return MyProcessStep.SUCCESS
+
+                //modify flag if could be update catalyst
+                updateCatalyst = MySpreadsheet.getCountCatalyst() > database.getCountCatalyst()
+
             }catch(e: Exception){
-                return MyProcessStep.UNHANDLED_EXCEPTION
+                //nothing
             }
+            return null
         }
 
         //post execute
-        override fun onPostExecute(result: MyProcessStep) {
+        override fun onPostExecute(result: Void?) {
             super.onPostExecute(result)
+            if(updateCourses || updateCatalyst){
+                //make async task and execute
+                val task = Update(updateCourses, updateCatalyst)
+                task.execute()
+            }else{
+                //disable user interface on process application
+                MyUserInterface.enableActivity(this@ResultActivity.activity_result_linearlayout, true)
+                this@ResultActivity.refreshListView()
+            }
+        }
+    }
 
-            when(result){
-                MyProcessStep.USER_ELAPSED_DATE_LICENCE -> {
-                    this@ResultActivity.openMainActivity()
+
+    //async class which check if exists update of app
+    private inner class Update(updateCoursesInput: Boolean, updateCatalystInput : Boolean) : AsyncTask<Void, Void, Void>() {
+
+        private var updateCourses : Boolean = updateCoursesInput
+        private var updateCatalyst : Boolean = updateCatalystInput
+
+        //pre execute
+        override fun onPreExecute() {
+            super.onPreExecute()
+            Toast.makeText(applicationContext, "Trwa aktualizacja....", Toast.LENGTH_SHORT).show()
+        }
+
+        //do in async mode - in here can't modify user interface
+        override fun doInBackground(vararg p0: Void?): Void? {
+            try{
+                if(updateCourses){
+                    MyCatalystValues.tryGetValues()
                 }
 
+                if(updateCatalyst){
+
+                }
+            }catch(e: Exception){
+                //nothing
             }
+            return null
+        }
+
+        //post execute
+        override fun onPostExecute(result: Void?) {
+            super.onPostExecute(result)
+
+            //disable user interface on process application
+            MyUserInterface.enableActivity(this@ResultActivity.activity_result_linearlayout, true)
+            this@ResultActivity.refreshListView()
         }
     }
 }
