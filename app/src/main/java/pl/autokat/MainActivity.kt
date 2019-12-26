@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -35,6 +37,33 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    //toolbar option menu
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.toolbar_list_main, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    //open about activity
+    fun openAboutActivity(){
+        val intent = Intent(applicationContext, AboutActivity::class.java)
+        startActivity(intent)
+    }
+
+    //option menu selected
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        val id = item?.getItemId()
+        return when(id){
+            R.id.toolbar_list_about -> {
+                this.openAboutActivity()
+                true
+            }
+            else -> {
+                finish()
+                true
+            }
+        }
+    }
+
     //open result activity
     fun openResultActivity(){
         val intent = Intent(applicationContext, ResultActivity::class.java)
@@ -43,7 +72,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     //click button
-    fun activityMainButtonOnClick(view: View) {
+    fun activityMainButtonOnClick(view: View?) {
         this.tryLogin(activity_main_edittext.text.toString(), true)
     }
 
@@ -55,6 +84,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     //async class which make all job - when job is finished then go to next activity in success or set view application and unblock user interface
+    @SuppressLint("StaticFieldLeak")
     private inner class TryLogin(loginInput: String, hasClickedButtonInput : Boolean) : AsyncTask<Void, Void, MyProcessStep>() {
 
         //field
@@ -88,48 +118,27 @@ class MainActivity : AppCompatActivity() {
                     return MyProcessStep.USER_NEVER_LOGGED
                 }
 
-
-
-
-
-                /*
-                //check licence if is not empty
-                if(licenceDateOfEnd.isNullOrEmpty() == false){
-                    if(.checkIfLicenceEnd(licenceDateOfEnd)){
-                        //save licence date as empty
-                        MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END, "")
-                        MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_END, "1")
+                //check licence
+                if(licenceDateOfEnd.isEmpty() == false){
+                    //check if licence if end
+                    if(MyConfiguration.checkIfCurrentDateIsGreater(licenceDateOfEnd, true) == true){
                         return MyProcessStep.USER_ELAPSED_DATE_LICENCE
-                    }else{
-                        return MyProcessStep.SUCCESS
                     }
+                    //check if user has good time on phone
+                    if(MyConfiguration.checkTimestamp() == false){
+                        return MyProcessStep.USER_ELAPSED_DATE_LICENCE
+                    }
+                    return MyProcessStep.SUCCESS
                 }
-                 */
-
-
-
 
                 /* download courses */
-
-                //course of usd -> pln
-                MyCatalystValues.getCourseUsdPln()
-                //course of eur -> pln
-                MyCatalystValues.getCourseEurPln()
-                //course of platinum
-                MyCatalystValues.getCoursePlatinum()
-                //course of palladium
-                MyCatalystValues.getCoursePalladium()
-                //course of rhoudium
-                val dateEffective = MyCatalystValues.getCourseRhodium()
+                val dateEffective = MyCatalystValues.getValues()
                 //check if date of phone is greater than date from request
-                if(MyConfiguration.cheekIfCurrentDateIsGreater(dateEffective) == false){
+                if(MyConfiguration.checkIfCurrentDateIsGreater(dateEffective, false) == false){
                     return MyProcessStep.USER_ELAPSED_DATE_LICENCE
                 }
 
-
-
                 /* authentication */
-
                 //retrieve and parse to json data from spreadsheet
                 val resultFromUrl = URL(MySpreadsheet.getUrlToSpreadsheetLogin(login)).readText()
                 val resultJson = MyConfiguration.parseResultToJson(resultFromUrl)
@@ -148,7 +157,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 //check serial id of element
                 val elementSerialId : String = element.getJSONObject(1).getString("v")
-                if(elementSerialId.isNullOrEmpty()){
+                if(elementSerialId.isEmpty()){
                     //save serial id to spreadsheet
                     //save flag that save was successful
                 }else{
@@ -159,7 +168,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 //check date of licence
                 val elementLicenceDate = element.getJSONObject(2).getString("v")
-                if(MyConfiguration.cheekIfCurrentDateIsGreater(elementLicenceDate) == true){
+                if(MyConfiguration.checkIfCurrentDateIsGreater(elementLicenceDate, true) == true){
                     return MyProcessStep.USER_ELAPSED_DATE_LICENCE
                 }
                 //save licence date of end
@@ -169,7 +178,6 @@ class MainActivity : AppCompatActivity() {
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT, discount)
                 //save login
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LOGIN, login)
-
 
                 /* success */
                 return MyProcessStep.SUCCESS

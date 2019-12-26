@@ -14,11 +14,10 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.activity_result.*
 import kotlinx.android.synthetic.main.my_item_catalyst.view.*
-import kotlin.math.roundToInt
+import java.util.*
 
 
 class ResultActivity : AppCompatActivity() {
@@ -52,6 +51,10 @@ class ResultActivity : AppCompatActivity() {
         })
         //init database adapter
         databaseAdapter = object : ArrayAdapter<ItemCatalyst>(applicationContext, R.layout.my_item_catalyst) {
+            override fun isEnabled(position: Int): Boolean {
+                return false
+            }
+
             @SuppressLint("ViewHolder")
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                 val view : View = layoutInflater.inflate(R.layout.my_item_catalyst, parent, false)
@@ -61,20 +64,17 @@ class ResultActivity : AppCompatActivity() {
                 view.item_brand.text = itemCatalyst.brand
                 view.item_type.text = itemCatalyst.type
                 view.item_name.text = itemCatalyst.name
-                view.item_weight.text = itemCatalyst.weight.toString() + " kg"
-                view.item_platinum.text = itemCatalyst.platinum.toString() + " g"
-                view.item_palladium.text = itemCatalyst.palladium.toString() + " g"
-                view.item_rhodium.text = itemCatalyst.rhodium.toString() + " g"
+                view.item_weight.text = (itemCatalyst.weight.toString() + " kg")
+                view.item_platinum.text = (itemCatalyst.platinum.toString() + " g")
+                view.item_palladium.text = (itemCatalyst.palladium.toString() + " g")
+                view.item_rhodium.text = (itemCatalyst.rhodium.toString() + " g")
 
-                itemCatalyst.countPrice(itemCatalyst.platinum, itemCatalyst.palladium, itemCatalyst.rhodium)
-                view.item_price_euro.text = (String.format("%.2f", itemCatalyst.priceEuro) + " EUR")
-                view.item_price_pl.text = (String.format("%.2f", itemCatalyst.pricePln) + " PLN")
+                view.item_price_pl.text = MyConfiguration.formatFloat(itemCatalyst.countPricePln())
 
                 return view
             }
         }
         activity_result_listView.setAdapter(databaseAdapter)
-
     }
 
     //navigate up
@@ -87,8 +87,14 @@ class ResultActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        //check licence
-        if(MyConfiguration.checkLicence() == false){
+        //check if licence if end
+        val licenceDateOfEnd : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END)
+        if(MyConfiguration.checkIfCurrentDateIsGreater(licenceDateOfEnd, true) == true){
+            this.openMainActivity()
+        }
+
+        //check if user has good time on phone
+        if(MyConfiguration.checkTimestamp() == false){
             this.openMainActivity()
         }
 
@@ -99,7 +105,7 @@ class ResultActivity : AppCompatActivity() {
 
     //toolbar option menu
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.toolbar_list, menu)
+        menuInflater.inflate(R.menu.toolbar_list_result, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -114,7 +120,12 @@ class ResultActivity : AppCompatActivity() {
     fun openConfigurationValuesActivity(){
         val intent = Intent(applicationContext, ConfigurationValuesActivity::class.java)
         startActivity(intent)
-        finish()
+    }
+
+    //open about activity
+    fun openAboutActivity(){
+        val intent = Intent(applicationContext, AboutActivity::class.java)
+        startActivity(intent)
     }
 
     //option menu selected
@@ -123,6 +134,10 @@ class ResultActivity : AppCompatActivity() {
         return when(id){
             R.id.toolbar_list_configuration_values -> {
                 this.openConfigurationValuesActivity()
+                true
+            }
+            R.id.toolbar_list_about -> {
+                this.openAboutActivity()
                 true
             }
             else -> {
@@ -139,14 +154,9 @@ class ResultActivity : AppCompatActivity() {
         databaseAdapter.addAll(result)
     }
 
-
-
-
-
-
-
     //async class which check if exists update of app
-    private inner class TryUpdate() : AsyncTask<Void, Void, Void>() {
+    @SuppressLint("StaticFieldLeak")
+    private inner class TryUpdate : AsyncTask<Void, Void, Void>() {
 
         private var updateCourses : Boolean = false
         private var updateCatalyst : Boolean = false
@@ -162,12 +172,11 @@ class ResultActivity : AppCompatActivity() {
         //do in async mode - in here can't modify user interface
         override fun doInBackground(vararg p0: Void?): Void? {
             try{
-                //modify flag if could be update courses
+                //modify flag if could be update courses - if from last update passed 6h
+                updateCourses = (Date().time - MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_UPDATE_COURSE_TIMESTAMP).toLong()) > (MyConfiguration.ONE_DAY_IN_MILLISECONDS/4)
 
-
-                //modify flag if could be update catalyst
+                //modify flag if could be update catalyst - if amount in spreadsheet is greater than in local database
                 updateCatalyst = MySpreadsheet.getCountCatalyst() > database.getCountCatalyst()
-
             }catch(e: Exception){
                 //nothing
             }
@@ -189,9 +198,9 @@ class ResultActivity : AppCompatActivity() {
         }
     }
 
-
     //async class which check if exists update of app
-    private inner class Update(updateCoursesInput: Boolean, updateCatalystInput : Boolean) : AsyncTask<Void, Void, Void>() {
+    @SuppressLint("StaticFieldLeak")
+    private inner class Update(updateCoursesInput: Boolean, updateCatalystInput : Boolean) : AsyncTask<Void, Void, Boolean>() {
 
         private var updateCourses : Boolean = updateCoursesInput
         private var updateCatalyst : Boolean = updateCatalystInput
@@ -203,25 +212,31 @@ class ResultActivity : AppCompatActivity() {
         }
 
         //do in async mode - in here can't modify user interface
-        override fun doInBackground(vararg p0: Void?): Void? {
+        override fun doInBackground(vararg p0: Void?): Boolean {
+            var result = false
             try{
                 if(updateCourses){
-                    MyCatalystValues.tryGetValues()
+                    MyCatalystValues.getValues()
                 }
 
                 if(updateCatalyst){
-
+                    result = database.insertCatalysts(MySpreadsheet.getDataCatalyst())
                 }
             }catch(e: Exception){
-                //nothing
+                result = false
             }
-            return null
+            return result
         }
 
         //post execute
-        override fun onPostExecute(result: Void?) {
+        override fun onPostExecute(result: Boolean) {
             super.onPostExecute(result)
 
+            if(result){
+                Toast.makeText(applicationContext, "Aktualizacja przebiegła pomyślnie", Toast.LENGTH_SHORT).show()
+            }else{
+                Toast.makeText(applicationContext, "Wystąpił błąd podczas aktualizacji", Toast.LENGTH_SHORT).show()
+            }
             //disable user interface on process application
             MyUserInterface.enableActivity(this@ResultActivity.activity_result_linearlayout, true)
             this@ResultActivity.refreshListView()

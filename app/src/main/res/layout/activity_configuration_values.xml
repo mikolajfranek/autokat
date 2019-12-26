@@ -12,42 +12,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:id="@+id/activity_configuration_values_about_licence"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="Dane o pierwiastkach"/>
+        android:text="@string/activity_configuration_values_dane_o_kursach_pierwiastkow"/>
 
     <TableLayout
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TableRow android:layout_weight="0" android:layout_marginTop="5dp"
+        <TableRow android:layout_weight="0"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginEnd="10dp">
 
             <TextView
-                android:text="Rodzaj"
+                android:text="@string/activity_configuration_values_pierwiastek"
                 android:gravity="center"
                 android:layout_weight="2" />
 
             <TextView
-                android:text="Wartość"
+                android:text="@string/activity_configuration_values_wartosc"
                 android:gravity="center"
                 android:layout_weight="4" />
 
             <TextView
-                android:text="Aktualizowano"
+                android:text="@string/activity_configuration_values_z_dnia"
                 android:gravity="center"
                 android:layout_weight="1" />
         </TableRow>
@@ -59,7 +52,7 @@
             android:layout_marginEnd="10dp">
 
             <TextView
-                android:text="platyna"
+                android:text="@string/activity_configuration_values_platyna"
                 android:gravity="center"
                 android:layout_weight="2" />
 
@@ -80,7 +73,7 @@
             android:layout_marginEnd="10dp">
 
             <TextView
-                android:text="paladium"
+                android:text="@string/activity_configuration_values_pallad"
                 android:gravity="center"
                 android:layout_weight="2" />
 
@@ -101,7 +94,7 @@
             android:layout_marginEnd="10dp">
 
             <TextView
-                android:text="rod"
+                android:text="@string/activity_configuration_values_rod"
                 android:gravity="center"
                 android:layout_weight="2" />
 
@@ -123,35 +116,35 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
-        android:text="Dane o kursach walut"/>
+        android:text="@string/activity_configuration_values_dane_o_kursach_walut"/>
 
     <TableLayout
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TableRow android:layout_weight="0" android:layout_marginTop="5dp"
+        <TableRow android:layout_weight="0"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginEnd="10dp">
 
             <TextView
-                android:text="Rodzaj"
+                android:text="@string/activity_configuration_values_waluta"
                 android:gravity="center"
                 android:layout_weight="2" />
 
             <TextView
-                android:text="Wartość"
+                android:text="@string/activity_configuration_values_wartosc"
                 android:gravity="center"
                 android:layout_weight="4" />
 
             <TextView
-                android:text="Aktualizowano"
+                android:text="@string/activity_configuration_values_z_dnia"
                 android:gravity="center"
                 android:layout_weight="1" />
         </TableRow>
@@ -163,7 +156,7 @@
             android:layout_marginEnd="10dp">
 
             <TextView
-                android:text="USD -> PLN"
+                android:text="@string/activity_configuration_values_dolar"
                 android:gravity="center"
                 android:layout_weight="2" />
 
@@ -184,7 +177,7 @@
             android:layout_marginEnd="10dp">
 
             <TextView
-                android:text="EUR -> PLN"
+                android:text="@string/activity_configuration_values_euro"
                 android:gravity="center"
                 android:layout_weight="2" />
 

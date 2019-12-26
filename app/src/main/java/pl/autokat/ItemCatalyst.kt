@@ -1,21 +1,21 @@
 package pl.autokat
 
-class ItemCatalyst(id:Int, idPicture:Int, name:String, brand:String, platinum:Float, palladium:Float, rhodium:Float, type:String, weight:Float) {
-    var id : Int = id
-    var idPicture : Int = idPicture
-    var name : String = name
-    var brand : String = brand
-    var platinum : Float = platinum
-    var palladium : Float = palladium
-    var rhodium : Float = rhodium
-    var type : String = type
-    var weight : Float = weight
+class ItemCatalyst(var id: Int,
+                   var idPicture: Int,
+                   var name: String,
+                   var brand: String,
+                   var platinum: Float, var palladium: Float,
+                   var rhodium: Float, var type: String, var weight: Float) {
 
-    var priceEuro : Float = 0.0f
-    var pricePln : Float =  0.0f
+    fun countPriceElement(grams: Float, course: Float) : Float{
+        return grams * course * MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN).toFloat()
+    }
 
-    fun countPrice(platinum: Float, palladium: Float, rhodium: Float) {
-        this.priceEuro = platinum + palladium + rhodium;
-        this.pricePln = this.priceEuro * this.priceEuro;
+    fun countPricePln() : Float{
+        val priceRhodium = this.countPriceElement(this.rhodium, MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_RHODIUM).toFloat())
+        val pricePalladium = this.countPriceElement(this.palladium, MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PALLADIUM).toFloat())
+        val pricePlatinum = this.countPriceElement(this.platinum, MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PLATIUNUM).toFloat())
+
+        return ((priceRhodium + pricePalladium + pricePlatinum) * (MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT).toInt()/100))
     }
 }

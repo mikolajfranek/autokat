@@ -11,7 +11,7 @@
         android:layout_marginEnd="10dp">
 
         <TextView
-            android:id="@+id/item_id_picture"
+            android:text="@string/my_item_catalyst_marka"
             android:gravity="end"
             android:layout_marginRight="5dp"
             android:layout_marginEnd="5dp"
@@ -19,10 +19,40 @@
 
         <TextView
             android:id="@+id/item_brand"
-            android:layout_weight="4" />
+            android:layout_weight="4"
+            android:layout_width="fill_parent"
+            android:width="0dp"/>
 
         <TextView
             android:id="@+id/item_type"
+            android:gravity="end"
+            android:layout_weight="3" />
+    </TableRow>
+
+
+
+    <TableRow android:layout_weight="0"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp">
+
+        <TextView
+            android:text="@string/my_item_catalyst_nazwa"
+            android:gravity="end"
+            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/item_name"
+            android:layout_weight="4"
+            android:layout_width="fill_parent"
+            android:width="0dp"
+            />
+
+        <TextView
+            android:id="@+id/item_id_picture"
             android:gravity="end"
             android:layout_weight="3" />
     </TableRow>
@@ -34,27 +64,7 @@
         android:layout_marginEnd="10dp">
 
         <TextView
-            android:text="Nazwa:"
-            android:gravity="end"
-            android:layout_marginRight="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_weight="1" />
-
-        <TextView
-            android:id="@+id/item_name"
-            android:layout_weight="4" />
-
-        <TextView android:layout_weight="3" />
-    </TableRow>
-
-    <TableRow android:layout_weight="0"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginEnd="10dp">
-
-        <TextView
-            android:text="Waga:"
+            android:text="@string/my_item_catalyst_waga"
             android:gravity="end"
             android:layout_marginRight="5dp"
             android:layout_marginEnd="5dp"
@@ -74,7 +84,7 @@
         android:layout_marginEnd="10dp">
 
         <TextView
-            android:text="Platyna:"
+            android:text="@string/my_item_catalyst_platyna"
             android:gravity="end"
             android:layout_marginRight="5dp"
             android:layout_marginEnd="5dp"
@@ -96,7 +106,7 @@
         android:layout_marginEnd="10dp">
 
         <TextView
-            android:text="Paladium:"
+            android:text="@string/my_item_catalyst_pallad"
             android:gravity="end"
             android:layout_marginRight="5dp"
             android:layout_marginEnd="5dp"
@@ -106,11 +116,7 @@
             android:id="@+id/item_palladium"
             android:layout_weight="4" />
 
-        <TextView
-            android:id="@+id/item_price_euro"
-            android:textColor="@android:color/holo_green_light"
-            android:gravity="end"
-            android:layout_weight="3" />
+        <TextView android:layout_weight="3" />
     </TableRow>
 
     <TableRow android:layout_weight="0" android:layout_marginBottom="5dp"
@@ -120,7 +126,7 @@
         android:layout_marginEnd="10dp">
 
         <TextView
-            android:text="Rod:"
+            android:text="@string/my_item_catalyst_rod"
             android:gravity="end"
             android:layout_marginRight="5dp"
             android:layout_marginEnd="5dp"
@@ -132,7 +138,7 @@
 
         <TextView
             android:id="@+id/item_price_pl"
-            android:textColor="@android:color/holo_green_light"
+            android:textColor="@android:color/holo_green_dark"
             android:gravity="end"
             android:layout_weight="3" />
 

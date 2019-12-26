@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".AboutActivity">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/activity_about_licence"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:text="@string/activity_about_dane_kontaktowe"/>
+
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TableRow android:layout_weight="0" android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp">
+
+            <TextView
+                android:text="@string/activity_about_wlasciciel"
+                android:gravity="end"
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1" />
+
+            <TextView android:text="@string/activity_about_wlasciciel_value" android:layout_weight="4" />
+        </TableRow>
+
+
+        <TableRow android:layout_weight="0" android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp">
+
+            <TextView
+                android:text="@string/activity_about_telefon"
+                android:gravity="end"
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:autoLink="phone"
+                android:textColorHighlight="@color/highlight"
+                android:text="@string/activity_about_telefon_value"
+                android:layout_weight="4" />
+        </TableRow>
+
+
+        <TableRow android:layout_weight="0" android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp">
+
+            <TextView
+                android:text="@string/activity_about_email"
+                android:gravity="end"
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:autoLink="email"
+                android:textColorHighlight="@color/highlight"
+                android:text="@string/activity_about_email_value"
+                android:layout_weight="4" />
+        </TableRow>
+
+
+        <TableRow android:layout_weight="0" android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp">
+
+            <TextView
+                android:text="@string/activity_about_stronawww"
+                android:gravity="end"
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:autoLink="web"
+                android:textColorHighlight="@color/highlight"
+                android:text="@string/activity_about_stronawww_value"
+                android:layout_weight="4" />
+        </TableRow>
+    </TableLayout>
+
+</TableLayout>

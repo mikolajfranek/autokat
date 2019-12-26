@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/toolbar_list_configuration_values"
-        android:title="@string/menu_toolbar_list_configuration_values"
+        android:id="@+id/toolbar_list_about"
+        android:title="@string/menu_toolbar_list_configuration_about"
         app:showAsAction="never"
         android:orderInCategory="400"/>
 </menu>

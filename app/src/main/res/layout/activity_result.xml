@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-
     android:id="@+id/activity_result_linearlayout"
     tools:context="pl.autokat.ResultActivity">
 
@@ -27,8 +26,7 @@
         android:layout_marginRight="10dp"
         android:padding="10dp"
         android:inputType="text"
-        android:background="@drawable/drawable_edit_text_background"
-        />
+        android:background="@drawable/drawable_edit_text_background" />
 
 
     <ListView
