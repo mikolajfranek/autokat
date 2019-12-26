@@ -16,6 +16,8 @@ class ItemCatalyst(var id: Int,
         val pricePalladium = this.countPriceElement(this.palladium, MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PALLADIUM).toFloat())
         val pricePlatinum = this.countPriceElement(this.platinum, MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PLATIUNUM).toFloat())
 
-        return ((priceRhodium + pricePalladium + pricePlatinum) * (MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT).toInt()/100))
+        val discount = (MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT).toFloat()/100.toFloat())
+
+        return (priceRhodium + pricePalladium + pricePlatinum) * discount
     }
 }

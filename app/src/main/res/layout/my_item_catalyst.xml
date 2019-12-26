@@ -2,7 +2,7 @@
 
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <TableRow android:layout_weight="0" android:layout_marginTop="5dp"
         android:layout_marginLeft="10dp"
@@ -28,8 +28,6 @@
             android:gravity="end"
             android:layout_weight="3" />
     </TableRow>
-
-
 
     <TableRow android:layout_weight="0"
         android:layout_marginLeft="10dp"
@@ -144,4 +142,8 @@
 
     </TableRow>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/colorGrayLight"/>
 </TableLayout>

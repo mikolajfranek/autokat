@@ -69,8 +69,7 @@ class ResultActivity : AppCompatActivity() {
                 view.item_palladium.text = (itemCatalyst.palladium.toString() + " g")
                 view.item_rhodium.text = (itemCatalyst.rhodium.toString() + " g")
 
-                view.item_price_pl.text = MyConfiguration.formatFloat(itemCatalyst.countPricePln())
-
+                view.item_price_pl.text = (MyConfiguration.formatFloat(itemCatalyst.countPricePln()) + " zł")
                 return view
             }
         }
@@ -155,7 +154,6 @@ class ResultActivity : AppCompatActivity() {
     }
 
     //async class which check if exists update of app
-    @SuppressLint("StaticFieldLeak")
     private inner class TryUpdate : AsyncTask<Void, Void, Void>() {
 
         private var updateCourses : Boolean = false
@@ -199,7 +197,6 @@ class ResultActivity : AppCompatActivity() {
     }
 
     //async class which check if exists update of app
-    @SuppressLint("StaticFieldLeak")
     private inner class Update(updateCoursesInput: Boolean, updateCatalystInput : Boolean) : AsyncTask<Void, Void, Boolean>() {
 
         private var updateCourses : Boolean = updateCoursesInput

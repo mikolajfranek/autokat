@@ -128,7 +128,7 @@ class MyConfiguration {
         }
 
         fun formatFloat(float: Float) : String{
-            return String.format("%.2f", float)
+            return String.format("%.2f", float).replace(',','.')
         }
     }
 }
