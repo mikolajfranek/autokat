@@ -9,7 +9,6 @@ import java.util.*
 
 class MyConfiguration {
     companion object {
-
         /* databases */
         val DATABASE_VERSION : Int = 1
         val DATABASE_NAME_OF_FILE : String = "autokat.db"
@@ -80,6 +79,7 @@ class MyConfiguration {
 
         /* others */
         val ONE_DAY_IN_MILLISECONDS : Long = 86400000
+        val REQUEST_CODE_READ_PHONE_STATE: Int = 0
 
         /* helpers methods */
         //parse string to json
@@ -127,8 +127,14 @@ class MyConfiguration {
             return SimpleDateFormat("dd.MM.yyyy").format((SimpleDateFormat("yyyy-MM-dd").parse(date)!!)).toString()
         }
 
-        fun formatFloat(float: Float) : String{
-            return String.format("%.2f", float).replace(',','.')
+        //get format of float from string
+        fun formatStringFloat(floatString: String) : String{
+            return String.format("%.2f", floatString.toFloat())
+        }
+
+        //get pln from dolar string
+        fun getPlnFromDolar(dolar: String) : String{
+            return (dolar.toFloat() * MySharedPreferences.getKeyFromFile(MY_SHARED_PREFERENCES_KEY_USD_PLN).toFloat()).toString()
         }
     }
 }

@@ -64,12 +64,16 @@ class ResultActivity : AppCompatActivity() {
                 view.item_brand.text = itemCatalyst.brand
                 view.item_type.text = itemCatalyst.type
                 view.item_name.text = itemCatalyst.name
-                view.item_weight.text = (itemCatalyst.weight.toString() + " kg")
-                view.item_platinum.text = (itemCatalyst.platinum.toString() + " g")
-                view.item_palladium.text = (itemCatalyst.palladium.toString() + " g")
-                view.item_rhodium.text = (itemCatalyst.rhodium.toString() + " g")
+                view.item_weight.text = (MyConfiguration.formatStringFloat(itemCatalyst.weight.toString()) + " kg")
+                view.item_platinum.text = (MyConfiguration.formatStringFloat(itemCatalyst.platinum.toString()) + " g")
+                view.item_palladium.text = (MyConfiguration.formatStringFloat(itemCatalyst.palladium.toString()) + " g")
+                view.item_rhodium.text = (MyConfiguration.formatStringFloat(itemCatalyst.rhodium.toString()) + " g")
 
-                view.item_price_pl.text = (MyConfiguration.formatFloat(itemCatalyst.countPricePln()) + " zł")
+                val pricePl = itemCatalyst.countPricePln()
+                val priceEur = pricePl / MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN).toFloat()
+
+                view.item_price_eur.text = (MyConfiguration.formatStringFloat(priceEur.toString()) + " €")
+                view.item_price_pl.text = (MyConfiguration.formatStringFloat(pricePl.toString()) + " zł")
                 return view
             }
         }

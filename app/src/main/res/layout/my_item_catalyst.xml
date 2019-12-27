@@ -114,7 +114,11 @@
             android:id="@+id/item_palladium"
             android:layout_weight="4" />
 
-        <TextView android:layout_weight="3" />
+        <TextView
+            android:id="@+id/item_price_eur"
+            android:textColor="@android:color/holo_green_dark"
+            android:gravity="end"
+            android:layout_weight="3" />
     </TableRow>
 
     <TableRow android:layout_weight="0" android:layout_marginBottom="5dp"

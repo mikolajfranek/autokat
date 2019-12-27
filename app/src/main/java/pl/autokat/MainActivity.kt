@@ -2,6 +2,7 @@ package pl.autokat
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
@@ -10,12 +11,14 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
 import java.net.URL
+import java.util.jar.Manifest
 
 
 class MainActivity : AppCompatActivity() {
-
     //oncreate
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,9 +30,35 @@ class MainActivity : AppCompatActivity() {
         //init shared preferences
         MySharedPreferences.init(this)
 
-        //try login
-        this.tryLogin(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LOGIN), false)
+        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_PHONE_STATE), MyConfiguration.REQUEST_CODE_READ_PHONE_STATE)
+        }else{
+            //try login
+            this.tryLogin(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LOGIN), false)
+        }
     }
+
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            MyConfiguration.REQUEST_CODE_READ_PHONE_STATE -> {
+                // permission was granted
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    //try login
+                    this.tryLogin(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LOGIN), false)
+                } else {
+                    finish()
+                }
+                return
+            }
+
+            else -> {
+                finish()
+                return
+            }
+        }
+    }
+
 
     //navigate up
     override fun onSupportNavigateUp(): Boolean {
@@ -112,6 +141,7 @@ class MainActivity : AppCompatActivity() {
         //do in async mode - in here can't modify user interface
         @SuppressLint("MissingPermission")
         override fun doInBackground(vararg p0: Void?): MyProcessStep {
+
             try{
                 //user never logged (not click on button, trying auto login)
                 if(hasClickedButton == false && login.isEmpty()) {
@@ -150,7 +180,8 @@ class MainActivity : AppCompatActivity() {
                 //get row element
                 val element = rows.getJSONObject(0).getJSONArray("c")
                 //read serial id from phone
-                val serialId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+                val serialId =  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     Build.getSerial()
                 } else {
                     Build.SERIAL
@@ -158,8 +189,7 @@ class MainActivity : AppCompatActivity() {
                 //check serial id of element
                 val elementSerialId : String = element.getJSONObject(1).getString("v")
                 if(elementSerialId.isEmpty()){
-                    //save serial id to spreadsheet
-                    //save flag that save was successful
+                    //save serial id to spreadsheet                 //save flag that save was successful
                 }else{
                     //check current serial id with element serial id
                     if(serialId.equals(elementSerialId) == false) {
@@ -205,6 +235,7 @@ class MainActivity : AppCompatActivity() {
                 MyProcessStep.USER_ELAPSED_DATE_LICENCE -> {
                     this@MainActivity.activity_main_textview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
                     this@MainActivity.activity_main_textview.text = MyConfiguration.INFO_MESSAGE_USER_FAILED_LICENCE
+                    MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END, "")
                 }
 
                 MyProcessStep.USER_NEVER_LOGGED -> {
