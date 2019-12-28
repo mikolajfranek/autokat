@@ -21,10 +21,11 @@
         android:layout_marginBottom="15dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:textColor="@color/colorGray"
         android:textSize="48sp"
         android:gravity="center"
-        android:textStyle="italic"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/colorGray"
         />
 
     <EditText
@@ -41,6 +42,8 @@
         android:padding="10dp"
         android:inputType="text"
         android:background="@drawable/drawable_edit_text_background"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/colorGray"
         />
 
     <TextView
@@ -52,8 +55,9 @@
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:textColor="@color/colorGray"
         android:gravity="center"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/colorGray"
         />
 
     <Button
@@ -65,7 +69,11 @@
         android:layout_marginTop="5dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:background="@color/colorSilver"
         android:padding="10dp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/colorGray"
         />
 
 </LinearLayout>

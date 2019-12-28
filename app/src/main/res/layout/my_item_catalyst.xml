@@ -15,18 +15,24 @@
             android:gravity="end"
             android:layout_marginRight="5dp"
             android:layout_marginEnd="5dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/colorGray"/>
 
         <TextView
             android:id="@+id/item_brand"
             android:layout_weight="4"
             android:layout_width="fill_parent"
-            android:width="0dp"/>
+            android:width="0dp"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/colorGray"/>
 
         <TextView
             android:id="@+id/item_type"
             android:gravity="end"
-            android:layout_weight="3" />
+            android:layout_weight="3"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/colorGray"/>
     </TableRow>
 
     <TableRow android:layout_weight="0"
@@ -40,19 +46,24 @@
             android:gravity="end"
             android:layout_marginRight="5dp"
             android:layout_marginEnd="5dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/colorGray"/>
 
         <TextView
             android:id="@+id/item_name"
             android:layout_weight="4"
             android:layout_width="fill_parent"
             android:width="0dp"
-            />
+            android:fontFamily="sans-serif"
+            android:textColor="@color/colorGray"/>
 
         <TextView
             android:id="@+id/item_id_picture"
             android:gravity="end"
-            android:layout_weight="3" />
+            android:layout_weight="3"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/colorGray"/>
     </TableRow>
 
     <TableRow android:layout_weight="0"
@@ -66,13 +77,19 @@
             android:gravity="end"
             android:layout_marginRight="5dp"
             android:layout_marginEnd="5dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/colorGray"/>
 
         <TextView
             android:id="@+id/item_weight"
-            android:layout_weight="4" />
+            android:layout_weight="4"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/colorGray"/>
 
-        <TextView android:layout_weight="3" />
+        <TextView android:layout_weight="3"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/colorGray"/>
     </TableRow>
 
     <TableRow android:layout_weight="0"
@@ -86,14 +103,20 @@
             android:gravity="end"
             android:layout_marginRight="5dp"
             android:layout_marginEnd="5dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/colorGray"/>
 
         <TextView
             android:id="@+id/item_platinum"
-            android:layout_weight="4" />
+            android:layout_weight="4"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/colorGray"/>
 
 
-        <TextView android:layout_weight="3" />
+        <TextView android:layout_weight="3"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/colorGray"/>
 
     </TableRow>
 
@@ -108,17 +131,22 @@
             android:gravity="end"
             android:layout_marginRight="5dp"
             android:layout_marginEnd="5dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/colorGray"/>
 
         <TextView
             android:id="@+id/item_palladium"
-            android:layout_weight="4" />
+            android:layout_weight="4"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/colorGray"/>
 
         <TextView
             android:id="@+id/item_price_eur"
-            android:textColor="@android:color/holo_green_dark"
             android:gravity="end"
-            android:layout_weight="3" />
+            android:layout_weight="3"
+            android:fontFamily="sans-serif"
+            android:textColor="@android:color/holo_green_dark"/>
     </TableRow>
 
     <TableRow android:layout_weight="0" android:layout_marginBottom="5dp"
@@ -132,22 +160,27 @@
             android:gravity="end"
             android:layout_marginRight="5dp"
             android:layout_marginEnd="5dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/colorGray"/>
 
         <TextView
             android:id="@+id/item_rhodium"
-            android:layout_weight="4" />
+            android:layout_weight="4"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/colorGray"/>
 
         <TextView
             android:id="@+id/item_price_pl"
-            android:textColor="@android:color/holo_green_dark"
             android:gravity="end"
-            android:layout_weight="3" />
+            android:layout_weight="3"
+            android:fontFamily="sans-serif"
+            android:textColor="@android:color/holo_green_dark"/>
 
     </TableRow>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/colorGrayLight"/>
+        android:background="@color/colorSilver"/>
 </TableLayout>

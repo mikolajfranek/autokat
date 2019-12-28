@@ -16,7 +16,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="@string/activity_configuration_values_dane_o_kursach_pierwiastkow"/>
+        android:text="@string/activity_configuration_values_dane_o_kursach_pierwiastkow"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/colorGray"/>
 
     <TableLayout
 
@@ -32,17 +34,23 @@
             <TextView
                 android:text="@string/activity_configuration_values_pierwiastek"
                 android:gravity="center"
-                android:layout_weight="2" />
+                android:layout_weight="2"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/colorGray"/>
 
             <TextView
                 android:text="@string/activity_configuration_values_wartosc"
                 android:gravity="center"
-                android:layout_weight="4" />
+                android:layout_weight="4"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/colorGray"/>
 
             <TextView
                 android:text="@string/activity_configuration_values_z_dnia"
                 android:gravity="center"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/colorGray"/>
         </TableRow>
 
         <TableRow android:layout_weight="0" android:layout_marginTop="5dp"
@@ -54,18 +62,24 @@
             <TextView
                 android:text="@string/activity_configuration_values_platyna"
                 android:gravity="center"
-                android:layout_weight="2" />
+                android:layout_weight="2"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/colorGray"/>
 
             <TextView
                 android:id="@+id/activity_configuration_values_element_platinum"
-                android:textColor="@android:color/holo_green_dark"
                 android:gravity="center"
-                android:layout_weight="4" />
+                android:layout_weight="4"
+                android:fontFamily="sans-serif"
+                android:textColor="@android:color/holo_green_dark"/>
 
             <TextView
                 android:id="@+id/activity_configuration_values_element_platinum_date"
                 android:gravity="center"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/colorGray"
+                />
         </TableRow>
         <TableRow android:layout_weight="0" android:layout_marginTop="5dp"
             android:layout_marginLeft="10dp"
@@ -76,18 +90,23 @@
             <TextView
                 android:text="@string/activity_configuration_values_pallad"
                 android:gravity="center"
-                android:layout_weight="2" />
+                android:layout_weight="2"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/colorGray"/>
 
             <TextView
                 android:id="@+id/activity_configuration_values_element_palladium"
-                android:textColor="@android:color/holo_green_dark"
                 android:gravity="center"
-                android:layout_weight="4" />
+                android:layout_weight="4"
+                android:fontFamily="sans-serif"
+                android:textColor="@android:color/holo_green_dark"/>
 
             <TextView
                 android:id="@+id/activity_configuration_values_element_palladium_date"
                 android:gravity="center"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/colorGray"/>
         </TableRow>
         <TableRow android:layout_weight="0" android:layout_marginTop="5dp"
             android:layout_marginLeft="10dp"
@@ -98,18 +117,23 @@
             <TextView
                 android:text="@string/activity_configuration_values_rod"
                 android:gravity="center"
-                android:layout_weight="2" />
+                android:layout_weight="2"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/colorGray"/>
 
             <TextView
                 android:id="@+id/activity_configuration_values_element_rhodium"
-                android:textColor="@android:color/holo_green_dark"
                 android:gravity="center"
-                android:layout_weight="4" />
+                android:layout_weight="4"
+                android:fontFamily="sans-serif"
+                android:textColor="@android:color/holo_green_dark"/>
 
             <TextView
                 android:id="@+id/activity_configuration_values_element_rhodium_date"
                 android:gravity="center"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/colorGray"/>
         </TableRow>
 
     </TableLayout>
@@ -123,7 +147,9 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
-        android:text="@string/activity_configuration_values_dane_o_kursach_walut"/>
+        android:text="@string/activity_configuration_values_dane_o_kursach_walut"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/colorGray"/>
 
     <TableLayout
 
@@ -139,17 +165,23 @@
             <TextView
                 android:text="@string/activity_configuration_values_waluta"
                 android:gravity="center"
-                android:layout_weight="2" />
+                android:layout_weight="2"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/colorGray"/>
 
             <TextView
                 android:text="@string/activity_configuration_values_wartosc"
                 android:gravity="center"
-                android:layout_weight="4" />
+                android:layout_weight="4"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/colorGray"/>
 
             <TextView
                 android:text="@string/activity_configuration_values_z_dnia"
                 android:gravity="center"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/colorGray"/>
         </TableRow>
 
         <TableRow android:layout_weight="0" android:layout_marginTop="5dp"
@@ -161,19 +193,49 @@
             <TextView
                 android:text="@string/activity_configuration_values_dolar"
                 android:gravity="center"
-                android:layout_weight="2" />
+                android:layout_weight="2"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/colorGray"/>
 
             <TextView
                 android:id="@+id/activity_configuration_values_element_usd_pln"
                 android:gravity="center"
-                android:textColor="@android:color/holo_green_dark"
-                android:layout_weight="4" />
+                android:layout_weight="4"
+                android:fontFamily="sans-serif"
+                android:textColor="@android:color/holo_green_dark"/>
 
             <TextView
                 android:id="@+id/activity_configuration_values_element_usd_pln_date"
                 android:gravity="center"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/colorGray"/>
         </TableRow>
+
+
+        <TableRow android:layout_weight="0" android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp">
+
+            <TextView
+                android:text="@string/activity_configuration_values_dolar"
+                android:gravity="center"
+                android:layout_weight="2"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/colorGray"/>
+
+            <TextView
+                android:id="@+id/activity_configuration_values_element_usd_eur"
+                android:gravity="center"
+                android:layout_weight="4"
+                android:fontFamily="sans-serif"
+                android:textColor="@android:color/holo_green_dark"/>
+
+            <TextView android:layout_weight="1"/>
+        </TableRow>
+
         <TableRow android:layout_weight="0" android:layout_marginTop="5dp"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
@@ -183,20 +245,47 @@
             <TextView
                 android:text="@string/activity_configuration_values_euro"
                 android:gravity="center"
-                android:layout_weight="2" />
+                android:layout_weight="2"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/colorGray"/>
 
             <TextView
                 android:id="@+id/activity_configuration_values_element_eur_pln"
                 android:gravity="center"
-                android:textColor="@android:color/holo_green_dark"
-                android:layout_weight="4" />
+                android:layout_weight="4"
+                android:fontFamily="sans-serif"
+                android:textColor="@android:color/holo_green_dark"/>
 
             <TextView
                 android:id="@+id/activity_configuration_values_element_eur_pln_date"
                 android:gravity="center"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/colorGray"/>
+        </TableRow>
+
+        <TableRow android:layout_weight="0" android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp">
+
+            <TextView
+                android:text="@string/activity_configuration_values_euro"
+                android:gravity="center"
+                android:layout_weight="2"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/colorGray"/>
+
+            <TextView
+                android:id="@+id/activity_configuration_values_element_eur_usd"
+                android:gravity="center"
+                android:layout_weight="4"
+                android:fontFamily="sans-serif"
+                android:textColor="@android:color/holo_green_dark"/>
+
+            <TextView android:layout_weight="1" />
         </TableRow>
 
     </TableLayout>
-
 </LinearLayout>

@@ -128,8 +128,8 @@ class MyConfiguration {
         }
 
         //get format of float from string
-        fun formatStringFloat(floatString: String) : String{
-            return String.format("%.2f", floatString.toFloat())
+        fun formatStringFloat(floatString: String, precision: Int) : String{
+            return String.format("%." + precision + "f", floatString.toFloat())
         }
 
         //get pln from dolar string

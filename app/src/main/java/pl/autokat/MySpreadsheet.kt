@@ -63,16 +63,17 @@ class MySpreadsheet {
             val itemsCatalyst = mutableListOf<ItemCatalyst>()
             for(i in 0 until rows.length()){
                 val element = rows.getJSONObject(i).getJSONArray("c")
+
                 val itemCatalyst = ItemCatalyst(
-                    i+1,
-                    element.getJSONObject(7).getInt("v"),
-                    element.getJSONObject(0).getString("v"),
-                    element.getJSONObject(1).getString("v"),
-                    element.getJSONObject(3).getDouble("v").toFloat(),
-                    element.getJSONObject(2).getDouble("v").toFloat(),
-                    element.getJSONObject(4).getDouble("v").toFloat(),
-                    element.getJSONObject(5).getString("v"),
-                    element.getJSONObject(6).getDouble("v").toFloat()
+                    /* id */ i+1,
+                    /* idImage */ element.getJSONObject(7).getInt("v"),
+                    /* name */  if (element.isNull(0))  "" else element.getJSONObject(0).getString("v"),
+                    /* brand */ element.getJSONObject(1).getString("v"),
+                    /* platinum */ element.getJSONObject(2).getDouble("v").toFloat(),
+                    /* pallad */ element.getJSONObject(3).getDouble("v").toFloat(),
+                    /* rhodium */ element.getJSONObject(4).getDouble("v").toFloat(),
+                    /* type */ element.getJSONObject(5).getString("v"),
+                    /* weight */ element.getJSONObject(6).getDouble("v").toFloat()
                     )
 
                 itemsCatalyst.add(itemCatalyst)

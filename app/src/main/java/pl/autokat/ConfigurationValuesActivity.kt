@@ -21,17 +21,25 @@ class ConfigurationValuesActivity : AppCompatActivity() {
         MySharedPreferences.init(this)
 
         //about courses elements
-        activity_configuration_values_element_palladium.text = (MyConfiguration.formatStringFloat(MyConfiguration.getPlnFromDolar((MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PALLADIUM)))) + " zł/g")
+        activity_configuration_values_element_palladium.text = (MyConfiguration.formatStringFloat(MyConfiguration.getPlnFromDolar((MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PALLADIUM))), 3) + " zł/g")
         activity_configuration_values_element_palladium_date.text = MyConfiguration.formatDate(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PALLADIUM_DATE))
-        activity_configuration_values_element_platinum.text = (MyConfiguration.formatStringFloat(MyConfiguration.getPlnFromDolar(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PLATIUNUM))) + " zł/g")
+        activity_configuration_values_element_platinum.text = (MyConfiguration.formatStringFloat(MyConfiguration.getPlnFromDolar(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PLATIUNUM)), 3) + " zł/g")
         activity_configuration_values_element_platinum_date.text = MyConfiguration.formatDate(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PLATIUNUM_DATE))
-        activity_configuration_values_element_rhodium.text = (MyConfiguration.formatStringFloat(MyConfiguration.getPlnFromDolar(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_RHODIUM))) + " zł/g")
+        activity_configuration_values_element_rhodium.text = (MyConfiguration.formatStringFloat(MyConfiguration.getPlnFromDolar(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_RHODIUM)), 3) + " zł/g")
         activity_configuration_values_element_rhodium_date.text = MyConfiguration.formatDate(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_RHODIUM_DATE))
         //about courses exchanges
-        activity_configuration_values_element_usd_pln.text = (MyConfiguration.formatStringFloat((MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN))) + " zł")
+        activity_configuration_values_element_usd_pln.text = (MyConfiguration.formatStringFloat((MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN)), 3) + " zł")
         activity_configuration_values_element_usd_pln_date.text = MyConfiguration.formatDate(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN_DATE))
-        activity_configuration_values_element_eur_pln.text = (MyConfiguration.formatStringFloat(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_EUR_PLN)) + " zł")
+        activity_configuration_values_element_usd_eur.text = (MyConfiguration.formatStringFloat(
+            ((MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN).toFloat()) / (MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_EUR_PLN).toFloat())).toString()
+            ,
+            3) + " €")
+        activity_configuration_values_element_eur_pln.text = (MyConfiguration.formatStringFloat(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_EUR_PLN), 3) + " zł")
         activity_configuration_values_element_eur_pln_date.text = MyConfiguration.formatDate(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_EUR_PLN_DATE))
+        activity_configuration_values_element_eur_usd.text = (MyConfiguration.formatStringFloat(
+            ((MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_EUR_PLN).toFloat()) / (MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN).toFloat())).toString()
+            ,
+            3) + " $")
     }
 
     //navigate up

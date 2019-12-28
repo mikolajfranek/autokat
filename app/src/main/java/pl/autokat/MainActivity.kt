@@ -19,6 +19,7 @@ import java.util.jar.Manifest
 
 
 class MainActivity : AppCompatActivity() {
+
     //oncreate
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
+    //on request permission
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
             MyConfiguration.REQUEST_CODE_READ_PHONE_STATE -> {
@@ -58,7 +59,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
 
     //navigate up
     override fun onSupportNavigateUp(): Boolean {
@@ -141,7 +141,6 @@ class MainActivity : AppCompatActivity() {
         //do in async mode - in here can't modify user interface
         @SuppressLint("MissingPermission")
         override fun doInBackground(vararg p0: Void?): MyProcessStep {
-
             try{
                 //user never logged (not click on button, trying auto login)
                 if(hasClickedButton == false && login.isEmpty()) {
@@ -189,7 +188,8 @@ class MainActivity : AppCompatActivity() {
                 //check serial id of element
                 val elementSerialId : String = element.getJSONObject(1).getString("v")
                 if(elementSerialId.isEmpty()){
-                    //save serial id to spreadsheet                 //save flag that save was successful
+                    //save serial id to spreadsheet
+                    // save flag that save was successful
                 }else{
                     //check current serial id with element serial id
                     if(serialId.equals(elementSerialId) == false) {
