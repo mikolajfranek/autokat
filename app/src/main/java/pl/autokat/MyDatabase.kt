@@ -3,15 +3,16 @@ package pl.autokat
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteQueryBuilder
-import android.util.Log
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper
-import java.util.*
+import java.io.ByteArrayOutputStream
 import kotlin.collections.ArrayList
 
 
 class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.DATABASE_NAME_OF_FILE, null, MyConfiguration.DATABASE_VERSION){
 
-    fun insertCatalysts(dataCatalyst: MutableList<ItemCatalyst>) : Boolean {
+    fun insertCatalysts(dataCatalystMy: MutableList<MyItemCatalyst>) : Boolean {
         var result : Boolean
         val db = this.writableDatabase
         try{
@@ -23,7 +24,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
 
             //insert values
             val values = ContentValues()
-            for(catalyst in dataCatalyst){
+            for(catalyst in dataCatalystMy){
                 values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID_PICTURE, catalyst.idPicture)
                 values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME, catalyst.name)
                 values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND, catalyst.brand)
@@ -32,6 +33,10 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
                 values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_RHODIUM, catalyst.rhodium)
                 values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_TYPE, catalyst.type)
                 values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_WEIGHT, catalyst.weight)
+
+                val stream = ByteArrayOutputStream()
+                catalyst.thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_PICTURE, stream.toByteArray())
 
                 db.insert(MyConfiguration.DATABASE_TABLE_CATALYST, null, values)
             }
@@ -56,12 +61,13 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
         return count
     }
 
-    fun getDataCatalyst(nameCatalystOrBrandCar:String): ArrayList<ItemCatalyst> {
-        val result : ArrayList<ItemCatalyst> = ArrayList<ItemCatalyst>()
+    fun getDataCatalyst(nameCatalystOrBrandCar: String, limitElements: Int): ArrayList<MyItemCatalyst> {
+        val result : ArrayList<MyItemCatalyst> = ArrayList<MyItemCatalyst>()
 
         val fields = arrayOf(
             MyConfiguration.DATABASE_ELEMENT_CATALYST_ID,
             MyConfiguration.DATABASE_ELEMENT_CATALYST_ID_PICTURE,
+            MyConfiguration.DATABASE_ELEMENT_CATALYST_PICTURE,
             MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME,
             MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND,
             MyConfiguration.DATABASE_ELEMENT_CATALYST_PLATINUM,
@@ -80,13 +86,17 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
             null,
             null,
             null,
-            MyConfiguration.DATABASE_PAGINATE_LIMIT)
+            limitElements.toString())
 
         while (cursor.moveToNext()){
+
+            val blobImage : ByteArray = cursor.getBlob(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_PICTURE))
+
             result.add(
-                ItemCatalyst(
+                MyItemCatalyst(
                     cursor.getInt(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID)),
-                    cursor.getInt(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID_PICTURE)),
+                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID_PICTURE)),
+                    BitmapFactory.decodeByteArray(blobImage, 0, blobImage.size),
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME)),
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND)),
                     cursor.getFloat(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_PLATINUM)),

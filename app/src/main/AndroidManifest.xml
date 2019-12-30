@@ -28,9 +28,15 @@
         <activity
             android:name=".ConfigurationValuesActivity"
             android:screenOrientation="portrait" />
-
-        <activity android:name=".AboutActivity"
+        <activity
+            android:name=".AboutActivity"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".PictureActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/FullscreenTheme"/>
 
     </application>
 

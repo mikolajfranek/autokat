@@ -4,14 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+
     <TableRow android:layout_weight="0" android:layout_marginTop="5dp"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginEnd="10dp">
 
+
         <TextView
-            android:text="@string/my_item_catalyst_marka"
+            android:id="@+id/item_id_picture"
             android:gravity="end"
             android:layout_marginRight="5dp"
             android:layout_marginEnd="5dp"
@@ -35,20 +37,22 @@
             android:textColor="@color/colorGray"/>
     </TableRow>
 
+
     <TableRow android:layout_weight="0"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginEnd="10dp">
 
-        <TextView
-            android:text="@string/my_item_catalyst_nazwa"
-            android:gravity="end"
-            android:layout_marginRight="5dp"
-            android:layout_marginEnd="5dp"
+        <ImageView
+            android:id="@+id/item_picture"
+            android:clickable="true"
+            android:focusable="true"
+            android:adjustViewBounds="true"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_weight="1"
-            android:fontFamily="sans-serif"
-            android:textColor="@color/colorGray"/>
+            />
 
         <TextView
             android:id="@+id/item_name"
@@ -58,13 +62,9 @@
             android:fontFamily="sans-serif"
             android:textColor="@color/colorGray"/>
 
-        <TextView
-            android:id="@+id/item_id_picture"
-            android:gravity="end"
-            android:layout_weight="3"
-            android:fontFamily="sans-serif"
-            android:textColor="@color/colorGray"/>
+        <TextView android:layout_weight="3"/>
     </TableRow>
+
 
     <TableRow android:layout_weight="0"
         android:layout_marginLeft="10dp"

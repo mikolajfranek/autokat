@@ -12,13 +12,14 @@ class MyConfiguration {
         /* databases */
         val DATABASE_VERSION : Int = 1
         val DATABASE_NAME_OF_FILE : String = "autokat.db"
-        val DATABASE_PAGINATE_LIMIT : String = "50"
+        val DATABASE_PAGINATE_LIMIT : Int = 5
 
         /* table catalyst */
         val DATABASE_TABLE_CATALYST = "catalyst"
         val DATABASE_TABLE_SQLITE_SEQUENCE = "sqlite_sequence"
         val DATABASE_ELEMENT_CATALYST_ID = "id"
         val DATABASE_ELEMENT_CATALYST_ID_PICTURE = "id_picture"
+        val DATABASE_ELEMENT_CATALYST_PICTURE = "picture"
         val DATABASE_ELEMENT_CATALYST_NAME = "name"
         val DATABASE_ELEMENT_CATALYST_BRAND = "brand"
         val DATABASE_ELEMENT_CATALYST_PLATINUM = "platinum"
@@ -55,6 +56,12 @@ class MyConfiguration {
         val INFO_MESSAGE_COLOR_SUCCESS: Int = Color.GRAY
         //message
         val INFO_MESSAGE_WAIT_AUTHENTICATE : String = "Trwa uwierzytelnianie..."
+        val INFO_MESSAGE_WAIT_UPDATE : String = "Trwa aktualizacja...."
+        val INFO_UPDATE_SUCCESS : String = "Aktualizacja przebiegła pomyślnie"
+        val INFO_UPDATE_FAILED : String = "Wystąpił błąd podczas aktualizacji"
+        val INFO_DOWNLOAD_BITMAP_FAILED : String = "Wystąpił błąd podczas pobierania obrazu"
+        val INFO_DOWNLOAD_BITMAP_WAIT: String = "Trwa pobieranie obrazu..."
+
         val INFO_MESSAGE_UNHANDLED_EXCEPTION : String = "Wystąpił nieobsłużony błąd"
         val INFO_MESSAGE_USER_NEVER_LOGGED : String = "Wprowadź nazwę użytkownika"
         val INFO_MESSAGE_USER_FAILED_LOGIN: String = "Błędna nazwa użytkownika"
@@ -135,6 +142,19 @@ class MyConfiguration {
         //get pln from dolar string
         fun getPlnFromDolar(dolar: String) : String{
             return (dolar.toFloat() * MySharedPreferences.getKeyFromFile(MY_SHARED_PREFERENCES_KEY_USD_PLN).toFloat()).toString()
+        }
+
+        //get url to google
+        fun getPictureUrlFromGoogle(urlShared: String, width: Int, height: Int) : String {
+            var url = urlShared
+
+            val regexBefore = ".*\\/d\\/".toRegex()
+            val resultRegex = regexBefore.find(url)!!.value
+
+            url = url.substring(resultRegex.length)
+            val pictureIdFromGoogle = url.substring(0,url.indexOf('/'))
+
+            return "https://lh3.googleusercontent.com/u/0/d/$pictureIdFromGoogle=w$width-h$height"
         }
     }
 }

@@ -1,11 +1,14 @@
 package pl.autokat
 
-class ItemCatalyst(var id: Int,
-                   var idPicture: Int,
-                   var name: String?,
-                   var brand: String,
-                   var platinum: Float, var palladium: Float,
-                   var rhodium: Float, var type: String, var weight: Float) {
+import android.graphics.Bitmap
+
+class MyItemCatalyst(var id: Int,
+                     var idPicture: String,
+                     var thumbnail : Bitmap,
+                     var name: String?,
+                     var brand: String,
+                     var platinum: Float, var palladium: Float,
+                     var rhodium: Float, var type: String, var weight: Float) {
 
     fun countPriceElement(gramsPerKilogram: Float, weightOfCatalyst: Float, coursePerGram: Float) : Float{
         return (gramsPerKilogram * coursePerGram * (MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN)).toFloat()) * weightOfCatalyst

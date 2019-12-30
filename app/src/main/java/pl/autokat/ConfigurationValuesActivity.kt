@@ -1,8 +1,11 @@
 package pl.autokat
 
-import android.content.Intent
+import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import kotlinx.android.synthetic.main.activity_configuration_values.*
 import kotlinx.android.synthetic.main.activity_main.toolbar
@@ -20,31 +23,98 @@ class ConfigurationValuesActivity : AppCompatActivity() {
         //init shared preferences
         MySharedPreferences.init(this)
 
+        this.setValuesInView()
+    }
+
+    //set all values in view
+    private fun setValuesInView(){
         //about courses elements
-        activity_configuration_values_element_palladium.text = (MyConfiguration.formatStringFloat(MyConfiguration.getPlnFromDolar((MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PALLADIUM))), 3) + " zł/g")
-        activity_configuration_values_element_palladium_date.text = MyConfiguration.formatDate(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PALLADIUM_DATE))
-        activity_configuration_values_element_platinum.text = (MyConfiguration.formatStringFloat(MyConfiguration.getPlnFromDolar(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PLATIUNUM)), 3) + " zł/g")
-        activity_configuration_values_element_platinum_date.text = MyConfiguration.formatDate(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PLATIUNUM_DATE))
-        activity_configuration_values_element_rhodium.text = (MyConfiguration.formatStringFloat(MyConfiguration.getPlnFromDolar(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_RHODIUM)), 3) + " zł/g")
-        activity_configuration_values_element_rhodium_date.text = MyConfiguration.formatDate(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_RHODIUM_DATE))
+        val pallad : String = MyConfiguration.getPlnFromDolar((MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PALLADIUM)))
+        val palladDate : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PALLADIUM_DATE)
+        activity_configuration_values_element_palladium.text = (MyConfiguration.formatStringFloat(pallad, 2) + " zł/g")
+        activity_configuration_values_element_palladium_date.text = MyConfiguration.formatDate(palladDate)
+
+        val platinum : String = MyConfiguration.getPlnFromDolar(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PLATIUNUM))
+        val platinumDate : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PLATIUNUM_DATE)
+        activity_configuration_values_element_platinum.text = (MyConfiguration.formatStringFloat(platinum, 2) + " zł/g")
+        activity_configuration_values_element_platinum_date.text = MyConfiguration.formatDate(platinumDate)
+
+        val rhodium : String = MyConfiguration.getPlnFromDolar(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_RHODIUM))
+        val rhodiumDate : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_RHODIUM_DATE)
+        activity_configuration_values_element_rhodium.text = (MyConfiguration.formatStringFloat(rhodium, 2) + " zł/g")
+        activity_configuration_values_element_rhodium_date.text = MyConfiguration.formatDate(rhodiumDate)
+
+
         //about courses exchanges
-        activity_configuration_values_element_usd_pln.text = (MyConfiguration.formatStringFloat((MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN)), 3) + " zł")
-        activity_configuration_values_element_usd_pln_date.text = MyConfiguration.formatDate(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN_DATE))
-        activity_configuration_values_element_usd_eur.text = (MyConfiguration.formatStringFloat(
-            ((MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN).toFloat()) / (MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_EUR_PLN).toFloat())).toString()
-            ,
-            3) + " €")
-        activity_configuration_values_element_eur_pln.text = (MyConfiguration.formatStringFloat(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_EUR_PLN), 3) + " zł")
-        activity_configuration_values_element_eur_pln_date.text = MyConfiguration.formatDate(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_EUR_PLN_DATE))
-        activity_configuration_values_element_eur_usd.text = (MyConfiguration.formatStringFloat(
-            ((MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_EUR_PLN).toFloat()) / (MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN).toFloat())).toString()
-            ,
-            3) + " $")
+        val courseEurPln : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_EUR_PLN)
+        val courseEurPlnDate : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_EUR_PLN_DATE)
+        activity_configuration_values_element_eur_pln.text = (MyConfiguration.formatStringFloat(courseEurPln, 2) + " zł")
+        activity_configuration_values_element_eur_pln_date.text = MyConfiguration.formatDate(courseEurPlnDate)
+
+        val courseUsdPln : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN)
+        val courseUsdPlnDate : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN_DATE)
+        activity_configuration_values_element_usd_pln.text = (MyConfiguration.formatStringFloat(courseUsdPln, 2) + " zł")
+        activity_configuration_values_element_usd_pln_date.text = MyConfiguration.formatDate(courseUsdPlnDate)
     }
 
     //navigate up
     override fun onSupportNavigateUp(): Boolean {
         finish()
         return true
+    }
+
+    //toolbar option menu
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.toolbar_list_configurationvalues, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    //option menu selected
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        val id = item?.getItemId()
+        return when(id){
+            R.id.toolbar_list_refresh_courses -> {
+                //make async task and execute
+                val task = UpdateCourses()
+                task.execute()
+                true
+            }
+            else -> {
+                finish()
+                true
+            }
+        }
+    }
+
+    //async class which check if exists update of courses
+    private inner class UpdateCourses() : AsyncTask<Void, Void, Boolean>() {
+
+        //pre execute
+        override fun onPreExecute() {
+            super.onPreExecute()
+            Toast.makeText(applicationContext, MyConfiguration.INFO_MESSAGE_WAIT_UPDATE, Toast.LENGTH_SHORT).show()
+        }
+
+        //do in async mode - in here can't modify user interface
+        override fun doInBackground(vararg p0: Void?): Boolean {
+            return try{
+                MyCatalystValues.getValues()
+                true
+            }catch(e: Exception){
+                false
+            }
+        }
+
+        //post execute
+        override fun onPostExecute(result: Boolean) {
+            super.onPostExecute(result)
+
+            if(result){
+                Toast.makeText(applicationContext, MyConfiguration.INFO_UPDATE_SUCCESS, Toast.LENGTH_SHORT).show()
+                this@ConfigurationValuesActivity.setValuesInView()
+            }else{
+                Toast.makeText(applicationContext, MyConfiguration.INFO_UPDATE_FAILED, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

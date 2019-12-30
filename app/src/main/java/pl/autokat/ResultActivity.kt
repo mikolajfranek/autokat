@@ -6,12 +6,13 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AbsListView
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import kotlinx.android.synthetic.main.activity_main.toolbar
@@ -24,7 +25,9 @@ class ResultActivity : AppCompatActivity() {
 
     //fields
     private lateinit var database: MyDatabase
-    private lateinit var databaseAdapter: ArrayAdapter<ItemCatalyst>
+    private lateinit var databaseAdapter: ArrayAdapter<MyItemCatalyst>
+    private var scrollPreLast: Int = 0
+    private var scrollLimit : Int = MyConfiguration.DATABASE_PAGINATE_LIMIT
 
     //oncreate
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +53,7 @@ class ResultActivity : AppCompatActivity() {
             }
         })
         //init database adapter
-        databaseAdapter = object : ArrayAdapter<ItemCatalyst>(applicationContext, R.layout.my_item_catalyst) {
+        databaseAdapter = object : ArrayAdapter<MyItemCatalyst>(applicationContext, R.layout.my_item_catalyst) {
             override fun isEnabled(position: Int): Boolean {
                 return false
             }
@@ -61,13 +64,22 @@ class ResultActivity : AppCompatActivity() {
                 val itemCatalyst = getItem(position)!!
 
                 view.item_id_picture.text = itemCatalyst.idPicture.toString()
+
+                view.item_picture.setImageBitmap(itemCatalyst.thumbnail)
+
+                view.item_picture.setOnClickListener {
+                    val intent = Intent(applicationContext, PictureActivity::class.java)
+                    intent.putExtra("idPicture", itemCatalyst.idPicture)
+                    startActivity(intent)
+                }
+
                 view.item_brand.text = itemCatalyst.brand
                 view.item_type.text = itemCatalyst.type
                 view.item_name.text = itemCatalyst.name
                 view.item_weight.text = (MyConfiguration.formatStringFloat(itemCatalyst.weight.toString(), 3) + " kg")
-                view.item_platinum.text = (MyConfiguration.formatStringFloat(itemCatalyst.platinum.toString(), 2) + " g/kg")
-                view.item_palladium.text = (MyConfiguration.formatStringFloat(itemCatalyst.palladium.toString(), 2) + " g/kg")
-                view.item_rhodium.text = (MyConfiguration.formatStringFloat(itemCatalyst.rhodium.toString(), 2) + " g/kg")
+                view.item_platinum.text = (MyConfiguration.formatStringFloat(itemCatalyst.platinum.toString(), 3) + " g/kg")
+                view.item_palladium.text = (MyConfiguration.formatStringFloat(itemCatalyst.palladium.toString(), 3) + " g/kg")
+                view.item_rhodium.text = (MyConfiguration.formatStringFloat(itemCatalyst.rhodium.toString(), 3) + " g/kg")
 
                 val pricePl = itemCatalyst.countPricePln()
                 val priceEur = pricePl / MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN).toFloat()
@@ -78,6 +90,23 @@ class ResultActivity : AppCompatActivity() {
             }
         }
         activity_result_listView.setAdapter(databaseAdapter)
+
+
+        activity_result_listView.setOnScrollListener(object: AbsListView.OnScrollListener {
+            override fun onScroll(view: AbsListView, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
+                val lastItem : Int = firstVisibleItem + visibleItemCount
+                if (lastItem == totalItemCount && scrollPreLast != lastItem) {
+                    scrollLimit += MyConfiguration.DATABASE_PAGINATE_LIMIT
+                    this@ResultActivity.refreshListView(scrollLimit)
+                    scrollPreLast = lastItem
+                }
+            }
+
+            override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) {}
+        })
+
+
+        this.refreshListView()
     }
 
     //navigate up
@@ -90,14 +119,13 @@ class ResultActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        //check if user has good time on phone
+        if(MyConfiguration.checkTimestamp() == false){
+            this.openMainActivity()
+        }
         //check if licence if end
         val licenceDateOfEnd : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END)
         if(MyConfiguration.checkIfCurrentDateIsGreater(licenceDateOfEnd, true) == true){
-            this.openMainActivity()
-        }
-
-        //check if user has good time on phone
-        if(MyConfiguration.checkTimestamp() == false){
             this.openMainActivity()
         }
 
@@ -151,8 +179,13 @@ class ResultActivity : AppCompatActivity() {
     }
 
     //refresh list view
-    fun refreshListView(){
-        val result = database.getDataCatalyst(activity_result_edittext.text.toString())
+    fun refreshListView(limit: Int = MyConfiguration.DATABASE_PAGINATE_LIMIT){
+        if(limit == MyConfiguration.DATABASE_PAGINATE_LIMIT){
+            this.scrollPreLast = 0
+            this.scrollLimit = MyConfiguration.DATABASE_PAGINATE_LIMIT
+        }
+
+        val result = database.getDataCatalyst(activity_result_edittext.text.toString(), limit)
         databaseAdapter.clear()
         databaseAdapter.addAll(result)
     }
@@ -179,19 +212,32 @@ class ResultActivity : AppCompatActivity() {
 
                 //modify flag if could be update catalyst - if amount in spreadsheet is greater than in local database
                 updateCatalyst = MySpreadsheet.getCountCatalyst() > database.getCountCatalyst()
+
+
+
             }catch(e: Exception){
                 //nothing
             }
+            database.insertCatalysts(MySpreadsheet.getDataCatalyst())
+
             return null
         }
 
         //post execute
         override fun onPostExecute(result: Void?) {
             super.onPostExecute(result)
+
+
+            this@ResultActivity.refreshListView()
+
             if(updateCourses || updateCatalyst){
                 //make async task and execute
-                val task = Update(updateCourses, updateCatalyst)
-                task.execute()
+                //val task = Update(applicationContext, database, updateCourses, updateCatalyst)
+                //task.execute()
+
+
+                //disable user interface on process application
+                MyUserInterface.enableActivity(this@ResultActivity.activity_result_linearlayout, true)
             }else{
                 //disable user interface on process application
                 MyUserInterface.enableActivity(this@ResultActivity.activity_result_linearlayout, true)
@@ -200,47 +246,5 @@ class ResultActivity : AppCompatActivity() {
         }
     }
 
-    //async class which check if exists update of app
-    private inner class Update(updateCoursesInput: Boolean, updateCatalystInput : Boolean) : AsyncTask<Void, Void, Boolean>() {
 
-        private var updateCourses : Boolean = updateCoursesInput
-        private var updateCatalyst : Boolean = updateCatalystInput
-
-        //pre execute
-        override fun onPreExecute() {
-            super.onPreExecute()
-            Toast.makeText(applicationContext, "Trwa aktualizacja....", Toast.LENGTH_SHORT).show()
-        }
-
-        //do in async mode - in here can't modify user interface
-        override fun doInBackground(vararg p0: Void?): Boolean {
-            var result = false
-            try{
-                if(updateCourses){
-                    MyCatalystValues.getValues()
-                }
-
-                if(updateCatalyst){
-                    result = database.insertCatalysts(MySpreadsheet.getDataCatalyst())
-                }
-            }catch(e: Exception){
-                result = false
-            }
-            return result
-        }
-
-        //post execute
-        override fun onPostExecute(result: Boolean) {
-            super.onPostExecute(result)
-
-            if(result){
-                Toast.makeText(applicationContext, "Aktualizacja przebiegła pomyślnie", Toast.LENGTH_SHORT).show()
-            }else{
-                Toast.makeText(applicationContext, "Wystąpił błąd podczas aktualizacji", Toast.LENGTH_SHORT).show()
-            }
-            //disable user interface on process application
-            MyUserInterface.enableActivity(this@ResultActivity.activity_result_linearlayout, true)
-            this@ResultActivity.refreshListView()
-        }
-    }
 }

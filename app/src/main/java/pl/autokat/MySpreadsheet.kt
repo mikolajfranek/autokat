@@ -1,12 +1,8 @@
 package pl.autokat
 
-import android.annotation.SuppressLint
-import android.os.Build
-import android.util.Log
-import org.json.JSONObject
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import java.net.URL
-import java.text.SimpleDateFormat
-import java.util.*
 
 class MySpreadsheet {
     companion object {
@@ -34,6 +30,14 @@ class MySpreadsheet {
                     "&" + MyConfiguration.MY_SPREADSHEET_QUERY_KEY + "=" + MySecret.MY_SPREADSHEET_KEY
         }
 
+        //get url for query orygnal bitmap
+        fun getUrlToSpreadsheetCatalystRow(idPicture: String) : String {
+            return MyConfiguration.MY_SPREADSHEET_URL_PREFIX + MySecret.MY_SPREADSHEET_ID_CATALYST + MyConfiguration.MY_SPREADSHEET_URL_SUFIX +
+                    "?" + MyConfiguration.MY_SPREADSHEET_QUERY_OUTPUT_JSON + "=" + MyConfiguration.MY_SPREADSHEET_OUTPUT_JSON +
+                    "&" + MyConfiguration.MY_SPREADSHEET_QUERY_KEY + "=" + MySecret.MY_SPREADSHEET_KEY +
+                    "&" + MyConfiguration.MY_SPREADSHEET_QUERY_WHERE_CLAUSE + "=" + "select%20*%20where%20H%3D'$idPicture'"
+        }
+
         //get count catalyst
         fun getCountCatalyst(): Int {
             var count = 0
@@ -52,7 +56,7 @@ class MySpreadsheet {
         }
 
         //get data catalyst
-        fun getDataCatalyst(): MutableList<ItemCatalyst> {
+        fun getDataCatalyst(): MutableList<MyItemCatalyst> {
             //retrieve and parse to json data from spreadsheet
             val resultFromUrl = URL(getUrlToSpreadsheetCatalystData()).readText()
             val resultJson = MyConfiguration.parseResultToJson(resultFromUrl)
@@ -60,13 +64,17 @@ class MySpreadsheet {
             val rows = resultJson.getJSONObject("table").getJSONArray("rows")
 
 
-            val itemsCatalyst = mutableListOf<ItemCatalyst>()
+            val itemsCatalyst = mutableListOf<MyItemCatalyst>()
             for(i in 0 until rows.length()){
                 val element = rows.getJSONObject(i).getJSONArray("c")
 
-                val itemCatalyst = ItemCatalyst(
+                val urlSharedPicture = element.getJSONObject(8).getString("v")
+                val urlPicture = MyConfiguration.getPictureUrlFromGoogle(urlSharedPicture, 128, 128)
+
+                val itemCatalyst = MyItemCatalyst(
                     /* id */ i+1,
-                    /* idImage */ element.getJSONObject(7).getInt("v"),
+                    /* idPicture */ element.getJSONObject(7).getString("v"),
+                    /* thumbnail */ BitmapFactory.decodeStream(URL(urlPicture).openConnection().getInputStream()),
                     /* name */  if (element.isNull(0))  "" else element.getJSONObject(0).getString("v"),
                     /* brand */ element.getJSONObject(1).getString("v"),
                     /* platinum */ element.getJSONObject(2).getDouble("v").toFloat(),
@@ -81,5 +89,21 @@ class MySpreadsheet {
             return itemsCatalyst
         }
 
+        fun getBitmapOfIdPicture(idPicture: String): Bitmap? {
+            //retrieve and parse to json data from spreadsheet
+            val resultFromUrl = URL(getUrlToSpreadsheetCatalystRow(idPicture)).readText()
+            val resultJson = MyConfiguration.parseResultToJson(resultFromUrl)
+            //check if exists login
+            val rows = resultJson.getJSONObject("table").getJSONArray("rows")
+            if(rows.length() != 1) {
+                return null
+            }
+            //get row element
+            val element = rows.getJSONObject(0).getJSONArray("c")
+            val urlSharedPicture = element.getJSONObject(8).getString("v")
+            val urlPicture = MyConfiguration.getPictureUrlFromGoogle(urlSharedPicture, 1920, 1080)
+
+            return BitmapFactory.decodeStream(URL(urlPicture).openConnection().getInputStream())
+        }
     }
 }

@@ -29,7 +29,9 @@
     <string name="activity_configuration_values_pallad">pallad</string>
     <string name="activity_configuration_values_rod">rod</string>
     <string name="activity_configuration_values_dane_o_kursach_walut">Kurs walut</string>
-    <string name="activity_configuration_values_waluta">Waluta</string>
-    <string name="activity_configuration_values_dolar">dolar</string>
-    <string name="activity_configuration_values_euro">euro</string>
+    <string name="activity_configuration_values_dolar">USD</string>
+    <string name="activity_configuration_values_euro">EUR</string>
+    <string name="activity_configuration_values_dolar_euro"><![CDATA[USD → EUR]]></string>
+    <string name="activity_configuration_values_euro_usd"><![CDATA[EUR → USD]]></string>
+    <string name="menu_toolbar_list_configurationvalues_refresh">Odśwież</string>
 </resources>
