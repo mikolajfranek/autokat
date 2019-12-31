@@ -76,6 +76,26 @@ class MyConfiguration {
         val MY_SPREADSHEET_QUERY_WHERE_CLAUSE: String = "tq"
         val MY_SPREADSHEET_QUERY_KEY: String = "key"
 
+        val MY_SPREADSHEET_USERS_COLUMN_LOGIN : String = "A"
+        val MY_SPREADSHEET_USERS_COLUMN_UUID : String = "B"
+
+        val MY_SPREADSHEET_CATALYST_COLUMN_ID : String = "A"
+        val MY_SPREADSHEET_CATALYST_COLUMN_ID_PICTURE : String = "I"
+
+        val MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_ID : Int = 0
+        val MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_NAME : Int = 1
+        val MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_BRAND : Int = 2
+        val MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_PLATINUM : Int = 3
+        val MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_PALLADIUM : Int = 4
+        val MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_RHODIUM : Int = 5
+        val MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_TYPE : Int = 6
+        val MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_WEIGHT : Int = 7
+        val MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_ID_PICTURE : Int = 8
+        val MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_PICTURE : Int = 9
+
+
+
+
         /* courses exchange */
         val MY_CATALYST_VALUES_URL_USD_PLN = "https://api.nbp.pl/api/exchangerates/rates/a/usd?format=json"
         val MY_CATALYST_VALUES_URL_EUR_PLN = "https://api.nbp.pl/api/exchangerates/rates/a/eur?format=json"

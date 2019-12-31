@@ -63,7 +63,7 @@ class ResultActivity : AppCompatActivity() {
                 val view : View = layoutInflater.inflate(R.layout.my_item_catalyst, parent, false)
                 val itemCatalyst = getItem(position)!!
 
-                view.item_id_picture.text = itemCatalyst.idPicture.toString()
+                //view.item_id_picture.text = itemCatalyst.idPicture.toString()
 
                 view.item_picture.setImageBitmap(itemCatalyst.thumbnail)
 
@@ -73,19 +73,19 @@ class ResultActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
 
-                view.item_brand.text = itemCatalyst.brand
-                view.item_type.text = itemCatalyst.type
-                view.item_name.text = itemCatalyst.name
+                //view.item_brand.text = itemCatalyst.brand
+                //view.item_type.text = itemCatalyst.type
+                //view.item_name.text = itemCatalyst.name
                 view.item_weight.text = (MyConfiguration.formatStringFloat(itemCatalyst.weight.toString(), 3) + " kg")
-                view.item_platinum.text = (MyConfiguration.formatStringFloat(itemCatalyst.platinum.toString(), 3) + " g/kg")
-                view.item_palladium.text = (MyConfiguration.formatStringFloat(itemCatalyst.palladium.toString(), 3) + " g/kg")
-                view.item_rhodium.text = (MyConfiguration.formatStringFloat(itemCatalyst.rhodium.toString(), 3) + " g/kg")
+                //view.item_platinum.text = (MyConfiguration.formatStringFloat(itemCatalyst.platinum.toString(), 3) + " g/kg")
+                //view.item_palladium.text = (MyConfiguration.formatStringFloat(itemCatalyst.palladium.toString(), 3) + " g/kg")
+                //view.item_rhodium.text = (MyConfiguration.formatStringFloat(itemCatalyst.rhodium.toString(), 3) + " g/kg")
 
                 val pricePl = itemCatalyst.countPricePln()
                 val priceEur = pricePl / MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN).toFloat()
 
-                view.item_price_eur.text = (MyConfiguration.formatStringFloat(priceEur.toString(), 2) + " €")
-                view.item_price_pl.text = (MyConfiguration.formatStringFloat(pricePl.toString(), 2) + " zł")
+                //view.item_price_eur.text = (MyConfiguration.formatStringFloat(priceEur.toString(), 2) + " €")
+                //view.item_price_pl.text = (MyConfiguration.formatStringFloat(pricePl.toString(), 2) + " zł")
                 return view
             }
         }
@@ -153,6 +153,14 @@ class ResultActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+
+    //open update activity
+    private fun openUpdateActivity() {
+        val intent = Intent(applicationContext, UpdateActivity::class.java)
+        startActivity(intent)
+    }
+
+
     //open about activity
     fun openAboutActivity(){
         val intent = Intent(applicationContext, AboutActivity::class.java)
@@ -167,6 +175,10 @@ class ResultActivity : AppCompatActivity() {
                 this.openConfigurationValuesActivity()
                 true
             }
+            R.id.toolbar_list_update -> {
+                this.openUpdateActivity()
+                true
+            }
             R.id.toolbar_list_about -> {
                 this.openAboutActivity()
                 true
@@ -177,7 +189,6 @@ class ResultActivity : AppCompatActivity() {
             }
         }
     }
-
     //refresh list view
     fun refreshListView(limit: Int = MyConfiguration.DATABASE_PAGINATE_LIMIT){
         if(limit == MyConfiguration.DATABASE_PAGINATE_LIMIT){
@@ -218,7 +229,6 @@ class ResultActivity : AppCompatActivity() {
             }catch(e: Exception){
                 //nothing
             }
-            database.insertCatalysts(MySpreadsheet.getDataCatalyst())
 
             return null
         }

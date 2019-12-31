@@ -34,4 +34,5 @@
     <string name="activity_configuration_values_dolar_euro"><![CDATA[USD → EUR]]></string>
     <string name="activity_configuration_values_euro_usd"><![CDATA[EUR → USD]]></string>
     <string name="menu_toolbar_list_configurationvalues_refresh">Odśwież</string>
+    <string name="toolbar_list_update">Aktualizacja</string>
 </resources>

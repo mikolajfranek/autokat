@@ -12,7 +12,7 @@ import kotlin.collections.ArrayList
 
 class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.DATABASE_NAME_OF_FILE, null, MyConfiguration.DATABASE_VERSION){
 
-    fun insertCatalysts(dataCatalystMy: MutableList<MyItemCatalyst>) : Boolean {
+    fun resetDatabase() : Boolean {
         var result : Boolean
         val db = this.writableDatabase
         try{
@@ -22,24 +22,6 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
             db.execSQL("DELETE FROM " + MyConfiguration.DATABASE_TABLE_CATALYST + ";VACUUM;")
             db.execSQL("DELETE FROM " + MyConfiguration.DATABASE_TABLE_SQLITE_SEQUENCE + ";VACUUM;")
 
-            //insert values
-            val values = ContentValues()
-            for(catalyst in dataCatalystMy){
-                values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID_PICTURE, catalyst.idPicture)
-                values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME, catalyst.name)
-                values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND, catalyst.brand)
-                values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_PLATINUM, catalyst.platinum)
-                values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_PALLADIUM, catalyst.palladium)
-                values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_RHODIUM, catalyst.rhodium)
-                values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_TYPE, catalyst.type)
-                values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_WEIGHT, catalyst.weight)
-
-                val stream = ByteArrayOutputStream()
-                catalyst.thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_PICTURE, stream.toByteArray())
-
-                db.insert(MyConfiguration.DATABASE_TABLE_CATALYST, null, values)
-            }
             db.setTransactionSuccessful()
             result = true
         }catch (e:Exception){
@@ -50,6 +32,23 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
         return result
     }
 
+    fun insertCatalysts(values : ContentValues) : Boolean {
+        var result : Boolean
+        val db = this.writableDatabase
+        try{
+            db.beginTransaction()
+
+            db.insert(MyConfiguration.DATABASE_TABLE_CATALYST, null, values)
+
+            db.setTransactionSuccessful()
+            result = true
+        }catch (e:Exception){
+            result = false
+        }finally {
+            db.endTransaction()
+        }
+        return result
+    }
 
     fun getCountCatalyst() : Int {
         val cursor = readableDatabase.rawQuery("SELECT count(*) as count FROM " + MyConfiguration.DATABASE_TABLE_CATALYST, null)
