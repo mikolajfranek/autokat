@@ -4,6 +4,7 @@
     <item
         android:id="@+id/toolbar_list_about"
         android:title="@string/menu_toolbar_list_configuration_about"
-        app:showAsAction="never"
-        android:orderInCategory="400"/>
+        android:icon="@mipmap/ic_action_info"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="100"/>
 </menu>

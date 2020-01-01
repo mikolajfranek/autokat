@@ -4,18 +4,21 @@
     <item
         android:id="@+id/toolbar_list_configuration_values"
         android:title="@string/menu_toolbar_list_configuration_values"
-        app:showAsAction="never"
+        app:showAsAction="ifRoom"
+        android:icon="@mipmap/ic_action_values"
         android:orderInCategory="100"/>
 
     <item
         android:id="@+id/toolbar_list_update"
         android:title="@string/toolbar_list_update"
-        app:showAsAction="never"
+        app:showAsAction="ifRoom"
+        android:icon="@mipmap/ic_action_update_catalyst"
         android:orderInCategory="200"/>
 
     <item
         android:id="@+id/toolbar_list_about"
         android:title="@string/menu_toolbar_list_configuration_about"
-        app:showAsAction="never"
+        android:icon="@mipmap/ic_action_info"
+        app:showAsAction="ifRoom"
         android:orderInCategory="300"/>
 </menu>

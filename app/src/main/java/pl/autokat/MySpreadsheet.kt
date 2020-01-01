@@ -40,13 +40,21 @@ class MySpreadsheet {
                     "&" + MyConfiguration.MY_SPREADSHEET_QUERY_WHERE_CLAUSE + "=" + "select%20*%20where%20${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_ID_PICTURE}%3D'$idPicture'"
         }
 
+        //get data login
+        fun getDataLogin(login : String) : JSONArray{
+            //retrieve and parse to json data from spreadsheet
+            val resultFromUrl = URL(MySpreadsheet.getUrlToSpreadsheetLogin(login)).readText()
+            val resultJson = MyConfiguration.parseResultToJson(resultFromUrl)
+            val rows = resultJson.getJSONObject("table").getJSONArray("rows")
+            return rows
+        }
+
         //get count catalyst
         fun getCountCatalyst(): Int {
             var count = 0
             //retrieve and parse to json data from spreadsheet
             val resultFromUrl = URL(getUrlToSpreadsheetCatalystCount()).readText()
             val resultJson = MyConfiguration.parseResultToJson(resultFromUrl)
-            //check if exists login
             val rows = resultJson.getJSONObject("table").getJSONArray("rows")
             if(rows.length() != 1) {
                 return count
@@ -62,11 +70,11 @@ class MySpreadsheet {
             //retrieve and parse to json data from spreadsheet
             val resultFromUrl = URL(getUrlToSpreadsheetCatalystData(fromRow)).readText()
             val resultJson = MyConfiguration.parseResultToJson(resultFromUrl)
-            //check if exists login
             val rows = resultJson.getJSONObject("table").getJSONArray("rows")
             return rows
         }
 
+        //get bitmap full size
         fun getBitmapOfIdPicture(idPicture: String): Bitmap? {
             //retrieve and parse to json data from spreadsheet
             val resultFromUrl = URL(getUrlToSpreadsheetCatalystRow(idPicture)).readText()

@@ -6,7 +6,6 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -15,6 +14,7 @@ import android.widget.AbsListView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.activity_result.*
 import kotlinx.android.synthetic.main.my_item_catalyst.view.*
@@ -28,6 +28,7 @@ class ResultActivity : AppCompatActivity() {
     private lateinit var databaseAdapter: ArrayAdapter<MyItemCatalyst>
     private var scrollPreLast: Int = 0
     private var scrollLimit : Int = MyConfiguration.DATABASE_PAGINATE_LIMIT
+    private var menu : Menu? = null
 
     //oncreate
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,6 +43,7 @@ class ResultActivity : AppCompatActivity() {
 
         //init database object
         database = MyDatabase(applicationContext)
+
         //init listener on change text
         activity_result_edittext.addTextChangedListener(object : TextWatcher{
             override fun afterTextChanged(s: Editable?) {}
@@ -62,30 +64,31 @@ class ResultActivity : AppCompatActivity() {
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                 val view : View = layoutInflater.inflate(R.layout.my_item_catalyst, parent, false)
                 val itemCatalyst = getItem(position)!!
+                val visibilityCatalyst : Boolean = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY).toInt() != 0
 
-                //view.item_id_picture.text = itemCatalyst.idPicture.toString()
+                view.item_id_picture.text = itemCatalyst.idPicture.toString()
 
                 view.item_picture.setImageBitmap(itemCatalyst.thumbnail)
-
                 view.item_picture.setOnClickListener {
                     val intent = Intent(applicationContext, PictureActivity::class.java)
                     intent.putExtra("idPicture", itemCatalyst.idPicture)
                     startActivity(intent)
                 }
 
-                //view.item_brand.text = itemCatalyst.brand
-                //view.item_type.text = itemCatalyst.type
-                //view.item_name.text = itemCatalyst.name
+                view.item_brand.text = itemCatalyst.brand
+                view.item_type.text = itemCatalyst.type
+                view.item_name.text = if (itemCatalyst.name!!.takeLast(1) == "\n") itemCatalyst.name!!.substring(0, itemCatalyst.name!!.length-1)  else itemCatalyst.name
                 view.item_weight.text = (MyConfiguration.formatStringFloat(itemCatalyst.weight.toString(), 3) + " kg")
-                //view.item_platinum.text = (MyConfiguration.formatStringFloat(itemCatalyst.platinum.toString(), 3) + " g/kg")
-                //view.item_palladium.text = (MyConfiguration.formatStringFloat(itemCatalyst.palladium.toString(), 3) + " g/kg")
-                //view.item_rhodium.text = (MyConfiguration.formatStringFloat(itemCatalyst.rhodium.toString(), 3) + " g/kg")
+
+                view.item_platinum.text = (MyConfiguration.formatStringFloat(if (visibilityCatalyst) itemCatalyst.platinum.toString() else "0.0", 3) + " g/kg")
+                view.item_palladium.text = (MyConfiguration.formatStringFloat(if (visibilityCatalyst) itemCatalyst.palladium.toString() else "0.0", 3) + " g/kg")
+                view.item_rhodium.text = (MyConfiguration.formatStringFloat(if (visibilityCatalyst) itemCatalyst.rhodium.toString() else "0.0", 3) + " g/kg")
 
                 val pricePl = itemCatalyst.countPricePln()
                 val priceEur = pricePl / MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN).toFloat()
 
-                //view.item_price_eur.text = (MyConfiguration.formatStringFloat(priceEur.toString(), 2) + " €")
-                //view.item_price_pl.text = (MyConfiguration.formatStringFloat(pricePl.toString(), 2) + " zł")
+                view.item_price_eur.text = (MyConfiguration.formatStringFloat(priceEur.toString(), 2) + " €")
+                view.item_price_pl.text = (MyConfiguration.formatStringFloat(pricePl.toString(), 2) + " zł")
                 return view
             }
         }
@@ -104,7 +107,6 @@ class ResultActivity : AppCompatActivity() {
 
             override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) {}
         })
-
 
         this.refreshListView()
     }
@@ -130,13 +132,14 @@ class ResultActivity : AppCompatActivity() {
         }
 
         //make async task and execute
-        val task = TryUpdate()
+        val task = CheckUpdate()
         task.execute()
     }
 
     //toolbar option menu
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.toolbar_list_result, menu)
+        this.menu = menu
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -153,13 +156,11 @@ class ResultActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-
     //open update activity
     private fun openUpdateActivity() {
         val intent = Intent(applicationContext, UpdateActivity::class.java)
         startActivity(intent)
     }
-
 
     //open about activity
     fun openAboutActivity(){
@@ -189,6 +190,7 @@ class ResultActivity : AppCompatActivity() {
             }
         }
     }
+
     //refresh list view
     fun refreshListView(limit: Int = MyConfiguration.DATABASE_PAGINATE_LIMIT){
         if(limit == MyConfiguration.DATABASE_PAGINATE_LIMIT){
@@ -202,7 +204,7 @@ class ResultActivity : AppCompatActivity() {
     }
 
     //async class which check if exists update of app
-    private inner class TryUpdate : AsyncTask<Void, Void, Void>() {
+    private inner class CheckUpdate : AsyncTask<Void, Void, MyProcessStep>() {
 
         private var updateCourses : Boolean = false
         private var updateCatalyst : Boolean = false
@@ -216,45 +218,75 @@ class ResultActivity : AppCompatActivity() {
         }
 
         //do in async mode - in here can't modify user interface
-        override fun doInBackground(vararg p0: Void?): Void? {
+        override fun doInBackground(vararg p0: Void?): MyProcessStep {
             try{
                 //modify flag if could be update courses - if from last update passed 6h
-                updateCourses = (Date().time - MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_UPDATE_COURSE_TIMESTAMP).toLong()) > (MyConfiguration.ONE_DAY_IN_MILLISECONDS/4)
+                //updateCourses = (Date().time - MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_UPDATE_COURSE_TIMESTAMP).toLong()) > (MyConfiguration.ONE_DAY_IN_MILLISECONDS/4)
 
                 //modify flag if could be update catalyst - if amount in spreadsheet is greater than in local database
-                updateCatalyst = MySpreadsheet.getCountCatalyst() > database.getCountCatalyst()
+                val databaseCatalystCount = database.getCountCatalyst()
+                updateCatalyst = MySpreadsheet.getCountCatalyst() > databaseCatalystCount || databaseCatalystCount == 0
 
 
+
+                /* authentication */
+                val rows = MySpreadsheet.getDataLogin(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LOGIN))
+                if(rows.length() != 1) {
+                    return MyProcessStep.USER_FAILED_LOGIN
+                }
+                //get row element
+                val element = rows.getJSONObject(0).getJSONArray("c")
+
+
+                //save data
+                val elementLicenceDate = element.getJSONObject(2).getString("v")
+                val discount = element.getJSONObject(3).getString("v")
+                val visibility = element.getJSONObject(4).getString("v")
+
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END, elementLicenceDate)
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT, discount)
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY, visibility)
+
+
+                //check date of licence
+                if(MyConfiguration.checkIfCurrentDateIsGreater(elementLicenceDate, true) == true){
+                    return MyProcessStep.USER_ELAPSED_DATE_LICENCE
+                }
 
             }catch(e: Exception){
                 //nothing
             }
 
-            return null
+            return MyProcessStep.SUCCESS
         }
 
         //post execute
-        override fun onPostExecute(result: Void?) {
+        override fun onPostExecute(result: MyProcessStep) {
             super.onPostExecute(result)
 
 
+            //do job depends on situation
+            when(result) {
+                MyProcessStep.USER_ELAPSED_DATE_LICENCE -> {
+                    this@ResultActivity.openMainActivity()
+                }
+            }
+
+
+            //set visibility of update catalyst
+            if(this@ResultActivity.menu != null){
+                if(updateCatalyst){
+                    this@ResultActivity.menu!!.getItem(1).setIcon(ContextCompat.getDrawable(applicationContext, R.mipmap.ic_action_update_catalyst_yellow))
+                }else{
+                    this@ResultActivity.menu!!.getItem(1).setIcon(ContextCompat.getDrawable(applicationContext, R.mipmap.ic_action_update_catalyst))
+                }
+            }
+
+            //refresh list view
             this@ResultActivity.refreshListView()
 
-            if(updateCourses || updateCatalyst){
-                //make async task and execute
-                //val task = Update(applicationContext, database, updateCourses, updateCatalyst)
-                //task.execute()
-
-
-                //disable user interface on process application
-                MyUserInterface.enableActivity(this@ResultActivity.activity_result_linearlayout, true)
-            }else{
-                //disable user interface on process application
-                MyUserInterface.enableActivity(this@ResultActivity.activity_result_linearlayout, true)
-                this@ResultActivity.refreshListView()
-            }
+            //enable user interface on process application
+            MyUserInterface.enableActivity(this@ResultActivity.activity_result_linearlayout, true)
         }
     }
-
-
 }

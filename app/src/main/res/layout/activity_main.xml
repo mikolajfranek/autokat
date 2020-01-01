@@ -62,18 +62,15 @@
 
     <Button
         android:id="@+id/activity_main_button"
-        android:text="@string/activity_main_button_text"
-        android:onClick="activityMainButtonOnClick"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:background="@color/colorSilver"
-        android:padding="10dp"
-        android:textStyle="bold"
+        android:text="@string/activity_main_button_text"
+        android:onClick="activityMainButtonOnClick"
         android:fontFamily="sans-serif"
-        android:textColor="@color/colorGray"
+        style="@style/Widget.AppCompat.Button"
         />
 
 </LinearLayout>

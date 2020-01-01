@@ -55,7 +55,6 @@ class UpdateActivity : AppCompatActivity() {
     private inner class UpdateCatalyst(fullUpdateInput: Boolean) : AsyncTask<Void, Int, Boolean>() {
 
         private var fullUpdate : Boolean = fullUpdateInput
-        private var processStepEnd : Int = 0
 
         //pre execute
         override fun onPreExecute() {
@@ -97,7 +96,7 @@ class UpdateActivity : AppCompatActivity() {
 
                     values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_PICTURE, URL(urlPicture).readBytes())
                     values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID_PICTURE, element.getJSONObject(MyConfiguration.MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_ID_PICTURE).getString("v"))
-                    values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME, if (element.isNull(MyConfiguration.MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_NAME))  "" else element.getJSONObject(0).getString("v"))
+                    values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME, if (element.isNull(MyConfiguration.MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_NAME))  "" else element.getJSONObject(MyConfiguration.MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_NAME).getString("v"))
                     values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND, element.getJSONObject(MyConfiguration.MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_BRAND).getString("v"))
                     values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_PLATINUM, element.getJSONObject(MyConfiguration.MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_PLATINUM).getDouble("v").toFloat())
                     values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_PALLADIUM, element.getJSONObject(MyConfiguration.MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_PALLADIUM).getDouble("v").toFloat())

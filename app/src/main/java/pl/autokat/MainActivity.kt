@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
+import android.util.Base64
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -13,8 +14,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.auth0.jwt.JWT
+import com.auth0.jwt.algorithms.Algorithm
+import com.auth0.jwt.interfaces.RSAKeyProvider
+import com.github.kittinunf.fuel.Fuel
 import kotlinx.android.synthetic.main.activity_main.*
+import org.json.JSONObject
+import java.io.OutputStreamWriter
+import java.net.HttpURLConnection
 import java.net.URL
+import java.net.URLEncoder
+import java.security.KeyFactory
+import java.security.PrivateKey
+import java.security.interfaces.RSAPrivateKey
+import java.security.spec.PKCS8EncodedKeySpec
+import java.security.spec.X509EncodedKeySpec
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -140,6 +155,53 @@ class MainActivity : AppCompatActivity() {
         //do in async mode - in here can't modify user interface
         @SuppressLint("MissingPermission")
         override fun doInBackground(vararg p0: Void?): MyProcessStep {
+
+            val profile =
+                JSONObject(applicationContext.assets.open("profile.json").bufferedReader().use { it.readText() })
+
+            var privateKey = profile.getString("private_key")
+            privateKey = privateKey.replace("-----BEGIN PRIVATE KEY-----", "");
+            privateKey = privateKey.replace("-----END PRIVATE KEY-----", "");
+            privateKey = privateKey.replace("\n", "");
+
+
+            val pkcs8EncodedBytes: ByteArray = Base64.decode(privateKey, Base64.DEFAULT)
+
+            val pKCS8EncodedKeySpec: PKCS8EncodedKeySpec = PKCS8EncodedKeySpec(pkcs8EncodedBytes)
+
+            val kf: KeyFactory = KeyFactory.getInstance("RSA")
+
+            val privKey: RSAPrivateKey = kf.generatePrivate(pKCS8EncodedKeySpec) as RSAPrivateKey
+
+
+            val now = System.currentTimeMillis()
+            val algorithm: Algorithm = Algorithm.RSA256(null, privKey)
+
+            val signedJwt = JWT.create()
+                .withIssuer(profile.getString("client_email"))
+                .withAudience(profile.getString("token_uri"))
+                .withClaim("scope", "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets")
+                .withIssuedAt(Date(now))
+                .withExpiresAt(Date(now + 3600 * 1000L))
+                .sign(algorithm)
+
+
+            val bodyJson = """
+              { "grant_type" : "urn:ietf:params:oauth:grant-type:jwt-bearer",
+                "assertion" : "$signedJwt"
+              }
+            """
+            val url = "https://oauth2.googleapis.com/token"
+            val (request, response, result) = Fuel.post(url).body(bodyJson).responseString()
+
+            val access_token = JSONObject(result.get()).getString("access_token")
+
+            print("")
+
+
+
+
+
             try{
                 //user never logged (not click on button, trying auto login)
                 if(hasClickedButton == false && login.isEmpty()) {
@@ -167,18 +229,15 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 /* authentication */
-                //retrieve and parse to json data from spreadsheet
-                val resultFromUrl = URL(MySpreadsheet.getUrlToSpreadsheetLogin(login)).readText()
-                val resultJson = MyConfiguration.parseResultToJson(resultFromUrl)
-                //check if exists login
-                val rows = resultJson.getJSONObject("table").getJSONArray("rows")
+                val rows = MySpreadsheet.getDataLogin(login)
                 if(rows.length() != 1) {
                     return MyProcessStep.USER_FAILED_LOGIN
                 }
                 //get row element
                 val element = rows.getJSONObject(0).getJSONArray("c")
-                //read serial id from phone
 
+
+                //read serial id from phone
                 val serialId =  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     Build.getSerial()
                 } else {
@@ -195,16 +254,23 @@ class MainActivity : AppCompatActivity() {
                         return MyProcessStep.USER_FAILED_SERIAL
                     }
                 }
-                //check date of licence
+
+
+                //save data
                 val elementLicenceDate = element.getJSONObject(2).getString("v")
+                val discount = element.getJSONObject(3).getString("v")
+                val visibility = element.getJSONObject(4).getString("v")
+
+                //check date of licence
                 if(MyConfiguration.checkIfCurrentDateIsGreater(elementLicenceDate, true) == true){
                     return MyProcessStep.USER_ELAPSED_DATE_LICENCE
                 }
-                //save licence date of end
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END, elementLicenceDate)
-                //save discount
-                val discount = element.getJSONObject(3).getString("v")
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT, discount)
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY, visibility)
+
+
+
                 //save login
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LOGIN, login)
 

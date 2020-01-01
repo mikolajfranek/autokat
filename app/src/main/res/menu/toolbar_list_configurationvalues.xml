@@ -5,9 +5,9 @@
     <item android:title="">
         <item
             android:id="@+id/toolbar_list_refresh_courses"
-            android:orderInCategory="1"
-            android:icon="@mipmap/ic_action_refresh"
+            android:orderInCategory="100"
+            android:icon="@mipmap/ic_action_update_courses"
             app:showAsAction="ifRoom"
-            android:title="@string/menu_toolbar_list_configurationvalues_refresh" />
+            android:title="@string/toolbar_list_update" />
     </item>
 </menu>

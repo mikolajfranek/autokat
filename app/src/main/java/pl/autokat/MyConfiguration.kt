@@ -37,6 +37,8 @@ class MyConfiguration {
         val MY_SHARED_PREFERENCES_KEY_LICENCE_TIMESTAMP : String = "LicenceTimestamp"
         val MY_SHARED_PREFERENCES_KEY_UPDATE_COURSE_TIMESTAMP : String = "UpdateCourseTimestamp"
         val MY_SHARED_PREFERENCES_KEY_DISCOUNT : String = "Discount"
+        val MY_SHARED_PREFERENCES_KEY_VISIBILITY : String = "Visibility"
+
         //about courses elements
         val MY_SHARED_PREFERENCES_KEY_PALLADIUM : String = "Palladium"
         val MY_SHARED_PREFERENCES_KEY_PALLADIUM_DATE : String = "PalladiumDate"
