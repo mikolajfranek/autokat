@@ -66,6 +66,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
         val fields = arrayOf(
             MyConfiguration.DATABASE_ELEMENT_CATALYST_ID,
             MyConfiguration.DATABASE_ELEMENT_CATALYST_ID_PICTURE,
+            MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE,
             MyConfiguration.DATABASE_ELEMENT_CATALYST_PICTURE,
             MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME,
             MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND,
@@ -95,6 +96,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
                 MyItemCatalyst(
                     cursor.getInt(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID)),
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID_PICTURE)),
+                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE)),
                     BitmapFactory.decodeByteArray(blobImage, 0, blobImage.size),
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME)),
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND)),

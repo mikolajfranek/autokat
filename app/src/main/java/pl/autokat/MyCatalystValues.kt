@@ -1,5 +1,6 @@
 package pl.autokat
 
+import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
@@ -9,8 +10,7 @@ class MyCatalystValues {
 
         //get course usd -> pln
         private fun getCourseUsdPln() {
-            val resultFromUrl = URL(MyConfiguration.MY_CATALYST_VALUES_URL_USD_PLN).readText()
-            val resultJson = MyConfiguration.parseResultToJson(resultFromUrl)
+            val resultJson = JSONObject(URL(MyConfiguration.MY_CATALYST_VALUES_URL_USD_PLN).readText())
             val rate = resultJson.getJSONArray("rates").getJSONObject(0)
             val effectiveDate = rate.getString("effectiveDate")
             val value = rate.getString("mid").replace(',','.')
@@ -20,8 +20,7 @@ class MyCatalystValues {
 
         //get course eur -> pln
         private fun getCourseEurPln() {
-            val resultFromUrl = URL(MyConfiguration.MY_CATALYST_VALUES_URL_EUR_PLN).readText()
-            val resultJson = MyConfiguration.parseResultToJson(resultFromUrl)
+            val resultJson = JSONObject(URL(MyConfiguration.MY_CATALYST_VALUES_URL_EUR_PLN).readText())
             val rate = resultJson.getJSONArray("rates").getJSONObject(0)
             val effectiveDate = rate.getString("effectiveDate")
             val value = rate.getString("mid").replace(',','.')
@@ -68,7 +67,7 @@ class MyCatalystValues {
         }
 
         //get all course
-        fun getValues() : String {
+        fun getValues(){
             //course of usd -> pln
             getCourseUsdPln()
             //course of eur -> pln
@@ -78,10 +77,9 @@ class MyCatalystValues {
             //course of palladium
             getCoursePalladium()
             //course of rhoudium
-            val dateEffective = getCourseRhodium()
+            getCourseRhodium()
             //save timestamp of update
             MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_UPDATE_COURSE_TIMESTAMP, Date().time.toString())
-            return dateEffective
         }
     }
 }

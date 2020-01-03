@@ -4,9 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Bundle
-import android.util.Base64
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -14,22 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
-import com.auth0.jwt.interfaces.RSAKeyProvider
-import com.github.kittinunf.fuel.Fuel
 import kotlinx.android.synthetic.main.activity_main.*
-import org.json.JSONObject
-import java.io.OutputStreamWriter
-import java.net.HttpURLConnection
-import java.net.URL
-import java.net.URLEncoder
-import java.security.KeyFactory
-import java.security.PrivateKey
-import java.security.interfaces.RSAPrivateKey
-import java.security.spec.PKCS8EncodedKeySpec
-import java.security.spec.X509EncodedKeySpec
-import java.util.*
+import org.json.JSONArray
 
 
 class MainActivity : AppCompatActivity() {
@@ -133,7 +117,6 @@ class MainActivity : AppCompatActivity() {
         //field
         private var login : String = loginInput
         private var hasClickedButton : Boolean = hasClickedButtonInput
-        private var licenceDateOfEnd : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END)
 
         //pre execute
         override fun onPreExecute() {
@@ -155,126 +138,48 @@ class MainActivity : AppCompatActivity() {
         //do in async mode - in here can't modify user interface
         @SuppressLint("MissingPermission")
         override fun doInBackground(vararg p0: Void?): MyProcessStep {
-
-            val profile =
-                JSONObject(applicationContext.assets.open("profile.json").bufferedReader().use { it.readText() })
-
-            var privateKey = profile.getString("private_key")
-            privateKey = privateKey.replace("-----BEGIN PRIVATE KEY-----", "");
-            privateKey = privateKey.replace("-----END PRIVATE KEY-----", "");
-            privateKey = privateKey.replace("\n", "");
-
-
-            val pkcs8EncodedBytes: ByteArray = Base64.decode(privateKey, Base64.DEFAULT)
-
-            val pKCS8EncodedKeySpec: PKCS8EncodedKeySpec = PKCS8EncodedKeySpec(pkcs8EncodedBytes)
-
-            val kf: KeyFactory = KeyFactory.getInstance("RSA")
-
-            val privKey: RSAPrivateKey = kf.generatePrivate(pKCS8EncodedKeySpec) as RSAPrivateKey
-
-
-            val now = System.currentTimeMillis()
-            val algorithm: Algorithm = Algorithm.RSA256(null, privKey)
-
-            val signedJwt = JWT.create()
-                .withIssuer(profile.getString("client_email"))
-                .withAudience(profile.getString("token_uri"))
-                .withClaim("scope", "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets")
-                .withIssuedAt(Date(now))
-                .withExpiresAt(Date(now + 3600 * 1000L))
-                .sign(algorithm)
-
-
-            val bodyJson = """
-              { "grant_type" : "urn:ietf:params:oauth:grant-type:jwt-bearer",
-                "assertion" : "$signedJwt"
-              }
-            """
-            val url = "https://oauth2.googleapis.com/token"
-            val (request, response, result) = Fuel.post(url).body(bodyJson).responseString()
-
-            val access_token = JSONObject(result.get()).getString("access_token")
-
-            print("")
-
-
-
-
-
             try{
                 //user never logged (not click on button, trying auto login)
-                if(hasClickedButton == false && login.isEmpty()) {
-                    return MyProcessStep.USER_NEVER_LOGGED
-                }
+                if(hasClickedButton == false && login.isEmpty()) return MyProcessStep.USER_NEVER_LOGGED
 
                 //check licence
-                if(licenceDateOfEnd.isEmpty() == false){
-                    //check if licence if end
-                    if(MyConfiguration.checkIfCurrentDateIsGreater(licenceDateOfEnd, true) == true){
-                        return MyProcessStep.USER_ELAPSED_DATE_LICENCE
-                    }
-                    //check if user has good time on phone
-                    if(MyConfiguration.checkTimestamp() == false){
-                        return MyProcessStep.USER_ELAPSED_DATE_LICENCE
-                    }
+                if(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END).isEmpty() == false){
+                    /* checking time */
+                    if(MyConfiguration.checkTimeOnPhone("", MyTimeChecking.CHECKING_LICENCE) == false) return MyProcessStep.USER_ELAPSED_DATE_LICENCE
                     return MyProcessStep.SUCCESS
                 }
 
-                /* download courses */
-                val dateEffective = MyCatalystValues.getValues()
-                //check if date of phone is greater than date from request
-                if(MyConfiguration.checkIfCurrentDateIsGreater(dateEffective, false) == false){
-                    return MyProcessStep.USER_ELAPSED_DATE_LICENCE
-                }
+                /* checking time */
+                if(MyConfiguration.checkTimeOnPhone("", MyTimeChecking.NOW_GREATER_THAN_TIME_FROM_INTERNET) == false) return MyProcessStep.USER_ELAPSED_DATE_LICENCE
 
                 /* authentication */
-                val rows = MySpreadsheet.getDataLogin(login)
-                if(rows.length() != 1) {
-                    return MyProcessStep.USER_FAILED_LOGIN
-                }
-                //get row element
-                val element = rows.getJSONObject(0).getJSONArray("c")
-
-
+                //get user from database
+                val user : JSONArray = MySpreadsheet.getDataLogin(login) ?: return MyProcessStep.USER_FAILED_LOGIN
                 //read serial id from phone
-                val serialId =  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    Build.getSerial()
-                } else {
-                    Build.SERIAL
-                }
-                //check serial id of element
-                val elementSerialId : String = element.getJSONObject(1).getString("v")
-                if(elementSerialId.isEmpty()){
-                    //save serial id to spreadsheet
-                    // save flag that save was successful
+                val serialId : String = MyConfiguration.getSerialId()
+                //check if serial id is correct or save serial id to database
+                if(user.getString(MyConfiguration.MY_SPREADSHEET_LOGIN_UUID).isEmpty()){
+                    //save serial id
+                    MySpreadsheet.saveSerialId(user.getInt(MyConfiguration.MY_SPREADSHEET_LOGIN_ID), serialId)
                 }else{
                     //check current serial id with element serial id
-                    if(serialId.equals(elementSerialId) == false) {
-                        return MyProcessStep.USER_FAILED_SERIAL
-                    }
+                    if(serialId.equals(user.getString(MyConfiguration.MY_SPREADSHEET_LOGIN_UUID)) == false) return MyProcessStep.USER_FAILED_SERIAL
                 }
 
+                /* checking time */
+                if(MyConfiguration.checkTimeOnPhone(user.getString(MyConfiguration.MY_SPREADSHEET_LOGIN_LICENCE), MyTimeChecking.PARAMETER_IS_GREATER_THAN_NOW) == false) return MyProcessStep.USER_ELAPSED_DATE_LICENCE
 
-                //save data
-                val elementLicenceDate = element.getJSONObject(2).getString("v")
-                val discount = element.getJSONObject(3).getString("v")
-                val visibility = element.getJSONObject(4).getString("v")
-
-                //check date of licence
-                if(MyConfiguration.checkIfCurrentDateIsGreater(elementLicenceDate, true) == true){
-                    return MyProcessStep.USER_ELAPSED_DATE_LICENCE
-                }
-                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END, elementLicenceDate)
-                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT, discount)
-                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY, visibility)
-
-
-
+                /* save configuration */
+                //save licence date
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END, user.getString(MyConfiguration.MY_SPREADSHEET_LOGIN_LICENCE))
+                //save discount
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT, user.getString(MyConfiguration.MY_SPREADSHEET_LOGIN_DISCOUNT))
+                //save visibility
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY, user.getString(MyConfiguration.MY_SPREADSHEET_LOGIN_VISIBILITY))
                 //save login
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LOGIN, login)
 
-                /* success */
+                //success
                 return MyProcessStep.SUCCESS
 
             }catch(e: Exception){
@@ -300,6 +205,7 @@ class MainActivity : AppCompatActivity() {
                 MyProcessStep.USER_ELAPSED_DATE_LICENCE -> {
                     this@MainActivity.activity_main_textview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
                     this@MainActivity.activity_main_textview.text = MyConfiguration.INFO_MESSAGE_USER_FAILED_LICENCE
+                    //set licence as empty
                     MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END, "")
                 }
 

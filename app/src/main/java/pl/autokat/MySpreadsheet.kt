@@ -2,94 +2,64 @@ package pl.autokat
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.fuel.core.extensions.authentication
 import org.json.JSONArray
+import org.json.JSONObject
 import java.net.URL
 
 class MySpreadsheet {
     companion object {
 
-        //get url for query login
-        fun getUrlToSpreadsheetLogin(login: String) : String {
-            return MyConfiguration.MY_SPREADSHEET_URL_PREFIX + MySecret.MY_SPREADSHEET_ID_LOGINS + MyConfiguration.MY_SPREADSHEET_URL_SUFIX +
-                    "?" + MyConfiguration.MY_SPREADSHEET_QUERY_OUTPUT_JSON + "=" + MyConfiguration.MY_SPREADSHEET_OUTPUT_JSON +
-                    "&" + MyConfiguration.MY_SPREADSHEET_QUERY_KEY + "=" + MySecret.MY_SPREADSHEET_KEY +
-                    "&" + MyConfiguration.MY_SPREADSHEET_QUERY_WHERE_CLAUSE + "=" + "select%20*%20where%20${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_LOGIN}%3D'$login'"
+        //get login from database login
+        fun getDataLogin(login: String) : JSONArray? {
+            val (request, response, result) = Fuel.get(MyConfiguration.MY_SPREADSHEET_URL_LOGIN)
+                .authentication().bearer(MyConfiguration.getAccessToken()).responseString()
+            if(response.statusCode != 200) throw Exception()
+            val rows : JSONArray = JSONObject(result.get()).getJSONArray("values")
+            (0..rows.length()).forEach { i ->
+                if(login.equals(rows.getJSONArray(i).getString(MyConfiguration.MY_SPREADSHEET_LOGIN_USERNAME))) return rows.getJSONArray(i)
+            }
+            return null
         }
 
-        //get url for query count catalyst
-        fun getUrlToSpreadsheetCatalystCount() : String{
-            return MyConfiguration.MY_SPREADSHEET_URL_PREFIX + MySecret.MY_SPREADSHEET_ID_CATALYST + MyConfiguration.MY_SPREADSHEET_URL_SUFIX +
-                    "?" + MyConfiguration.MY_SPREADSHEET_QUERY_OUTPUT_JSON + "=" + MyConfiguration.MY_SPREADSHEET_OUTPUT_JSON +
-                    "&" + MyConfiguration.MY_SPREADSHEET_QUERY_KEY + "=" + MySecret.MY_SPREADSHEET_KEY +
-                    "&" + MyConfiguration.MY_SPREADSHEET_QUERY_WHERE_CLAUSE + "=" + "select%20count%28${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_ID}%29"
+        //save serial id in database login
+        fun saveSerialId(userId: Int, serialId: String) {
+            val sheetCell : String  = "Arkusz1!" + MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_UUID + ((userId+1).toString())
+            val bodyJson = """{"range": "$sheetCell", "majorDimension": "ROWS", "values": [["$serialId"]]}"""
+            val (request, response, result) = Fuel.put(MyConfiguration.MY_SPREADSHEET_URL_PREFIX + MySecret.getSpreadsheetIdLogin() + "/values/$sheetCell",
+                    listOf(
+                        MyConfiguration.MY_SPREADSHEET_VALUE_INPUT_OPTION_NAME to MyConfiguration.MY_SPREADSHEET_VALUE_INPUT_OPTION_VALUE
+                    )
+                )
+                .body(bodyJson)
+                .authentication().bearer(MyConfiguration.getAccessToken()).responseString()
+            if(response.statusCode != 200) throw Exception()
+            val resultJson = JSONObject(result.get())
+            if((resultJson.getInt("updatedRows") == 1 && resultJson.getInt("updatedColumns") == 1 && resultJson.getInt("updatedCells") == 1) == false) throw Exception()
         }
 
-        //get url for data catalyst from defined row
-        fun getUrlToSpreadsheetCatalystData(fromRow: Int) : String{
-            return MyConfiguration.MY_SPREADSHEET_URL_PREFIX + MySecret.MY_SPREADSHEET_ID_CATALYST + MyConfiguration.MY_SPREADSHEET_URL_SUFIX +
-                    "?" + MyConfiguration.MY_SPREADSHEET_QUERY_OUTPUT_JSON + "=" + MyConfiguration.MY_SPREADSHEET_OUTPUT_JSON +
-                    "&" + MyConfiguration.MY_SPREADSHEET_QUERY_KEY + "=" + MySecret.MY_SPREADSHEET_KEY +
-                    "&" + MyConfiguration.MY_SPREADSHEET_QUERY_WHERE_CLAUSE + "=" + "select%20*%20where%20${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_ID}%3E$fromRow"
-        }
-
-        //get url for query orygnal bitmap
-        fun getUrlToSpreadsheetCatalystRow(idPicture: String) : String {
-            return MyConfiguration.MY_SPREADSHEET_URL_PREFIX + MySecret.MY_SPREADSHEET_ID_CATALYST + MyConfiguration.MY_SPREADSHEET_URL_SUFIX +
-                    "?" + MyConfiguration.MY_SPREADSHEET_QUERY_OUTPUT_JSON + "=" + MyConfiguration.MY_SPREADSHEET_OUTPUT_JSON +
-                    "&" + MyConfiguration.MY_SPREADSHEET_QUERY_KEY + "=" + MySecret.MY_SPREADSHEET_KEY +
-                    "&" + MyConfiguration.MY_SPREADSHEET_QUERY_WHERE_CLAUSE + "=" + "select%20*%20where%20${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_ID_PICTURE}%3D'$idPicture'"
-        }
-
-        //get data login
-        fun getDataLogin(login : String) : JSONArray{
-            //retrieve and parse to json data from spreadsheet
-            val resultFromUrl = URL(MySpreadsheet.getUrlToSpreadsheetLogin(login)).readText()
-            val resultJson = MyConfiguration.parseResultToJson(resultFromUrl)
-            val rows = resultJson.getJSONObject("table").getJSONArray("rows")
-            return rows
-        }
-
-        //get count catalyst
+        //get count catalyst from database catalyst
         fun getCountCatalyst(): Int {
-            var count = 0
-            //retrieve and parse to json data from spreadsheet
-            val resultFromUrl = URL(getUrlToSpreadsheetCatalystCount()).readText()
-            val resultJson = MyConfiguration.parseResultToJson(resultFromUrl)
-            val rows = resultJson.getJSONObject("table").getJSONArray("rows")
-            if(rows.length() != 1) {
-                return count
-            }
-            //get row element
-            val element = rows.getJSONObject(0).getJSONArray("c")
-            count = element.getJSONObject(0).getInt("v")
-            return count
+            val (request, response, result) = Fuel.get(MyConfiguration.MY_SPREADSHEET_URL_CATALYST)
+                .authentication().bearer(MyConfiguration.getAccessToken()).responseString()
+            if(response.statusCode != 200) throw Exception()
+            return JSONObject(result.get()).getJSONArray("values").length()
         }
 
-        //get data catalyst
+        //get catalysts from database catalyst
         fun getDataCatalyst(fromRow: Int): JSONArray {
-            //retrieve and parse to json data from spreadsheet
-            val resultFromUrl = URL(getUrlToSpreadsheetCatalystData(fromRow)).readText()
-            val resultJson = MyConfiguration.parseResultToJson(resultFromUrl)
-            val rows = resultJson.getJSONObject("table").getJSONArray("rows")
-            return rows
-        }
-
-        //get bitmap full size
-        fun getBitmapOfIdPicture(idPicture: String): Bitmap? {
-            //retrieve and parse to json data from spreadsheet
-            val resultFromUrl = URL(getUrlToSpreadsheetCatalystRow(idPicture)).readText()
-            val resultJson = MyConfiguration.parseResultToJson(resultFromUrl)
-            //check if exists login
-            val rows = resultJson.getJSONObject("table").getJSONArray("rows")
-            if(rows.length() != 1) {
-                return null
+            val (request, response, result) = Fuel.get(MyConfiguration.MY_SPREADSHEET_URL_CATALYST)
+                .authentication().bearer(MyConfiguration.getAccessToken()).responseString()
+            if(response.statusCode != 200) throw Exception()
+            val rows : JSONArray = JSONObject(result.get()).getJSONArray("values")
+            if(fromRow == 0) return rows
+            val dataCatalyst : JSONArray = JSONArray()
+            ((fromRow+1)..rows.length()).forEach{i ->
+                dataCatalyst.put(rows[i])
             }
-            //get row element
-            val element = rows.getJSONObject(0).getJSONArray("c")
-            val urlSharedPicture = element.getJSONObject(MyConfiguration.MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_PICTURE).getString("v")
-            val urlPicture = MyConfiguration.getPictureUrlFromGoogle(urlSharedPicture, 1920, 1080)
-
-            return BitmapFactory.decodeStream(URL(urlPicture).openConnection().getInputStream())
+            return dataCatalyst
         }
+
     }
 }

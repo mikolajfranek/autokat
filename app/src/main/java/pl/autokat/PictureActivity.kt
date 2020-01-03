@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_picture.*
+import java.net.URL
 
 
 class PictureActivity : AppCompatActivity() {
@@ -15,18 +16,18 @@ class PictureActivity : AppCompatActivity() {
         setContentView(R.layout.activity_picture)
 
         //get data which sent
-        val idPicture : String = intent.getStringExtra("idPicture")!!.toString()
+        val urlPicture : String = intent.getStringExtra("urlPicture")!!.toString()
 
         //make async task and execute
-        val task = DownloadOryginalPicture(idPicture)
+        val task = DownloadOryginalPicture(urlPicture)
         task.execute()
     }
 
     //async class which download and set oryginal picture
-    private inner class DownloadOryginalPicture(idPictureInput: String) : AsyncTask<Void, Void, Boolean>() {
+    private inner class DownloadOryginalPicture(urlPictureInput: String) : AsyncTask<Void, Void, Boolean>() {
 
         private var bitmap : Bitmap? = null
-        private var idPicture : String = idPictureInput
+        private var urlPicture : String = urlPictureInput
 
         //pre execute
         override fun onPreExecute() {
@@ -37,8 +38,8 @@ class PictureActivity : AppCompatActivity() {
         //do in async mode - in here can't modify user interface
         override fun doInBackground(vararg p0: Void?): Boolean {
             return try{
-                bitmap = MySpreadsheet.getBitmapOfIdPicture(idPicture)
-                if(bitmap == null) return false
+                val urlPicture = MyConfiguration.getPictureUrlFromGoogle(urlPicture, 1920, 1080)
+                bitmap = BitmapFactory.decodeStream(URL(urlPicture).openConnection().getInputStream())
                 true
             }catch(e: Exception){
                 false

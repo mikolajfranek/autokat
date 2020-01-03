@@ -71,7 +71,7 @@ class ResultActivity : AppCompatActivity() {
                 view.item_picture.setImageBitmap(itemCatalyst.thumbnail)
                 view.item_picture.setOnClickListener {
                     val intent = Intent(applicationContext, PictureActivity::class.java)
-                    intent.putExtra("idPicture", itemCatalyst.idPicture)
+                    intent.putExtra("urlPicture", itemCatalyst.urlPicture)
                     startActivity(intent)
                 }
 
@@ -85,7 +85,10 @@ class ResultActivity : AppCompatActivity() {
                 view.item_rhodium.text = (MyConfiguration.formatStringFloat(if (visibilityCatalyst) itemCatalyst.rhodium.toString() else "0.0", 3) + " g/kg")
 
                 val pricePl = itemCatalyst.countPricePln()
-                val priceEur = pricePl / MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN).toFloat()
+                val courseUsdPlnFromConfiguration : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN)
+                val courseUsdPln : Float = if(courseUsdPlnFromConfiguration.isEmpty()) 0.0F else courseUsdPlnFromConfiguration.toFloat()
+
+                val priceEur = if(courseUsdPln != 0.0F) (pricePl / courseUsdPln) else 0.0F
 
                 view.item_price_eur.text = (MyConfiguration.formatStringFloat(priceEur.toString(), 2) + " €")
                 view.item_price_pl.text = (MyConfiguration.formatStringFloat(pricePl.toString(), 2) + " zł")
@@ -121,15 +124,8 @@ class ResultActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        //check if user has good time on phone
-        if(MyConfiguration.checkTimestamp() == false){
-            this.openMainActivity()
-        }
-        //check if licence if end
-        val licenceDateOfEnd : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END)
-        if(MyConfiguration.checkIfCurrentDateIsGreater(licenceDateOfEnd, true) == true){
-            this.openMainActivity()
-        }
+        /* checking time */
+        if(MyConfiguration.checkTimeOnPhone("", MyTimeChecking.CHECKING_LICENCE) == false) this.openMainActivity()
 
         //make async task and execute
         val task = CheckUpdate()
@@ -220,22 +216,25 @@ class ResultActivity : AppCompatActivity() {
         //do in async mode - in here can't modify user interface
         override fun doInBackground(vararg p0: Void?): MyProcessStep {
             try{
-                //modify flag if could be update courses - if from last update passed 6h
-                //updateCourses = (Date().time - MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_UPDATE_COURSE_TIMESTAMP).toLong()) > (MyConfiguration.ONE_DAY_IN_MILLISECONDS/4)
+                //update value of courses - if from last update passed 6h
+                val lastTimestampUpdateCourse : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_UPDATE_COURSE_TIMESTAMP)
+                if(lastTimestampUpdateCourse.isEmpty() || ((Date().time - lastTimestampUpdateCourse.toLong()) > (MyConfiguration.ONE_DAY_IN_MILLISECONDS/4))){
+                    MyCatalystValues.getValues()
+                }
 
-                //modify flag if could be update catalyst - if amount in spreadsheet is greater than in local database
+
+                //flag update catalyst - if amount in spreadsheet is greater than in local database
                 val databaseCatalystCount = database.getCountCatalyst()
-                updateCatalyst = MySpreadsheet.getCountCatalyst() > databaseCatalystCount || databaseCatalystCount == 0
-
+                updateCatalyst = databaseCatalystCount == 0 || MySpreadsheet.getCountCatalyst() > databaseCatalystCount
 
 
                 /* authentication */
                 val rows = MySpreadsheet.getDataLogin(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LOGIN))
-                if(rows.length() != 1) {
+                if(rows?.length() != 1) {
                     return MyProcessStep.USER_FAILED_LOGIN
                 }
                 //get row element
-                val element = rows.getJSONObject(0).getJSONArray("c")
+                val element = rows?.getJSONObject(0).getJSONArray("c")
 
 
                 //save data
@@ -243,15 +242,17 @@ class ResultActivity : AppCompatActivity() {
                 val discount = element.getJSONObject(3).getString("v")
                 val visibility = element.getJSONObject(4).getString("v")
 
+
+                /* save configuration */
+                //save licence date
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END, elementLicenceDate)
+                //save discount
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT, discount)
+                //save visibility
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY, visibility)
 
-
-                //check date of licence
-                if(MyConfiguration.checkIfCurrentDateIsGreater(elementLicenceDate, true) == true){
-                    return MyProcessStep.USER_ELAPSED_DATE_LICENCE
-                }
+                /* checking time */
+                if(MyConfiguration.checkTimeOnPhone("", MyTimeChecking.CHECKING_LICENCE) == false) return MyProcessStep.USER_ELAPSED_DATE_LICENCE
 
             }catch(e: Exception){
                 //nothing

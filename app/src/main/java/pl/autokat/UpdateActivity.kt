@@ -84,25 +84,28 @@ class UpdateActivity : AppCompatActivity() {
                     countDatabase = database.getCountCatalyst()
                 }
 
+                if(countDatabase == countSpreadsheet) return true
+
                 val progressAll : Int = (countSpreadsheet - countDatabase)
                 var progressStep : Float = 0.0F
                 val dataCatalysts: JSONArray = MySpreadsheet.getDataCatalyst(countDatabase)
                 val values = ContentValues()
                 for(i in 0 until dataCatalysts.length()){
-                    val element = dataCatalysts.getJSONObject(i).getJSONArray("c")
+                    val element : JSONArray = dataCatalysts.getJSONArray(i)
 
-                    val urlSharedPicture = element.getJSONObject(MyConfiguration.MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_PICTURE).getString("v")
+                    val urlSharedPicture = element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_URL_PICTURE)
                     val urlPicture = MyConfiguration.getPictureUrlFromGoogle(urlSharedPicture, 128, 128)
 
                     values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_PICTURE, URL(urlPicture).readBytes())
-                    values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID_PICTURE, element.getJSONObject(MyConfiguration.MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_ID_PICTURE).getString("v"))
-                    values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME, if (element.isNull(MyConfiguration.MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_NAME))  "" else element.getJSONObject(MyConfiguration.MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_NAME).getString("v"))
-                    values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND, element.getJSONObject(MyConfiguration.MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_BRAND).getString("v"))
-                    values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_PLATINUM, element.getJSONObject(MyConfiguration.MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_PLATINUM).getDouble("v").toFloat())
-                    values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_PALLADIUM, element.getJSONObject(MyConfiguration.MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_PALLADIUM).getDouble("v").toFloat())
-                    values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_RHODIUM, element.getJSONObject(MyConfiguration.MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_RHODIUM).getDouble("v").toFloat())
-                    values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_TYPE, element.getJSONObject(MyConfiguration.MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_TYPE).getString("v"))
-                    values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_WEIGHT, element.getJSONObject(MyConfiguration.MY_SPREADSHEET_CATALYST_NUMBER_COLUMN_WEIGHT).getDouble("v").toFloat())
+                    values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID_PICTURE, element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_ID_PICTURE))
+                    values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE, element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_URL_PICTURE))
+                    values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME, element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_NAME))
+                    values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND, element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_BRAND))
+                    values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_PLATINUM, element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_PLATINUM).replace(',','.').toFloat())
+                    values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_PALLADIUM, element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_PALLADIUM).replace(',','.').toFloat())
+                    values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_RHODIUM, element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_RHODIUM).replace(',','.').toFloat())
+                    values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_TYPE, element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_TYPE))
+                    values.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_WEIGHT, element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_WEIGHT).replace(',','.').toFloat())
 
                     if(database.insertCatalysts(values) == false) throw Exception()
 
