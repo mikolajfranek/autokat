@@ -1,19 +1,16 @@
 package pl.autokat
 
 import android.annotation.SuppressLint
-import android.opengl.Visibility
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.activity_about.*
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.toolbar
-import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 
 class AboutActivity : AppCompatActivity() {
 
+    //oncreate
     @SuppressLint("SimpleDateFormat")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,7 +21,7 @@ class AboutActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         //init shared preferences
         MySharedPreferences.init(this)
-
+        //change visibility about licence if licence exists
         val licenceDateOfEnd : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END)
         if(licenceDateOfEnd.isEmpty() == false) {
             activity_about_licence.isVisible = true

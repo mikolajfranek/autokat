@@ -8,30 +8,37 @@ class MyItemCatalyst(var id: Int,
                      var thumbnail : Bitmap,
                      var name: String?,
                      var brand: String,
-                     var platinum: Float, var palladium: Float,
-                     var rhodium: Float, var type: String, var weight: Float) {
-
-    fun countPriceElement(gramsPerKilogram: Float, weightOfCatalyst: Float, coursePerGramInput: String) : Float{
+                     var platinum: Float,
+                     var palladium: Float,
+                     var rhodium: Float,
+                     var type: String,
+                     var weight: Float) {
+    //count price of element
+    private fun countPriceElement(gramsPerKilogram: Float, weightOfCatalyst: Float, courseUsdPln: Float, coursePerGramInput: String) : Float{
         val coursePerGram : Float = if(coursePerGramInput.isEmpty()) 0.0F else coursePerGramInput.toFloat()
+        return gramsPerKilogram * weightOfCatalyst * coursePerGram * courseUsdPln
+    }
+    //count price of catalyst
+    fun countPricePln() : Float{
+        //course dolar
         val courseUsdPlnFromConfiguration : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN)
         val courseUsdPln : Float = if(courseUsdPlnFromConfiguration.isEmpty()) 0.0F else courseUsdPlnFromConfiguration.toFloat()
-        return (gramsPerKilogram * coursePerGram * courseUsdPln) * weightOfCatalyst
-    }
-
-    fun countPricePln() : Float{
-        val pricePlatinum : Float = this.countPriceElement(this.platinum, this.weight, MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PLATIUNUM))
-        val pricePalladium : Float = this.countPriceElement(this.palladium, this.weight, MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PALLADIUM))
-        var priceRhodium : Float = this.countPriceElement(this.rhodium,this.weight, MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_RHODIUM))
-
+        //calculate price of elements
+        val pricePlatinum : Float = this.countPriceElement(this.platinum, this.weight, courseUsdPln, MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PLATIUNUM))
+        val pricePalladium : Float = this.countPriceElement(this.palladium, this.weight, courseUsdPln, MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PALLADIUM))
+        var priceRhodium : Float = this.countPriceElement(this.rhodium,this.weight, courseUsdPln, MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_RHODIUM))
+        //everytime minus 10 percent
         priceRhodium *= (0.9).toFloat()
-
+        //get duscount
         val discount : Float = ((MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT)).toFloat()/((100).toFloat()))
+        //course euro
         val courseEurPlnFromConfiguration : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_EUR_PLN)
         val courseEurPln : Float = if(courseEurPlnFromConfiguration.isEmpty()) 0.0F else courseEurPlnFromConfiguration.toFloat()
-        val fiveEuroPerKilogram : Float = (((5).toFloat()) * courseEurPln) * this.weight
-
+        //minus 5euro per kilogram of catalyst
+        val fiveEuroPerKilogram : Float = (((5.0F).toFloat()) * courseEurPln) * this.weight
+        //calculate result price
         val result : Float = ((pricePlatinum + pricePalladium + priceRhodium) * discount) - fiveEuroPerKilogram
-
+        //return
         return result
     }
 }
