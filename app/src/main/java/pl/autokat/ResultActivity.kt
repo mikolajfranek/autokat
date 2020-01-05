@@ -9,17 +9,22 @@ import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.View.OnLongClickListener
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.AbsListView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.activity_result.*
 import kotlinx.android.synthetic.main.my_item_catalyst.view.*
 import org.json.JSONArray
 import java.util.*
+
 
 class ResultActivity : AppCompatActivity() {
     //fields
@@ -45,7 +50,7 @@ class ResultActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                this@ResultActivity.refreshListView()
+                this@ResultActivity.refreshListView(MyScrollRefresh.RESET_LIST)
             }
         })
         //init database adapter
@@ -59,10 +64,12 @@ class ResultActivity : AppCompatActivity() {
                 //visibility of feature of element
                 val visibilityCatalystFromConfiguration : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY)
                 val visibilityCatalyst : Boolean = if(visibilityCatalystFromConfiguration.isEmpty()) false  else visibilityCatalystFromConfiguration.toInt() != 0
-                //item id picture
-                view.item_id_picture.text = itemCatalyst.idPicture
                 //item thumbnail
                 view.item_picture.setImageBitmap(itemCatalyst.thumbnail)
+                view.item_picture.setOnLongClickListener(OnLongClickListener {
+                    Toast.makeText(applicationContext, itemCatalyst.idPicture, Toast.LENGTH_SHORT).show()
+                    return@OnLongClickListener true
+                })
                 view.item_picture.setOnClickListener {
                     val intent = Intent(applicationContext, PictureActivity::class.java)
                     intent.putExtra("urlPicture", itemCatalyst.urlPicture)
@@ -87,8 +94,18 @@ class ResultActivity : AppCompatActivity() {
                 val courseUsdPlnFromConfiguration : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN)
                 val courseUsdPln : Float = if(courseUsdPlnFromConfiguration.isEmpty()) 0.0F else courseUsdPlnFromConfiguration.toFloat()
                 val priceEur = if(courseUsdPln != 0.0F) (pricePl / courseUsdPln) else 0.0F
-                view.item_price_eur.text = (MyConfiguration.formatStringFloat(priceEur.toString(), 2) + " €")
-                view.item_price_pl.text = (MyConfiguration.formatStringFloat(pricePl.toString(), 2) + " zł")
+                val resultPriceEur : String = (MyConfiguration.formatStringFloat(priceEur.toString(), 2) + " €")
+                val resultPricePln : String = (MyConfiguration.formatStringFloat(pricePl.toString(), 2) + " zł")
+                if(visibilityCatalyst){
+                    view.item_price_visibility_eur.text = resultPriceEur
+                    view.item_price_visibility_pln.text = resultPricePln
+                    view.item_table_row_plattinum.isVisible = true
+                    view.item_table_row_palladium.isVisible = true
+                    view.item_table_row_rhodium.isVisible = true
+                }else{
+                    view.item_price_notvisibility_eur.text = resultPriceEur
+                    view.item_price_notvisibility_pln.text = resultPricePln
+                }
                 return view
             }
         }
@@ -101,7 +118,7 @@ class ResultActivity : AppCompatActivity() {
                 //if helper equals total elements on list and helper is different that the last helper then refresh list (add elements)
                 if(lastItem == totalItemCount && lastItem != scrollPreLast) {
                     scrollLimit += MyConfiguration.DATABASE_PAGINATE_LIMIT
-                    this@ResultActivity.refreshListView(scrollLimit)
+                    this@ResultActivity.refreshListView(MyScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS)
                     scrollPreLast = lastItem
                 }
             }
@@ -167,22 +184,31 @@ class ResultActivity : AppCompatActivity() {
         }
     }
     //refresh list view
-    fun refreshListView(limit: Int = MyConfiguration.DATABASE_PAGINATE_LIMIT){
-        if(limit == MyConfiguration.DATABASE_PAGINATE_LIMIT){
-            //reset variable of scroll
-            this.scrollPreLast = 0
-            this.scrollLimit = MyConfiguration.DATABASE_PAGINATE_LIMIT
-            //get data from database
-            val result = database.getDataCatalyst(activity_result_edittext.text.toString(), this.scrollLimit.toString())
-            databaseAdapter.clear()
-            databaseAdapter.addAll(result)
-        }else{
-            //limit as offset in format: skip elements, count elements to get
-            val limitWithOffset : String = (limit-MyConfiguration.DATABASE_PAGINATE_LIMIT).toString() + "," + MyConfiguration.DATABASE_PAGINATE_LIMIT
-            //get data from database
-            val result = database.getDataCatalyst(activity_result_edittext.text.toString(), limitWithOffset)
-            //add to list
-            databaseAdapter.addAll(result)
+    fun refreshListView(myScrollRefresh: MyScrollRefresh){
+        when(myScrollRefresh){
+            MyScrollRefresh.RESET_LIST -> {
+                //reset variable of scroll
+                this.scrollPreLast = 0
+                this.scrollLimit = MyConfiguration.DATABASE_PAGINATE_LIMIT
+                //get data from database
+                val result = database.getDataCatalyst(activity_result_edittext.text.toString(), this.scrollLimit.toString())
+                databaseAdapter.clear()
+                databaseAdapter.addAll(result)
+            }
+            MyScrollRefresh.UPDATE_LIST -> {
+                //get data from database
+                val result = database.getDataCatalyst(activity_result_edittext.text.toString(), this.scrollLimit.toString())
+                databaseAdapter.clear()
+                databaseAdapter.addAll(result)
+            }
+            MyScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS -> {
+                //limit as offset in format: skip elements, count elements to get
+                val limitWithOffset : String = (this.scrollLimit-MyConfiguration.DATABASE_PAGINATE_LIMIT).toString() + "," + MyConfiguration.DATABASE_PAGINATE_LIMIT
+                //get data from database
+                val result = database.getDataCatalyst(activity_result_edittext.text.toString(), limitWithOffset)
+                //add to list
+                databaseAdapter.addAll(result)
+            }
         }
     }
     //async class which check if exists update of app and update it
@@ -210,6 +236,8 @@ class ResultActivity : AppCompatActivity() {
                 updateCatalyst = databaseCatalystCount == 0 || spreadsheetCatalystCount > databaseCatalystCount
                 /* authentication */
                 val user : JSONArray = MySpreadsheet.getDataLogin(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LOGIN)) ?: return MyProcessStep.USER_ELAPSED_DATE_LICENCE
+                /* checking time */
+                if(MyConfiguration.checkTimeOnPhone(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_LICENCE), MyTimeChecking.PARAMETER_IS_GREATER_THAN_NOW) == false) return MyProcessStep.USER_ELAPSED_DATE_LICENCE
                 /* save configuration */
                 //save licence date
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END, user.getString(MyConfiguration.MY_SPREADSHEET_USERS_LICENCE))
@@ -217,8 +245,6 @@ class ResultActivity : AppCompatActivity() {
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT, user.getString(MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT))
                 //save visibility
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY, user.getString(MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY))
-                /* checking time */
-                if(MyConfiguration.checkTimeOnPhone("", MyTimeChecking.CHECKING_LICENCE) == false) return MyProcessStep.USER_ELAPSED_DATE_LICENCE
             }catch(e: Exception){
                 //nothing
             }
@@ -229,7 +255,11 @@ class ResultActivity : AppCompatActivity() {
             super.onPostExecute(result)
 
             //if elapsed time then go to main activity
-            if(result == MyProcessStep.USER_ELAPSED_DATE_LICENCE) this@ResultActivity.openMainActivity()
+            if(result == MyProcessStep.USER_ELAPSED_DATE_LICENCE) {
+                /* set licence as empty */
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END, "")
+                this@ResultActivity.openMainActivity()
+            }
 
             //set visibility of ability update catalyst
             if(this@ResultActivity.menu != null){
@@ -240,7 +270,7 @@ class ResultActivity : AppCompatActivity() {
                 }
             }
             //refresh list view
-            this@ResultActivity.refreshListView()
+            this@ResultActivity.refreshListView(MyScrollRefresh.UPDATE_LIST)
             //enable user interface on process application
             MyUserInterface.enableActivity(this@ResultActivity.activity_result_linearlayout, true)
         }

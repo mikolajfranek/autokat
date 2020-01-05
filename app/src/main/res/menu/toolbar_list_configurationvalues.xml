@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <item android:title="">
-        <item
-            android:id="@+id/toolbar_list_refresh_courses"
-            android:orderInCategory="100"
-            android:icon="@mipmap/ic_action_update_courses"
-            app:showAsAction="ifRoom"
-            android:title="@string/toolbar_list_update" />
-    </item>
+    <item
+        android:id="@+id/toolbar_list_refresh_courses"
+        android:icon="@mipmap/ic_action_update_courses"
+        android:orderInCategory="100"
+        android:title="@string/menu_toolbar_list_update"
+        app:showAsAction="ifRoom" />
 </menu>

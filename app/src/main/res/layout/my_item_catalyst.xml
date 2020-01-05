@@ -11,27 +11,31 @@
         android:layout_marginRight="10dp"
         android:layout_weight="0">
 
-        <TextView
-            android:id="@+id/item_id_picture"
-            android:layout_marginRight="5dp"
+        <ImageView
+            android:id="@+id/item_picture"
+            android:layout_width="96dp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
-            android:layout_weight="1"
-            android:fontFamily="sans-serif"
-            android:textColor="@color/colorGray" />
+            android:layout_marginRight="5dp"
+            android:adjustViewBounds="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="@string/app_name" />
 
         <TextView
-            android:id="@+id/item_brand"
-            android:layout_weight="3"
+            android:id="@+id/item_name"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:width="0dp"
             android:fontFamily="sans-serif"
-            android:textColor="@color/colorGray" />
+            android:textColor="@color/colorDarkSlateGray" />
 
         <TextView
             android:id="@+id/item_type"
-            android:layout_weight="1"
-            android:gravity="end"
             android:fontFamily="sans-serif"
-            android:textColor="@color/colorGray" />
+            android:gravity="end" />
     </TableRow>
+
 
     <TableRow
         android:layout_marginStart="10dp"
@@ -40,141 +44,166 @@
         android:layout_marginRight="10dp"
         android:layout_weight="0">
 
-        <ImageView
-            android:id="@+id/item_picture"
-            android:layout_marginRight="5dp"
+        <TextView
+            android:layout_width="96dp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
-            android:layout_weight="1"
-            android:adjustViewBounds="true"
-            android:clickable="true"
-            android:focusable="true" />
+            android:layout_marginRight="5dp"
+            android:fontFamily="sans-serif"
+            android:gravity="end"
+            android:text="@string/my_item_catalyst_marka"
+            android:textColor="@color/colorDarkSlateGray" />
 
         <TextView
-            android:id="@+id/item_name"
+            android:id="@+id/item_brand"
             android:layout_width="fill_parent"
-            android:layout_weight="3"
+            android:layout_weight="1"
             android:width="0dp"
             android:fontFamily="sans-serif"
-            android:textColor="@color/colorGray" />
-
-        <TextView android:layout_weight="1" />
-    </TableRow>
-
-    <TableRow android:layout_weight="0"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginEnd="10dp">
+            android:textColor="@color/colorDarkSlateGray" />
 
         <TextView
-            android:text="@string/my_item_catalyst_waga"
-            android:gravity="end"
-            android:layout_marginRight="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_weight="1"
+            android:id="@+id/item_price_notvisibility_eur"
+            android:layout_gravity="bottom|end"
             android:fontFamily="sans-serif"
-            android:textColor="@color/colorGray"/>
+            android:textColor="@android:color/holo_green_dark" />
+    </TableRow>
+
+
+    <TableRow
+        android:id="@+id/item_table_row_weight"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_weight="0">
+
+        <TextView
+            android:layout_width="96dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:fontFamily="sans-serif"
+            android:gravity="end"
+            android:text="@string/my_item_catalyst_waga"
+            android:textColor="@color/colorDarkSlateGray" />
 
         <TextView
             android:id="@+id/item_weight"
-            android:layout_weight="3"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:width="0dp"
             android:fontFamily="sans-serif"
-            android:textColor="@color/colorGray"/>
-
-        <TextView android:layout_weight="1"
-            android:fontFamily="sans-serif"
-            android:textColor="@color/colorGray"/>
-
-    </TableRow>
-
-    <TableRow android:layout_weight="0"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginEnd="10dp">
+            android:textColor="@color/colorDarkSlateGray" />
 
         <TextView
-            android:text="@string/my_item_catalyst_platyna"
-            android:gravity="end"
-            android:layout_marginRight="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_weight="1"
+            android:id="@+id/item_price_notvisibility_pln"
             android:fontFamily="sans-serif"
-            android:textColor="@color/colorGray"/>
+            android:gravity="end"
+            android:textColor="@android:color/holo_green_dark" />
+    </TableRow>
+
+
+    <TableRow
+        android:id="@+id/item_table_row_plattinum"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_weight="0"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="96dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:fontFamily="sans-serif"
+            android:gravity="end"
+            android:text="@string/my_item_catalyst_platyna"
+            android:textColor="@color/colorDarkSlateGray" />
 
         <TextView
             android:id="@+id/item_platinum"
-            android:layout_weight="3"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:width="0dp"
             android:fontFamily="sans-serif"
-            android:textColor="@color/colorGray"/>
-
-        <TextView android:layout_weight="1"
-            android:fontFamily="sans-serif"
-            android:textColor="@color/colorGray"/>
-
+            android:textColor="@color/colorDarkSlateGray" />
     </TableRow>
 
-    <TableRow android:layout_weight="0"
-        android:layout_marginLeft="10dp"
+    <TableRow
+        android:id="@+id/item_table_row_palladium"
         android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginEnd="10dp">
+        android:layout_weight="0"
+        android:visibility="gone">
 
         <TextView
-            android:text="@string/my_item_catalyst_pallad"
-            android:gravity="end"
-            android:layout_marginRight="5dp"
+            android:layout_width="96dp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
-            android:layout_weight="1"
+            android:layout_marginRight="5dp"
             android:fontFamily="sans-serif"
-            android:textColor="@color/colorGray"/>
+            android:gravity="end"
+            android:text="@string/my_item_catalyst_pallad"
+            android:textColor="@color/colorDarkSlateGray" />
 
         <TextView
             android:id="@+id/item_palladium"
-            android:layout_weight="3"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:width="0dp"
             android:fontFamily="sans-serif"
-            android:textColor="@color/colorGray"/>
+            android:textColor="@color/colorDarkSlateGray" />
 
         <TextView
-            android:id="@+id/item_price_eur"
-            android:gravity="end"
-            android:layout_weight="1"
+            android:id="@+id/item_price_visibility_eur"
             android:fontFamily="sans-serif"
-            android:textColor="@android:color/holo_green_dark"/>
+            android:gravity="end"
+            android:textColor="@android:color/holo_green_dark" />
     </TableRow>
 
-    <TableRow android:layout_weight="0" android:layout_marginBottom="5dp"
-        android:layout_marginLeft="10dp"
+
+    <TableRow
+        android:id="@+id/item_table_row_rhodium"
         android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginEnd="10dp">
+        android:layout_weight="0"
+        android:visibility="gone">
 
         <TextView
-            android:text="@string/my_item_catalyst_rod"
-            android:gravity="end"
-            android:layout_marginRight="5dp"
+            android:layout_width="96dp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
-            android:layout_weight="1"
+            android:layout_marginRight="5dp"
             android:fontFamily="sans-serif"
-            android:textColor="@color/colorGray"/>
+            android:gravity="end"
+            android:text="@string/my_item_catalyst_rod"
+            android:textColor="@color/colorDarkSlateGray" />
 
         <TextView
             android:id="@+id/item_rhodium"
-            android:layout_weight="3"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:width="0dp"
             android:fontFamily="sans-serif"
-            android:textColor="@color/colorGray"/>
+            android:textColor="@color/colorDarkSlateGray" />
 
         <TextView
-            android:id="@+id/item_price_pl"
-            android:gravity="end"
-            android:layout_weight="1"
+            android:id="@+id/item_price_visibility_pln"
             android:fontFamily="sans-serif"
-            android:textColor="@android:color/holo_green_dark"/>
+            android:gravity="end"
+            android:textColor="@android:color/holo_green_dark" />
     </TableRow>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/colorSilver"/>
-
+        android:layout_marginTop="10dp"
+        android:background="@color/colorSilver" />
 </TableLayout>

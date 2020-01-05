@@ -6,15 +6,18 @@ import android.graphics.Color
 import android.os.Build
 import android.telephony.TelephonyManager
 import android.util.Base64
-import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
 import com.github.kittinunf.fuel.Fuel
+import io.jsonwebtoken.Claims
+import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.SignatureAlgorithm
+import io.jsonwebtoken.security.Keys
 import org.json.JSONArray
 import org.json.JSONObject
-import java.lang.Exception
 import java.net.URL
 import java.net.UnknownHostException
+import java.security.Key
 import java.security.KeyFactory
+import java.security.PrivateKey
 import java.security.interfaces.RSAPrivateKey
 import java.security.spec.PKCS8EncodedKeySpec
 import java.text.SimpleDateFormat
@@ -36,15 +39,20 @@ class MyConfiguration {
         private val MY_SHARED_PREFERENCES_KEY_ACCESS_TOKEN_TIMESTAMP : String = "AccessTokenTimestamp"
         //generate new access token
         private fun generateNewAccessToken(){
-            val privateKey: RSAPrivateKey = KeyFactory.getInstance("RSA").generatePrivate(PKCS8EncodedKeySpec(Base64.decode(MySecret.getPrivateKey(), Base64.DEFAULT))) as RSAPrivateKey
+            val privateKey : RSAPrivateKey = KeyFactory.getInstance("RSA").generatePrivate(PKCS8EncodedKeySpec(Base64.decode(MySecret.getPrivateKey(), Base64.DEFAULT))) as RSAPrivateKey
             val timestamp : Long = Date().time
-            val signedJwt = JWT.create()
-                .withIssuer(MySecret.getEmail())
-                .withAudience(this.GOOGLE_TOKEN_URL)
-                .withClaim(this.GOOGLE_PARAMETER_SCOPE, this.GOOGLE_PARAMETER_SCOPE_VALUE)
-                .withIssuedAt(Date(timestamp))
-                .withExpiresAt(Date(timestamp + this.ONE_HOUR_IN_MILLISECONDS))
-                .sign(Algorithm.RSA256(null, privateKey))
+            val signedJwt = Jwts.builder()
+                .setClaims(
+                    mapOf(
+                        this.GOOGLE_PARAMETER_SCOPE to this.GOOGLE_PARAMETER_SCOPE_VALUE,
+                        Claims.ISSUER to MySecret.getEmail(),
+                        Claims.AUDIENCE to this.GOOGLE_TOKEN_URL,
+                        Claims.ISSUED_AT to Date(timestamp),
+                        Claims.EXPIRATION to Date(timestamp + this.ONE_HOUR_IN_MILLISECONDS)
+                    )
+                )
+                .signWith(privateKey, SignatureAlgorithm.RS256)
+                .compact()
             val bodyJson = """{"grant_type":"urn:ietf:params:oauth:grant-type:jwt-bearer","assertion" : "$signedJwt"}"""
             val (_, response, result) = Fuel.post(this.GOOGLE_TOKEN_URL).body(bodyJson).responseString()
             if(response.statusCode != 200) throw UnknownHostException()
@@ -235,7 +243,7 @@ class MyConfiguration {
         /* methods */
         //get serial if of phone if is empty then return phone number
         @SuppressLint("MissingPermission", "HardwareIds")
-        fun getSerialId(applicationContext: Context): String{
+        fun getIdentificatorOfUser(applicationContext: Context): String{
             //serial id section
             var serialId = ""
             try{
@@ -255,7 +263,16 @@ class MyConfiguration {
             }catch(e: Exception){
                 //nothing
             }
-            //return if hone number is not empty
+            //return if phone number is not empty
+            if(serialId.isEmpty() == false) return serialId
+            //sim serial id section
+            //phone number section
+            try{
+                serialId = (applicationContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+            }catch(e: Exception){
+                //nothing
+            }
+            //return if sim id is not empty
             if(serialId.isEmpty() == false) return serialId
             throw Exception()
         }
@@ -267,12 +284,12 @@ class MyConfiguration {
         }
         //get format of float from string
         fun formatStringFloat(floatString: String, precision: Int) : String{
-            if(floatString.isEmpty()) return (0.0F).toString()
+            if(floatString.isEmpty()) return (String.format("%." + precision + "f", (0.00).toFloat()))
             return String.format("%." + precision + "f", floatString.toFloat())
         }
         //get pln from dolar string
         fun getPlnFromDolar(dolar: String) : String{
-            if(dolar.isEmpty()) return (0.0F).toString()
+            if(dolar.isEmpty()) return (0.00).toString()
             val dolarFromConfiguration : String = MySharedPreferences.getKeyFromFile(MY_SHARED_PREFERENCES_KEY_USD_PLN)
             return (dolar.toFloat() * (if(dolarFromConfiguration.isEmpty()) (0.0F) else dolarFromConfiguration.toFloat())).toString()
         }

@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/toolbar_list_about"
-        android:title="@string/menu_toolbar_list_configuration_about"
         android:icon="@mipmap/ic_action_info"
-        app:showAsAction="ifRoom"
-        android:orderInCategory="100"/>
+        android:orderInCategory="100"
+        android:title="@string/menu_toolbar_list_configuration_about"
+        app:showAsAction="ifRoom" />
 </menu>

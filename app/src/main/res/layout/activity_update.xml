@@ -1,69 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_update_linearlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/activity_update_linearlayout"
     tools:context=".UpdateActivity">
 
     <include
         android:id="@+id/toolbar"
         layout="@layout/my_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <ProgressBar
         android:id="@+id/activity_update_progessbar"
-        android:visibility="gone"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:scaleY="6"
-        android:max="100"
-        android:progress="0"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_gravity="center" />
-
+        android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:max="100"
+        android:progress="0"
+        android:scaleY="6"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/activity_update_textview"
-        android:visibility="gone"
-        android:text=""
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:fontFamily="sans-serif"
         android:gravity="center"
-        android:fontFamily="sans-serif"
-        android:textColor="@color/colorGray"
-        />
+        android:text=""
+        android:textColor="@color/colorDarkSlateGray"
+        android:visibility="gone" />
 
     <Button
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:text="Pobierz nowe katalizatory"
-        android:onClick="activityUpdateOnlyNew"
-        android:fontFamily="sans-serif"
         style="@style/Widget.AppCompat.Button"
-        />
-
-    <Button
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_margin="10dp"
-        android:text="synchronizacja baz danych"
-        android:onClick="activityUpdateFull"
         android:fontFamily="sans-serif"
+        android:onClick="activityUpdateOnlyNew"
+        android:text="@string/activity_update_pobierz_nowe_katalizatory"
+        android:textAllCaps="false" />
+
+    <Button
         style="@style/Widget.AppCompat.Button"
-        />
-
-
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:fontFamily="sans-serif"
+        android:onClick="activityUpdateFull"
+        android:text="@string/activity_update_synchronizacja_baz_danych"
+        android:textAllCaps="false" />
 </LinearLayout>

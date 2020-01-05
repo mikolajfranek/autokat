@@ -27,6 +27,10 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         //init shared preferences
         MySharedPreferences.init(this)
+    }
+    //onresume
+    override fun onResume() {
+        super.onResume()
         //check permission about phone state (required for getting serial id)
         if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED){
             //ask about permission
@@ -131,7 +135,7 @@ class MainActivity : AppCompatActivity() {
                 //get user from database
                 val user : JSONArray = MySpreadsheet.getDataLogin(login) ?: return MyProcessStep.USER_FAILED_LOGIN
                 //read serial id from phone
-                val serialId : String = MyConfiguration.getSerialId(applicationContext)
+                val serialId : String = MyConfiguration.getIdentificatorOfUser(applicationContext)
                 //check if serial id is correct or save serial id to database
                 if(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_UUID).isEmpty()){
                     //save serial id
