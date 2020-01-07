@@ -5,7 +5,7 @@ import android.graphics.Bitmap
 class MyItemCatalyst(var id: Int,
                      var idPicture: String,
                      var urlPicture : String,
-                     var thumbnail : Bitmap,
+                     var thumbnail : Bitmap?,
                      var name: String?,
                      var brand: String,
                      var platinum: Float,

@@ -14,10 +14,10 @@ class MySpreadsheet {
             val sheetCell : String  = "Arkusz1!" + MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_UUID + ((userId+1).toString())
             val bodyJson = """{"range": "$sheetCell", "majorDimension": "ROWS", "values": [["$serialId"]]}"""
             val (_, response, result) = Fuel.put(MyConfiguration.MY_SPREADSHEET_URL_PREFIX_SHEETS_API + MySecret.getSpreadsheetIdLogin() + "/values/$sheetCell",
-                    listOf(
-                        MyConfiguration.MY_SPREADSHEET_PARAMETER_INPUT to MyConfiguration.MY_SPREADSHEET_PARAMETER_INPUT_VALUE
-                    )
+                listOf(
+                    MyConfiguration.MY_SPREADSHEET_PARAMETER_INPUT to MyConfiguration.MY_SPREADSHEET_PARAMETER_INPUT_VALUE
                 )
+            )
                 .body(bodyJson)
                 .authentication().bearer(MyConfiguration.getAccessToken()).responseString()
             if(response.statusCode != 200) throw UnknownHostException()

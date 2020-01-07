@@ -11,6 +11,7 @@ import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.activity_update.*
 import org.json.JSONArray
+import java.io.FileOutputStream
 import java.net.URL
 import java.net.UnknownHostException
 
@@ -87,17 +88,19 @@ class UpdateActivity : AppCompatActivity() {
                 val dataCatalysts: JSONArray = MySpreadsheet.getDataCatalyst(countDatabase)
                 //represent variable of one catalyst
                 val row = ContentValues()
+                //copy database, from assets to directory system where is database of app
+                val emptyThumbnail : ByteArray = applicationContext.assets.open(MyConfiguration.ASSETS_EMPTY_THUMBNAIL_FILE_NAME).readBytes()
                 //iterate over all elements and add to database
                 for(i in 0 until dataCatalysts.length()){
                     //get element
                     val element : JSONArray = dataCatalysts.getJSONArray(i)
                     //prepare thumbnail
-                    val urlSharedPicture = element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_URL_PICTURE)
-                    val urlThumbnail = MyConfiguration.getPictureUrlFromGoogle(urlSharedPicture, 128, 128)
+                    //val urlSharedPicture = element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_URL_PICTURE)
+                    //val urlThumbnail = MyConfiguration.getPictureUrlFromGoogle(urlSharedPicture, 128, 128)
                     //add values
                     row.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID_PICTURE, element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_ID_PICTURE))
                     row.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE, element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_URL_PICTURE))
-                    row.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_THUMBNAIL, URL(urlThumbnail).readBytes())
+                    //row.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_THUMBNAIL, emptyThumbnail)
                     row.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME, element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_NAME))
                     row.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND, element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_BRAND))
                     row.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_PLATINUM, element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_PLATINUM).toFloat())

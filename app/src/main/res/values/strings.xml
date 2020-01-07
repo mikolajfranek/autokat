@@ -31,6 +31,6 @@
     <string name="activity_configuration_values_dolar">USD</string>
     <string name="activity_configuration_values_euro">EUR</string>
     <string name="activity_update_pobierz_nowe_katalizatory" tools:ignore="Typos">Pobierz nowe katalizatory</string>
-    <string name="activity_update_synchronizacja_baz_danych">Synchronizacja baz danych</string>
+    <string name="activity_update_synchronizacja_baz_danych">Synchronizacja bazy danych</string>
     <string name="activity_configuration_values_waluta">Waluta</string>
 </resources>

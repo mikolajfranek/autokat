@@ -104,7 +104,7 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("StaticFieldLeak")
     private inner class TryLogin(loginInput: String, hasClickedButtonInput : Boolean) : AsyncTask<Void, Void, MyProcessStep>() {
         //field
-        private var login : String = loginInput
+        private var login : String = loginInput.trim()
         private var hasClickedButton : Boolean = hasClickedButtonInput
         //pre execute
         override fun onPreExecute() {
@@ -122,7 +122,7 @@ class MainActivity : AppCompatActivity() {
         override fun doInBackground(vararg p0: Void?): MyProcessStep {
             try{
                 //user never logged (not click on button, trying auto login)
-                if(hasClickedButton == false && login.isEmpty()) return MyProcessStep.USER_NEVER_LOGGED
+                if(login.isEmpty()) return MyProcessStep.USER_NEVER_LOGGED
                 //check licence without connection to internet
                 if(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END).isEmpty() == false){
                     /* checking time */
@@ -134,6 +134,8 @@ class MainActivity : AppCompatActivity() {
                 /* authentication */
                 //get user from database
                 val user : JSONArray = MySpreadsheet.getDataLogin(login) ?: return MyProcessStep.USER_FAILED_LOGIN
+                /* checking time */
+                if(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_LICENCE).isEmpty() || MyConfiguration.checkTimeOnPhone(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_LICENCE), MyTimeChecking.PARAMETER_IS_GREATER_THAN_NOW) == false) return MyProcessStep.USER_ELAPSED_DATE_LICENCE
                 //read serial id from phone
                 val serialId : String = MyConfiguration.getIdentificatorOfUser(applicationContext)
                 //check if serial id is correct or save serial id to database
@@ -144,14 +146,14 @@ class MainActivity : AppCompatActivity() {
                     //check if current serial id is the same as in database
                     if(serialId.equals(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_UUID)) == false) return MyProcessStep.USER_FAILED_SERIAL
                 }
-                /* checking time */
-                if(MyConfiguration.checkTimeOnPhone(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_LICENCE), MyTimeChecking.PARAMETER_IS_GREATER_THAN_NOW) == false) return MyProcessStep.USER_ELAPSED_DATE_LICENCE
                 /* save configuration */
                 //save licence date
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END, user.getString(MyConfiguration.MY_SPREADSHEET_USERS_LICENCE))
                 //save discount
+                //TODO only number in discount
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT, user.getString(MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT))
                 //save visibility
+                //TODO flag save only 1 or 0 (work '1','1.0')
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY, user.getString(MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY))
                 //save login
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LOGIN, login)

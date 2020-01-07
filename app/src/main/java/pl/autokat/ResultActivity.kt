@@ -63,7 +63,7 @@ class ResultActivity : AppCompatActivity() {
                 val itemCatalyst = getItem(position)!!
                 //visibility of feature of element
                 val visibilityCatalystFromConfiguration : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY)
-                val visibilityCatalyst : Boolean = if(visibilityCatalystFromConfiguration.isEmpty()) false  else visibilityCatalystFromConfiguration.toInt() != 0
+                val visibilityCatalyst : Boolean = if(visibilityCatalystFromConfiguration.isEmpty()) false  else visibilityCatalystFromConfiguration[0].toInt() != 0
                 //item thumbnail
                 view.item_picture.setImageBitmap(itemCatalyst.thumbnail)
                 view.item_picture.setOnLongClickListener(OnLongClickListener {
@@ -91,9 +91,9 @@ class ResultActivity : AppCompatActivity() {
                 view.item_rhodium.text = (MyConfiguration.formatStringFloat(if (visibilityCatalyst) itemCatalyst.rhodium.toString() else "0.0", 3) + " g/kg")
                 //count price
                 val pricePl = itemCatalyst.countPricePln()
-                val courseUsdPlnFromConfiguration : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN)
-                val courseUsdPln : Float = if(courseUsdPlnFromConfiguration.isEmpty()) 0.0F else courseUsdPlnFromConfiguration.toFloat()
-                val priceEur = if(courseUsdPln != 0.0F) (pricePl / courseUsdPln) else 0.0F
+                val courseEurlnFromConfiguration : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_EUR_PLN)
+                val courseEurPln : Float = if(courseEurlnFromConfiguration.isEmpty()) 0.0F else courseEurlnFromConfiguration.toFloat()
+                val priceEur = if(courseEurPln != 0.0F) (pricePl / courseEurPln) else 0.0F
                 val resultPriceEur : String = (MyConfiguration.formatStringFloat(priceEur.toString(), 2) + " €")
                 val resultPricePln : String = (MyConfiguration.formatStringFloat(pricePl.toString(), 2) + " zł")
                 if(visibilityCatalyst){
