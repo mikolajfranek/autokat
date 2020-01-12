@@ -2,6 +2,7 @@ package pl.autokat
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.opengl.Visibility
 import android.os.AsyncTask
 import android.os.Bundle
 import android.text.Editable
@@ -11,7 +12,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.View.OnLongClickListener
 import android.view.ViewGroup
-import android.view.ViewGroup.MarginLayoutParams
 import android.widget.AbsListView
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -62,8 +62,7 @@ class ResultActivity : AppCompatActivity() {
                 //get element
                 val itemCatalyst = getItem(position)!!
                 //visibility of feature of element
-                val visibilityCatalystFromConfiguration : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY)
-                val visibilityCatalyst : Boolean = if(visibilityCatalystFromConfiguration.isEmpty()) false  else visibilityCatalystFromConfiguration[0].toInt() != 0
+                val visibilityCatalyst : Boolean = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY).toInt() == 1
                 //item thumbnail
                 view.item_picture.setImageBitmap(itemCatalyst.thumbnail)
                 view.item_picture.setOnLongClickListener(OnLongClickListener {
@@ -90,10 +89,12 @@ class ResultActivity : AppCompatActivity() {
                 //item rhodium
                 view.item_rhodium.text = (MyConfiguration.formatStringFloat(if (visibilityCatalyst) itemCatalyst.rhodium.toString() else "0.0", 3) + " g/kg")
                 //count price
-                val pricePl = itemCatalyst.countPricePln()
+                var pricePl = itemCatalyst.countPricePln()
                 val courseEurlnFromConfiguration : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_EUR_PLN)
                 val courseEurPln : Float = if(courseEurlnFromConfiguration.isEmpty()) 0.0F else courseEurlnFromConfiguration.toFloat()
-                val priceEur = if(courseEurPln != 0.0F) (pricePl / courseEurPln) else 0.0F
+                var priceEur = if(courseEurPln != 0.0F) (pricePl / courseEurPln) else 0.0F
+                pricePl = if(pricePl < 0) 0.0F else pricePl
+                priceEur = if(priceEur < 0) 0.0F else priceEur
                 val resultPriceEur : String = (MyConfiguration.formatStringFloat(priceEur.toString(), 2) + " €")
                 val resultPricePln : String = (MyConfiguration.formatStringFloat(pricePl.toString(), 2) + " zł")
                 if(visibilityCatalyst){
@@ -216,6 +217,7 @@ class ResultActivity : AppCompatActivity() {
     private inner class CheckUpdate : AsyncTask<Void, Void, MyProcessStep>() {
         //fields
         private var updateCatalyst : Boolean = false
+        private var databaseEmpty : Boolean = false
         //pre execute
         override fun onPreExecute() {
             super.onPreExecute()
@@ -232,6 +234,7 @@ class ResultActivity : AppCompatActivity() {
                 }
                 //flag update catalyst - if amount in spreadsheet is greater than in local database
                 val databaseCatalystCount : Int = database.getCountCatalyst()
+                databaseEmpty = databaseCatalystCount == 0
                 val spreadsheetCatalystCount : Int = MySpreadsheet.getCountCatalyst()
                 updateCatalyst = databaseCatalystCount == 0 || spreadsheetCatalystCount > databaseCatalystCount
                 /* authentication */
@@ -242,9 +245,11 @@ class ResultActivity : AppCompatActivity() {
                 //save licence date
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END, user.getString(MyConfiguration.MY_SPREADSHEET_USERS_LICENCE))
                 //save discount
-                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT, user.getString(MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT))
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT, MyConfiguration.getIntFromString(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT)).toString())
                 //save visibility
-                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY, user.getString(MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY))
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY, MyConfiguration.getIntFromString(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY)).toString())
+                //can run service - assuming that app has connection to internet
+                ServiceOfThumbnail.enqueueWork(applicationContext)
             }catch(e: Exception){
                 //nothing
             }
@@ -253,17 +258,24 @@ class ResultActivity : AppCompatActivity() {
         //post execute
         override fun onPostExecute(result: MyProcessStep) {
             super.onPostExecute(result)
-
             //if elapsed time then go to main activity
             if(result == MyProcessStep.USER_ELAPSED_DATE_LICENCE) {
                 /* set licence as empty */
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END, "")
                 this@ResultActivity.openMainActivity()
             }
-
+            //empty database
+            if(databaseEmpty){
+                activity_result_textview.isVisible = true
+                activity_result_listView.isVisible = false
+            }else{
+                activity_result_listView.isVisible = true
+                activity_result_textview.isVisible = false
+            }
             //set visibility of ability update catalyst
             if(this@ResultActivity.menu != null){
                 if(updateCatalyst){
+                    MyConfiguration.IS_AVAILABLE_UPDATE = true
                     this@ResultActivity.menu!!.getItem(1).setIcon(ContextCompat.getDrawable(applicationContext, R.mipmap.ic_action_update_catalyst_yellow))
                 }else{
                     this@ResultActivity.menu!!.getItem(1).setIcon(ContextCompat.getDrawable(applicationContext, R.mipmap.ic_action_update_catalyst))

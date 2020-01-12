@@ -1,18 +1,15 @@
 package pl.autokat
 
 import android.annotation.SuppressLint
-import android.content.ContentValues
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.activity_update.*
 import org.json.JSONArray
-import java.io.FileOutputStream
-import java.net.URL
+import org.json.JSONObject
 import java.net.UnknownHostException
 
 class UpdateActivity : AppCompatActivity() {
@@ -36,6 +33,32 @@ class UpdateActivity : AppCompatActivity() {
         finish()
         return true
     }
+    //onresume
+    override fun onResume() {
+        super.onResume()
+
+
+
+        val itemsWithThumbnail : Int = database.getCountCatalystWithThumbnail()
+        val itemsFromDatabase : Int = database.getCountCatalyst()
+        activity_update_progessbar.progress = ((itemsWithThumbnail.toFloat()/itemsFromDatabase.toFloat())*100.toFloat()).toInt()
+        //set info section
+        activity_update_textview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
+        if(itemsFromDatabase != 0){
+            if(MyConfiguration.IS_AVAILABLE_UPDATE){
+                activity_update_progessbar.progress = 0
+                activity_update_textview.text = MyConfiguration.INFO_DATABASE_EXPIRE
+            }else{
+                if(itemsWithThumbnail/itemsFromDatabase != 1){
+                    activity_update_textview.text = (MyConfiguration.INFO_DOWNLOAD_BITMAP_STATUS + " (" + itemsWithThumbnail + "/" + itemsFromDatabase+ ")")
+                }else{
+                    activity_update_textview.text = MyConfiguration.INFO_DOWNLOAD_BITMAP_SUCCESS
+                }
+            }
+        }else{
+            activity_update_textview.text = MyConfiguration.INFO_EMPTY_DATABASE
+        }
+    }
     //click button only new
     fun activityUpdateOnlyNew(view: View?) {
         //make async task and execute
@@ -48,9 +71,22 @@ class UpdateActivity : AppCompatActivity() {
         val task = UpdateCatalyst(true)
         task.execute()
     }
+    //checking if row from spreadsheet is available
+    fun checkIsRowIsAvailable(row: JSONArray): Boolean{
+        val result : Boolean = MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_ID).isEmpty() == false &&
+        MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_PLATINUM).isEmpty() == false &&
+        MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_PALLADIUM).isEmpty() == false &&
+        MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_RHODIUM).isEmpty() == false &&
+        MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_WEIGHT).isEmpty() == false &&
+        MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_TYPE).isEmpty() == false &&
+        MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_ID_PICTURE).isEmpty() == false &&
+        MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_URL_PICTURE).isEmpty() == false
+        return result
+    }
+
     //async class which check if exists update of app and update it
     @SuppressLint("StaticFieldLeak")
-    private inner class UpdateCatalyst(fullUpdateInput: Boolean) : AsyncTask<Void, Int, MyProcessStep>() {
+    inner class UpdateCatalyst(fullUpdateInput: Boolean) : AsyncTask<Void, Int, MyProcessStep>() {
         //fields
         private var fullUpdate : Boolean = fullUpdateInput
         //pre execute
@@ -60,9 +96,7 @@ class UpdateActivity : AppCompatActivity() {
             MyUserInterface.enableActivity(this@UpdateActivity.activity_update_linearlayout, false)
             //set process bar
             activity_update_progessbar.progress = 0
-            activity_update_progessbar.isVisible = true
             //set info section
-            activity_update_textview.isVisible = true
             activity_update_textview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
             activity_update_textview.text = MyConfiguration.INFO_MESSAGE_WAIT_UPDATE
         }
@@ -85,33 +119,23 @@ class UpdateActivity : AppCompatActivity() {
                 //profess step equals currenly state of process update
                 var progressStep: Float
                 //get data catalyst from spreadsheet which missed
-                val dataCatalysts: JSONArray = MySpreadsheet.getDataCatalyst(countDatabase)
-                //represent variable of one catalyst
-                val row = ContentValues()
-                //copy database, from assets to directory system where is database of app
-                val emptyThumbnail : ByteArray = applicationContext.assets.open(MyConfiguration.ASSETS_EMPTY_THUMBNAIL_FILE_NAME).readBytes()
-                //iterate over all elements and add to database
-                for(i in 0 until dataCatalysts.length()){
-                    //get element
-                    val element : JSONArray = dataCatalysts.getJSONArray(i)
-                    //prepare thumbnail
-                    //val urlSharedPicture = element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_URL_PICTURE)
-                    //val urlThumbnail = MyConfiguration.getPictureUrlFromGoogle(urlSharedPicture, 128, 128)
-                    //add values
-                    row.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID_PICTURE, element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_ID_PICTURE))
-                    row.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE, element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_URL_PICTURE))
-                    //row.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_THUMBNAIL, emptyThumbnail)
-                    row.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME, element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_NAME))
-                    row.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND, element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_BRAND))
-                    row.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_PLATINUM, element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_PLATINUM).toFloat())
-                    row.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_PALLADIUM, element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_PALLADIUM).toFloat())
-                    row.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_RHODIUM, element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_RHODIUM).toFloat())
-                    row.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_TYPE, element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_TYPE))
-                    row.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_WEIGHT, element.getString(MyConfiguration.MY_SPREADSHEET_CATALYST_WEIGHT).toFloat())
-                    //insert element
-                    if(database.insertCatalysts(row) == false) throw Exception()
+                val dataCatalysts:  JSONArray = MySpreadsheet.getDataCatalyst(countDatabase)
+                //create batch json array which will contain parts of data
+                val batchJsonArray = JSONArray()
+                val batchSize = 500
+                for(i in 0 until (dataCatalysts.length()) step batchSize){
+                    if(batchJsonArray.isNull(i)) batchJsonArray.put(JSONArray())
+                    for(j in i until i+batchSize){
+                        if(dataCatalysts.isNull(j)) break
+                        if(checkIsRowIsAvailable(dataCatalysts.getJSONObject(j).getJSONArray("c")) == false) break
+                        (batchJsonArray[i/batchSize] as JSONArray).put(dataCatalysts[j])
+                    }
+                }
+                //iterate over batch array
+                for(i in 0 until (batchJsonArray.length())){
+                    if(database.insertCatalysts(batchJsonArray[i] as JSONArray) == false) throw Exception()
                     //update and publish state of process update
-                    progressStep = (i.toFloat()/progressAll.toFloat()) * (100).toFloat()
+                    progressStep = ((i*batchSize).toFloat()/progressAll.toFloat()) * (100).toFloat()
                     publishProgress(progressStep.toInt())
                 }
             }
@@ -142,6 +166,7 @@ class UpdateActivity : AppCompatActivity() {
                     activity_update_textview.text = MyConfiguration.INFO_UPDATE_FAILED
                 }
                 MyProcessStep.SUCCESS -> {
+                    MyConfiguration.IS_AVAILABLE_UPDATE = false
                     activity_update_progessbar.progress = 100
                     activity_update_textview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
                     activity_update_textview.text = MyConfiguration.INFO_UPDATE_SUCCESS

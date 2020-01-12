@@ -6,7 +6,7 @@
     <string name="menu_toolbar_list_update">Aktualizacja</string>
     <string name="activity_result_hint_text">Wprowadź nazwę do filtrowania</string>
     <string name="menu_toolbar_list_configuration_about">O aplikacji</string>
-    <string name="activity_about_dane_kontaktowe">Dane kontaktowe</string>
+    <string name="activity_about_dane_kontaktowe">Dane kontaktowe:</string>
     <string name="activity_about_wlasciciel">Właściciel:</string>
     <string name="activity_about_wlasciciel_value">Sławomir Szukała</string>
     <string name="activity_about_telefon">Telefon:</string>
@@ -20,17 +20,18 @@
     <string name="my_item_catalyst_platyna">Platyna:</string>
     <string name="my_item_catalyst_pallad">Pallad:</string>
     <string name="my_item_catalyst_rod">Rod:</string>
-    <string name="activity_configuration_values_dane_o_kursach_pierwiastkow">Kurs pierwiastków</string>
+    <string name="activity_configuration_values_dane_o_kursach_pierwiastkow">Kurs pierwiastków:</string>
     <string name="activity_configuration_values_pierwiastek">Pierwiastek</string>
     <string name="activity_configuration_values_wartosc">Wartość</string>
     <string name="activity_configuration_values_z_dnia">Z dnia</string>
     <string name="activity_configuration_values_platyna">platyna</string>
     <string name="activity_configuration_values_pallad">pallad</string>
     <string name="activity_configuration_values_rod">rod</string>
-    <string name="activity_configuration_values_dane_o_kursach_walut">Kurs walut</string>
+    <string name="activity_configuration_values_dane_o_kursach_walut">Kurs walut:</string>
     <string name="activity_configuration_values_dolar">USD</string>
     <string name="activity_configuration_values_euro">EUR</string>
     <string name="activity_update_pobierz_nowe_katalizatory" tools:ignore="Typos">Pobierz nowe katalizatory</string>
     <string name="activity_update_synchronizacja_baz_danych">Synchronizacja bazy danych</string>
     <string name="activity_configuration_values_waluta">Waluta</string>
+    <string name="activity_result_empty_database">Baza danych jest pusta</string>
 </resources>

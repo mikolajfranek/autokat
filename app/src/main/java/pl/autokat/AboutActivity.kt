@@ -25,7 +25,7 @@ class AboutActivity : AppCompatActivity() {
         val licenceDateOfEnd : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END)
         if(licenceDateOfEnd.isEmpty() == false) {
             activity_about_licence.isVisible = true
-            activity_about_licence.text = ("Licencja ważna do " + MyConfiguration.formatDate(licenceDateOfEnd))
+            activity_about_licence.text = ("Licencja ważna do: " + MyConfiguration.formatDate(licenceDateOfEnd))
         }
     }
 

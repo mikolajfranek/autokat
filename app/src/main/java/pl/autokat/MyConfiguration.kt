@@ -130,8 +130,8 @@ class MyConfiguration {
         val MY_SPREADSHEET_CATALYST_PLATINUM : Int = 3
         val MY_SPREADSHEET_CATALYST_PALLADIUM : Int = 4
         val MY_SPREADSHEET_CATALYST_RHODIUM : Int = 5
-        val MY_SPREADSHEET_CATALYST_TYPE : Int = 6
-        val MY_SPREADSHEET_CATALYST_WEIGHT : Int = 7
+        val MY_SPREADSHEET_CATALYST_WEIGHT : Int = 6
+        val MY_SPREADSHEET_CATALYST_TYPE : Int = 7
         val MY_SPREADSHEET_CATALYST_ID_PICTURE : Int = 8
         val MY_SPREADSHEET_CATALYST_URL_PICTURE : Int = 9
         //catalysts column letter
@@ -162,11 +162,21 @@ class MyConfiguration {
         fun parseToJsonFromResultDocsApi(text: String): JSONObject {
             return JSONObject("\\{.*\\}".toRegex().find(text)!!.value)
         }
-        fun getValueFromDocsApi(jsonArrary: JSONArray, index : Int) : String{
+        fun getValueStringFromDocsApi(jsonArrary: JSONArray, index : Int) : String{
             if(jsonArrary.isNull(index)) return ""
             val jsonObject : JSONObject = jsonArrary.getJSONObject(index)
+            if(jsonObject.isNull("f") == false){
+                return jsonObject.getString("f").replace(',', '.')
+            }
             if(jsonObject.isNull("v")) return ""
             return jsonObject.getString("v").replace("\n", " ").trim()
+        }
+        fun getValueFloatStringFromDocsApi(jsonArrary: JSONArray, index : Int) : String{
+            var stringField = this.getValueStringFromDocsApi(jsonArrary, index)
+            stringField = ("\\s+").toRegex().replace(stringField, "")
+            stringField.replace(',', '.')
+            if(stringField.isEmpty()) return "0.0"
+            return stringField
         }
 
         /* courses exchange */
@@ -221,6 +231,20 @@ class MyConfiguration {
 
         /* others */
         val REQUEST_CODE_READ_PHONE_STATE: Int = 0
+        var IS_AVAILABLE_UPDATE : Boolean = false
+        fun getIntFromString(input : String) : Int{
+            var result = ("\\s+").toRegex().replace(input, "")
+            result = result.replace(',', '.')
+            result = if(result.indexOf(",") != -1) result.substring(0, result.indexOf(",")) else result
+            var resultInt = 0
+            try{
+                resultInt = result.toInt()
+            }catch(e:Exception){
+                //noting
+            }
+            resultInt = if(resultInt < 0) 0 else resultInt
+            return resultInt
+        }
 
         /* info */
         //color
@@ -239,6 +263,10 @@ class MyConfiguration {
         val INFO_UPDATE_FAILED : String = "Wystąpił błąd podczas aktualizacji"
         val INFO_DOWNLOAD_BITMAP_WAIT: String = "Trwa pobieranie obrazu..."
         val INFO_DOWNLOAD_BITMAP_FAILED : String = "Wystąpił błąd podczas pobierania obrazu"
+        val INFO_DOWNLOAD_BITMAP_STATUS : String = "Status pobieranych miniatur"
+        val INFO_DOWNLOAD_BITMAP_SUCCESS : String = "Baza danych jest aktualna"
+        val INFO_EMPTY_DATABASE : String = "Baza danych jest pusta"
+        val INFO_DATABASE_EXPIRE : String = "Baza danych nie jest aktualna"
 
         /* methods */
         //get serial if of phone if is empty then return phone number

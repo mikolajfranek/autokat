@@ -150,11 +150,9 @@ class MainActivity : AppCompatActivity() {
                 //save licence date
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END, user.getString(MyConfiguration.MY_SPREADSHEET_USERS_LICENCE))
                 //save discount
-                //TODO only number in discount
-                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT, user.getString(MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT))
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT, MyConfiguration.getIntFromString(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT)).toString())
                 //save visibility
-                //TODO flag save only 1 or 0 (work '1','1.0')
-                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY, user.getString(MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY))
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY, MyConfiguration.getIntFromString(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY)).toString())
                 //save login
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LOGIN, login)
                 //success

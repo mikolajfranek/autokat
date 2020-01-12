@@ -24,8 +24,7 @@
         android:layout_marginRight="10dp"
         android:max="100"
         android:progress="0"
-        android:scaleY="6"
-        android:visibility="gone" />
+        android:scaleY="6" />
 
     <TextView
         android:id="@+id/activity_update_textview"
@@ -36,8 +35,7 @@
         android:fontFamily="sans-serif"
         android:gravity="center"
         android:text=""
-        android:textColor="@color/colorDarkSlateGray"
-        android:visibility="gone" />
+        android:textColor="@color/colorDarkSlateGray" />
 
     <Button
         style="@style/Widget.AppCompat.Button"

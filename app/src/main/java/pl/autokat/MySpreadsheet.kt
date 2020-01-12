@@ -1,5 +1,6 @@
 package pl.autokat
 
+import android.content.ContentValues
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.extensions.authentication
 import org.json.JSONArray
@@ -38,12 +39,12 @@ class MySpreadsheet {
             if(rows.length() != 1) return null
             val user = JSONArray()
             val element : JSONArray = rows.getJSONObject(0).getJSONArray("c")
-            user.put(MyConfiguration.getValueFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_ID))
-            user.put(MyConfiguration.getValueFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_LOGIN))
-            user.put(MyConfiguration.getValueFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_UUID))
-            user.put(MyConfiguration.getValueFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_LICENCE))
-            user.put(MyConfiguration.getValueFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT))
-            user.put(MyConfiguration.getValueFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY))
+            user.put(MyConfiguration.getValueStringFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_ID))
+            user.put(MyConfiguration.getValueStringFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_LOGIN))
+            user.put(MyConfiguration.getValueStringFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_UUID))
+            user.put(MyConfiguration.getValueStringFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_LICENCE))
+            user.put(MyConfiguration.getValueStringFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT))
+            user.put(MyConfiguration.getValueStringFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY))
             return user
         }
         //get count catalyst from database catalyst
@@ -68,25 +69,8 @@ class MySpreadsheet {
                 ))
                 .authentication().bearer(MyConfiguration.getAccessToken()).responseString()
             if(response.statusCode != 200) throw UnknownHostException()
-            val rows : JSONArray = MyConfiguration.parseToJsonFromResultDocsApi(result.get()).getJSONObject("table").getJSONArray("rows")
-            val catalysts = JSONArray()
-            if(rows.length() == 0) return catalysts
-            (0 until rows.length()).forEach { i ->
-                val row : JSONArray = rows.getJSONObject(i).getJSONArray("c")
-                val catalyst = JSONArray()
-                catalyst.put(MyConfiguration.getValueFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_ID))
-                catalyst.put(MyConfiguration.getValueFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_NAME))
-                catalyst.put(MyConfiguration.getValueFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_BRAND))
-                catalyst.put(MyConfiguration.getValueFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_PLATINUM))
-                catalyst.put(MyConfiguration.getValueFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_PALLADIUM))
-                catalyst.put(MyConfiguration.getValueFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_RHODIUM))
-                catalyst.put(MyConfiguration.getValueFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_TYPE))
-                catalyst.put(MyConfiguration.getValueFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_WEIGHT))
-                catalyst.put(MyConfiguration.getValueFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_ID_PICTURE))
-                catalyst.put(MyConfiguration.getValueFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_URL_PICTURE))
-                catalysts.put(catalyst)
-            }
-            return catalysts
+            val rows  = MyConfiguration.parseToJsonFromResultDocsApi(result.get()).getJSONObject("table").getJSONArray("rows")
+            return rows
         }
     }
 }

@@ -2,12 +2,70 @@ package pl.autokat
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteQueryBuilder
 import android.graphics.BitmapFactory
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper
+import org.json.JSONArray
+import org.json.JSONObject
 import kotlin.collections.ArrayList
 
 class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.DATABASE_NAME_OF_FILE, null, MyConfiguration.DATABASE_VERSION){
+    //update catalyst
+    fun updateCatalyst(catalystId: Int, thumbnail: ByteArray) : Boolean {
+        var result = false
+        val db = this.writableDatabase
+        try{
+            db.beginTransaction()
+            val content = ContentValues()
+            content.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_THUMBNAIL,thumbnail)
+            db.updateWithOnConflict(MyConfiguration.DATABASE_TABLE_CATALYST,  content,MyConfiguration.DATABASE_ELEMENT_CATALYST_ID + "= ?", Array(1){ i -> catalystId.toString()}, SQLiteDatabase.CONFLICT_IGNORE )
+            db.setTransactionSuccessful()
+            result = true
+        }catch (e:Exception){
+            //nothing
+        }finally {
+            db.endTransaction()
+        }
+        return result
+    }
+    //get string of jsonarray elements which they don't have thumbnail
+    fun getCatalystWithoutThumbnail(): JSONArray {
+        //set fields which will be retrieved
+        val fields = arrayOf(
+            MyConfiguration.DATABASE_ELEMENT_CATALYST_ID,
+            MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE
+        )
+        //make query
+        val queryBuilder = SQLiteQueryBuilder()
+        queryBuilder.tables = MyConfiguration.DATABASE_TABLE_CATALYST
+        val cursor = queryBuilder.query(readableDatabase, fields,
+            MyConfiguration.DATABASE_ELEMENT_CATALYST_THUMBNAIL + " IS NULL",
+            null,
+            null,
+            null,
+            null)
+        val result = JSONArray()
+        while (cursor.moveToNext()){
+            val json = JSONObject()
+            json.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID, cursor.getInt(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID)))
+            json.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE, cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE)))
+            result.put(json)
+        }
+        cursor.close()
+        return result
+    }
+    //get amount of elements which they don't have thumbnail
+    fun getCountCatalystWithThumbnail(): Int {
+        val cursor = readableDatabase.rawQuery("SELECT count(*) as count FROM " + MyConfiguration.DATABASE_TABLE_CATALYST +
+                " WHERE " + MyConfiguration.DATABASE_ELEMENT_CATALYST_THUMBNAIL + " IS NOT NULL", null)
+        var count = 0
+        if(cursor.moveToFirst()){
+            count = cursor.getInt(cursor.getColumnIndex("count"))
+        }
+        cursor.close()
+        return count
+    }
     //reset database - truncate tables
     fun resetDatabase() : Boolean {
         var result = false
@@ -27,13 +85,81 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
         return result
     }
     //insert one row of element
-    fun insertCatalysts(values : ContentValues) : Boolean {
+    fun insertCatalysts(values: JSONArray) : Boolean {
         var result = false
         val db = this.writableDatabase
         try{
             db.beginTransaction()
-            //do insert
-            db.insert(MyConfiguration.DATABASE_TABLE_CATALYST, null, values)
+            //iterate over elements (batch)
+            for(i in 0 until values.length()) {
+                val element = values.getJSONObject(i).getJSONArray("c")
+                val row = ContentValues()
+                row.put(
+                    MyConfiguration.DATABASE_ELEMENT_CATALYST_ID_PICTURE,
+                    MyConfiguration.getValueStringFromDocsApi(
+                        element,
+                        MyConfiguration.MY_SPREADSHEET_CATALYST_ID_PICTURE
+                    )
+                )
+                row.put(
+                    MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE,
+                    MyConfiguration.getValueStringFromDocsApi(
+                        element,
+                        MyConfiguration.MY_SPREADSHEET_CATALYST_URL_PICTURE
+                    )
+                )
+                row.put(
+                    MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME,
+                    MyConfiguration.getValueStringFromDocsApi(
+                        element,
+                        MyConfiguration.MY_SPREADSHEET_CATALYST_NAME
+                    )
+                )
+                row.put(
+                    MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND,
+                    MyConfiguration.getValueStringFromDocsApi(
+                        element,
+                        MyConfiguration.MY_SPREADSHEET_CATALYST_BRAND
+                    )
+                )
+                row.put(
+                    MyConfiguration.DATABASE_ELEMENT_CATALYST_PLATINUM,
+                    MyConfiguration.getValueFloatStringFromDocsApi(
+                        element,
+                        MyConfiguration.MY_SPREADSHEET_CATALYST_PLATINUM
+                    )
+                )
+                row.put(
+                    MyConfiguration.DATABASE_ELEMENT_CATALYST_PALLADIUM,
+                    MyConfiguration.getValueFloatStringFromDocsApi(
+                        element,
+                        MyConfiguration.MY_SPREADSHEET_CATALYST_PALLADIUM
+                    )
+                )
+                row.put(
+                    MyConfiguration.DATABASE_ELEMENT_CATALYST_RHODIUM,
+                    MyConfiguration.getValueFloatStringFromDocsApi(
+                        element,
+                        MyConfiguration.MY_SPREADSHEET_CATALYST_RHODIUM
+                    )
+                )
+                row.put(
+                    MyConfiguration.DATABASE_ELEMENT_CATALYST_TYPE,
+                    MyConfiguration.getValueStringFromDocsApi(
+                        element,
+                        MyConfiguration.MY_SPREADSHEET_CATALYST_TYPE
+                    )
+                )
+                row.put(
+                    MyConfiguration.DATABASE_ELEMENT_CATALYST_WEIGHT,
+                    MyConfiguration.getValueFloatStringFromDocsApi(
+                        element,
+                        MyConfiguration.MY_SPREADSHEET_CATALYST_WEIGHT
+                    )
+                )
+                //insert element
+                db.insert(MyConfiguration.DATABASE_TABLE_CATALYST, null, row)
+            }
             db.setTransactionSuccessful()
             result = true
         }catch (e:Exception){
