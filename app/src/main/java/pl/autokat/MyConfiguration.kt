@@ -10,14 +10,11 @@ import com.github.kittinunf.fuel.Fuel
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
-import io.jsonwebtoken.security.Keys
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
 import java.net.UnknownHostException
-import java.security.Key
 import java.security.KeyFactory
-import java.security.PrivateKey
 import java.security.interfaces.RSAPrivateKey
 import java.security.spec.PKCS8EncodedKeySpec
 import java.text.SimpleDateFormat
@@ -27,7 +24,8 @@ import java.util.*
 class MyConfiguration {
     companion object {
         /* production mode = true / development mode = false */
-        val PRODUCTION : Boolean = false
+        val PRODUCTION : Boolean = true
+        val VERSION_APP : String = "1.0.0"
 
         /* creating access token */
         private val GOOGLE_TOKEN_URL : String = "https://oauth2.googleapis.com/token"
@@ -141,8 +139,8 @@ class MyConfiguration {
         val MY_SPREADSHEET_CATALYST_COLUMN_PLATTINUM : String = "D"
         val MY_SPREADSHEET_CATALYST_COLUMN_PALLADIUM : String = "E"
         val MY_SPREADSHEET_CATALYST_COLUMN_RHODIUM : String = "F"
-        val MY_SPREADSHEET_CATALYST_COLUMN_TYPE : String = "G"
-        val MY_SPREADSHEET_CATALYST_COLUMN_WEIGHT : String = "H"
+        val MY_SPREADSHEET_CATALYST_COLUMN_WEIGHT : String = "G"
+        val MY_SPREADSHEET_CATALYST_COLUMN_TYPE : String = "H"
         val MY_SPREADSHEET_CATALYST_COLUMN_ID_PICTURE : String = "I"
         val MY_SPREADSHEET_CATALYST_COLUMN_URL_PICTURE : String = "J"
 
@@ -245,6 +243,12 @@ class MyConfiguration {
             resultInt = if(resultInt < 0) 0 else resultInt
             return resultInt
         }
+        fun getIntFromEnumBoolean(input : String) : Int{
+            val result = ("[^a-zA-Z]").toRegex().replace(input, "")
+            if(result.equals("tak")) return 1
+            return 0
+        }
+
 
         /* info */
         //color
@@ -269,6 +273,14 @@ class MyConfiguration {
         val INFO_DATABASE_EXPIRE : String = "Baza danych nie jest aktualna"
 
         /* methods */
+        //decorator for delete others signs
+        fun decoratorIdentificatorOfUser(applicationContext: Context): String{
+            var identificator : String = this.getIdentificatorOfUser(applicationContext)
+            identificator = ("[^A-Za-z0-9]+").toRegex().replace(identificator, "")
+            //return if is not empty
+            if(identificator.isEmpty() == false) return identificator
+            throw Exception()
+        }
         //get serial if of phone if is empty then return phone number
         @SuppressLint("MissingPermission", "HardwareIds")
         fun getIdentificatorOfUser(applicationContext: Context): String{

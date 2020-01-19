@@ -137,7 +137,7 @@ class MainActivity : AppCompatActivity() {
                 /* checking time */
                 if(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_LICENCE).isEmpty() || MyConfiguration.checkTimeOnPhone(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_LICENCE), MyTimeChecking.PARAMETER_IS_GREATER_THAN_NOW) == false) return MyProcessStep.USER_ELAPSED_DATE_LICENCE
                 //read serial id from phone
-                val serialId : String = MyConfiguration.getIdentificatorOfUser(applicationContext)
+                val serialId : String = MyConfiguration.decoratorIdentificatorOfUser(applicationContext)
                 //check if serial id is correct or save serial id to database
                 if(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_UUID).isEmpty()){
                     //save serial id
@@ -152,7 +152,7 @@ class MainActivity : AppCompatActivity() {
                 //save discount
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT, MyConfiguration.getIntFromString(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT)).toString())
                 //save visibility
-                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY, MyConfiguration.getIntFromString(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY)).toString())
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY, MyConfiguration.getIntFromEnumBoolean(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY)).toString())
                 //save login
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LOGIN, login)
                 //success

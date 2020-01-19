@@ -27,6 +27,7 @@ class AboutActivity : AppCompatActivity() {
             activity_about_licence.isVisible = true
             activity_about_licence.text = ("Licencja ważna do: " + MyConfiguration.formatDate(licenceDateOfEnd))
         }
+        activity_about_version.text = ("Wersja aplikacji: " + MyConfiguration.VERSION_APP)
     }
 
     //navigate up

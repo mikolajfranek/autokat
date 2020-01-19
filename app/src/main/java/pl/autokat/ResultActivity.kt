@@ -2,16 +2,12 @@ package pl.autokat
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.opengl.Visibility
 import android.os.AsyncTask
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.view.View.OnLongClickListener
-import android.view.ViewGroup
 import android.widget.AbsListView
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -37,6 +33,9 @@ class ResultActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result)
+
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
         //set toolbar
         setSupportActionBar(toolbar as Toolbar?)
         //navigate up
@@ -66,7 +65,7 @@ class ResultActivity : AppCompatActivity() {
                 //item thumbnail
                 view.item_picture.setImageBitmap(itemCatalyst.thumbnail)
                 view.item_picture.setOnLongClickListener(OnLongClickListener {
-                    Toast.makeText(applicationContext, itemCatalyst.idPicture, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, itemCatalyst.idPicture, Toast.LENGTH_LONG).show()
                     return@OnLongClickListener true
                 })
                 view.item_picture.setOnClickListener {
@@ -247,7 +246,7 @@ class ResultActivity : AppCompatActivity() {
                 //save discount
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT, MyConfiguration.getIntFromString(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT)).toString())
                 //save visibility
-                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY, MyConfiguration.getIntFromString(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY)).toString())
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY, MyConfiguration.getIntFromEnumBoolean(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY)).toString())
                 //can run service - assuming that app has connection to internet
                 ServiceOfThumbnail.enqueueWork(applicationContext)
             }catch(e: Exception){

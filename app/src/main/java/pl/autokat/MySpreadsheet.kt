@@ -12,7 +12,7 @@ class MySpreadsheet {
         /* sheet api v4 */
         //save serial id in database login
         fun saveSerialId(userId: Int, serialId: String) {
-            val sheetCell : String  = "Arkusz1!" + MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_UUID + ((userId+1).toString())
+            val sheetCell : String  = "użytkownicy!" + MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_UUID + ((userId+1).toString())
             val bodyJson = """{"range": "$sheetCell", "majorDimension": "ROWS", "values": [["$serialId"]]}"""
             val (_, response, result) = Fuel.put(MyConfiguration.MY_SPREADSHEET_URL_PREFIX_SHEETS_API + MySecret.getSpreadsheetIdLogin() + "/values/$sheetCell",
                 listOf(
@@ -31,7 +31,11 @@ class MySpreadsheet {
             val (_, response, result) = Fuel.get(MyConfiguration.MY_SPREADSHEET_LOGIN_URL_DOCS_API,
                 listOf(
                     MyConfiguration.MY_SPREADSHEET_PARAMETER_JSON to MyConfiguration.MY_SPREADSHEET_PARAMETER_JSON_VALUE,
-                    MyConfiguration.MY_SPREADSHEET_PARAMETER_WHERE to "select * where ${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_LOGIN}='$login'"
+                    MyConfiguration.MY_SPREADSHEET_PARAMETER_WHERE to "select * where ${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_LOGIN}='$login' AND " +
+                            "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_ID} IS NOT NULL AND " +
+                            "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_LICENCE} IS NOT NULL AND " +
+                            "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_DISCOUNT} IS NOT NULL AND " +
+                            "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_VISIBILITY} IS NOT NULL"
                 ))
                 .authentication().bearer(MyConfiguration.getAccessToken()).responseString()
             if(response.statusCode != 200) throw UnknownHostException()
@@ -47,12 +51,20 @@ class MySpreadsheet {
             user.put(MyConfiguration.getValueStringFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY))
             return user
         }
+
         //get count catalyst from database catalyst
         fun getCountCatalyst(): Int {
             val (_, response, result) = Fuel.get(MyConfiguration.MY_SPREADSHEET_CATALYST_URL_DOCS_API,
                 listOf(
                     MyConfiguration.MY_SPREADSHEET_PARAMETER_JSON to MyConfiguration.MY_SPREADSHEET_PARAMETER_JSON_VALUE,
-                    MyConfiguration.MY_SPREADSHEET_PARAMETER_WHERE to "select count(${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_ID})"
+                    MyConfiguration.MY_SPREADSHEET_PARAMETER_WHERE to "select count(${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_ID}) where " +
+                            "${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_ID} IS NOT NULL AND " +
+                            "${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_BRAND} IS NOT NULL AND " +
+                            "${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_PLATTINUM} IS NOT NULL AND " +
+                            "${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_PALLADIUM} IS NOT NULL AND " +
+                            "${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_RHODIUM} IS NOT NULL AND " +
+                            "${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_WEIGHT} IS NOT NULL AND " +
+                            "${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_TYPE} IS NOT NULL"
                 ))
                 .authentication().bearer(MyConfiguration.getAccessToken()).responseString()
             if(response.statusCode != 200) throw UnknownHostException()
