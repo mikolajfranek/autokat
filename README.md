@@ -7,4 +7,4 @@ sudo /home/ubuntu/android-studio/bin/studio.sh
 /root/Android/Sdk/emulator/emulator -avd api29
 
 #### create file *.jks for deploy app
-keytool -genkey -keyalg RSA -keystore KeyStore.jks -keysize 2048
+keytool -genkey -keyalg RSA -keystore keystore.jks -keysize 2048
