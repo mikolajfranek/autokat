@@ -73,11 +73,12 @@ class UpdateActivity : AppCompatActivity() {
     //checking if row from spreadsheet is available
     fun checkIfRowIsAvailable(row: JSONArray): Boolean{
         val result : Boolean = MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_ID).isEmpty() == false &&
-        MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_PLATINUM).isEmpty() == false &&
-        MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_PALLADIUM).isEmpty() == false &&
-        MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_RHODIUM).isEmpty() == false &&
-        MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_WEIGHT).isEmpty() == false &&
-        MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_TYPE).isEmpty() == false
+                MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_BRAND).isEmpty() == false &&
+                MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_PLATINUM).isEmpty() == false &&
+                MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_PALLADIUM).isEmpty() == false &&
+                MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_RHODIUM).isEmpty() == false &&
+                MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_WEIGHT).isEmpty() == false &&
+                MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_TYPE).isEmpty() == false
         return result
     }
 
@@ -124,7 +125,7 @@ class UpdateActivity : AppCompatActivity() {
                     if(batchJsonArray.isNull(i)) batchJsonArray.put(JSONArray())
                     for(j in i until i+batchSize){
                         if(dataCatalysts.isNull(j)) break
-                        if(checkIfRowIsAvailable(dataCatalysts.getJSONObject(j).getJSONArray("c")) == false) break
+                        if(checkIfRowIsAvailable(dataCatalysts.getJSONObject(j).getJSONArray("c")) == false) throw Exception()
                         (batchJsonArray[i/batchSize] as JSONArray).put(dataCatalysts[j])
                     }
                 }

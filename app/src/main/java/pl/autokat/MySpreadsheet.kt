@@ -33,6 +33,7 @@ class MySpreadsheet {
                     MyConfiguration.MY_SPREADSHEET_PARAMETER_JSON to MyConfiguration.MY_SPREADSHEET_PARAMETER_JSON_VALUE,
                     MyConfiguration.MY_SPREADSHEET_PARAMETER_WHERE to "select * where ${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_LOGIN}='$login' AND " +
                             "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_ID} IS NOT NULL AND " +
+                            "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_LOGIN} IS NOT NULL AND " +
                             "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_LICENCE} IS NOT NULL AND " +
                             "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_DISCOUNT} IS NOT NULL AND " +
                             "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_VISIBILITY} IS NOT NULL"
