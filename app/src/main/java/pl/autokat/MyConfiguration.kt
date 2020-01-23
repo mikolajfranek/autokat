@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Build
+import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.util.Base64
 import com.github.kittinunf.fuel.Fuel
@@ -305,7 +306,6 @@ class MyConfiguration {
             }
             //return if phone number is not empty
             if(serialId.isEmpty() == false) return serialId
-            //sim serial id section
             //phone number section
             try{
                 serialId = (applicationContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
@@ -313,6 +313,14 @@ class MyConfiguration {
                 //nothing
             }
             //return if sim id is not empty
+            if(serialId.isEmpty() == false) return serialId
+            //android id for android > 10
+            try{
+                serialId = Settings.Secure.getString(applicationContext.contentResolver, Settings.Secure.ANDROID_ID)
+            }catch(e: Exception){
+                //nothing
+            }
+            //return if is not empty
             if(serialId.isEmpty() == false) return serialId
             throw Exception()
         }
