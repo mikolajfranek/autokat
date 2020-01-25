@@ -14,6 +14,9 @@ import java.net.UnknownHostException
 class UpdateActivity : AppCompatActivity() {
     //fields
     private lateinit var database: MyDatabase
+    private var refreshingDatabase : Boolean = false
+    private var refreshingWork : Boolean = false
+
     //oncreate
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,12 +35,13 @@ class UpdateActivity : AppCompatActivity() {
         finish()
         return true
     }
+    override fun onPause(){
+        super.onPause()
+        this.refreshingDatabase = false
+    }
     //onresume
     override fun onResume() {
         super.onResume()
-
-
-
         val itemsWithThumbnail : Int = database.getCountCatalystWithThumbnail()
         val itemsFromDatabase : Int = database.getCountCatalyst()
         activity_update_progessbar.progress = ((itemsWithThumbnail.toFloat()/itemsFromDatabase.toFloat())*100.toFloat()).toInt()
@@ -50,6 +54,10 @@ class UpdateActivity : AppCompatActivity() {
             }else{
                 if(itemsWithThumbnail/itemsFromDatabase != 1){
                     activity_update_textview.text = (MyConfiguration.INFO_DOWNLOAD_BITMAP_STATUS + " (" + itemsWithThumbnail + "/" + itemsFromDatabase+ ")")
+                    //make async task and execute - refresh state of downloading
+                    this.refreshingDatabase = true
+                    val task = RefreshUpdateCatalyst()
+                    task.execute()
                 }else{
                     activity_update_textview.text = MyConfiguration.INFO_DOWNLOAD_BITMAP_SUCCESS
                 }
@@ -72,14 +80,38 @@ class UpdateActivity : AppCompatActivity() {
     }
     //checking if row from spreadsheet is available
     fun checkIfRowIsAvailable(row: JSONArray): Boolean{
-        val result : Boolean = MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_ID).isEmpty() == false &&
-                MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_BRAND).isEmpty() == false &&
-                MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_PLATINUM).isEmpty() == false &&
-                MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_PALLADIUM).isEmpty() == false &&
-                MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_RHODIUM).isEmpty() == false &&
-                MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_WEIGHT).isEmpty() == false &&
-                MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_TYPE).isEmpty() == false
+        val result : Boolean = MyConfiguration.getValueStringFromDocsApi(row, MyConfiguration.MY_SPREADSHEET_CATALYST_ID).isEmpty() == false
         return result
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    inner class RefreshUpdateCatalyst() : AsyncTask<Void, Int, MyProcessStep>() {
+        //do in async mode - in here can't modify user interface
+        override fun doInBackground(vararg p0: Void?): MyProcessStep {
+            try{
+                //very very primitive and not atomic
+                val state : Boolean = refreshingDatabase && refreshingWork == false
+                if(state == false) return MyProcessStep.SUCCESS
+                refreshingWork = true
+                while(refreshingDatabase){
+                    Thread.sleep(1000)
+                    val itemsWithThumbnail : Int = database.getCountCatalystWithThumbnail()
+                    val itemsFromDatabase : Int = database.getCountCatalyst()
+                    publishProgress(itemsWithThumbnail, itemsFromDatabase)
+                }
+                refreshingWork = false
+            }
+            catch(e: Exception){
+                return MyProcessStep.UNHANDLED_EXCEPTION
+            }
+            return MyProcessStep.SUCCESS
+        }
+        //on progress update
+        override fun onProgressUpdate(vararg values: Int?) {
+            super.onProgressUpdate(*values)
+            activity_update_textview.text = (MyConfiguration.INFO_DOWNLOAD_BITMAP_STATUS + " (" + values[0]!!.toString() + "/" + values[1]!!.toString()+ ")")
+            activity_update_progessbar.progress = ((values[0]!!.toFloat()/values[1]!!.toFloat())*100.toFloat()).toInt()
+        }
     }
 
     //async class which check if exists update of app and update it

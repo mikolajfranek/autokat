@@ -33,6 +33,7 @@ class ServiceOfThumbnail : JobIntentService() {
             for (i in 0 until items.length()){
                 val id : Int = (items[i] as JSONObject).getInt(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID)
                 val urlSharedPicture : String = (items[i] as JSONObject).getString(MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE)
+                if(urlSharedPicture.isEmpty()) continue
                 val urlPicture = MyConfiguration.getPictureUrlFromGoogle(urlSharedPicture, 128, 128)
                 if(database.updateCatalyst(id, URL(urlPicture).readBytes()) == false) throw Exception()
             }

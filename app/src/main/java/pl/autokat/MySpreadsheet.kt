@@ -25,6 +25,7 @@ class MySpreadsheet {
             val resultJson = JSONObject(result.get())
             if(resultJson.getInt("updatedRows") != 1 || resultJson.getInt("updatedColumns") != 1 || resultJson.getInt("updatedCells") != 1) throw Exception()
         }
+
         /* docs api */
         //get login from database login
         fun getDataLogin(login: String) : JSONArray? {
@@ -59,13 +60,7 @@ class MySpreadsheet {
                 listOf(
                     MyConfiguration.MY_SPREADSHEET_PARAMETER_JSON to MyConfiguration.MY_SPREADSHEET_PARAMETER_JSON_VALUE,
                     MyConfiguration.MY_SPREADSHEET_PARAMETER_WHERE to "select count(${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_ID}) where " +
-                            "${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_ID} IS NOT NULL AND " +
-                            "${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_BRAND} IS NOT NULL AND " +
-                            "${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_PLATTINUM} IS NOT NULL AND " +
-                            "${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_PALLADIUM} IS NOT NULL AND " +
-                            "${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_RHODIUM} IS NOT NULL AND " +
-                            "${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_WEIGHT} IS NOT NULL AND " +
-                            "${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_TYPE} IS NOT NULL"
+                            "${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_ID} IS NOT NULL"
                 ))
                 .authentication().bearer(MyConfiguration.getAccessToken()).responseString()
             if(response.statusCode != 200) throw UnknownHostException()

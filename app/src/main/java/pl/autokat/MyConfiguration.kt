@@ -25,7 +25,7 @@ import java.util.*
 class MyConfiguration {
     companion object {
         /* production mode = true / development mode = false */
-        val PRODUCTION : Boolean = true
+        val PRODUCTION : Boolean = false
         val VERSION_APP : String = "1.0.0"
 
         /* creating access token */
