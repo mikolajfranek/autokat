@@ -12,7 +12,7 @@
     <string name="activity_about_telefon">Telefon:</string>
     <string name="activity_about_telefon_value">510–076–585</string>
     <string name="activity_about_email">Email:</string>
-    <string name="activity_about_email_value">autokatt@wp.pl</string>
+    <string name="activity_about_email_value">autokat.katalizatory@gmail.com</string>
     <string name="activity_about_stronawww">Strona:</string>
     <string name="activity_about_stronawww_value">katalizatorypoznan.pl</string>
     <string name="my_item_catalyst_marka">Marka:</string>
@@ -20,8 +20,8 @@
     <string name="my_item_catalyst_platyna">Platyna:</string>
     <string name="my_item_catalyst_pallad">Pallad:</string>
     <string name="my_item_catalyst_rod">Rod:</string>
-    <string name="activity_configuration_values_dane_o_kursach_pierwiastkow">Kurs pierwiastków:</string>
-    <string name="activity_configuration_values_pierwiastek">Pierwiastek</string>
+    <string name="activity_configuration_values_dane_o_kursach_metali">Kurs metali:</string>
+    <string name="activity_configuration_values_metali">Metal</string>
     <string name="activity_configuration_values_wartosc">Wartość</string>
     <string name="activity_configuration_values_z_dnia">Z dnia</string>
     <string name="activity_configuration_values_platyna">platyna</string>

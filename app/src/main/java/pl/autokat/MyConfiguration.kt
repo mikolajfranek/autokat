@@ -262,7 +262,7 @@ class MyConfiguration {
         val INFO_MESSAGE_USER_FAILED_LOGIN: String = "Błędna nazwa użytkownika"
         val INFO_MESSAGE_USER_FAILED_SERIAL: String = "Błędne urządzenie"
         val INFO_MESSAGE_NETWORK_FAILED : String = "Brak połączenia"
-        val INFO_MESSAGE_UNHANDLED_EXCEPTION : String = "Wystąpił nieobsłużony błąd"
+        val INFO_MESSAGE_UNHANDLED_EXCEPTION : String = "Wystąpił błąd"
         val INFO_MESSAGE_WAIT_UPDATE : String = "Trwa aktualizacja...."
         val INFO_UPDATE_SUCCESS : String = "Aktualizacja przebiegła pomyślnie"
         val INFO_UPDATE_FAILED : String = "Wystąpił błąd podczas aktualizacji"
@@ -277,7 +277,7 @@ class MyConfiguration {
         //decorator for delete others signs
         fun decoratorIdentificatorOfUser(applicationContext: Context): String{
             var identificator : String = this.getIdentificatorOfUser(applicationContext)
-            identificator = ("[^A-Za-z0-9]+").toRegex().replace(identificator, "")
+            identificator = ("[^A-Za+-z0-9]+").toRegex().replace(identificator, "")
             //return if is not empty
             if(identificator.isEmpty() == false) return identificator
             throw Exception()
