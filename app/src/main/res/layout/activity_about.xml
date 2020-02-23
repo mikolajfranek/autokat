@@ -20,7 +20,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:fontFamily="sans-serif"
-        android:textColor="@color/colorDarkSlateGray"
+        android:textColor="@color/colorUser"
         android:visibility="gone" />
 
     <TextView
@@ -31,7 +31,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:fontFamily="sans-serif"
-        android:textColor="@color/colorDarkSlateGray" />
+        android:textColor="@color/colorUser" />
 
     <TextView
         android:layout_width="match_parent"
@@ -39,7 +39,7 @@
         android:layout_margin="10dp"
         android:fontFamily="sans-serif"
         android:text="@string/activity_about_dane_kontaktowe"
-        android:textColor="@color/colorDarkSlateGray" />
+        android:textColor="@color/colorUser" />
 
     <TableLayout
         android:layout_width="match_parent"
@@ -59,13 +59,13 @@
                 android:fontFamily="sans-serif"
                 android:gravity="end"
                 android:text="@string/activity_about_wlasciciel"
-                android:textColor="@color/colorDarkSlateGray" />
+                android:textColor="@color/colorUser" />
 
             <TextView
                 android:layout_weight="4"
                 android:fontFamily="sans-serif"
                 android:text="@string/activity_about_wlasciciel_value"
-                android:textColor="@color/colorDarkSlateGray" />
+                android:textColor="@color/colorUser" />
         </TableRow>
 
         <TableRow
@@ -83,14 +83,14 @@
                 android:fontFamily="sans-serif"
                 android:gravity="end"
                 android:text="@string/activity_about_telefon"
-                android:textColor="@color/colorDarkSlateGray" />
+                android:textColor="@color/colorUser" />
 
             <TextView
                 android:layout_weight="4"
                 android:autoLink="phone"
                 android:fontFamily="sans-serif"
                 android:text="@string/activity_about_telefon_value"
-                android:textColor="@color/colorDarkSlateGray"
+                android:textColor="@color/colorUser"
                 android:textColorHighlight="@color/colorHighLight" />
         </TableRow>
 
@@ -109,14 +109,14 @@
                 android:fontFamily="sans-serif"
                 android:gravity="end"
                 android:text="@string/activity_about_email"
-                android:textColor="@color/colorDarkSlateGray" />
+                android:textColor="@color/colorUser" />
 
             <TextView
                 android:layout_weight="4"
                 android:autoLink="email"
                 android:fontFamily="sans-serif"
                 android:text="@string/activity_about_email_value"
-                android:textColor="@color/colorDarkSlateGray"
+                android:textColor="@color/colorUser"
                 android:textColorHighlight="@color/colorHighLight" />
         </TableRow>
 
@@ -135,14 +135,14 @@
                 android:fontFamily="sans-serif"
                 android:gravity="end"
                 android:text="@string/activity_about_stronawww"
-                android:textColor="@color/colorDarkSlateGray" />
+                android:textColor="@color/colorUser" />
 
             <TextView
                 android:layout_weight="4"
                 android:autoLink="web"
                 android:fontFamily="sans-serif"
                 android:text="@string/activity_about_stronawww_value"
-                android:textColor="@color/colorDarkSlateGray"
+                android:textColor="@color/colorUser"
                 android:textColorHighlight="@color/colorHighLight" />
         </TableRow>
     </TableLayout>

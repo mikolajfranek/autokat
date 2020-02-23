@@ -18,7 +18,7 @@
         android:layout_margin="10dp"
         android:fontFamily="sans-serif"
         android:text="@string/activity_configuration_values_dane_o_kursach_metali"
-        android:textColor="@color/colorDarkSlateGray" />
+        android:textColor="@color/colorUser" />
 
     <TableLayout
         android:layout_width="match_parent"
@@ -36,21 +36,21 @@
                 android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:text="@string/activity_configuration_values_metali"
-                android:textColor="@color/colorDarkSlateGray" />
+                android:textColor="@color/colorUser" />
 
             <TextView
                 android:layout_weight="4"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:text="@string/activity_configuration_values_wartosc"
-                android:textColor="@color/colorDarkSlateGray" />
+                android:textColor="@color/colorUser" />
 
             <TextView
                 android:layout_weight="1"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:text="@string/activity_configuration_values_z_dnia"
-                android:textColor="@color/colorDarkSlateGray" />
+                android:textColor="@color/colorUser" />
         </TableRow>
 
         <TableRow
@@ -66,7 +66,7 @@
                 android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:text="@string/activity_configuration_values_platyna"
-                android:textColor="@color/colorDarkSlateGray" />
+                android:textColor="@color/colorUser" />
 
             <TextView
                 android:id="@+id/activity_configuration_values_element_platinum"
@@ -80,7 +80,7 @@
                 android:layout_weight="1"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:textColor="@color/colorDarkSlateGray" />
+                android:textColor="@color/colorUser" />
         </TableRow>
 
         <TableRow
@@ -96,7 +96,7 @@
                 android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:text="@string/activity_configuration_values_pallad"
-                android:textColor="@color/colorDarkSlateGray" />
+                android:textColor="@color/colorUser" />
 
             <TextView
                 android:id="@+id/activity_configuration_values_element_palladium"
@@ -110,7 +110,7 @@
                 android:layout_weight="1"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:textColor="@color/colorDarkSlateGray" />
+                android:textColor="@color/colorUser" />
         </TableRow>
 
         <TableRow
@@ -126,7 +126,7 @@
                 android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:text="@string/activity_configuration_values_rod"
-                android:textColor="@color/colorDarkSlateGray" />
+                android:textColor="@color/colorUser" />
 
             <TextView
                 android:id="@+id/activity_configuration_values_element_rhodium"
@@ -140,7 +140,7 @@
                 android:layout_weight="1"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:textColor="@color/colorDarkSlateGray" />
+                android:textColor="@color/colorUser" />
         </TableRow>
     </TableLayout>
 
@@ -153,7 +153,7 @@
         android:layout_marginBottom="10dp"
         android:fontFamily="sans-serif"
         android:text="@string/activity_configuration_values_dane_o_kursach_walut"
-        android:textColor="@color/colorDarkSlateGray" />
+        android:textColor="@color/colorUser" />
 
     <TableLayout
         android:layout_width="match_parent"
@@ -171,21 +171,21 @@
                 android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:text="@string/activity_configuration_values_waluta"
-                android:textColor="@color/colorDarkSlateGray" />
+                android:textColor="@color/colorUser" />
 
             <TextView
                 android:layout_weight="4"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:text="@string/activity_configuration_values_wartosc"
-                android:textColor="@color/colorDarkSlateGray" />
+                android:textColor="@color/colorUser" />
 
             <TextView
                 android:layout_weight="1"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:text="@string/activity_configuration_values_z_dnia"
-                android:textColor="@color/colorDarkSlateGray" />
+                android:textColor="@color/colorUser" />
         </TableRow>
 
         <TableRow
@@ -201,7 +201,7 @@
                 android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:text="@string/activity_configuration_values_euro"
-                android:textColor="@color/colorDarkSlateGray" />
+                android:textColor="@color/colorUser" />
 
             <TextView
                 android:id="@+id/activity_configuration_values_element_eur_pln"
@@ -215,7 +215,7 @@
                 android:layout_weight="1"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:textColor="@color/colorDarkSlateGray" />
+                android:textColor="@color/colorUser" />
         </TableRow>
 
         <TableRow
@@ -231,7 +231,7 @@
                 android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:text="@string/activity_configuration_values_dolar"
-                android:textColor="@color/colorDarkSlateGray" />
+                android:textColor="@color/colorUser" />
 
             <TextView
                 android:id="@+id/activity_configuration_values_element_usd_pln"
@@ -245,7 +245,7 @@
                 android:layout_weight="1"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:textColor="@color/colorDarkSlateGray" />
+                android:textColor="@color/colorUser" />
         </TableRow>
     </TableLayout>
 </LinearLayout>

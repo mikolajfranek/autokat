@@ -29,7 +29,7 @@
             android:layout_weight="1"
             android:width="0dp"
             android:fontFamily="sans-serif"
-            android:textColor="@color/colorDarkSlateGray" />
+            android:textColor="@color/colorUser" />
 
         <TextView
             android:id="@+id/item_type"
@@ -53,7 +53,7 @@
             android:fontFamily="sans-serif"
             android:gravity="end"
             android:text="@string/my_item_catalyst_marka"
-            android:textColor="@color/colorDarkSlateGray" />
+            android:textColor="@color/colorUser" />
 
         <TextView
             android:id="@+id/item_brand"
@@ -61,7 +61,7 @@
             android:layout_weight="1"
             android:width="0dp"
             android:fontFamily="sans-serif"
-            android:textColor="@color/colorDarkSlateGray" />
+            android:textColor="@color/colorUser" />
 
         <TextView
             android:id="@+id/item_price_notvisibility_eur"
@@ -87,7 +87,7 @@
             android:fontFamily="sans-serif"
             android:gravity="end"
             android:text="@string/my_item_catalyst_waga"
-            android:textColor="@color/colorDarkSlateGray" />
+            android:textColor="@color/colorUser" />
 
         <TextView
             android:id="@+id/item_weight"
@@ -95,7 +95,7 @@
             android:layout_weight="1"
             android:width="0dp"
             android:fontFamily="sans-serif"
-            android:textColor="@color/colorDarkSlateGray" />
+            android:textColor="@color/colorUser" />
 
         <TextView
             android:id="@+id/item_price_notvisibility_pln"
@@ -122,7 +122,7 @@
             android:fontFamily="sans-serif"
             android:gravity="end"
             android:text="@string/my_item_catalyst_platyna"
-            android:textColor="@color/colorDarkSlateGray" />
+            android:textColor="@color/colorUser" />
 
         <TextView
             android:id="@+id/item_platinum"
@@ -130,7 +130,7 @@
             android:layout_weight="1"
             android:width="0dp"
             android:fontFamily="sans-serif"
-            android:textColor="@color/colorDarkSlateGray" />
+            android:textColor="@color/colorUser" />
     </TableRow>
 
     <TableRow
@@ -150,7 +150,7 @@
             android:fontFamily="sans-serif"
             android:gravity="end"
             android:text="@string/my_item_catalyst_pallad"
-            android:textColor="@color/colorDarkSlateGray" />
+            android:textColor="@color/colorUser" />
 
         <TextView
             android:id="@+id/item_palladium"
@@ -158,7 +158,7 @@
             android:layout_weight="1"
             android:width="0dp"
             android:fontFamily="sans-serif"
-            android:textColor="@color/colorDarkSlateGray" />
+            android:textColor="@color/colorUser" />
 
         <TextView
             android:id="@+id/item_price_visibility_eur"
@@ -185,7 +185,7 @@
             android:fontFamily="sans-serif"
             android:gravity="end"
             android:text="@string/my_item_catalyst_rod"
-            android:textColor="@color/colorDarkSlateGray" />
+            android:textColor="@color/colorUser" />
 
         <TextView
             android:id="@+id/item_rhodium"
@@ -193,7 +193,7 @@
             android:layout_weight="1"
             android:width="0dp"
             android:fontFamily="sans-serif"
-            android:textColor="@color/colorDarkSlateGray" />
+            android:textColor="@color/colorUser" />
 
         <TextView
             android:id="@+id/item_price_visibility_pln"

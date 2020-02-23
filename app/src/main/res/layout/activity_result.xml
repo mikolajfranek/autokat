@@ -28,7 +28,7 @@
         android:inputType="text"
         android:padding="10dp"
         android:text=""
-        android:textColor="@color/colorLightSlateGray"
+        android:textColor="@color/colorUser"
         android:importantForAutofill="no" />
 
     <ListView
@@ -47,6 +47,6 @@
         android:fontFamily="sans-serif"
         android:gravity="center"
         android:text="@string/activity_result_empty_database"
-        android:textColor="@color/colorDarkSlateGray" />
+        android:textColor="@color/colorUser" />
 
 </LinearLayout>

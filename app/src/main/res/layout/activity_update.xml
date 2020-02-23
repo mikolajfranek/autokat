@@ -35,7 +35,7 @@
         android:fontFamily="sans-serif"
         android:gravity="center"
         android:text=""
-        android:textColor="@color/colorDarkSlateGray" />
+        android:textColor="@color/colorUser" />
 
     <Button
         style="@style/Widget.AppCompat.Button"

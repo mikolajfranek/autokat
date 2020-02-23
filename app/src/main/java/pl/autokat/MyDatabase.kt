@@ -180,7 +180,9 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
         return count
     }
     //get data catalysts
-    fun getDataCatalyst(nameCatalystOrBrandCar: String, limitElements: String): ArrayList<MyItemCatalyst> {
+    fun getDataCatalyst(nameCatalystOrBrandCarInput: String, limitElements: String): ArrayList<MyItemCatalyst> {
+        //change space on other sign
+        val nameCatalystOrBrandCar = nameCatalystOrBrandCarInput.replace(' ', '%')
         //set fields which will be retrieved
         val fields = arrayOf(
             MyConfiguration.DATABASE_ELEMENT_CATALYST_ID,
@@ -199,7 +201,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
         val queryBuilder = SQLiteQueryBuilder()
         queryBuilder.tables = MyConfiguration.DATABASE_TABLE_CATALYST
         val cursor = queryBuilder.query(readableDatabase, fields,
-            (MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME + " LIKE ? OR " +  MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND + " LIKE ?"),
+            (MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME  + " LIKE ? OR " +  MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND + " LIKE ?"),
              Array(2){ i -> ("%$nameCatalystOrBrandCar%")},
             null,
             null,

@@ -26,7 +26,7 @@ class MyConfiguration {
     companion object {
         /* production mode = true / development mode = false */
         val PRODUCTION : Boolean = false
-        val VERSION_APP : String = "1.0.0"
+        val VERSION_APP : String = "1.0.1"
 
         /* creating access token */
         private val GOOGLE_TOKEN_URL : String = "https://oauth2.googleapis.com/token"
@@ -126,10 +126,10 @@ class MyConfiguration {
         val MY_SPREADSHEET_CATALYST_ID : Int = 0
         val MY_SPREADSHEET_CATALYST_NAME : Int = 1
         val MY_SPREADSHEET_CATALYST_BRAND : Int = 2
-        val MY_SPREADSHEET_CATALYST_PLATINUM : Int = 3
-        val MY_SPREADSHEET_CATALYST_PALLADIUM : Int = 4
-        val MY_SPREADSHEET_CATALYST_RHODIUM : Int = 5
-        val MY_SPREADSHEET_CATALYST_WEIGHT : Int = 6
+        val MY_SPREADSHEET_CATALYST_WEIGHT : Int = 3
+        val MY_SPREADSHEET_CATALYST_PLATINUM : Int = 4
+        val MY_SPREADSHEET_CATALYST_PALLADIUM : Int = 5
+        val MY_SPREADSHEET_CATALYST_RHODIUM : Int = 6
         val MY_SPREADSHEET_CATALYST_TYPE : Int = 7
         val MY_SPREADSHEET_CATALYST_ID_PICTURE : Int = 8
         val MY_SPREADSHEET_CATALYST_URL_PICTURE : Int = 9
@@ -137,10 +137,10 @@ class MyConfiguration {
         val MY_SPREADSHEET_CATALYST_COLUMN_ID : String = "A"
         val MY_SPREADSHEET_CATALYST_COLUMN_NAME : String = "B"
         val MY_SPREADSHEET_CATALYST_COLUMN_BRAND : String = "C"
-        val MY_SPREADSHEET_CATALYST_COLUMN_PLATTINUM : String = "D"
-        val MY_SPREADSHEET_CATALYST_COLUMN_PALLADIUM : String = "E"
-        val MY_SPREADSHEET_CATALYST_COLUMN_RHODIUM : String = "F"
-        val MY_SPREADSHEET_CATALYST_COLUMN_WEIGHT : String = "G"
+        val MY_SPREADSHEET_CATALYST_COLUMN_WEIGHT : String = "D"
+        val MY_SPREADSHEET_CATALYST_COLUMN_PLATTINUM : String = "E"
+        val MY_SPREADSHEET_CATALYST_COLUMN_PALLADIUM : String = "F"
+        val MY_SPREADSHEET_CATALYST_COLUMN_RHODIUM : String = "G"
         val MY_SPREADSHEET_CATALYST_COLUMN_TYPE : String = "H"
         val MY_SPREADSHEET_CATALYST_COLUMN_ID_PICTURE : String = "I"
         val MY_SPREADSHEET_CATALYST_COLUMN_URL_PICTURE : String = "J"
@@ -168,7 +168,7 @@ class MyConfiguration {
                 return jsonObject.getString("f").replace(',', '.')
             }
             if(jsonObject.isNull("v")) return ""
-            return jsonObject.getString("v").replace("\n", " ").trim()
+            return jsonObject.getString("v").trim()
         }
         fun getValueFloatStringFromDocsApi(jsonArrary: JSONArray, index : Int) : String{
             var stringField = this.getValueStringFromDocsApi(jsonArrary, index)
