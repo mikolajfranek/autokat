@@ -68,12 +68,14 @@ class UpdateActivity : AppCompatActivity() {
     }
     //click button only new
     fun activityUpdateOnlyNew(view: View?) {
+        this.refreshingDatabase = false
         //make async task and execute
         val task = UpdateCatalyst(false)
         task.execute()
     }
     //click button full
     fun activityUpdateFull(view: View?) {
+        this.refreshingDatabase = false
         //make async task and execute
         val task = UpdateCatalyst(true)
         task.execute()
@@ -181,6 +183,9 @@ class UpdateActivity : AppCompatActivity() {
         override fun onProgressUpdate(vararg values: Int?) {
             super.onProgressUpdate(*values)
             activity_update_progessbar.progress = values[0]!!.toInt()
+            //set info section
+            activity_update_textview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
+            activity_update_textview.text = MyConfiguration.INFO_MESSAGE_WAIT_UPDATE
         }
         //post execute
         override fun onPostExecute(result: MyProcessStep) {

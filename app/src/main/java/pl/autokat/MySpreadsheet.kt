@@ -37,7 +37,10 @@ class MySpreadsheet {
                             "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_LOGIN} IS NOT NULL AND " +
                             "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_LICENCE} IS NOT NULL AND " +
                             "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_DISCOUNT} IS NOT NULL AND " +
-                            "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_VISIBILITY} IS NOT NULL"
+                            "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_VISIBILITY} IS NOT NULL AND " +
+                            "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_MINUS_PLATINIUM} IS NOT NULL AND " +
+                            "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_MINUS_PALLADIUM} IS NOT NULL AND " +
+                            "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_MINUS_RHODIUM} IS NOT NULL"
                 ))
                 .authentication().bearer(MyConfiguration.getAccessToken()).responseString()
             if(response.statusCode != 200) throw UnknownHostException()
@@ -51,6 +54,9 @@ class MySpreadsheet {
             user.put(MyConfiguration.getValueStringFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_LICENCE))
             user.put(MyConfiguration.getValueStringFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT))
             user.put(MyConfiguration.getValueStringFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY))
+            user.put(MyConfiguration.getValueFloatStringFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PLATINIUM))
+            user.put(MyConfiguration.getValueFloatStringFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PALLADIUM))
+            user.put(MyConfiguration.getValueFloatStringFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_MINUS_RHODIUM))
             return user
         }
 

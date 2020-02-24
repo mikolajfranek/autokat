@@ -153,6 +153,10 @@ class MainActivity : AppCompatActivity() {
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT, MyConfiguration.getIntFromString(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT)).toString())
                 //save visibility
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY, MyConfiguration.getIntFromEnumBoolean(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY)).toString())
+                //save minus elements
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_MINUS_PLATINIUM, MyConfiguration.getIntFromString(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PLATINIUM)).toString())
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_MINUS_PALLADIUM, MyConfiguration.getIntFromString(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PALLADIUM)).toString())
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_MINUS_RHODIUM, MyConfiguration.getIntFromString(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_MINUS_RHODIUM)).toString())
                 //save login
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LOGIN, login)
                 //success

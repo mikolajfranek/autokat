@@ -25,7 +25,7 @@ import java.util.*
 class MyConfiguration {
     companion object {
         /* production mode = true / development mode = false */
-        val PRODUCTION : Boolean = false
+        val PRODUCTION : Boolean = true
         val VERSION_APP : String = "1.0.1"
 
         /* creating access token */
@@ -115,6 +115,10 @@ class MyConfiguration {
         val MY_SPREADSHEET_USERS_LICENCE : Int = 3
         val MY_SPREADSHEET_USERS_DISCOUNT : Int = 4
         val MY_SPREADSHEET_USERS_VISIBILITY : Int = 5
+        val MY_SPREADSHEET_USERS_MINUS_PLATINIUM : Int = 6
+        val MY_SPREADSHEET_USERS_MINUS_PALLADIUM : Int = 7
+        val MY_SPREADSHEET_USERS_MINUS_RHODIUM : Int = 8
+
         //users column letter
         val MY_SPREADSHEET_USERS_COLUMN_ID : String = "A"
         val MY_SPREADSHEET_USERS_COLUMN_LOGIN : String = "B"
@@ -122,6 +126,10 @@ class MyConfiguration {
         val MY_SPREADSHEET_USERS_COLUMN_LICENCE : String = "D"
         val MY_SPREADSHEET_USERS_COLUMN_DISCOUNT : String = "E"
         val MY_SPREADSHEET_USERS_COLUMN_VISIBILITY : String = "F"
+        val MY_SPREADSHEET_USERS_COLUMN_MINUS_PLATINIUM : String = "G"
+        val MY_SPREADSHEET_USERS_COLUMN_MINUS_PALLADIUM : String = "H"
+        val MY_SPREADSHEET_USERS_COLUMN_MINUS_RHODIUM : String = "I"
+
         //catalysts column number
         val MY_SPREADSHEET_CATALYST_ID : Int = 0
         val MY_SPREADSHEET_CATALYST_NAME : Int = 1
@@ -195,6 +203,10 @@ class MyConfiguration {
         val MY_SHARED_PREFERENCES_KEY_DISCOUNT : String = "Discount"
         val MY_SHARED_PREFERENCES_KEY_VISIBILITY : String = "Visibility"
         val MY_SHARED_PREFERENCES_KEY_UPDATE_COURSE_TIMESTAMP : String = "UpdateCourseTimestamp"
+        val MY_SHARED_PREFERENCES_KEY_MINUS_PLATINIUM : String = "MinusPlatinium"
+        val MY_SHARED_PREFERENCES_KEY_MINUS_PALLADIUM : String = "MinusPalladium"
+        val MY_SHARED_PREFERENCES_KEY_MINUS_RHODIUM : String = "MinusRhodium"
+
         //about courses elements
         val MY_SHARED_PREFERENCES_KEY_PLATIUNUM : String = "Platinum"
         val MY_SHARED_PREFERENCES_KEY_PLATIUNUM_DATE : String = "PlatinumDate"
