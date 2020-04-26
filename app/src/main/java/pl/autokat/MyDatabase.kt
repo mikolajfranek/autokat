@@ -182,7 +182,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
     //get data catalysts
     fun getDataCatalyst(nameCatalystOrBrandCarInput: String, limitElements: String): ArrayList<MyItemCatalyst> {
         //change space on other sign
-        val nameCatalystOrBrandCar = nameCatalystOrBrandCarInput.replace(' ', '%')
+        val nameCatalystOrBrandCar = ("\\s{2,}").toRegex().replace(nameCatalystOrBrandCarInput.trim(), " ").split(" ")
         //set fields which will be retrieved
         val fields = arrayOf(
             MyConfiguration.DATABASE_ELEMENT_CATALYST_ID,
@@ -198,36 +198,44 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
             MyConfiguration.DATABASE_ELEMENT_CATALYST_WEIGHT
         )
         //make query
-        val queryBuilder = SQLiteQueryBuilder()
-        queryBuilder.tables = MyConfiguration.DATABASE_TABLE_CATALYST
-        val cursor = queryBuilder.query(readableDatabase, fields,
-            (MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME  + " LIKE ? OR " +  MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND + " LIKE ?"),
-             Array(2){ i -> ("%$nameCatalystOrBrandCar%")},
-            null,
-            null,
-            null,
-            limitElements)
+        val arguments = mutableListOf<String>()
+        var queryString = "SELECT  ${fields.joinToString()} FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}"
+        if(nameCatalystOrBrandCar.size > 0){
+            queryString += " WHERE " + nameCatalystOrBrandCar.joinToString (separator = " OR ") { "${MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME} LIKE ? OR ${MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND} LIKE ?"}
+        }
+        for(item in nameCatalystOrBrandCar){
+            arguments.add("%${item}%")
+            arguments.add("%${item}%")
+        }
+        queryString += " LIMIT ${limitElements}"
+        val cursor = readableDatabase.rawQuery(queryString, arguments.toTypedArray())
         //iterate over data and prepare data
         val result : ArrayList<MyItemCatalyst> = ArrayList<MyItemCatalyst>()
         while (cursor.moveToNext()){
             val blobImage : ByteArray? = if(cursor.isNull(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID))) null else cursor.getBlob(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_THUMBNAIL))
-            result.add(
-                MyItemCatalyst(
-                    cursor.getInt(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID)),
-                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID_PICTURE)),
-                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE)),
-                    if(blobImage == null) null else BitmapFactory.decodeByteArray(blobImage, 0, blobImage.size),
-                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME)),
-                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND)),
-                    cursor.getFloat(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_PLATINUM)),
-                    cursor.getFloat(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_PALLADIUM)),
-                    cursor.getFloat(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_RHODIUM)),
-                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_TYPE)),
-                    cursor.getFloat(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_WEIGHT))
-                )
+            val myItemCatalyst = MyItemCatalyst(
+                cursor.getInt(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID)),
+                cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID_PICTURE)),
+                cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE)),
+                if(blobImage == null) null else BitmapFactory.decodeByteArray(blobImage, 0, blobImage.size),
+                cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME)),
+                cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND)),
+                cursor.getFloat(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_PLATINUM)),
+                cursor.getFloat(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_PALLADIUM)),
+                cursor.getFloat(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_RHODIUM)),
+                cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_TYPE)),
+                cursor.getFloat(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_WEIGHT))
             )
+
+            myItemCatalyst.amountHit = 0
+            for(item in nameCatalystOrBrandCar){
+                myItemCatalyst.amountHit += (if (myItemCatalyst.name!!.contains(item)) 1 else 0) + (if (myItemCatalyst!!.brand.contains(item)) 1 else 0)
+            }
+            result.add(myItemCatalyst)
         }
         cursor.close()
+
+        result.sortByDescending { it.amountHit }
         return result
     }
 }

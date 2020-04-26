@@ -25,8 +25,8 @@ import java.util.*
 class MyConfiguration {
     companion object {
         /* production mode = true / development mode = false */
-        val PRODUCTION : Boolean = true
-        val VERSION_APP : String = "1.0.1"
+        val PRODUCTION : Boolean = false
+        val VERSION_APP : String = "1.0.2"
 
         /* creating access token */
         private val GOOGLE_TOKEN_URL : String = "https://oauth2.googleapis.com/token"
