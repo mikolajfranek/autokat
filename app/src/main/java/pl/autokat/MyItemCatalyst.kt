@@ -14,8 +14,6 @@ class MyItemCatalyst(var id: Int,
                      var type: String,
                      var weight: Float) {
 
-    public var amountHit : Int = 0
-
     //count price of element
     private fun countPriceElement(gramsPerKilogram: Float, weightOfCatalyst: Float, courseUsdPln: Float, coursePerGramInput: String, minusPlnFromCourseInput : String) : Float{
         val coursePerGram : Float = if(coursePerGramInput.isEmpty()) 0.0F else coursePerGramInput.toFloat()

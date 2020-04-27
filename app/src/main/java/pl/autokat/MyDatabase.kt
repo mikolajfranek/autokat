@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper
 import org.json.JSONArray
 import org.json.JSONObject
-import kotlin.collections.ArrayList
 
 class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.DATABASE_NAME_OF_FILE, null, MyConfiguration.DATABASE_VERSION){
     //update catalyst
@@ -198,17 +197,30 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
             MyConfiguration.DATABASE_ELEMENT_CATALYST_WEIGHT
         )
         //make query
-        val arguments = mutableListOf<String>()
-        var queryString = "SELECT  ${fields.joinToString()} FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}"
+        val argumentsSelect = mutableListOf<String>()
+        val argumentsWhere = mutableListOf<String>()
+        var queryString = "SELECT  ${fields.joinToString()}"
         if(nameCatalystOrBrandCar.size > 0){
+            var addPlus : Boolean = false
+            var hitCountQuery : String = "("
+            for(item in nameCatalystOrBrandCar){
+                argumentsSelect.add(item.toLowerCase())
+                argumentsSelect.add(item.toLowerCase())
+                argumentsWhere.add("%${item.toLowerCase()}%")
+                argumentsWhere.add("%${item.toLowerCase()}%")
+                hitCountQuery += (if(addPlus) " + " else "") +  "(instr(LOWER(${MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME}), ?) > 0) + (instr(LOWER(${MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND}), ?) > 0)"
+                addPlus = true
+            }
+            hitCountQuery += ") as ${MyConfiguration.DATABASE_ELEMENT_CATALYST_TEMP_HITCOUNT}"
+            queryString += ", ${hitCountQuery}"
+            queryString += " FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}"
             queryString += " WHERE " + nameCatalystOrBrandCar.joinToString (separator = " OR ") { "${MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME} LIKE ? OR ${MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND} LIKE ?"}
-        }
-        for(item in nameCatalystOrBrandCar){
-            arguments.add("%${item}%")
-            arguments.add("%${item}%")
+            queryString += " ORDER BY ${MyConfiguration.DATABASE_ELEMENT_CATALYST_TEMP_HITCOUNT} DESC"
+        }else{
+            queryString += "FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}"
         }
         queryString += " LIMIT ${limitElements}"
-        val cursor = readableDatabase.rawQuery(queryString, arguments.toTypedArray())
+        val cursor = readableDatabase.rawQuery(queryString, (argumentsSelect + argumentsWhere).toTypedArray())
         //iterate over data and prepare data
         val result : ArrayList<MyItemCatalyst> = ArrayList<MyItemCatalyst>()
         while (cursor.moveToNext()){
@@ -226,16 +238,9 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
                 cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_TYPE)),
                 cursor.getFloat(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_WEIGHT))
             )
-
-            myItemCatalyst.amountHit = 0
-            for(item in nameCatalystOrBrandCar){
-                myItemCatalyst.amountHit += (if (myItemCatalyst.name!!.contains(item)) 1 else 0) + (if (myItemCatalyst!!.brand.contains(item)) 1 else 0)
-            }
             result.add(myItemCatalyst)
         }
         cursor.close()
-
-        result.sortByDescending { it.amountHit }
         return result
     }
 }

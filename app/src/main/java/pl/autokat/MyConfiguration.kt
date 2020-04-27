@@ -239,6 +239,7 @@ class MyConfiguration {
         val DATABASE_ELEMENT_CATALYST_RHODIUM = "rhodium"
         val DATABASE_ELEMENT_CATALYST_TYPE = "type"
         val DATABASE_ELEMENT_CATALYST_WEIGHT = "weight"
+        val DATABASE_ELEMENT_CATALYST_TEMP_HITCOUNT = "hitcount"
 
         /* others */
         val REQUEST_CODE_READ_PHONE_STATE: Int = 0
