@@ -181,7 +181,8 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
     //get data catalysts
     fun getDataCatalyst(nameCatalystOrBrandCarInput: String, limitElements: String): ArrayList<MyItemCatalyst> {
         //change space on other sign
-        val nameCatalystOrBrandCar = ("\\s{2,}").toRegex().replace(nameCatalystOrBrandCarInput.trim(), " ").split(" ")
+        val nameCatalystOrBrandCar = ("\\s{2,}").toRegex().replace(nameCatalystOrBrandCarInput.trim(), " ")
+        val arrayFields = if(nameCatalystOrBrandCar.isNullOrEmpty()) mutableListOf<String>() else nameCatalystOrBrandCar.split(" ")
         //set fields which will be retrieved
         val fields = arrayOf(
             MyConfiguration.DATABASE_ELEMENT_CATALYST_ID,
@@ -200,24 +201,27 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
         val argumentsSelect = mutableListOf<String>()
         val argumentsWhere = mutableListOf<String>()
         var queryString = "SELECT  ${fields.joinToString()}"
-        if(nameCatalystOrBrandCar.size > 0){
+        if(arrayFields.size > 0){
             var addPlus : Boolean = false
             var hitCountQuery : String = "("
-            for(item in nameCatalystOrBrandCar){
-                argumentsSelect.add(item.toLowerCase())
-                argumentsSelect.add(item.toLowerCase())
-                argumentsWhere.add("%${item.toLowerCase()}%")
-                argumentsWhere.add("%${item.toLowerCase()}%")
-                hitCountQuery += (if(addPlus) " + " else "") +  "(instr(LOWER(${MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME}), ?) > 0) + (instr(LOWER(${MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND}), ?) > 0)"
-                addPlus = true
+            for(item in arrayFields){
+                val subArrayFields = item.split("*")
+                for(subItem in subArrayFields){
+                    argumentsSelect.add(subItem.toLowerCase())
+                    argumentsSelect.add(subItem.toLowerCase())
+                    hitCountQuery += (if(addPlus) " + " else "") +  "(instr(LOWER(${MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME}), ?) > 0) + (instr(LOWER(${MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND}), ?) > 0)"
+                    addPlus = true
+                }
+                argumentsWhere.add("%${item.replace("*", "%")}%")
+                argumentsWhere.add("%${item.replace("*", "%")}%")
             }
             hitCountQuery += ") as ${MyConfiguration.DATABASE_ELEMENT_CATALYST_TEMP_HITCOUNT}"
             queryString += ", ${hitCountQuery}"
             queryString += " FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}"
-            queryString += " WHERE " + nameCatalystOrBrandCar.joinToString (separator = " OR ") { "${MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME} LIKE ? OR ${MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND} LIKE ?"}
+            queryString += " WHERE " + arrayFields.joinToString (separator = " OR ") { "${MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME} LIKE ? OR ${MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND} LIKE ?"}
             queryString += " ORDER BY ${MyConfiguration.DATABASE_ELEMENT_CATALYST_TEMP_HITCOUNT} DESC"
         }else{
-            queryString += "FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}"
+            queryString += " FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}"
         }
         queryString += " LIMIT ${limitElements}"
         val cursor = readableDatabase.rawQuery(queryString, (argumentsSelect + argumentsWhere).toTypedArray())
