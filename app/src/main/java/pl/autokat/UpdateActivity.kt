@@ -43,6 +43,7 @@ class UpdateActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         val itemsWithThumbnail : Int = database.getCountCatalystWithThumbnail()
+        val itemsWithUrlThumbnail : Int = database.getCountCatalystWithUrlOfThumbnail()
         val itemsFromDatabase : Int = database.getCountCatalyst()
         activity_update_progessbar.progress = ((itemsWithThumbnail.toFloat()/itemsFromDatabase.toFloat())*100.toFloat()).toInt()
         //set info section
@@ -53,7 +54,7 @@ class UpdateActivity : AppCompatActivity() {
                 activity_update_textview.text = MyConfiguration.INFO_DATABASE_EXPIRE
             }else{
                 if(itemsWithThumbnail/itemsFromDatabase != 1){
-                    activity_update_textview.text = (MyConfiguration.INFO_DOWNLOAD_BITMAP_STATUS + " (" + itemsWithThumbnail + "/" + itemsFromDatabase+ ")")
+                    activity_update_textview.text = (MyConfiguration.INFO_DOWNLOAD_BITMAP_STATUS + " (" + itemsWithThumbnail + "/" + itemsWithUrlThumbnail + "/" + itemsFromDatabase+ ")")
                     //make async task and execute - refresh state of downloading
                     this.refreshingDatabase = true
                     val task = RefreshUpdateCatalyst()
@@ -98,8 +99,9 @@ class UpdateActivity : AppCompatActivity() {
                 while(refreshingDatabase){
                     Thread.sleep(1000)
                     val itemsWithThumbnail : Int = database.getCountCatalystWithThumbnail()
+                    val itemsWithUrlThumbnail : Int = database.getCountCatalystWithUrlOfThumbnail()
                     val itemsFromDatabase : Int = database.getCountCatalyst()
-                    publishProgress(itemsWithThumbnail, itemsFromDatabase)
+                    publishProgress(itemsWithThumbnail, itemsWithUrlThumbnail, itemsFromDatabase)
                 }
                 refreshingWork = false
             }
@@ -111,7 +113,7 @@ class UpdateActivity : AppCompatActivity() {
         //on progress update
         override fun onProgressUpdate(vararg values: Int?) {
             super.onProgressUpdate(*values)
-            activity_update_textview.text = (MyConfiguration.INFO_DOWNLOAD_BITMAP_STATUS + " (" + values[0]!!.toString() + "/" + values[1]!!.toString()+ ")")
+            activity_update_textview.text = (MyConfiguration.INFO_DOWNLOAD_BITMAP_STATUS + " (" + values[0]!!.toString() + "/" + values[1]!!.toString() + "/" + values[2]!!.toString()+ ")")
             activity_update_progessbar.progress = ((values[0]!!.toFloat()/values[1]!!.toFloat())*100.toFloat()).toInt()
         }
     }

@@ -65,6 +65,17 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
         cursor.close()
         return count
     }
+    //get amount of elements which has url picture
+    fun getCountCatalystWithUrlOfThumbnail(): Int {
+        val cursor = readableDatabase.rawQuery("SELECT count(*) as count FROM " + MyConfiguration.DATABASE_TABLE_CATALYST +
+                " WHERE LENGTH(" + MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE + ") != 0", null)
+        var count = 0
+        if(cursor.moveToFirst()){
+            count = cursor.getInt(cursor.getColumnIndex("count"))
+        }
+        cursor.close()
+        return count
+    }
     //reset database - truncate tables
     fun resetDatabase() : Boolean {
         var result = false
