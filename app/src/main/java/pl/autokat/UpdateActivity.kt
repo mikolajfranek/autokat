@@ -45,7 +45,7 @@ class UpdateActivity : AppCompatActivity() {
         val itemsWithThumbnail : Int = database.getCountCatalystWithThumbnail()
         val itemsWithUrlThumbnail : Int = database.getCountCatalystWithUrlOfThumbnail()
         val itemsFromDatabase : Int = database.getCountCatalyst()
-        activity_update_progessbar.progress = ((itemsWithThumbnail.toFloat()/itemsFromDatabase.toFloat())*100.toFloat()).toInt()
+        activity_update_progessbar.progress = ((itemsWithThumbnail.toFloat()/itemsWithUrlThumbnail.toFloat())*100.toFloat()).toInt()
         //set info section
         activity_update_textview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
         if(itemsFromDatabase != 0){
