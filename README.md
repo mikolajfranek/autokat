@@ -6,6 +6,9 @@ sudo /home/ubuntu/android-studio/bin/studio.sh
 #### run emulator
 /root/Android/Sdk/emulator/emulator -avd api29
 
+#### run emulator (as root)
+/root/Android/Sdk/emulator/emulator -avd api29 -writable-system -selinux disabled
+
 #### create file *.jks for deploy app
 keytool -genkey -keyalg RSA -keystore keystore.jks -keysize 2048 -alias autokat
 
@@ -13,8 +16,8 @@ keytool -genkey -keyalg RSA -keystore keystore.jks -keysize 2048 -alias autokat
 adb pull 'remote' 'local'
 
 #### short instruction how to be root in emulator
-run emulator with options
--writable-system -selinux disabled -qemu -enable-kvm
+run emulator with options 
+-writable-system -selinux disabled
 
 $ adb root && adb remount
 
