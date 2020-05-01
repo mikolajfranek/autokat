@@ -10,7 +10,7 @@ sudo /home/ubuntu/android-studio/bin/studio.sh
 keytool -genkey -keyalg RSA -keystore keystore.jks -keysize 2048 -alias autokat
 
 #### pull data from emulator to computer 
-adb pull <remote> <local>
+adb pull 'remote' 'local'
 
 #### short instruction how to be root in emulator
 run emulator with options
