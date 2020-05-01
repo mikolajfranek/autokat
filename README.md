@@ -16,7 +16,6 @@ adb pull <remote> <local>
 run emulator with options
 -writable-system -selinux disabled -qemu -enable-kvm
 
-type in console 
 $ adb root && adb remount
 
 unzip root_avd-master.zip
