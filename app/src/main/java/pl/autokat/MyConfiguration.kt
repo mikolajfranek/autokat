@@ -6,6 +6,9 @@ import android.graphics.Color
 import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import android.util.Base64
 import com.github.kittinunf.fuel.Fuel
 import io.jsonwebtoken.Claims
@@ -20,13 +23,15 @@ import java.security.interfaces.RSAPrivateKey
 import java.security.spec.PKCS8EncodedKeySpec
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.crypto.Cipher
+import javax.crypto.spec.SecretKeySpec
 
 
 class MyConfiguration {
     companion object {
         /* production mode = true / development mode = false */
         val PRODUCTION : Boolean = false
-        val VERSION_APP : String = "1.0.2"
+        val VERSION_APP : String = "1.0.3"
 
         /* creating access token */
         private val GOOGLE_TOKEN_URL : String = "https://oauth2.googleapis.com/token"
@@ -361,6 +366,30 @@ class MyConfiguration {
             url = url.substring(resultRegex.length)
             val pictureIdFromGoogle = url.substring(0,url.indexOf('/'))
             return "https://lh3.googleusercontent.com/u/0/d/$pictureIdFromGoogle=w$width-h$height"
+        }
+        //get encrypted
+        fun encrypt(input: String, salt: String) : String{
+            val secret = SecretKeySpec(salt.toByteArray(charset("UTF8")), "BLOWFISH")
+            val cipher = Cipher.getInstance("BLOWFISH/ECB/PKCS5Padding")
+            cipher.init(Cipher.ENCRYPT_MODE, secret)
+            return Base64.encodeToString(cipher.doFinal(input.toByteArray(charset("UTF8"))), Base64.DEFAULT)
+        }
+        //get decrypted
+        fun decrypt(input: String, salt: String) : String{
+            val secret = SecretKeySpec(salt.toByteArray(charset("UTF8")), "BLOWFISH")
+            val cipher = Cipher.getInstance("BLOWFISH/ECB/PKCS5Padding")
+            cipher.init(Cipher.DECRYPT_MODE, secret)
+            return String(cipher.doFinal(Base64.decode(input, Base64.DEFAULT)))
+        }
+        //get colored text
+        fun getColoredText(input: String, search: String) : SpannableString{
+
+            //TODO
+
+            //simple
+            val spannable = SpannableString(input)
+            spannable.setSpan(ForegroundColorSpan(Color.RED), 0, input.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            return spannable
         }
     }
 }

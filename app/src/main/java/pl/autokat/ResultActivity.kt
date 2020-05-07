@@ -74,11 +74,11 @@ class ResultActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
                 //item brand
-                view.item_brand.text = itemCatalyst.brand
+                view.item_brand.text = MyConfiguration.getColoredText(itemCatalyst.brand, activity_result_edittext.text.toString())
                 //item type
                 view.item_type.text = itemCatalyst.type
                 //item name
-                view.item_name.text = itemCatalyst.name
+                view.item_name.text = MyConfiguration.getColoredText(itemCatalyst.name, activity_result_edittext.text.toString())
                 //item weight
                 view.item_weight.text = (MyConfiguration.formatStringFloat(itemCatalyst.weight.toString(), 3) + " kg")
                 //item platinum
