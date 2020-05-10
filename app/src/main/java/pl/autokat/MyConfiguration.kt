@@ -381,14 +381,90 @@ class MyConfiguration {
             cipher.init(Cipher.DECRYPT_MODE, secret)
             return String(cipher.doFinal(Base64.decode(input, Base64.DEFAULT)))
         }
+        //get list from string searching
+        fun getSearchingString(input: String) : List<String>{
+            var searchString = ("\\*{2,}").toRegex().replace(input.trim(), "*")
+            searchString = ("\\s{2,}").toRegex().replace(searchString, " ")
+            return if(searchString.isNullOrEmpty()) mutableListOf<String>() else searchString.split(" ")
+        }
         //get colored text
         fun getColoredText(input: String, search: String) : SpannableString{
-
-            //TODO
-
-            //simple
             val spannable = SpannableString(input)
-            spannable.setSpan(ForegroundColorSpan(Color.RED), 0, input.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            for(item in getSearchingString(search)){
+                var indexStar = item.indexOf("*", 0 , true)
+                if(indexStar == -1){
+                    var index = input.indexOf(item, 0 , true)
+                    while (index >= 0) {
+                        spannable.setSpan(ForegroundColorSpan(Color.RED), index, index + item.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        index = input.indexOf(item, index + 1, true)
+                    }
+                }
+                else{
+
+
+                    var inputStart = 0
+                    var itemStart = 0
+
+                    while (indexStar >= 0) {
+
+                        //begin
+                        var indexPre = 0
+                        val pre = item.substring(itemStart, indexStar)
+                        if(pre.isNullOrEmpty() == false){
+                            indexPre = input.indexOf(pre, inputStart, true)
+                            if(indexPre == -1) break
+                        }
+
+
+
+
+
+
+
+                        //end
+                        var post = ""
+                        val nextIndexStar = item.indexOf("*", indexStar+1)
+                        if(nextIndexStar == -1){
+                            post = item.substring(indexStar+1, item.length)
+                        }else{
+                            post = item.substring(indexStar+1, nextIndexStar)
+                        }
+
+
+                        val indexPost = 0
+                        if(post.isNullOrEmpty() == false) {
+
+                            var index = input.indexOf(post, 0, true)
+                            var lastIndex = index
+                            while (index >= 0) {
+                                lastIndex = index
+                                index = input.indexOf(post, index + 1, true)
+                            }
+
+                            if(lastIndex != -1){
+                                spannable.setSpan(ForegroundColorSpan(Color.RED), indexPre, lastIndex + post.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                                inputStart = lastIndex + post.length + 1
+                            }
+                        }else{
+                            spannable.setSpan(ForegroundColorSpan(Color.RED), indexPre, input.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        }
+
+                        indexStar = nextIndexStar
+
+
+                    }
+
+
+                    /*
+                    abc nissan def
+
+                    *issan
+                    *is*n
+                    n*s*n
+                    n*s*
+                     */
+                }
+            }
             return spannable
         }
     }

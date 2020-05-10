@@ -208,9 +208,8 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
     }
     //get data catalysts
     fun getDataCatalyst(nameCatalystOrBrandCarInput: String, limitElements: String): ArrayList<MyItemCatalyst> {
-        //change space on other sign
-        val nameCatalystOrBrandCar = ("\\s{2,}").toRegex().replace(nameCatalystOrBrandCarInput.trim(), " ")
-        val arrayFields = if(nameCatalystOrBrandCar.isNullOrEmpty()) mutableListOf<String>() else nameCatalystOrBrandCar.split(" ")
+        //get searching string
+        val arrayFields = MyConfiguration.getSearchingString(nameCatalystOrBrandCarInput)
         //set fields which will be retrieved
         val fields = arrayOf(
             MyConfiguration.DATABASE_ELEMENT_CATALYST_ID,
