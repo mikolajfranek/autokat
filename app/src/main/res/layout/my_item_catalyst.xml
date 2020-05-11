@@ -67,7 +67,7 @@
             android:id="@+id/item_price_notvisibility_eur"
             android:layout_gravity="bottom|end"
             android:fontFamily="sans-serif"
-            android:textColor="@android:color/holo_green_dark" />
+            android:textColor="@color/colorGreen" />
     </TableRow>
 
 
@@ -101,7 +101,7 @@
             android:id="@+id/item_price_notvisibility_pln"
             android:fontFamily="sans-serif"
             android:gravity="end"
-            android:textColor="@android:color/holo_green_dark" />
+            android:textColor="@color/colorGreen" />
     </TableRow>
 
 
@@ -164,7 +164,7 @@
             android:id="@+id/item_price_visibility_eur"
             android:fontFamily="sans-serif"
             android:gravity="end"
-            android:textColor="@android:color/holo_green_dark" />
+            android:textColor="@color/colorGreen" />
     </TableRow>
 
 
@@ -199,12 +199,12 @@
             android:id="@+id/item_price_visibility_pln"
             android:fontFamily="sans-serif"
             android:gravity="end"
-            android:textColor="@android:color/holo_green_dark" />
+            android:textColor="@color/colorGreen" />
     </TableRow>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_marginTop="10dp"
-        android:background="@color/colorSilver" />
+        android:background="@color/colorHorizontalLine" />
 </TableLayout>

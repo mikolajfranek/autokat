@@ -91,7 +91,7 @@
                 android:fontFamily="sans-serif"
                 android:text="@string/activity_about_telefon_value"
                 android:textColor="@color/colorUser"
-                android:textColorHighlight="@color/colorHighLight" />
+                android:textColorHighlight="@color/colorBlack" />
         </TableRow>
 
         <TableRow
@@ -117,7 +117,7 @@
                 android:fontFamily="sans-serif"
                 android:text="@string/activity_about_email_value"
                 android:textColor="@color/colorUser"
-                android:textColorHighlight="@color/colorHighLight" />
+                android:textColorHighlight="@color/colorBlack" />
         </TableRow>
 
         <TableRow
@@ -143,7 +143,7 @@
                 android:fontFamily="sans-serif"
                 android:text="@string/activity_about_stronawww_value"
                 android:textColor="@color/colorUser"
-                android:textColorHighlight="@color/colorHighLight" />
+                android:textColorHighlight="@color/colorBlack" />
         </TableRow>
     </TableLayout>
 </TableLayout>

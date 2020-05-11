@@ -279,7 +279,7 @@ class ResultActivity : AppCompatActivity() {
             if(this@ResultActivity.menu != null){
                 if(updateCatalyst){
                     MyConfiguration.IS_AVAILABLE_UPDATE = true
-                    this@ResultActivity.menu!!.getItem(1).setIcon(ContextCompat.getDrawable(applicationContext, R.mipmap.ic_action_update_catalyst_yellow))
+                    this@ResultActivity.menu!!.getItem(1).setIcon(ContextCompat.getDrawable(applicationContext, R.mipmap.ic_action_update_catalyst_color))
                 }else{
                     this@ResultActivity.menu!!.getItem(1).setIcon(ContextCompat.getDrawable(applicationContext, R.mipmap.ic_action_update_catalyst))
                 }

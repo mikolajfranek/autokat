@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorUser">#363636</color>
-    <color name="colorHighLight">#00FFFFFF</color>
-    <color name="colorSilver">#c0c0c0</color>
-    <color name="colorBlackOverlay">#66000000</color>
+    <color name="colorGreen">#26A65B</color>
+    <color name="colorHorizontalLine">#e2e2e2</color>
+    <color name="colorBlack">#00000000</color>
+    <color name="colorBlue">#4da5ff</color>
 </resources>

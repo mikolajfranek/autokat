@@ -57,7 +57,7 @@
 
     <Button
         android:id="@+id/activity_main_button"
-        style="@style/Widget.AppCompat.Button"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginLeft="10dp"
