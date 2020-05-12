@@ -89,9 +89,8 @@
                 android:layout_weight="4"
                 android:autoLink="phone"
                 android:fontFamily="sans-serif"
-                android:text="@string/activity_about_telefon_value"
-                android:textColor="@color/colorUser"
-                android:textColorHighlight="@color/colorBlack" />
+                android:textColorLink="@color/colorHighlight"
+                android:text="@string/activity_about_telefon_value" />
         </TableRow>
 
         <TableRow
@@ -115,9 +114,8 @@
                 android:layout_weight="4"
                 android:autoLink="email"
                 android:fontFamily="sans-serif"
-                android:text="@string/activity_about_email_value"
-                android:textColor="@color/colorUser"
-                android:textColorHighlight="@color/colorBlack" />
+                android:textColorLink="@color/colorHighlight"
+                android:text="@string/activity_about_email_value"/>
         </TableRow>
 
         <TableRow
@@ -141,9 +139,8 @@
                 android:layout_weight="4"
                 android:autoLink="web"
                 android:fontFamily="sans-serif"
-                android:text="@string/activity_about_stronawww_value"
-                android:textColor="@color/colorUser"
-                android:textColorHighlight="@color/colorBlack" />
+                android:textColorLink="@color/colorHighlight"
+                android:text="@string/activity_about_stronawww_value"/>
         </TableRow>
     </TableLayout>
 </TableLayout>

@@ -128,6 +128,10 @@ class UpdateActivity : AppCompatActivity() {
             super.onPreExecute()
             //disable user interface on process application
             MyUserInterface.enableActivity(this@UpdateActivity.activity_update_linearlayout, false)
+            refreshingDatabase = false
+            while(refreshingWork){
+                Thread.sleep(100)
+            }
             //set process bar
             activity_update_progessbar.progress = 0
             //set info section
@@ -156,7 +160,7 @@ class UpdateActivity : AppCompatActivity() {
                 val dataCatalysts:  JSONArray = MySpreadsheet.getDataCatalyst(countDatabase)
                 //create batch json array which will contain parts of data
                 val batchJsonArray = JSONArray()
-                val batchSize = 500
+                val batchSize = 100
                 for(i in 0 until (dataCatalysts.length()) step batchSize){
                     if(batchJsonArray.isNull(i)) batchJsonArray.put(JSONArray())
                     for(j in i until i+batchSize){

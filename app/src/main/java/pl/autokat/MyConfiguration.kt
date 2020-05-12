@@ -226,8 +226,9 @@ class MyConfiguration {
         val MY_SHARED_PREFERENCES_KEY_EUR_PLN_DATE : String = "EurPlnDate"
 
         /* database */
-        val DATABASE_VERSION : Int = 1
+        val DATABASE_VERSION : Int = 2
         val DATABASE_NAME_OF_FILE : String = "autokat.db"
+        val DATABASE_FILE_PATH_ASSETS : String = "databases/" + MyConfiguration.DATABASE_NAME_OF_FILE
         val DATABASE_PAGINATE_LIMIT : Int = 5
         // tables
         val DATABASE_TABLE_CATALYST = "catalyst"
@@ -350,8 +351,8 @@ class MyConfiguration {
         }
         //get format of float from string
         fun formatStringFloat(floatString: String, precision: Int) : String{
-            if(floatString.isEmpty()) return (String.format("%." + precision + "f", (0.00).toFloat()))
-            return String.format("%." + precision + "f", floatString.toFloat())
+            if(floatString.isEmpty()) return (String.format("%." + precision + "f", (0.00).toFloat())).replace(",", ".")
+            return String.format("%." + precision + "f", floatString.toFloat()).replace(",", ".")
         }
         //get pln from dolar string
         fun getPlnFromDolar(dolar: String) : String{
@@ -391,7 +392,7 @@ class MyConfiguration {
         fun getColoredText(input: String, search: String) : SpannableString{
             val spannable = SpannableString(input)
             for(item in getSearchingString(search)){
-                val regex = item.replace("*", ".+")
+                val regex = item.replace("*", ".*")
                 var startIndex = 0
                 regex.toRegex(options = mutableSetOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE, RegexOption.DOT_MATCHES_ALL)).findAll(input, 0).toList().forEach{ x ->
                     val i = input.indexOf(x.value, startIndex, true)

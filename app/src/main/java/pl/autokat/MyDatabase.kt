@@ -8,8 +8,28 @@ import android.graphics.BitmapFactory
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.FileOutputStream
 
 class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.DATABASE_NAME_OF_FILE, null, MyConfiguration.DATABASE_VERSION){
+    private val myContext: Context = context
+
+    //override onupgrage of database
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        if (newVersion > oldVersion) {
+            //end transaction, unlock database
+            db.endTransaction()
+            //copy database, from assets to directory system where is database of app
+            val fileDatabaseInAssets = myContext.assets.open(MyConfiguration.DATABASE_FILE_PATH_ASSETS)
+            val fileDatabaseInSystem = FileOutputStream(myContext.getDatabasePath(MyConfiguration.DATABASE_NAME_OF_FILE))
+            fileDatabaseInAssets.copyTo(fileDatabaseInSystem)
+            fileDatabaseInSystem.close()
+            fileDatabaseInAssets.close()
+            //begin new transaction
+            db.beginTransaction()
+            //recreate
+            onCreate(db)
+        }
+    }
     //get amount of elements which they don't have thumbnail
     fun getCountCatalystWithThumbnail(): Int {
         val cursor = readableDatabase.rawQuery("SELECT count(*) as count FROM " + MyConfiguration.DATABASE_TABLE_CATALYST +

@@ -4,6 +4,7 @@
     <string name="activity_main_button_text">Zaloguj</string>
     <string name="menu_toolbar_list_configuration_values">Wartości kursów</string>
     <string name="menu_toolbar_list_update">Aktualizacja</string>
+    <string name="menu_toolbar_list_refresh">Odśwież</string>
     <string name="activity_result_hint_text">Wprowadź nazwę do filtrowania</string>
     <string name="menu_toolbar_list_configuration_about">O aplikacji</string>
     <string name="activity_about_dane_kontaktowe">Dane kontaktowe:</string>
