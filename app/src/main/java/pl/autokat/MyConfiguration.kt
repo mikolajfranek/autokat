@@ -37,7 +37,7 @@ class MyConfiguration {
         private val GOOGLE_TOKEN_URL : String = "https://oauth2.googleapis.com/token"
         private val GOOGLE_PARAMETER_SCOPE : String = "scope"
         private val GOOGLE_PARAMETER_SCOPE_VALUE : String = "https://www.googleapis.com/auth/spreadsheets"
-        private val ONE_HOUR_IN_MILLISECONDS : Long = 3600 * 1000L
+        private val ONE_HOUR_IN_MILLISECONDS : Long = 3600000L
         //shared preferences
         private val MY_SHARED_PREFERENCES_KEY_ACCESS_TOKEN : String = "AccessToken"
         private val MY_SHARED_PREFERENCES_KEY_ACCESS_TOKEN_TIMESTAMP : String = "AccessTokenTimestamp"
@@ -228,7 +228,7 @@ class MyConfiguration {
         /* database */
         val DATABASE_VERSION : Int = 2
         val DATABASE_NAME_OF_FILE : String = "autokat.db"
-        val DATABASE_FILE_PATH_ASSETS : String = "databases/" + MyConfiguration.DATABASE_NAME_OF_FILE
+        val DATABASE_FILE_PATH_ASSETS : String = "databases/" + DATABASE_NAME_OF_FILE
         val DATABASE_PAGINATE_LIMIT : Int = 5
         // tables
         val DATABASE_TABLE_CATALYST = "catalyst"
@@ -368,17 +368,18 @@ class MyConfiguration {
             val pictureIdFromGoogle = url.substring(0,url.indexOf('/'))
             return "https://lh3.googleusercontent.com/u/0/d/$pictureIdFromGoogle=w$width-h$height"
         }
+        val CIPHER_TRANSFORMATION : String = "BLOWFISH/ECB/PKCS5Padding"
         //get encrypted
         fun encrypt(input: String, salt: String) : String{
             val secret = SecretKeySpec(salt.toByteArray(charset("UTF8")), "BLOWFISH")
-            val cipher = Cipher.getInstance("BLOWFISH/ECB/PKCS5Padding")
+            val cipher = Cipher.getInstance(CIPHER_TRANSFORMATION)
             cipher.init(Cipher.ENCRYPT_MODE, secret)
             return Base64.encodeToString(cipher.doFinal(input.toByteArray(charset("UTF8"))), Base64.DEFAULT)
         }
         //get decrypted
         fun decrypt(input: String, salt: String) : String{
             val secret = SecretKeySpec(salt.toByteArray(charset("UTF8")), "BLOWFISH")
-            val cipher = Cipher.getInstance("BLOWFISH/ECB/PKCS5Padding")
+            val cipher = Cipher.getInstance(CIPHER_TRANSFORMATION)
             cipher.init(Cipher.DECRYPT_MODE, secret)
             return String(cipher.doFinal(Base64.decode(input, Base64.DEFAULT)))
         }
@@ -386,7 +387,7 @@ class MyConfiguration {
         fun getSearchingString(input: String) : List<String>{
             var searchString = ("\\*{2,}").toRegex().replace(input.trim(), "*")
             searchString = ("\\s{2,}").toRegex().replace(searchString, " ")
-            return if(searchString.isNullOrEmpty()) mutableListOf<String>() else searchString.split(" ")
+            return if(searchString.isEmpty()) mutableListOf<String>() else searchString.split(" ")
         }
         //get colored text
         fun getColoredText(input: String, search: String) : SpannableString{

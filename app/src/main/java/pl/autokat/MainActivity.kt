@@ -7,7 +7,6 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
@@ -73,8 +72,8 @@ class MainActivity : AppCompatActivity() {
         startActivity(Intent(applicationContext, AboutActivity::class.java))
     }
     //option menu selected
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when(item?.itemId){
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
             R.id.toolbar_list_about -> {
                 this.openAboutActivity()
                 true
@@ -91,7 +90,7 @@ class MainActivity : AppCompatActivity() {
         finish()
     }
     //click button
-    fun activityMainButtonOnClick(view: View?) {
+    fun activityMainButtonOnClick() {
         this.tryLogin(activity_main_edittext.text.toString(), true)
     }
     //process login

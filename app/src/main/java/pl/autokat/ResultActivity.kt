@@ -2,12 +2,13 @@ package pl.autokat
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.opengl.Visibility
 import android.os.AsyncTask
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
-import android.view.View.OnLongClickListener
+import android.view.View.*
 import android.widget.AbsListView
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -99,9 +100,9 @@ class ResultActivity : AppCompatActivity() {
                 if(visibilityCatalyst){
                     view.item_price_visibility_eur.text = resultPriceEur
                     view.item_price_visibility_pln.text = resultPricePln
-                    view.item_table_row_plattinum.isVisible = true
-                    view.item_table_row_palladium.isVisible = true
-                    view.item_table_row_rhodium.isVisible = true
+                    view.item_table_row_plattinum.visibility = VISIBLE
+                    view.item_table_row_palladium.visibility = VISIBLE
+                    view.item_table_row_rhodium.visibility = VISIBLE
                 }else{
                     view.item_price_notvisibility_eur.text = resultPriceEur
                     view.item_price_notvisibility_pln.text = resultPricePln
@@ -163,8 +164,8 @@ class ResultActivity : AppCompatActivity() {
         startActivity(Intent(applicationContext, AboutActivity::class.java))
     }
     //option menu selected
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when(item?.itemId){
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
             R.id.toolbar_list_configuration_values -> {
                 this.openConfigurationValuesActivity()
                 true
@@ -269,11 +270,12 @@ class ResultActivity : AppCompatActivity() {
             }
             //empty database
             if(databaseEmpty){
-                activity_result_textview.isVisible = true
-                activity_result_listView.isVisible = false
+                activity_result_textview.visibility = VISIBLE
+                activity_result_listView.visibility = INVISIBLE
             }else{
-                activity_result_listView.isVisible = true
-                activity_result_textview.isVisible = false
+                activity_result_textview.visibility = INVISIBLE
+                activity_result_listView.visibility = VISIBLE
+
             }
             //set visibility of ability update catalyst
             if(this@ResultActivity.menu != null){

@@ -2,11 +2,11 @@ package pl.autokat
 
 import android.annotation.SuppressLint
 import android.os.AsyncTask
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import kotlinx.android.synthetic.main.activity_configuration_values.*
 import kotlinx.android.synthetic.main.activity_main.toolbar
@@ -70,8 +70,8 @@ class ConfigurationValuesActivity : AppCompatActivity() {
     }
 
     //option menu selected
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when(item?.itemId){
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
             R.id.toolbar_list_refresh_courses -> {
                 //make async task and execute
                 val task = UpdateCourses()
@@ -120,6 +120,9 @@ class ConfigurationValuesActivity : AppCompatActivity() {
                 MyProcessStep.SUCCESS -> {
                     Toast.makeText(this@ConfigurationValuesActivity.applicationContext, MyConfiguration.INFO_UPDATE_SUCCESS, Toast.LENGTH_SHORT).show()
                     this@ConfigurationValuesActivity.setValuesInView()
+                }
+                else -> {
+                    Toast.makeText(this@ConfigurationValuesActivity.applicationContext, MyConfiguration.INFO_UPDATE_FAILED, Toast.LENGTH_SHORT).show()
                 }
             }
         }
