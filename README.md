@@ -1,7 +1,7 @@
 # autokat
 
 #### run android studio
-"sudo /home/ubuntu/android-studio/bin/studio.sh"
+"/home/debian/android-studio/bin/studio.sh"
 
 #### run emulator
 "/root/Android/Sdk/emulator/emulator -avd api29"
