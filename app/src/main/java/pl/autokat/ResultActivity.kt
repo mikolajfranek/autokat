@@ -2,7 +2,6 @@ package pl.autokat
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.opengl.Visibility
 import android.os.AsyncTask
 import android.os.Bundle
 import android.text.Editable
@@ -15,13 +14,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.activity_result.*
 import kotlinx.android.synthetic.main.my_item_catalyst.view.*
 import org.json.JSONArray
 import java.util.*
-
 
 class ResultActivity : AppCompatActivity() {
     //fields
@@ -34,9 +31,7 @@ class ResultActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result)
-
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-
         //set toolbar
         setSupportActionBar(toolbar as Toolbar?)
         //navigate up
@@ -46,10 +41,13 @@ class ResultActivity : AppCompatActivity() {
         //init database object
         database = MyDatabase(applicationContext)
         //text listener on change text
+        activity_result_edittext.setText(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT))
         activity_result_edittext.addTextChangedListener(object : TextWatcher{
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                //save last searched text
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT, s.toString())
                 this@ResultActivity.refreshListView(MyScrollRefresh.RESET_LIST)
             }
         })
@@ -75,11 +73,11 @@ class ResultActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
                 //item brand
-                view.item_brand.text = MyConfiguration.getColoredText(itemCatalyst.brand, activity_result_edittext.text.toString())
+                view.item_brand.text = itemCatalyst.brand
                 //item type
                 view.item_type.text = itemCatalyst.type
                 //item name
-                view.item_name.text = MyConfiguration.getColoredText(itemCatalyst.name, activity_result_edittext.text.toString())
+                view.item_name.text = itemCatalyst.name
                 //item weight
                 view.item_weight.text = (MyConfiguration.formatStringFloat(itemCatalyst.weight.toString(), 3) + " kg")
                 //item platinum
@@ -156,7 +154,7 @@ class ResultActivity : AppCompatActivity() {
         startActivity(Intent(applicationContext, ConfigurationValuesActivity::class.java))
     }
     //open update activity
-    private fun openUpdateActivity() {
+    fun openUpdateActivity() {
         startActivity(Intent(applicationContext, UpdateActivity::class.java))
     }
     //open about activity
@@ -186,19 +184,20 @@ class ResultActivity : AppCompatActivity() {
     }
     //refresh list view
     fun refreshListView(myScrollRefresh: MyScrollRefresh){
+        val searchedText = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT)
         when(myScrollRefresh){
             MyScrollRefresh.RESET_LIST -> {
                 //reset variable of scroll
                 this.scrollPreLast = 0
                 this.scrollLimit = MyConfiguration.DATABASE_PAGINATE_LIMIT
                 //get data from database
-                val result = database.getDataCatalyst(activity_result_edittext.text.toString(), this.scrollLimit.toString())
+                val result = database.getDataCatalyst(searchedText, this.scrollLimit.toString())
                 databaseAdapter.clear()
                 databaseAdapter.addAll(result)
             }
             MyScrollRefresh.UPDATE_LIST -> {
                 //get data from database
-                val result = database.getDataCatalyst(activity_result_edittext.text.toString(), this.scrollLimit.toString())
+                val result = database.getDataCatalyst(searchedText, this.scrollLimit.toString())
                 databaseAdapter.clear()
                 databaseAdapter.addAll(result)
             }
@@ -206,10 +205,15 @@ class ResultActivity : AppCompatActivity() {
                 //limit as offset in format: skip elements, count elements to get
                 val limitWithOffset : String = (this.scrollLimit-MyConfiguration.DATABASE_PAGINATE_LIMIT).toString() + "," + MyConfiguration.DATABASE_PAGINATE_LIMIT
                 //get data from database
-                val result = database.getDataCatalyst(activity_result_edittext.text.toString(), limitWithOffset)
+                val result = database.getDataCatalyst(searchedText, limitWithOffset)
                 //add to list
                 databaseAdapter.addAll(result)
             }
+        }
+        if(databaseAdapter.count == 0 && searchedText.isEmpty() == false){
+            activity_result_textview_empty_list.visibility = VISIBLE
+        }else{
+            activity_result_textview_empty_list.visibility = GONE
         }
     }
     //async class which check if exists update of app and update it
@@ -223,6 +227,10 @@ class ResultActivity : AppCompatActivity() {
             super.onPreExecute()
             //disable user interface on process application
             MyUserInterface.enableActivity(this@ResultActivity.activity_result_linearlayout, false)
+            //visibility of content
+            activity_result_textview_waiting.visibility = VISIBLE
+            activity_result_textview_empty_database.visibility = GONE
+            activity_result_listView.visibility = GONE
         }
         //do in async mode - in here can't modify user interface
         override fun doInBackground(vararg p0: Void?): MyProcessStep {
@@ -268,14 +276,15 @@ class ResultActivity : AppCompatActivity() {
                 MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END, "")
                 this@ResultActivity.openMainActivity()
             }
-            //empty database
+            //visibility of content
             if(databaseEmpty){
-                activity_result_textview.visibility = VISIBLE
-                activity_result_listView.visibility = INVISIBLE
+                activity_result_textview_waiting.visibility = GONE
+                activity_result_textview_empty_database.visibility = VISIBLE
+                activity_result_listView.visibility = GONE
             }else{
-                activity_result_textview.visibility = INVISIBLE
+                activity_result_textview_waiting.visibility = GONE
+                activity_result_textview_empty_database.visibility = GONE
                 activity_result_listView.visibility = VISIBLE
-
             }
             //set visibility of ability update catalyst
             if(this@ResultActivity.menu != null){

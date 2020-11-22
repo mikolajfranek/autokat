@@ -35,4 +35,6 @@
     <string name="activity_update_synchronizacja_baz_danych">Synchronizacja bazy danych</string>
     <string name="activity_configuration_values_waluta">Waluta</string>
     <string name="activity_result_empty_database">Baza danych jest pusta</string>
+    <string name="activity_result_waiting">Trwa pobieranie danych…</string>
+    <string name="activity_result_empty_list">Nie znaleziono elementów</string>
 </resources>

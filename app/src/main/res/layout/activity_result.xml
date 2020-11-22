@@ -38,7 +38,31 @@
         android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/activity_result_textview"
+        android:id="@+id/activity_result_textview_waiting"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:text="@string/activity_result_waiting"
+        android:textColor="@color/colorUser" />
+
+    <TextView
+        android:id="@+id/activity_result_textview_empty_list"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:text="@string/activity_result_empty_list"
+        android:textColor="@color/colorUser" />
+
+    <TextView
+        android:id="@+id/activity_result_textview_empty_database"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

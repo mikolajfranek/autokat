@@ -10,7 +10,6 @@ import org.json.JSONObject
 import java.lang.Exception
 import java.net.URL
 
-
 class ServiceOfThumbnail : JobIntentService() {
 
     companion object {

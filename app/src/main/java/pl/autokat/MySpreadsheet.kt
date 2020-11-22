@@ -1,6 +1,5 @@
 package pl.autokat
 
-import android.content.ContentValues
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.extensions.authentication
 import org.json.JSONArray

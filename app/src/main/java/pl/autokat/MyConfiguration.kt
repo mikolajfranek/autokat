@@ -26,7 +26,6 @@ import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
 
-
 class MyConfiguration {
     companion object {
         /* production mode = true / development mode = false */
@@ -211,6 +210,7 @@ class MyConfiguration {
         val MY_SHARED_PREFERENCES_KEY_MINUS_PLATINIUM : String = "MinusPlatinium"
         val MY_SHARED_PREFERENCES_KEY_MINUS_PALLADIUM : String = "MinusPalladium"
         val MY_SHARED_PREFERENCES_KEY_MINUS_RHODIUM : String = "MinusRhodium"
+        val MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT : String = "LastSearchedText"
 
         //about courses elements
         val MY_SHARED_PREFERENCES_KEY_PLATIUNUM : String = "Platinum"
@@ -269,23 +269,22 @@ class MyConfiguration {
             return 0
         }
 
-
         /* info */
         //color
         val INFO_MESSAGE_COLOR_FAILED:  Int = Color.parseColor("#EF4836")
         val INFO_MESSAGE_COLOR_SUCCESS: Int = Color.parseColor("#363636")
         //message
         val INFO_MESSAGE_USER_NEVER_LOGGED : String = "Wprowadź nazwę użytkownika"
-        val INFO_MESSAGE_WAIT_AUTHENTICATE : String = "Trwa uwierzytelnianie..."
+        val INFO_MESSAGE_WAIT_AUTHENTICATE : String = "Trwa uwierzytelnianie…"
         val INFO_MESSAGE_USER_FAILED_LICENCE: String = "Brak licencji"
         val INFO_MESSAGE_USER_FAILED_LOGIN: String = "Błędna nazwa użytkownika"
         val INFO_MESSAGE_USER_FAILED_SERIAL: String = "Błędne urządzenie"
         val INFO_MESSAGE_NETWORK_FAILED : String = "Brak połączenia"
         val INFO_MESSAGE_UNHANDLED_EXCEPTION : String = "Wystąpił błąd"
-        val INFO_MESSAGE_WAIT_UPDATE : String = "Trwa aktualizacja...."
+        val INFO_MESSAGE_WAIT_UPDATE : String = "Trwa aktualizacja…"
         val INFO_UPDATE_SUCCESS : String = "Aktualizacja przebiegła pomyślnie"
         val INFO_UPDATE_FAILED : String = "Wystąpił błąd podczas aktualizacji"
-        val INFO_DOWNLOAD_BITMAP_WAIT: String = "Trwa pobieranie obrazu..."
+        val INFO_DOWNLOAD_BITMAP_WAIT: String = "Trwa pobieranie obrazu…"
         val INFO_DOWNLOAD_BITMAP_FAILED : String = "Wystąpił błąd podczas pobierania obrazu"
         val INFO_DOWNLOAD_BITMAP_STATUS : String = "Status pobieranych miniatur"
         val INFO_DOWNLOAD_BITMAP_SUCCESS : String = "Baza danych jest aktualna"
