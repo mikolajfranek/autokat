@@ -7,6 +7,7 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
@@ -90,7 +91,7 @@ class MainActivity : AppCompatActivity() {
         finish()
     }
     //click button
-    fun activityMainButtonOnClick() {
+    fun activityMainButtonOnClick(view: View) {
         this.tryLogin(activity_main_edittext.text.toString(), true)
     }
     //process login
