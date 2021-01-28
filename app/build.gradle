@@ -10,7 +10,7 @@ android {
             storePassword 'autokat'
             keyAlias = 'autokat'
             keyPassword 'autokat'
-            storeFile file('/home/debian/Dokumenty/_/AutoKat/keystore.jks')
+            storeFile file('/home/debian/Dokumenty/_/AutoKatSecret/keystore.jks')
         }
     }
     compileSdkVersion 29
@@ -30,6 +30,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 dependencies {
@@ -43,10 +50,10 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1'
     implementation 'com.github.chrisbanes:PhotoView:2.0.0'
-    implementation 'com.github.kittinunf.fuel:fuel:2.2.1'
-    api 'io.jsonwebtoken:jjwt-api:0.10.7'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.10.7'
-    runtimeOnly('io.jsonwebtoken:jjwt-orgjson:0.10.7') {
+    implementation 'com.github.kittinunf.fuel:fuel:2.3.1'
+    api 'io.jsonwebtoken:jjwt-api:0.11.2'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    runtimeOnly('io.jsonwebtoken:jjwt-orgjson:0.11.2') {
         exclude group: 'org.json', module: 'json' //provided by Android natively
     }
 }
