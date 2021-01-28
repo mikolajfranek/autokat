@@ -216,6 +216,11 @@ class ResultActivity : AppCompatActivity() {
             activity_result_textview_empty_list.visibility = GONE
         }
     }
+    //click button adding new record history of search
+    fun addRecordHistoryOfSearch(view: View?) {
+        //TODO
+        Toast.makeText(applicationContext, "Pomyślnie zapisano nazwę do filtrowania", Toast.LENGTH_LONG).show()
+    }
     //async class which check if exists update of app and update it
     @SuppressLint("StaticFieldLeak")
     private inner class CheckUpdate : AsyncTask<Void, Void, MyProcessStep>() {

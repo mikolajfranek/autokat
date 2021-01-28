@@ -13,23 +13,56 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <EditText
-        android:id="@+id/activity_result_edittext"
+    <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="5dp"
-        android:background="@drawable/drawable_rectangle"
-        android:enabled="true"
-        android:fontFamily="sans-serif"
-        android:hint="@string/activity_result_hint_text"
-        android:inputType="text"
-        android:padding="10dp"
-        android:text=""
-        android:textColor="@color/colorUser"
-        android:importantForAutofill="no" />
+        android:layout_height="wrap_content">
+
+        <TableRow
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            tools:ignore="UselessParent">
+
+            <EditText
+                android:id="@+id/activity_result_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/drawable_rectangle"
+                android:enabled="true"
+                android:fontFamily="sans-serif"
+                android:hint="@string/activity_result_hint_text"
+                android:inputType="text"
+                android:padding="10dp"
+                android:text=""
+                android:textColor="@color/colorUser"
+                android:importantForAutofill="no"
+                android:layout_weight="1"
+                />
+
+            <Button
+                style="@style/Widget.AppCompat.Button"
+                android:id="@+id/activity_result_editbutton"
+                android:layout_width="@android:dimen/app_icon_size"
+                android:layout_height="50dp"
+                android:background="@drawable/drawable_rectangle"
+                android:enabled="true"
+                android:padding="8dp"
+                android:text=""
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                android:drawableRight="@android:drawable/ic_menu_save"
+                android:drawableEnd="@android:drawable/ic_menu_save"
+                android:layout_gravity="right"
+                android:textAllCaps="false"
+                tools:ignore="RtlHardcoded"
+                android:onClick="addRecordHistoryOfSearch"
+                />
+        </TableRow>
+    </TableLayout>
 
     <ListView
         android:id="@+id/activity_result_listView"
