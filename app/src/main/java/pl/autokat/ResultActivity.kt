@@ -19,11 +19,16 @@ import kotlinx.android.synthetic.main.activity_result.*
 import kotlinx.android.synthetic.main.my_item_catalyst.view.*
 import org.json.JSONArray
 import java.util.*
+import kotlin.collections.ArrayList
 
-class ResultActivity : AppCompatActivity() {
+
+class ResultActivity : AppCompatActivity()  {
     //fields
     private lateinit var database: MyDatabase
-    private lateinit var databaseAdapter: ArrayAdapter<MyItemCatalyst>
+    private lateinit var databaseAdapterCatalysts: ArrayAdapter<MyItemCatalyst>
+    private lateinit var databaseAdapterSearched: ArrayAdapter<String>
+
+
     private var scrollPreLast: Int = 0
     private var scrollLimit : Int = MyConfiguration.DATABASE_PAGINATE_LIMIT
     private var menu : Menu? = null
@@ -52,7 +57,7 @@ class ResultActivity : AppCompatActivity() {
             }
         })
         //init database adapter
-        databaseAdapter = object : ArrayAdapter<MyItemCatalyst>(applicationContext, R.layout.my_item_catalyst) {
+        databaseAdapterCatalysts = object : ArrayAdapter<MyItemCatalyst>(applicationContext, R.layout.my_item_catalyst) {
             @SuppressLint("ViewHolder")
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                 //set layout of element
@@ -108,9 +113,9 @@ class ResultActivity : AppCompatActivity() {
                 return view
             }
         }
-        activity_result_listView.setAdapter(databaseAdapter)
+        activity_result_list_catalyst.setAdapter(databaseAdapterCatalysts)
         //scroll listener
-        activity_result_listView.setOnScrollListener(object: AbsListView.OnScrollListener {
+        activity_result_list_catalyst.setOnScrollListener(object: AbsListView.OnScrollListener {
             override fun onScroll(view: AbsListView, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
                 //helper variable which equals first visible item on list plus many of item which can be on the screen
                 val lastItem : Int = firstVisibleItem + visibleItemCount
@@ -123,6 +128,48 @@ class ResultActivity : AppCompatActivity() {
             }
             override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) {}
         })
+
+
+
+
+        //TODO
+
+
+
+        databaseAdapterSearched = object : ArrayAdapter<String>(applicationContext, R.layout.my_item_searched){
+
+
+            @SuppressLint("ViewHolder")
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+
+                //set layout of element
+                val view : View = layoutInflater.inflate(R.layout.my_item_searched, parent, false)
+                //get element
+                val itemSearched = getItem(position)!!
+
+
+                //item brand
+                view.item_name.text = itemSearched
+
+                return view
+            }
+        }
+
+        activity_result_list_searched.setAdapter(databaseAdapterSearched)
+        databaseAdapterSearched.clear()
+
+
+        var listItems : ArrayList<String> = arrayListOf("1", "2", "3", "4", "5", "6", "7", "8")
+
+
+        databaseAdapterSearched.addAll(listItems)
+
+
+
+
+
+
+
     }
     //navigate up
     override fun onSupportNavigateUp(): Boolean {
@@ -192,14 +239,14 @@ class ResultActivity : AppCompatActivity() {
                 this.scrollLimit = MyConfiguration.DATABASE_PAGINATE_LIMIT
                 //get data from database
                 val result = database.getDataCatalyst(searchedText, this.scrollLimit.toString())
-                databaseAdapter.clear()
-                databaseAdapter.addAll(result)
+                databaseAdapterCatalysts.clear()
+                databaseAdapterCatalysts.addAll(result)
             }
             MyScrollRefresh.UPDATE_LIST -> {
                 //get data from database
                 val result = database.getDataCatalyst(searchedText, this.scrollLimit.toString())
-                databaseAdapter.clear()
-                databaseAdapter.addAll(result)
+                databaseAdapterCatalysts.clear()
+                databaseAdapterCatalysts.addAll(result)
             }
             MyScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS -> {
                 //limit as offset in format: skip elements, count elements to get
@@ -207,10 +254,10 @@ class ResultActivity : AppCompatActivity() {
                 //get data from database
                 val result = database.getDataCatalyst(searchedText, limitWithOffset)
                 //add to list
-                databaseAdapter.addAll(result)
+                databaseAdapterCatalysts.addAll(result)
             }
         }
-        if(databaseAdapter.count == 0 && searchedText.isEmpty() == false){
+        if(databaseAdapterCatalysts.count == 0 && searchedText.isEmpty() == false){
             activity_result_textview_empty_list.visibility = VISIBLE
         }else{
             activity_result_textview_empty_list.visibility = GONE
@@ -231,11 +278,11 @@ class ResultActivity : AppCompatActivity() {
         override fun onPreExecute() {
             super.onPreExecute()
             //disable user interface on process application
-            MyUserInterface.enableActivity(this@ResultActivity.activity_result_linearlayout, false)
+            MyUserInterface.enableActivity(this@ResultActivity.activity_result_drawerlayout, false)
             //visibility of content
             activity_result_textview_waiting.visibility = VISIBLE
             activity_result_textview_empty_database.visibility = GONE
-            activity_result_listView.visibility = GONE
+            activity_result_list_catalyst.visibility = GONE
         }
         //do in async mode - in here can't modify user interface
         override fun doInBackground(vararg p0: Void?): MyProcessStep {
@@ -285,11 +332,11 @@ class ResultActivity : AppCompatActivity() {
             if(databaseEmpty){
                 activity_result_textview_waiting.visibility = GONE
                 activity_result_textview_empty_database.visibility = VISIBLE
-                activity_result_listView.visibility = GONE
+                activity_result_list_catalyst.visibility = GONE
             }else{
                 activity_result_textview_waiting.visibility = GONE
                 activity_result_textview_empty_database.visibility = GONE
-                activity_result_listView.visibility = VISIBLE
+                activity_result_list_catalyst.visibility = VISIBLE
             }
             //set visibility of ability update catalyst
             if(this@ResultActivity.menu != null){
@@ -303,7 +350,8 @@ class ResultActivity : AppCompatActivity() {
             //refresh list view
             this@ResultActivity.refreshListView(MyScrollRefresh.UPDATE_LIST)
             //enable user interface on process application
-            MyUserInterface.enableActivity(this@ResultActivity.activity_result_linearlayout, true)
+
+            MyUserInterface.enableActivity(this@ResultActivity.activity_result_drawerlayout, true)
         }
     }
 }

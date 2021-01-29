@@ -86,8 +86,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
     //open result activity
-    fun openListActivity(){
-        startActivity(Intent(applicationContext, ListActivity::class.java))
+    fun openResultActivity(){
+        startActivity(Intent(applicationContext, ResultActivity::class.java))
         finish()
     }
     //click button
@@ -201,7 +201,7 @@ class MainActivity : AppCompatActivity() {
                     this@MainActivity.activity_main_textview.text = MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION
                 }
                 MyProcessStep.SUCCESS -> {
-                    this@MainActivity.openListActivity()
+                    this@MainActivity.openResultActivity()
                 }
             }
             //enable user interface on process application
