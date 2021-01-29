@@ -1,4 +1,5 @@
 # autokat
+Catalyst app
 
 #### run android studio
 "/home/debian/android-studio/bin/studio.sh"
