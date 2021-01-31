@@ -93,7 +93,9 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
             db.beginTransaction()
             //truncate tables
             db.execSQL("DELETE FROM " + MyConfiguration.DATABASE_TABLE_CATALYST + ";VACUUM;")
-            db.execSQL("DELETE FROM " + MyConfiguration.DATABASE_TABLE_SQLITE_SEQUENCE + ";VACUUM;")
+            //delete row from sqlite sequence
+            db.execSQL("DELETE FROM " + MyConfiguration.DATABASE_TABLE_SQLITE_SEQUENCE
+                    + " WHERE " + MyConfiguration.DATABASE_ELEMENT_SQLITE_SEQUENCE_NAME + " LIKE '" + MyConfiguration.DATABASE_TABLE_CATALYST + "';VACUUM;")
             db.setTransactionSuccessful()
             result = true
         }catch (e:Exception){
@@ -296,6 +298,86 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
                 MyConfiguration.formatStringFloat(MyConfiguration.decrypt(cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_WEIGHT)), salt),3).toFloat()
             )
             result.add(myItemCatalyst)
+        }
+        cursor.close()
+        return result
+    }
+    //insert history filter
+    fun insertHistoryFilter(searchedText: String) : Boolean {
+        var result = false
+        val db = this.writableDatabase
+        try{
+            db.beginTransaction()
+            val row = ContentValues()
+            row.put(
+                MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_NAME,
+                searchedText
+            )
+            //insert element
+            db.insert(MyConfiguration.DATABASE_TABLE_HISTORY_FILTER, null, row)
+            db.setTransactionSuccessful()
+            result = true
+        }catch (e:Exception){
+            //nothing
+        }finally {
+            db.endTransaction()
+        }
+        return result
+    }
+    //delete history filter
+    fun deleteHistoryFilter(id: Int) : Int {
+        var rowAffected = -1
+        val db = this.writableDatabase
+        try{
+            db.beginTransaction()
+            //delete element
+            rowAffected = db.delete(MyConfiguration.DATABASE_TABLE_HISTORY_FILTER,
+                MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_ID + "=" + id, null)
+            db.setTransactionSuccessful()
+        }catch (e:Exception){
+            //nothing
+        }finally {
+            db.endTransaction()
+        }
+        return rowAffected
+    }
+    fun deleteHistoryFilter(name: String) : Int {
+        var rowAffected = -1
+        val db = this.writableDatabase
+        try{
+            db.beginTransaction()
+            //delete element
+            rowAffected = db.delete(MyConfiguration.DATABASE_TABLE_HISTORY_FILTER,
+                MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_NAME + " LIKE '" + name + "'", null)
+            db.setTransactionSuccessful()
+        }catch (e:Exception){
+            //nothing
+        }finally {
+            db.endTransaction()
+        }
+        return rowAffected
+    }
+    //get data history filter
+    fun getDataHistoryFilter(limitElements: String): ArrayList<MyItemHistoryFilter> {
+        //set fields which will be retrieved
+        val fields = arrayOf(
+            MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_ID,
+            MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_NAME
+        )
+        //make query
+        var queryString = "SELECT  ${fields.joinToString()}"
+        queryString += " FROM ${MyConfiguration.DATABASE_TABLE_HISTORY_FILTER}"
+        queryString += " ORDER BY ${MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_ID} DESC"
+        queryString += " LIMIT ${limitElements}"
+        val cursor = readableDatabase.rawQuery(queryString, null)
+        //prepare data
+        val result : ArrayList<MyItemHistoryFilter> = ArrayList<MyItemHistoryFilter>()
+        while (cursor.moveToNext()){
+            val myItemHistoryFilter = MyItemHistoryFilter(
+                cursor.getInt(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_ID)),
+                cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_NAME))
+            )
+            result.add(myItemHistoryFilter)
         }
         cursor.close()
         return result

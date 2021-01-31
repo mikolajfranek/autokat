@@ -226,12 +226,14 @@ class MyConfiguration {
         val MY_SHARED_PREFERENCES_KEY_EUR_PLN_DATE : String = "EurPlnDate"
 
         /* database */
-        val DATABASE_VERSION : Int = 2
+        val DATABASE_VERSION : Int = 3
         val DATABASE_NAME_OF_FILE : String = "autokat.db"
         val DATABASE_FILE_PATH_ASSETS : String = "databases/" + DATABASE_NAME_OF_FILE
-        val DATABASE_PAGINATE_LIMIT : Int = 5
+        val DATABASE_PAGINATE_LIMIT_CATALYST : Int = 5
+        val DATABASE_PAGINATE_LIMIT_HISTORY_FILTER : Int = 10
         // tables
         val DATABASE_TABLE_CATALYST = "catalyst"
+        val DATABASE_TABLE_HISTORY_FILTER = "history_filter"
         val DATABASE_TABLE_SQLITE_SEQUENCE = "sqlite_sequence"
         //columns catalyst
         val DATABASE_ELEMENT_CATALYST_ID = "id"
@@ -246,6 +248,12 @@ class MyConfiguration {
         val DATABASE_ELEMENT_CATALYST_TYPE = "type"
         val DATABASE_ELEMENT_CATALYST_WEIGHT = "weight"
         val DATABASE_ELEMENT_CATALYST_TEMP_HITCOUNT = "hitcount"
+        //columns history_filter
+        val DATABASE_ELEMENT_HISTORY_FILTER_ID = "id"
+        val DATABASE_ELEMENT_HISTORY_FILTER_NAME = "name"
+        //columns sqlite_sequence
+        val DATABASE_ELEMENT_SQLITE_SEQUENCE_SEQ = "seq"
+        val DATABASE_ELEMENT_SQLITE_SEQUENCE_NAME = "name"
 
         /* others */
         val REQUEST_CODE_READ_PHONE_STATE: Int = 0
@@ -290,6 +298,8 @@ class MyConfiguration {
         val INFO_DOWNLOAD_BITMAP_SUCCESS : String = "Baza danych jest aktualna"
         val INFO_EMPTY_DATABASE : String = "Baza danych jest pusta"
         val INFO_DATABASE_EXPIRE : String = "Baza danych nie jest aktualna"
+        val INFO_MESSAGE_ADDED_HISTORY_FILTER : String = "Pomyślnie zapisano nazwę do filtrowania"
+        val INFO_MESSAGE_DELETED_HISTORY_FILTER : String = "Pomyślnie usunięto nazwę do filtrowania"
 
         /* methods */
         //decorator for delete others signs

@@ -14,11 +14,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.drawerlayout.widget.DrawerLayout.DrawerListener
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.activity_result.*
 import kotlinx.android.synthetic.main.my_item_catalyst.view.*
 import kotlinx.android.synthetic.main.my_item_catalyst.view.item_name
-import kotlinx.android.synthetic.main.my_item_searched.view.*
+import kotlinx.android.synthetic.main.my_item_history_filter.view.*
 import org.json.JSONArray
 import java.util.*
 
@@ -27,9 +29,11 @@ class ResultActivity : AppCompatActivity()  {
     //fields
     private lateinit var database: MyDatabase
     private lateinit var databaseAdapterCatalysts: ArrayAdapter<MyItemCatalyst>
-    private lateinit var databaseAdapterSearched: ArrayAdapter<MyItemSearched>
-    private var scrollPreLast: Int = 0
-    private var scrollLimit : Int = MyConfiguration.DATABASE_PAGINATE_LIMIT
+    private var scrollPreLastCatalyst: Int = 0
+    private var scrollLimitCatalyst : Int = MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST
+    private lateinit var databaseAdapterHistoryFilter: ArrayAdapter<MyItemHistoryFilter>
+    private var scrollPreLastHistoryFilter: Int = 0
+    private var scrollLimitHistoryFilter : Int = MyConfiguration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER
     private var menu : Menu? = null
     //oncreate
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,11 +59,14 @@ class ResultActivity : AppCompatActivity()  {
                     MyConfiguration.MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT,
                     s.toString()
                 )
-                this@ResultActivity.refreshListView(MyScrollRefresh.RESET_LIST)
+                this@ResultActivity.refreshCatalystListView(MyScrollRefresh.RESET_LIST)
             }
         })
         //init database adapter catalyst
-        databaseAdapterCatalysts = object : ArrayAdapter<MyItemCatalyst>(applicationContext,R.layout.my_item_catalyst) {
+        databaseAdapterCatalysts = object : ArrayAdapter<MyItemCatalyst>(
+            applicationContext,
+            R.layout.my_item_catalyst
+        ) {
             @SuppressLint("ViewHolder")
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                 //set layout of element
@@ -138,9 +145,10 @@ class ResultActivity : AppCompatActivity()  {
                 return view
             }
         }
-        activity_result_list_catalyst.setAdapter(databaseAdapterCatalysts)
+        activity_result_catalyst_list.setAdapter(databaseAdapterCatalysts)
         //scroll listener
-        activity_result_list_catalyst.setOnScrollListener(object : AbsListView.OnScrollListener {
+        activity_result_catalyst_list.setOnScrollListener(object : AbsListView.OnScrollListener {
+            override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) {}
             override fun onScroll(
                 view: AbsListView,
                 firstVisibleItem: Int,
@@ -150,61 +158,69 @@ class ResultActivity : AppCompatActivity()  {
                 //helper variable which equals first visible item on list plus many of item which can be on the screen
                 val lastItem: Int = firstVisibleItem + visibleItemCount
                 //if helper equals total elements on list and helper is different that the last helper then refresh list (add elements)
-                if (lastItem == totalItemCount && lastItem != scrollPreLast) {
-                    scrollLimit += MyConfiguration.DATABASE_PAGINATE_LIMIT
-                    this@ResultActivity.refreshListView(MyScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS)
-                    scrollPreLast = lastItem
+                if (lastItem == totalItemCount && lastItem != scrollPreLastCatalyst) {
+                    scrollLimitCatalyst += MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST
+                    this@ResultActivity.refreshCatalystListView(MyScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS)
+                    scrollPreLastCatalyst = lastItem
                 }
             }
-
-            override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) {}
         })
-        //init database adapter searched
-        databaseAdapterSearched = object : ArrayAdapter<MyItemSearched>(applicationContext,R.layout.my_item_searched){
+        //init database adapter history filter
+        databaseAdapterHistoryFilter = object : ArrayAdapter<MyItemHistoryFilter>(
+            applicationContext,
+            R.layout.my_item_history_filter
+        ){
             @SuppressLint("ViewHolder")
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                 //set layout of element
-                val view : View = layoutInflater.inflate(R.layout.my_item_searched, parent, false)
+                val view : View = layoutInflater.inflate(R.layout.my_item_history_filter, parent, false)
                 //get element
-                val itemSearched = getItem(position)!!
+                val itemHistoryFilter = getItem(position)!!
                 //item name
-                view.item_name.text = itemSearched.name
-                //name choosed
+                view.item_name.text = itemHistoryFilter.name
+                //click on name history filter
                 view.setOnClickListener {
-                    activity_result_edittext.setText(itemSearched.name)
+                    activity_result_edittext.setText(itemHistoryFilter.name)
                     activity_result_drawerlayout.closeDrawers()
                 }
-                //delete choosed
+                //click for delete history filter
                 view.item_delete.setOnClickListener {
-                    deleteRecordHistoryOfSearch(itemSearched.id)
+                    this@ResultActivity.deleteRecordHistoryOfSearch(itemHistoryFilter.id)
                 }
                 return view
             }
         }
-        activity_result_list_searched.setAdapter(databaseAdapterSearched)
-
-
-
-
-
-
-        
-        //scroll listener
-        //TODO
-        // activity_result_list_searched.setOnScrollListener
-
-        databaseAdapterSearched.clear()
-
-        var listItems : ArrayList<MyItemSearched> = arrayListOf(
-            MyItemSearched(1, "jeden"),
-            MyItemSearched(2, "dwa"),
-        )
-        databaseAdapterSearched.addAll(listItems)
-
-
-
-
-
+        activity_result_history_filter_list.setAdapter(databaseAdapterHistoryFilter)
+        activity_result_history_filter_list.setOnScrollListener(object : AbsListView.OnScrollListener {
+            override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) {}
+            override fun onScroll(
+                view: AbsListView,
+                firstVisibleItem: Int,
+                visibleItemCount: Int,
+                totalItemCount: Int
+            ) {
+                //helper variable which equals first visible item on list plus many of item which can be on the screen
+                val lastItem: Int = firstVisibleItem + visibleItemCount
+                //if helper equals total elements on list and helper is different that the last helper then refresh list (add elements)
+                if (lastItem == totalItemCount && lastItem != scrollPreLastHistoryFilter) {
+                    scrollLimitHistoryFilter += MyConfiguration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER
+                    this@ResultActivity.refreshHistoryFilterListView(MyScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS)
+                    scrollPreLastHistoryFilter = lastItem
+                }
+            }
+        })
+        //drawer layout
+        activity_result_drawerlayout.addDrawerListener(object : DrawerListener {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
+            override fun onDrawerOpened(drawerView: View) {}
+            override fun onDrawerClosed(drawerView: View) {}
+            override fun onDrawerStateChanged(newState: Int) {
+                //when opening drawer is on final position
+                if(newState == DrawerLayout.STATE_SETTLING && activity_result_drawerlayout.isDrawerOpen(activity_result_navigation_history_filter) == false) {
+                    this@ResultActivity.refreshHistoryFilterListView(MyScrollRefresh.RESET_LIST)
+                }
+            }
+        })
     }
     //navigate up
     override fun onSupportNavigateUp(): Boolean {
@@ -264,29 +280,29 @@ class ResultActivity : AppCompatActivity()  {
             }
         }
     }
-    //refresh list view
-    fun refreshListView(myScrollRefresh: MyScrollRefresh){
+    //refresh catalyst list view
+    fun refreshCatalystListView(myScrollRefresh: MyScrollRefresh){
         val searchedText = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT)
         when(myScrollRefresh){
             MyScrollRefresh.RESET_LIST -> {
                 //reset variable of scroll
-                this.scrollPreLast = 0
-                this.scrollLimit = MyConfiguration.DATABASE_PAGINATE_LIMIT
+                this.scrollPreLastCatalyst = 0
+                this.scrollLimitCatalyst = MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST
                 //get data from database
-                val result = database.getDataCatalyst(searchedText, this.scrollLimit.toString())
+                val result = database.getDataCatalyst(searchedText, this.scrollLimitCatalyst.toString())
                 databaseAdapterCatalysts.clear()
                 databaseAdapterCatalysts.addAll(result)
             }
             MyScrollRefresh.UPDATE_LIST -> {
                 //get data from database
-                val result = database.getDataCatalyst(searchedText, this.scrollLimit.toString())
+                val result = database.getDataCatalyst(searchedText, this.scrollLimitCatalyst.toString())
                 databaseAdapterCatalysts.clear()
                 databaseAdapterCatalysts.addAll(result)
             }
             MyScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS -> {
                 //limit as offset in format: skip elements, count elements to get
                 val limitWithOffset: String =
-                    (this.scrollLimit - MyConfiguration.DATABASE_PAGINATE_LIMIT).toString() + "," + MyConfiguration.DATABASE_PAGINATE_LIMIT
+                    (this.scrollLimitCatalyst - MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST).toString() + "," + MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST
                 //get data from database
                 val result = database.getDataCatalyst(searchedText, limitWithOffset)
                 //add to list
@@ -294,41 +310,48 @@ class ResultActivity : AppCompatActivity()  {
             }
         }
         if(databaseAdapterCatalysts.count == 0 && searchedText.isEmpty() == false){
-            activity_result_textview_empty_list.visibility = VISIBLE
+            activity_result_catalyst_textview_empty_list.visibility = VISIBLE
         }else{
-            activity_result_textview_empty_list.visibility = GONE
+            activity_result_catalyst_textview_empty_list.visibility = GONE
         }
     }
-    //click button adding new record history of search
-    fun addRecordHistoryOfSearch(view: View?) {
-
-
-
-        //TODO
-        Toast.makeText(
-            applicationContext,
-            "Pomyślnie zapisano nazwę do filtrowania",
-            Toast.LENGTH_LONG
-        ).show()
-    }
-    //click button delete record history of search
-    fun deleteRecordHistoryOfSearch(id: Int) {
-
-
-        //zablokuj widok
-            //usun
-
-            //odśwież listę
-        //odkryj widok
-
-
-
-        //TODO
-        Toast.makeText(
-            applicationContext,
-            "Pomyślnie usunieto " + id,
-            Toast.LENGTH_LONG
-        ).show()
+    //refresh history filter list view
+    fun refreshHistoryFilterListView(myScrollRefresh: MyScrollRefresh){
+        when(myScrollRefresh){
+            MyScrollRefresh.RESET_LIST -> {
+                //reset variable of scroll
+                this.scrollPreLastHistoryFilter = 0
+                this.scrollLimitHistoryFilter = MyConfiguration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER
+                //get data from database
+                val result = database.getDataHistoryFilter(this.scrollLimitHistoryFilter.toString())
+                databaseAdapterHistoryFilter.clear()
+                databaseAdapterHistoryFilter.addAll(result)
+            }
+            MyScrollRefresh.UPDATE_LIST -> {
+                //get data from database
+                val result = database.getDataHistoryFilter(this.scrollLimitHistoryFilter.toString())
+                databaseAdapterHistoryFilter.clear()
+                databaseAdapterHistoryFilter.addAll(result)
+            }
+            MyScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS -> {
+                //limit as offset in format: skip elements, count elements to get
+                val limitWithOffset: String =
+                    (this.scrollLimitHistoryFilter - MyConfiguration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER).toString() + "," + MyConfiguration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER
+                //get data from database
+                val result = database.getDataHistoryFilter(limitWithOffset)
+                //add to list
+                databaseAdapterHistoryFilter.addAll(result)
+            }
+        }
+        if(databaseAdapterHistoryFilter.count == 0){
+            activity_result_history_filter_textview_waiting.visibility = GONE
+            activity_result_history_filter_textview_empty_list.visibility = VISIBLE
+            activity_result_history_filter_list.visibility = GONE
+        }else{
+            activity_result_history_filter_textview_waiting.visibility = GONE
+            activity_result_history_filter_textview_empty_list.visibility = GONE
+            activity_result_history_filter_list.visibility = VISIBLE
+        }
     }
     //async class which check if exists update of app and update it
     @SuppressLint("StaticFieldLeak")
@@ -342,9 +365,9 @@ class ResultActivity : AppCompatActivity()  {
             //disable user interface on process application
             MyUserInterface.enableActivity(this@ResultActivity.activity_result_drawerlayout, false)
             //visibility of content
-            activity_result_textview_waiting.visibility = VISIBLE
-            activity_result_textview_empty_database.visibility = GONE
-            activity_result_list_catalyst.visibility = GONE
+            activity_result_catalyst_textview_waiting.visibility = VISIBLE
+            activity_result_catalyst_textview_empty_database.visibility = GONE
+            activity_result_catalyst_list.visibility = GONE
         }
         //do in async mode - in here can't modify user interface
         override fun doInBackground(vararg p0: Void?): MyProcessStep {
@@ -443,13 +466,13 @@ class ResultActivity : AppCompatActivity()  {
             }
             //visibility of content
             if(databaseEmpty){
-                activity_result_textview_waiting.visibility = GONE
-                activity_result_textview_empty_database.visibility = VISIBLE
-                activity_result_list_catalyst.visibility = GONE
+                activity_result_catalyst_textview_waiting.visibility = GONE
+                activity_result_catalyst_textview_empty_database.visibility = VISIBLE
+                activity_result_catalyst_list.visibility = GONE
             }else{
-                activity_result_textview_waiting.visibility = GONE
-                activity_result_textview_empty_database.visibility = GONE
-                activity_result_list_catalyst.visibility = VISIBLE
+                activity_result_catalyst_textview_waiting.visibility = GONE
+                activity_result_catalyst_textview_empty_database.visibility = GONE
+                activity_result_catalyst_list.visibility = VISIBLE
             }
             //set visibility of ability update catalyst
             if(this@ResultActivity.menu != null){
@@ -471,10 +494,86 @@ class ResultActivity : AppCompatActivity()  {
                 }
             }
             //refresh list view
-            this@ResultActivity.refreshListView(MyScrollRefresh.UPDATE_LIST)
+            this@ResultActivity.refreshCatalystListView(MyScrollRefresh.UPDATE_LIST)
             //enable user interface on process application
-
             MyUserInterface.enableActivity(this@ResultActivity.activity_result_drawerlayout, true)
         }
     }
+
+
+
+
+
+
+
+
+
+
+    //TODO
+
+    //click button adding new record history of search
+    fun addRecordHistoryOfSearch(view: View?) {
+        val searchedText = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT)
+
+
+
+
+
+
+        if(searchedText.isEmpty() == false && database.deleteHistoryFilter(searchedText) != -1 && database.insertHistoryFilter(searchedText) == true){
+            Toast.makeText(applicationContext, MyConfiguration.INFO_MESSAGE_ADDED_HISTORY_FILTER, Toast.LENGTH_LONG).show()
+        }else {
+            Toast.makeText(applicationContext, MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION, Toast.LENGTH_LONG).show()
+        }
+
+
+
+
+
+
+        //znowu asynchronicznie?
+        //zablokuj widok
+            //dodaj
+                //usun taki sam jeśli jest
+        //odkryj widok
+
+
+        //TODO
+
+    }
+    //click button delete record history of search
+    fun deleteRecordHistoryOfSearch(id: Int) {
+
+
+        //znowu asynchronicznie?
+        //zablokuj widok
+            //usun
+            //odśwież listę - długa operacja
+        //odkryj widok
+
+
+
+        if(database.deleteHistoryFilter(id) != -1){
+            Toast.makeText(applicationContext, MyConfiguration.INFO_MESSAGE_DELETED_HISTORY_FILTER, Toast.LENGTH_LONG).show()
+        }else{
+            Toast.makeText(applicationContext, MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION, Toast.LENGTH_LONG).show()
+        }
+        this@ResultActivity.refreshHistoryFilterListView(MyScrollRefresh.UPDATE_LIST)
+
+
+        //TODO
+
+    }
+
+
+    //async class which prepare drawer layout for searching
+        //ustaw 'trwa pobieranie danych w drawer'
+            //pobierz rekordy
+        //ustaw tekst lub elementy do adaptera
+
+
+
+
+
+
 }
