@@ -1,14 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<TableLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="200dp"
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/item_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:textColor="@color/colorUser" />
+    <TableRow
 
-</LinearLayout>
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_weight="1"
+        android:background="@drawable/drawable_rectangle">
+
+        <TextView
+            android:id="@+id/item_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/colorUser"
+            android:layout_weight="1"
+            android:layout_margin="10dp"
+            />
+
+
+        <Button
+            style="@style/Widget.AppCompat.Button"
+            android:id="@+id/item_delete"
+            android:layout_width="@android:dimen/app_icon_size"
+            android:layout_height="50dp"
+            android:background="@drawable/drawable_rectangle"
+            android:enabled="true"
+            android:padding="8dp"
+            android:text=""
+            android:layout_marginStart="5dp"
+            android:drawableEnd="@android:drawable/ic_menu_close_clear_cancel"
+
+            android:textAllCaps="false"
+            />
+    </TableRow>
+</TableLayout>
+
+
+
+

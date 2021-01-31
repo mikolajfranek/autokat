@@ -42,9 +42,6 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme" />
-        <activity
-            android:name=".ListActivity"
-            android:screenOrientation="portrait" />
         <service
             android:name=".ServiceOfThumbnail"
             android:enabled="true"
