@@ -2,6 +2,6 @@
 <resources>
     <color name="colorUser">#363636</color>
     <color name="colorGreen">#26A65B</color>
-    <color name="colorHorizontalLine">#e2e2e2</color>
+    <color name="colorLine">#e7e7e7</color>
     <color name="colorBlack">#00000000</color>
 </resources>

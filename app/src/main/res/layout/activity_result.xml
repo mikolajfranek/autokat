@@ -49,6 +49,7 @@
 
                 <Button
                     style="@style/Widget.AppCompat.Button"
+                    android:tooltipText="Zapisz nazwę do filtrowania"
                     android:layout_width="@android:dimen/app_icon_size"
                     android:layout_height="match_parent"
                     android:layout_marginStart="10dp"
@@ -65,6 +66,7 @@
         <ListView
             android:id="@+id/activity_result_catalyst_list"
             android:visibility="gone"
+            android:divider="@null"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -125,6 +127,7 @@
             <ListView
                 android:id="@+id/activity_result_history_filter_list"
                 android:visibility="gone"
+                android:divider="@null"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -153,5 +156,4 @@
                 android:textColor="@color/colorUser" />
         </LinearLayout>
     </com.google.android.material.navigation.NavigationView>
-
 </androidx.drawerlayout.widget.DrawerLayout>

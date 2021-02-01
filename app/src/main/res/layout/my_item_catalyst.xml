@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginStart="10dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginRight="10dp">
 
     <TableRow
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginEnd="10dp"
@@ -36,7 +40,6 @@
             android:gravity="end" />
     </TableRow>
 
-
     <TableRow
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
@@ -67,7 +70,6 @@
             android:fontFamily="sans-serif"
             android:textColor="@color/colorGreen" />
     </TableRow>
-
 
     <TableRow
         android:id="@+id/item_table_row_weight"
@@ -101,14 +103,13 @@
             android:textColor="@color/colorGreen" />
     </TableRow>
 
-
     <TableRow
         android:id="@+id/item_table_row_plattinum"
+        android:layout_weight="0"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
-        android:layout_weight="0"
         android:visibility="gone">
 
         <TextView
@@ -131,11 +132,11 @@
 
     <TableRow
         android:id="@+id/item_table_row_palladium"
+        android:layout_weight="0"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
-        android:layout_weight="0"
         android:visibility="gone">
 
         <TextView
@@ -162,14 +163,13 @@
             android:textColor="@color/colorGreen" />
     </TableRow>
 
-
     <TableRow
         android:id="@+id/item_table_row_rhodium"
+        android:layout_weight="0"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
-        android:layout_weight="0"
         android:visibility="gone">
 
         <TextView
@@ -197,8 +197,13 @@
     </TableRow>
 
     <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
         android:layout_marginTop="10dp"
-        android:background="@color/colorHorizontalLine" />
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/colorLine" />
+
 </TableLayout>

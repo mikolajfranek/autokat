@@ -13,6 +13,9 @@ android {
             storeFile file('/home/debian/Dokumenty/_/AutoKatSecret/keystore.jks')
         }
     }
+    buildFeatures {
+        viewBinding true
+    }
     compileSdkVersion 29
     buildToolsVersion '29.0.2'
     defaultConfig {

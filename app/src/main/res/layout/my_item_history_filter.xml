@@ -5,42 +5,50 @@
     android:layout_height="wrap_content">
 
     <TableRow
-
         android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_weight="1"
-        android:background="@drawable/drawable_rectangle">
+        android:layout_weight="0">
 
         <TextView
             android:id="@+id/item_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:fontFamily="sans-serif"
             android:textColor="@color/colorUser"
-            android:layout_weight="1"
-            android:layout_margin="10dp"
-            />
+            android:layout_marginEnd="15dp"
+            android:padding="10dp" />
 
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="6dp"
+            android:background="@color/colorLine" />
 
         <Button
-            style="@style/Widget.AppCompat.Button"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:id="@+id/item_delete"
             android:layout_width="@android:dimen/app_icon_size"
-            android:layout_height="50dp"
-            android:background="@drawable/drawable_rectangle"
-            android:enabled="true"
-            android:padding="8dp"
+            android:layout_height="match_parent"
+            android:fontFamily="sans-serif"
             android:text=""
-            android:layout_marginStart="5dp"
-            android:drawableEnd="@android:drawable/ic_menu_close_clear_cancel"
-
             android:textAllCaps="false"
+            android:drawableEnd="@android:drawable/ic_menu_close_clear_cancel"
             />
     </TableRow>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/colorLine" />
 </TableLayout>
 
 

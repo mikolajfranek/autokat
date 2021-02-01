@@ -6,7 +6,6 @@ import android.view.View.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import kotlinx.android.synthetic.main.activity_about.*
-import kotlinx.android.synthetic.main.activity_main.toolbar
 
 class AboutActivity : AppCompatActivity() {
 
