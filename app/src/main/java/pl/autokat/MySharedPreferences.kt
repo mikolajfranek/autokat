@@ -19,7 +19,7 @@ class MySharedPreferences {
         fun setKeyToFile(key : String, value: String){
             val editor = preferences.edit()
             editor.putString(key, value)
-            editor.commit()
+            editor.commit() //editor.commit() -> calling synchronously
         }
     }
 }

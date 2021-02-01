@@ -7,15 +7,20 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_picture.*
+import pl.autokat.databinding.ActivityPictureBinding
 import java.net.URL
 import java.net.UnknownHostException
 
 class PictureActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityPictureBinding
+
     //oncreate
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_picture)
+        binding = ActivityPictureBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
         //get data which sent
         val urlPicture : String = intent.getStringExtra("urlPicture")!!.toString()
         //make async task and execute
@@ -62,7 +67,7 @@ class PictureActivity : AppCompatActivity() {
                     finish()
                 }
                 MyProcessStep.SUCCESS -> {
-                    activity_picture.setImageBitmap(bitmap)
+                    binding.activityPicture.setImageBitmap(bitmap)
                 }
             }
         }

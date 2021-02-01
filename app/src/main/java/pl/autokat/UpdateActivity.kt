@@ -2,17 +2,18 @@ package pl.autokat
 
 import android.annotation.SuppressLint
 import android.os.AsyncTask
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import kotlinx.android.synthetic.main.activity_main.toolbar
-import kotlinx.android.synthetic.main.activity_update.*
 import org.json.JSONArray
+import pl.autokat.databinding.ActivityMainBinding
+import pl.autokat.databinding.ActivityUpdateBinding
 import java.net.UnknownHostException
 
 class UpdateActivity : AppCompatActivity() {
-    //fields
+
+    private lateinit var binding: ActivityUpdateBinding
     private lateinit var database: MyDatabase
     private var refreshingDatabase : Boolean = false
     private var refreshingWork : Boolean = false
@@ -20,9 +21,11 @@ class UpdateActivity : AppCompatActivity() {
     //oncreate
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_update)
+        binding = ActivityUpdateBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
         //set toolbar
-        setSupportActionBar(toolbar as Toolbar?)
+        setSupportActionBar(binding.toolbar as Toolbar?)
         //navigate up
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         //init shared preferences
@@ -45,26 +48,26 @@ class UpdateActivity : AppCompatActivity() {
         val itemsWithThumbnail : Int = database.getCountCatalystWithThumbnail()
         val itemsWithUrlThumbnail : Int = database.getCountCatalystWithUrlOfThumbnail()
         val itemsFromDatabase : Int = database.getCountCatalyst()
-        activity_update_progessbar.progress = ((itemsWithThumbnail.toFloat()/itemsWithUrlThumbnail.toFloat())*100.toFloat()).toInt()
+        binding.activityUpdateProgessbar.progress = ((itemsWithThumbnail.toFloat()/itemsWithUrlThumbnail.toFloat())*100.toFloat()).toInt()
         //set info section
-        activity_update_textview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
+        binding.activityUpdateTextview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
         if(itemsFromDatabase != 0){
             if(MyConfiguration.IS_AVAILABLE_UPDATE){
-                activity_update_progessbar.progress = 0
-                activity_update_textview.text = MyConfiguration.INFO_DATABASE_EXPIRE
+                binding.activityUpdateProgessbar.progress = 0
+                binding.activityUpdateTextview.text = MyConfiguration.INFO_DATABASE_EXPIRE
             }else{
                 if(itemsWithThumbnail/itemsFromDatabase != 1){
-                    activity_update_textview.text = (MyConfiguration.INFO_DOWNLOAD_BITMAP_STATUS + " (" + itemsWithThumbnail + "/" + itemsWithUrlThumbnail + "/" + itemsFromDatabase+ ")")
+                    binding.activityUpdateTextview.text = (MyConfiguration.INFO_DOWNLOAD_BITMAP_STATUS + " (" + itemsWithThumbnail + "/" + itemsWithUrlThumbnail + "/" + itemsFromDatabase+ ")")
                     //make async task and execute - refresh state of downloading
                     this.refreshingDatabase = true
                     val task = RefreshUpdateCatalyst()
                     task.execute()
                 }else{
-                    activity_update_textview.text = MyConfiguration.INFO_DOWNLOAD_BITMAP_SUCCESS
+                    binding.activityUpdateTextview.text = MyConfiguration.INFO_DOWNLOAD_BITMAP_SUCCESS
                 }
             }
         }else{
-            activity_update_textview.text = MyConfiguration.INFO_EMPTY_DATABASE
+            binding.activityUpdateTextview.text = MyConfiguration.INFO_EMPTY_DATABASE
         }
     }
     //click button only new
@@ -113,8 +116,8 @@ class UpdateActivity : AppCompatActivity() {
         //on progress update
         override fun onProgressUpdate(vararg values: Int?) {
             super.onProgressUpdate(*values)
-            activity_update_textview.text = (MyConfiguration.INFO_DOWNLOAD_BITMAP_STATUS + " (" + values[0]!!.toString() + "/" + values[1]!!.toString() + "/" + values[2]!!.toString()+ ")")
-            activity_update_progessbar.progress = ((values[0]!!.toFloat()/values[1]!!.toFloat())*100.toFloat()).toInt()
+            binding.activityUpdateTextview.text = (MyConfiguration.INFO_DOWNLOAD_BITMAP_STATUS + " (" + values[0]!!.toString() + "/" + values[1]!!.toString() + "/" + values[2]!!.toString()+ ")")
+            binding.activityUpdateProgessbar.progress = ((values[0]!!.toFloat()/values[1]!!.toFloat())*100.toFloat()).toInt()
         }
     }
 
@@ -127,16 +130,16 @@ class UpdateActivity : AppCompatActivity() {
         override fun onPreExecute() {
             super.onPreExecute()
             //disable user interface on process application
-            MyUserInterface.enableActivity(this@UpdateActivity.activity_update_linearlayout, false)
+            MyUserInterface.enableActivity(binding.activityUpdateLinearlayout, false)
             refreshingDatabase = false
             while(refreshingWork){
                 Thread.sleep(100)
             }
             //set process bar
-            activity_update_progessbar.progress = 0
+            binding.activityUpdateProgessbar.progress = 0
             //set info section
-            activity_update_textview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
-            activity_update_textview.text = MyConfiguration.INFO_MESSAGE_WAIT_UPDATE
+            binding.activityUpdateTextview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
+            binding.activityUpdateTextview.text = MyConfiguration.INFO_MESSAGE_WAIT_UPDATE
         }
         //do in async mode - in here can't modify user interface
         override fun doInBackground(vararg p0: Void?): MyProcessStep {
@@ -188,10 +191,10 @@ class UpdateActivity : AppCompatActivity() {
         //on progress update
         override fun onProgressUpdate(vararg values: Int?) {
             super.onProgressUpdate(*values)
-            activity_update_progessbar.progress = values[0]!!.toInt()
+            binding.activityUpdateProgessbar.progress = values[0]!!.toInt()
             //set info section
-            activity_update_textview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
-            activity_update_textview.text = MyConfiguration.INFO_MESSAGE_WAIT_UPDATE
+            binding.activityUpdateTextview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
+            binding.activityUpdateTextview.text = MyConfiguration.INFO_MESSAGE_WAIT_UPDATE
         }
         //post execute
         override fun onPostExecute(result: MyProcessStep) {
@@ -199,22 +202,22 @@ class UpdateActivity : AppCompatActivity() {
             //do job depends on situation
             when(result){
                 MyProcessStep.NETWORK_FAILED -> {
-                    activity_update_textview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
-                    activity_update_textview.text = MyConfiguration.INFO_MESSAGE_NETWORK_FAILED
+                    binding.activityUpdateTextview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
+                    binding.activityUpdateTextview.text = MyConfiguration.INFO_MESSAGE_NETWORK_FAILED
                 }
                 MyProcessStep.UNHANDLED_EXCEPTION -> {
-                    activity_update_textview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
-                    activity_update_textview.text = MyConfiguration.INFO_UPDATE_FAILED
+                    binding.activityUpdateTextview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
+                    binding.activityUpdateTextview.text = MyConfiguration.INFO_UPDATE_FAILED
                 }
                 MyProcessStep.SUCCESS -> {
                     MyConfiguration.IS_AVAILABLE_UPDATE = false
-                    activity_update_progessbar.progress = 100
-                    activity_update_textview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
-                    activity_update_textview.text = MyConfiguration.INFO_UPDATE_SUCCESS
+                    binding.activityUpdateProgessbar.progress = 100
+                    binding.activityUpdateTextview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
+                    binding.activityUpdateTextview.text = MyConfiguration.INFO_UPDATE_SUCCESS
                 }
             }
             //enable user interface on process application
-            MyUserInterface.enableActivity(this@UpdateActivity.activity_update_linearlayout, true)
+            MyUserInterface.enableActivity(binding.activityUpdateLinearlayout, true)
         }
     }
 }

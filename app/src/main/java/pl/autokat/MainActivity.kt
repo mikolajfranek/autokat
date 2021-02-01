@@ -12,17 +12,23 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONArray
+import pl.autokat.databinding.ActivityMainBinding
 import java.net.UnknownHostException
 
+
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+
     //oncreate
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
         //set toolbar
-        setSupportActionBar(toolbar as Toolbar?)
+        setSupportActionBar(binding.toolbar as Toolbar?)
         //navigate up
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         //init shared preferences
@@ -92,7 +98,7 @@ class MainActivity : AppCompatActivity() {
     }
     //click button
     fun activityMainButtonOnClick(view: View) {
-        this.tryLogin(activity_main_edittext.text.toString(), true)
+        this.tryLogin(binding.activityMainEdittext.text.toString(), true)
     }
     //process login
     fun tryLogin(login: String, hasClickedButton: Boolean){
@@ -110,12 +116,14 @@ class MainActivity : AppCompatActivity() {
         override fun onPreExecute() {
             super.onPreExecute()
             //disable user interface on process application
-            MyUserInterface.enableActivity(this@MainActivity.activity_main_linearlayout, false)
+            MyUserInterface.enableActivity(binding.activityMainLinearlayout, false)
             //set edit text (user not click on button, trying auto login)
-            if(hasClickedButton == false) this@MainActivity.activity_main_edittext.setText(this.login)
+            if(hasClickedButton == false) {
+                binding.activityMainEdittext.setText(this.login)
+            }
             //set info message
-            this@MainActivity.activity_main_textview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
-            this@MainActivity.activity_main_textview.setText(MyConfiguration.INFO_MESSAGE_WAIT_AUTHENTICATE)
+            binding.activityMainTextview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
+            binding.activityMainTextview.setText(MyConfiguration.INFO_MESSAGE_WAIT_AUTHENTICATE)
         }
         //do in async mode - in here can't modify user interface
         @SuppressLint("MissingPermission")
@@ -175,37 +183,37 @@ class MainActivity : AppCompatActivity() {
             //do job depends on situation
             when(result){
                 MyProcessStep.USER_NEVER_LOGGED -> {
-                    this@MainActivity.activity_main_textview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
-                    this@MainActivity.activity_main_textview.text = MyConfiguration.INFO_MESSAGE_USER_NEVER_LOGGED
+                    binding.activityMainTextview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
+                    binding.activityMainTextview.text = MyConfiguration.INFO_MESSAGE_USER_NEVER_LOGGED
                 }
                 MyProcessStep.USER_ELAPSED_DATE_LICENCE -> {
-                    this@MainActivity.activity_main_textview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
-                    this@MainActivity.activity_main_textview.text = MyConfiguration.INFO_MESSAGE_USER_FAILED_LICENCE
+                    binding.activityMainTextview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
+                    binding.activityMainTextview.text = MyConfiguration.INFO_MESSAGE_USER_FAILED_LICENCE
                     /* set licence as empty */
                     MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END, "")
                 }
                 MyProcessStep.USER_FAILED_LOGIN -> {
-                    this@MainActivity.activity_main_textview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
-                    this@MainActivity.activity_main_textview.text = MyConfiguration.INFO_MESSAGE_USER_FAILED_LOGIN
+                    binding.activityMainTextview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
+                    binding.activityMainTextview.text = MyConfiguration.INFO_MESSAGE_USER_FAILED_LOGIN
                 }
                 MyProcessStep.USER_FAILED_SERIAL -> {
-                    this@MainActivity.activity_main_textview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
-                    this@MainActivity.activity_main_textview.text = MyConfiguration.INFO_MESSAGE_USER_FAILED_SERIAL
+                    binding.activityMainTextview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
+                    binding.activityMainTextview.text = MyConfiguration.INFO_MESSAGE_USER_FAILED_SERIAL
                 }
                 MyProcessStep.NETWORK_FAILED -> {
-                    this@MainActivity.activity_main_textview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
-                    this@MainActivity.activity_main_textview.text = MyConfiguration.INFO_MESSAGE_NETWORK_FAILED
+                    binding.activityMainTextview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
+                    binding.activityMainTextview.text = MyConfiguration.INFO_MESSAGE_NETWORK_FAILED
                 }
                 MyProcessStep.UNHANDLED_EXCEPTION -> {
-                    this@MainActivity.activity_main_textview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
-                    this@MainActivity.activity_main_textview.text = MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION
+                    binding.activityMainTextview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
+                    binding.activityMainTextview.text = MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION
                 }
                 MyProcessStep.SUCCESS -> {
                     this@MainActivity.openResultActivity()
                 }
             }
             //enable user interface on process application
-            MyUserInterface.enableActivity(this@MainActivity.activity_main_linearlayout, true)
+            MyUserInterface.enableActivity(binding.activityMainLinearlayout, true)
         }
     }
 }
