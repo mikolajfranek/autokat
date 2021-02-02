@@ -7,24 +7,26 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import pl.autokat.components.MyConfiguration
+import pl.autokat.components.MyProcessStep
 import pl.autokat.databinding.ActivityPictureBinding
 import java.net.URL
 import java.net.UnknownHostException
 
 class PictureActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityPictureBinding
+    private lateinit var bindingActivityPicture: ActivityPictureBinding
 
     //oncreate
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityPictureBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+        this.bindingActivityPicture = ActivityPictureBinding.inflate(this.layoutInflater)
+        val view = this.bindingActivityPicture.root
+        this.setContentView(view)
         //get data which sent
-        val urlPicture : String = intent.getStringExtra("urlPicture")!!.toString()
+        val urlPicture : String = this.intent.getStringExtra("urlPicture")!!.toString()
         //make async task and execute
-        val task = DownloadOryginalPicture(urlPicture)
+        val task = this.DownloadOryginalPicture(urlPicture)
         task.execute()
     }
 
@@ -37,13 +39,13 @@ class PictureActivity : AppCompatActivity() {
         //pre execute
         override fun onPreExecute() {
             super.onPreExecute()
-            Toast.makeText(applicationContext, MyConfiguration.INFO_DOWNLOAD_BITMAP_WAIT, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@PictureActivity.applicationContext, MyConfiguration.INFO_DOWNLOAD_BITMAP_WAIT, Toast.LENGTH_SHORT).show()
         }
         //do in async mode - in here can't modify user interface
         override fun doInBackground(vararg p0: Void?): MyProcessStep {
             try{
-                val urlThumbnail = MyConfiguration.getPictureUrlFromGoogle(urlPicture, 1920, 1080)
-                bitmap = BitmapFactory.decodeStream(URL(urlThumbnail).openConnection().getInputStream())
+                val urlThumbnail = MyConfiguration.getPictureUrlFromGoogle(this.urlPicture, 1920, 1080)
+                this.bitmap = BitmapFactory.decodeStream(URL(urlThumbnail).openConnection().getInputStream())
             }
             catch(e: UnknownHostException){
                 return MyProcessStep.NETWORK_FAILED
@@ -59,15 +61,15 @@ class PictureActivity : AppCompatActivity() {
             //do job depends on situation
             when(result){
                 MyProcessStep.NETWORK_FAILED -> {
-                    Toast.makeText(applicationContext, MyConfiguration.INFO_MESSAGE_NETWORK_FAILED, Toast.LENGTH_SHORT).show()
-                    finish()
+                    Toast.makeText(this@PictureActivity.applicationContext, MyConfiguration.INFO_MESSAGE_NETWORK_FAILED, Toast.LENGTH_SHORT).show()
+                    this@PictureActivity.finish()
                 }
                 MyProcessStep.UNHANDLED_EXCEPTION -> {
-                    Toast.makeText(applicationContext, MyConfiguration.INFO_DOWNLOAD_BITMAP_FAILED, Toast.LENGTH_SHORT).show()
-                    finish()
+                    Toast.makeText(this@PictureActivity.applicationContext, MyConfiguration.INFO_DOWNLOAD_BITMAP_FAILED, Toast.LENGTH_SHORT).show()
+                    this@PictureActivity.finish()
                 }
                 MyProcessStep.SUCCESS -> {
-                    binding.activityPicture.setImageBitmap(bitmap)
+                    this@PictureActivity.bindingActivityPicture.photoView.setImageBitmap(this.bitmap)
                 }
             }
         }

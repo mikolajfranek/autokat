@@ -1,4 +1,4 @@
-package pl.autokat
+package pl.autokat.components
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -9,7 +9,10 @@ class MySharedPreferences {
         private lateinit var preferences: SharedPreferences
         //init
         fun init(context: Context) {
-            preferences = context.getSharedPreferences(MyConfiguration.MY_SHARED_PREFERENCES_NAME, MyConfiguration.MY_SHARED_PREFERENCES_MODE)
+            preferences = context.getSharedPreferences(
+                MyConfiguration.MY_SHARED_PREFERENCES_NAME,
+                MyConfiguration.MY_SHARED_PREFERENCES_MODE
+            )
         }
         //get key
         fun getKeyFromFile(key: String) : String{

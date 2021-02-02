@@ -7,35 +7,35 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import org.json.JSONArray
-import pl.autokat.databinding.ActivityMainBinding
+import pl.autokat.components.*
 import pl.autokat.databinding.ActivityUpdateBinding
 import java.net.UnknownHostException
 
 class UpdateActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityUpdateBinding
-    private lateinit var database: MyDatabase
+    private lateinit var bindingActivityUpdate: ActivityUpdateBinding
+    private lateinit var myDatabase: MyDatabase
     private var refreshingDatabase : Boolean = false
     private var refreshingWork : Boolean = false
 
     //oncreate
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityUpdateBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+        this.bindingActivityUpdate = ActivityUpdateBinding.inflate(this.layoutInflater)
+        val view = this.bindingActivityUpdate.root
+        this.setContentView(view)
         //set toolbar
-        setSupportActionBar(binding.toolbar as Toolbar?)
+        this.setSupportActionBar(this.bindingActivityUpdate.toolbar as Toolbar?)
         //navigate up
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        this.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         //init shared preferences
         MySharedPreferences.init(this)
         //init database object
-        database = MyDatabase(applicationContext)
+        this.myDatabase = MyDatabase(this.applicationContext)
     }
     //navigate up
     override fun onSupportNavigateUp(): Boolean {
-        finish()
+        this.finish()
         return true
     }
     override fun onPause(){
@@ -45,43 +45,43 @@ class UpdateActivity : AppCompatActivity() {
     //onresume
     override fun onResume() {
         super.onResume()
-        val itemsWithThumbnail : Int = database.getCountCatalystWithThumbnail()
-        val itemsWithUrlThumbnail : Int = database.getCountCatalystWithUrlOfThumbnail()
-        val itemsFromDatabase : Int = database.getCountCatalyst()
-        binding.activityUpdateProgessbar.progress = ((itemsWithThumbnail.toFloat()/itemsWithUrlThumbnail.toFloat())*100.toFloat()).toInt()
+        val itemsWithThumbnail : Int = this.myDatabase.getCountCatalystWithThumbnail()
+        val itemsWithUrlThumbnail : Int = this.myDatabase.getCountCatalystWithUrlOfThumbnail()
+        val itemsFromDatabase : Int = this.myDatabase.getCountCatalyst()
+        this.bindingActivityUpdate.progessBar.progress = ((itemsWithThumbnail.toFloat()/itemsWithUrlThumbnail.toFloat())*100.toFloat()).toInt()
         //set info section
-        binding.activityUpdateTextview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
+        this.bindingActivityUpdate.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
         if(itemsFromDatabase != 0){
             if(MyConfiguration.IS_AVAILABLE_UPDATE){
-                binding.activityUpdateProgessbar.progress = 0
-                binding.activityUpdateTextview.text = MyConfiguration.INFO_DATABASE_EXPIRE
+                this.bindingActivityUpdate.progessBar.progress = 0
+                this.bindingActivityUpdate.textView.text = MyConfiguration.INFO_DATABASE_EXPIRE
             }else{
                 if(itemsWithThumbnail/itemsFromDatabase != 1){
-                    binding.activityUpdateTextview.text = (MyConfiguration.INFO_DOWNLOAD_BITMAP_STATUS + " (" + itemsWithThumbnail + "/" + itemsWithUrlThumbnail + "/" + itemsFromDatabase+ ")")
+                    this.bindingActivityUpdate.textView.text = (MyConfiguration.INFO_DOWNLOAD_BITMAP_STATUS + " (" + itemsWithThumbnail + "/" + itemsWithUrlThumbnail + "/" + itemsFromDatabase+ ")")
                     //make async task and execute - refresh state of downloading
                     this.refreshingDatabase = true
-                    val task = RefreshUpdateCatalyst()
+                    val task = this.RefreshUpdateCatalyst()
                     task.execute()
                 }else{
-                    binding.activityUpdateTextview.text = MyConfiguration.INFO_DOWNLOAD_BITMAP_SUCCESS
+                    this.bindingActivityUpdate.textView.text = MyConfiguration.INFO_DOWNLOAD_BITMAP_SUCCESS
                 }
             }
         }else{
-            binding.activityUpdateTextview.text = MyConfiguration.INFO_EMPTY_DATABASE
+            this.bindingActivityUpdate.textView.text = MyConfiguration.INFO_EMPTY_DATABASE
         }
     }
     //click button only new
     fun activityUpdateOnlyNew(view: View?) {
         this.refreshingDatabase = false
         //make async task and execute
-        val task = UpdateCatalyst(false)
+        val task = this.UpdateCatalyst(false)
         task.execute()
     }
     //click button full
     fun activityUpdateFull(view: View?) {
         this.refreshingDatabase = false
         //make async task and execute
-        val task = UpdateCatalyst(true)
+        val task = this.UpdateCatalyst(true)
         task.execute()
     }
     //checking if row from spreadsheet is available
@@ -96,17 +96,17 @@ class UpdateActivity : AppCompatActivity() {
         override fun doInBackground(vararg p0: Void?): MyProcessStep {
             try{
                 //very very primitive and not atomic
-                val state : Boolean = refreshingDatabase && refreshingWork == false
+                val state : Boolean = this@UpdateActivity.refreshingDatabase && this@UpdateActivity.refreshingWork == false
                 if(state == false) return MyProcessStep.SUCCESS
-                refreshingWork = true
-                while(refreshingDatabase){
+                this@UpdateActivity.refreshingWork = true
+                while(this@UpdateActivity.refreshingDatabase){
                     Thread.sleep(1000)
-                    val itemsWithThumbnail : Int = database.getCountCatalystWithThumbnail()
-                    val itemsWithUrlThumbnail : Int = database.getCountCatalystWithUrlOfThumbnail()
-                    val itemsFromDatabase : Int = database.getCountCatalyst()
-                    publishProgress(itemsWithThumbnail, itemsWithUrlThumbnail, itemsFromDatabase)
+                    val itemsWithThumbnail : Int = this@UpdateActivity.myDatabase.getCountCatalystWithThumbnail()
+                    val itemsWithUrlThumbnail : Int = this@UpdateActivity.myDatabase.getCountCatalystWithUrlOfThumbnail()
+                    val itemsFromDatabase : Int = this@UpdateActivity.myDatabase.getCountCatalyst()
+                    this.publishProgress(itemsWithThumbnail, itemsWithUrlThumbnail, itemsFromDatabase)
                 }
-                refreshingWork = false
+                this@UpdateActivity.refreshingWork = false
             }
             catch(e: Exception){
                 return MyProcessStep.UNHANDLED_EXCEPTION
@@ -116,8 +116,8 @@ class UpdateActivity : AppCompatActivity() {
         //on progress update
         override fun onProgressUpdate(vararg values: Int?) {
             super.onProgressUpdate(*values)
-            binding.activityUpdateTextview.text = (MyConfiguration.INFO_DOWNLOAD_BITMAP_STATUS + " (" + values[0]!!.toString() + "/" + values[1]!!.toString() + "/" + values[2]!!.toString()+ ")")
-            binding.activityUpdateProgessbar.progress = ((values[0]!!.toFloat()/values[1]!!.toFloat())*100.toFloat()).toInt()
+            this@UpdateActivity.bindingActivityUpdate.textView.text = (MyConfiguration.INFO_DOWNLOAD_BITMAP_STATUS + " (" + values[0]!!.toString() + "/" + values[1]!!.toString() + "/" + values[2]!!.toString()+ ")")
+            this@UpdateActivity.bindingActivityUpdate.progessBar.progress = ((values[0]!!.toFloat()/values[1]!!.toFloat())*100.toFloat()).toInt()
         }
     }
 
@@ -130,16 +130,16 @@ class UpdateActivity : AppCompatActivity() {
         override fun onPreExecute() {
             super.onPreExecute()
             //disable user interface on process application
-            MyUserInterface.enableActivity(binding.activityUpdateLinearlayout, false)
-            refreshingDatabase = false
-            while(refreshingWork){
+            MyUserInterface.enableActivity(this@UpdateActivity.bindingActivityUpdate.linearLayout, false)
+            this@UpdateActivity.refreshingDatabase = false
+            while(this@UpdateActivity.refreshingWork){
                 Thread.sleep(100)
             }
             //set process bar
-            binding.activityUpdateProgessbar.progress = 0
+            this@UpdateActivity.bindingActivityUpdate.progessBar.progress = 0
             //set info section
-            binding.activityUpdateTextview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
-            binding.activityUpdateTextview.text = MyConfiguration.INFO_MESSAGE_WAIT_UPDATE
+            this@UpdateActivity.bindingActivityUpdate.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
+            this@UpdateActivity.bindingActivityUpdate.textView.text = MyConfiguration.INFO_MESSAGE_WAIT_UPDATE
         }
         //do in async mode - in here can't modify user interface
         override fun doInBackground(vararg p0: Void?): MyProcessStep {
@@ -147,12 +147,12 @@ class UpdateActivity : AppCompatActivity() {
                 var countDatabase = 0
                 val countSpreadsheet : Int = MySpreadsheet.getCountCatalyst()
                 //check if user click sync database
-                if(fullUpdate) {
+                if(this.fullUpdate) {
                     //truncate tables
-                    if(database.resetDatabase() == false) throw Exception()
+                    if(this@UpdateActivity.myDatabase.resetDatabase() == false) throw Exception()
                 }else{
                     //calculate count of catalyst
-                    countDatabase = database.getCountCatalyst()
+                    countDatabase = this@UpdateActivity.myDatabase.getCountCatalyst()
                     if(countDatabase == countSpreadsheet) return MyProcessStep.SUCCESS
                 }
                 //difference between database local and database in spreadsheet
@@ -168,16 +168,16 @@ class UpdateActivity : AppCompatActivity() {
                     if(batchJsonArray.isNull(i)) batchJsonArray.put(JSONArray())
                     for(j in i until i+batchSize){
                         if(dataCatalysts.isNull(j)) break
-                        if(checkIfRowIsAvailable(dataCatalysts.getJSONObject(j).getJSONArray("c")) == false) throw Exception()
+                        if(this@UpdateActivity.checkIfRowIsAvailable(dataCatalysts.getJSONObject(j).getJSONArray("c")) == false) throw Exception()
                         (batchJsonArray[i/batchSize] as JSONArray).put(dataCatalysts[j])
                     }
                 }
                 //iterate over batch array
                 for(i in 0 until (batchJsonArray.length())){
-                    if(database.insertCatalysts(batchJsonArray[i] as JSONArray) == false) throw Exception()
+                    if(this@UpdateActivity.myDatabase.insertCatalysts(batchJsonArray[i] as JSONArray) == false) throw Exception()
                     //update and publish state of process update
                     progressStep = ((i*batchSize).toFloat()/progressAll.toFloat()) * (100).toFloat()
-                    publishProgress(progressStep.toInt())
+                    this.publishProgress(progressStep.toInt())
                 }
             }
             catch(e: UnknownHostException){
@@ -191,10 +191,10 @@ class UpdateActivity : AppCompatActivity() {
         //on progress update
         override fun onProgressUpdate(vararg values: Int?) {
             super.onProgressUpdate(*values)
-            binding.activityUpdateProgessbar.progress = values[0]!!.toInt()
+            this@UpdateActivity.bindingActivityUpdate.progessBar.progress = values[0]!!.toInt()
             //set info section
-            binding.activityUpdateTextview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
-            binding.activityUpdateTextview.text = MyConfiguration.INFO_MESSAGE_WAIT_UPDATE
+            this@UpdateActivity.bindingActivityUpdate.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
+            this@UpdateActivity.bindingActivityUpdate.textView.text = MyConfiguration.INFO_MESSAGE_WAIT_UPDATE
         }
         //post execute
         override fun onPostExecute(result: MyProcessStep) {
@@ -202,22 +202,22 @@ class UpdateActivity : AppCompatActivity() {
             //do job depends on situation
             when(result){
                 MyProcessStep.NETWORK_FAILED -> {
-                    binding.activityUpdateTextview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
-                    binding.activityUpdateTextview.text = MyConfiguration.INFO_MESSAGE_NETWORK_FAILED
+                    this@UpdateActivity.bindingActivityUpdate.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
+                    this@UpdateActivity.bindingActivityUpdate.textView.text = MyConfiguration.INFO_MESSAGE_NETWORK_FAILED
                 }
                 MyProcessStep.UNHANDLED_EXCEPTION -> {
-                    binding.activityUpdateTextview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
-                    binding.activityUpdateTextview.text = MyConfiguration.INFO_UPDATE_FAILED
+                    this@UpdateActivity.bindingActivityUpdate.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
+                    this@UpdateActivity.bindingActivityUpdate.textView.text = MyConfiguration.INFO_UPDATE_FAILED
                 }
                 MyProcessStep.SUCCESS -> {
                     MyConfiguration.IS_AVAILABLE_UPDATE = false
-                    binding.activityUpdateProgessbar.progress = 100
-                    binding.activityUpdateTextview.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
-                    binding.activityUpdateTextview.text = MyConfiguration.INFO_UPDATE_SUCCESS
+                    this@UpdateActivity.bindingActivityUpdate.progessBar.progress = 100
+                    this@UpdateActivity.bindingActivityUpdate.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
+                    this@UpdateActivity.bindingActivityUpdate.textView.text = MyConfiguration.INFO_UPDATE_SUCCESS
                 }
             }
             //enable user interface on process application
-            MyUserInterface.enableActivity(binding.activityUpdateLinearlayout, true)
+            MyUserInterface.enableActivity(this@UpdateActivity.bindingActivityUpdate.linearLayout, true)
         }
     }
 }

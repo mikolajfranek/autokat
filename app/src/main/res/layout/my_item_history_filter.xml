@@ -13,7 +13,7 @@
         android:layout_weight="0">
 
         <TextView
-            android:id="@+id/item_name"
+            android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -30,7 +30,7 @@
 
         <Button
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:id="@+id/item_delete"
+            android:id="@+id/cross_delete"
             android:layout_width="@android:dimen/app_icon_size"
             android:layout_height="match_parent"
             android:fontFamily="sans-serif"

@@ -7,6 +7,8 @@ import android.widget.Toast
 import androidx.core.app.JobIntentService
 import org.json.JSONArray
 import org.json.JSONObject
+import pl.autokat.components.MyConfiguration
+import pl.autokat.components.MyDatabase
 import java.lang.Exception
 import java.net.URL
 

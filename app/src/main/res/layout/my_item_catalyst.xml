@@ -16,7 +16,7 @@
         android:layout_weight="0">
 
         <ImageView
-            android:id="@+id/item_picture"
+            android:id="@+id/image_view"
             android:background="@drawable/question_mark"
             android:layout_width="96dp"
             android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
             android:contentDescription="@string/app_name" />
 
         <TextView
-            android:id="@+id/item_name"
+            android:id="@+id/name"
             android:layout_width="fill_parent"
             android:layout_weight="1"
             android:width="0dp"
@@ -35,7 +35,7 @@
             android:textColor="@color/colorUser" />
 
         <TextView
-            android:id="@+id/item_type"
+            android:id="@+id/type"
             android:fontFamily="sans-serif"
             android:gravity="end" />
     </TableRow>
@@ -57,7 +57,7 @@
             android:textColor="@color/colorUser" />
 
         <TextView
-            android:id="@+id/item_brand"
+            android:id="@+id/brand"
             android:layout_width="fill_parent"
             android:layout_weight="1"
             android:width="0dp"
@@ -65,7 +65,7 @@
             android:textColor="@color/colorUser" />
 
         <TextView
-            android:id="@+id/item_price_notvisibility_eur"
+            android:id="@+id/price_eur_without_metal"
             android:layout_gravity="bottom|end"
             android:fontFamily="sans-serif"
             android:textColor="@color/colorGreen" />
@@ -89,7 +89,7 @@
             android:textColor="@color/colorUser" />
 
         <TextView
-            android:id="@+id/item_weight"
+            android:id="@+id/weight"
             android:layout_width="fill_parent"
             android:layout_weight="1"
             android:width="0dp"
@@ -97,14 +97,14 @@
             android:textColor="@color/colorUser" />
 
         <TextView
-            android:id="@+id/item_price_notvisibility_pln"
+            android:id="@+id/price_pln_without_metal"
             android:fontFamily="sans-serif"
             android:gravity="end"
             android:textColor="@color/colorGreen" />
     </TableRow>
 
     <TableRow
-        android:id="@+id/item_table_row_plattinum"
+        android:id="@+id/row_plattinum"
         android:layout_weight="0"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
@@ -122,7 +122,7 @@
             android:textColor="@color/colorUser" />
 
         <TextView
-            android:id="@+id/item_platinum"
+            android:id="@+id/platinum"
             android:layout_width="fill_parent"
             android:layout_weight="1"
             android:width="0dp"
@@ -131,7 +131,7 @@
     </TableRow>
 
     <TableRow
-        android:id="@+id/item_table_row_palladium"
+        android:id="@+id/row_palladium"
         android:layout_weight="0"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
@@ -149,7 +149,7 @@
             android:textColor="@color/colorUser" />
 
         <TextView
-            android:id="@+id/item_palladium"
+            android:id="@+id/palladium"
             android:layout_width="fill_parent"
             android:layout_weight="1"
             android:width="0dp"
@@ -157,14 +157,14 @@
             android:textColor="@color/colorUser" />
 
         <TextView
-            android:id="@+id/item_price_visibility_eur"
+            android:id="@+id/price_eur"
             android:fontFamily="sans-serif"
             android:gravity="end"
             android:textColor="@color/colorGreen" />
     </TableRow>
 
     <TableRow
-        android:id="@+id/item_table_row_rhodium"
+        android:id="@+id/row_rhodium"
         android:layout_weight="0"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
@@ -182,7 +182,7 @@
             android:textColor="@color/colorUser" />
 
         <TextView
-            android:id="@+id/item_rhodium"
+            android:id="@+id/rhodium"
             android:layout_width="fill_parent"
             android:layout_weight="1"
             android:width="0dp"
@@ -190,7 +190,7 @@
             android:textColor="@color/colorUser" />
 
         <TextView
-            android:id="@+id/item_price_visibility_pln"
+            android:id="@+id/price_pln"
             android:fontFamily="sans-serif"
             android:gravity="end"
             android:textColor="@color/colorGreen" />

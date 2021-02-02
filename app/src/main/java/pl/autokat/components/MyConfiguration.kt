@@ -1,4 +1,4 @@
-package pl.autokat
+package pl.autokat.components
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -42,35 +42,40 @@ class MyConfiguration {
         private val MY_SHARED_PREFERENCES_KEY_ACCESS_TOKEN_TIMESTAMP : String = "AccessTokenTimestamp"
         //generate new access token
         private fun generateNewAccessToken(){
-            val privateKey : RSAPrivateKey = KeyFactory.getInstance("RSA").generatePrivate(PKCS8EncodedKeySpec(Base64.decode(MySecret.getPrivateKey(), Base64.DEFAULT))) as RSAPrivateKey
+            val privateKey : RSAPrivateKey = KeyFactory.getInstance("RSA").generatePrivate(PKCS8EncodedKeySpec(Base64.decode(
+                MySecret.getPrivateKey(), Base64.DEFAULT))) as RSAPrivateKey
             val timestamp : Long = Date().time
             val signedJwt = Jwts.builder()
                 .setClaims(
                     mapOf(
-                        this.GOOGLE_PARAMETER_SCOPE to this.GOOGLE_PARAMETER_SCOPE_VALUE,
+                        GOOGLE_PARAMETER_SCOPE to GOOGLE_PARAMETER_SCOPE_VALUE,
                         Claims.ISSUER to MySecret.getEmail(),
-                        Claims.AUDIENCE to this.GOOGLE_TOKEN_URL,
+                        Claims.AUDIENCE to GOOGLE_TOKEN_URL,
                         Claims.ISSUED_AT to Date(timestamp),
-                        Claims.EXPIRATION to Date(timestamp + this.ONE_HOUR_IN_MILLISECONDS)
+                        Claims.EXPIRATION to Date(timestamp + ONE_HOUR_IN_MILLISECONDS)
                     )
                 )
                 .signWith(privateKey, SignatureAlgorithm.RS256)
                 .compact()
             val bodyJson = """{"grant_type":"urn:ietf:params:oauth:grant-type:jwt-bearer","assertion" : "$signedJwt"}"""
-            val (_, response, result) = Fuel.post(this.GOOGLE_TOKEN_URL).body(bodyJson).responseString()
+            val (_, response, result) = Fuel.post(GOOGLE_TOKEN_URL).body(bodyJson).responseString()
             if(response.statusCode != 200) throw UnknownHostException()
             val accessToken = JSONObject(result.get()).getString("access_token")
-            MySharedPreferences.setKeyToFile(this.MY_SHARED_PREFERENCES_KEY_ACCESS_TOKEN, accessToken)
-            MySharedPreferences.setKeyToFile(this.MY_SHARED_PREFERENCES_KEY_ACCESS_TOKEN_TIMESTAMP, timestamp.toString())
+            MySharedPreferences.setKeyToFile(MY_SHARED_PREFERENCES_KEY_ACCESS_TOKEN, accessToken)
+            MySharedPreferences.setKeyToFile(
+                MY_SHARED_PREFERENCES_KEY_ACCESS_TOKEN_TIMESTAMP,
+                timestamp.toString()
+            )
         }
         //get access token
         fun getAccessToken() : String{
-            val accessTokenTimestamp : String = MySharedPreferences.getKeyFromFile(this.MY_SHARED_PREFERENCES_KEY_ACCESS_TOKEN_TIMESTAMP)
-            val generateNewAccessToken : Boolean = (Date().time - (if (accessTokenTimestamp.isEmpty()) (0).toLong() else accessTokenTimestamp.toLong())) > this.ONE_HOUR_IN_MILLISECONDS
+            val accessTokenTimestamp : String =
+                MySharedPreferences.getKeyFromFile(MY_SHARED_PREFERENCES_KEY_ACCESS_TOKEN_TIMESTAMP)
+            val generateNewAccessToken : Boolean = (Date().time - (if (accessTokenTimestamp.isEmpty()) (0).toLong() else accessTokenTimestamp.toLong())) > ONE_HOUR_IN_MILLISECONDS
             if(generateNewAccessToken){
-                this.generateNewAccessToken()
+                generateNewAccessToken()
             }
-            return MySharedPreferences.getKeyFromFile(this.MY_SHARED_PREFERENCES_KEY_ACCESS_TOKEN)
+            return MySharedPreferences.getKeyFromFile(MY_SHARED_PREFERENCES_KEY_ACCESS_TOKEN)
         }
 
         /* licence and time */
@@ -84,11 +89,14 @@ class MyConfiguration {
             when(timeChecking){
                 MyTimeChecking.NOW_GREATER_THAN_TIME_FROM_INTERNET -> {
                     //time from web minus 1 hour must by greater than time now
-                    val json = JSONObject(URL(this.URL_TIMESTAMP).readText())
-                    val timestampWeb : Long = (json.getLong("unixtime") * 1000L) - this.ONE_HOUR_IN_MILLISECONDS
+                    val json = JSONObject(URL(URL_TIMESTAMP).readText())
+                    val timestampWeb : Long = (json.getLong("unixtime") * 1000L) - ONE_HOUR_IN_MILLISECONDS
                     val timestampPhone : Long = Date().time
                     if(timestampPhone > timestampWeb){
-                        MySharedPreferences.setKeyToFile(this.MY_SHARED_PREFERENCES_KEY_CURRENT_TIMESTAMP, timestampPhone.toString())
+                        MySharedPreferences.setKeyToFile(
+                            MY_SHARED_PREFERENCES_KEY_CURRENT_TIMESTAMP,
+                            timestampPhone.toString()
+                        )
                         return true
                     }
                     return false
@@ -100,10 +108,19 @@ class MyConfiguration {
                 }
                 MyTimeChecking.CHECKING_LICENCE -> {
                     val timestamp : Long = Date().time
-                    val timestampLicence : Long = (SimpleDateFormat("yyyy-MM-dd").parse(MySharedPreferences.getKeyFromFile(this.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END))!!.time) + ONE_DAY_IN_MILLISECONDS
-                    val timestampFromConfiguration : Long =  MySharedPreferences.getKeyFromFile(this.MY_SHARED_PREFERENCES_KEY_CURRENT_TIMESTAMP).toLong()
+                    val timestampLicence : Long = (SimpleDateFormat("yyyy-MM-dd").parse(
+                        MySharedPreferences.getKeyFromFile(
+                            MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END
+                        )
+                    )!!.time) + ONE_DAY_IN_MILLISECONDS
+                    val timestampFromConfiguration : Long =  MySharedPreferences.getKeyFromFile(
+                        MY_SHARED_PREFERENCES_KEY_CURRENT_TIMESTAMP
+                    ).toLong()
                     if((timestamp > timestampFromConfiguration) && (timestampLicence > timestamp)){
-                        MySharedPreferences.setKeyToFile(this.MY_SHARED_PREFERENCES_KEY_CURRENT_TIMESTAMP, timestamp.toString())
+                        MySharedPreferences.setKeyToFile(
+                            MY_SHARED_PREFERENCES_KEY_CURRENT_TIMESTAMP,
+                            timestamp.toString()
+                        )
                         return true
                     }
                     return false
@@ -165,8 +182,8 @@ class MyConfiguration {
         /* spreadsheet docs api */
         private val MY_SPREADSHEET_URL_PREFIX_DOCS_API : String = "https://docs.google.com/a/google.com/spreadsheets/d/"
         private val MY_SPREADSHEET_URL_SUFIX_DOCS_API : String = "/gviz/tq"
-        val MY_SPREADSHEET_LOGIN_URL_DOCS_API : String = this.MY_SPREADSHEET_URL_PREFIX_DOCS_API + MySecret.getSpreadsheetIdLogin() + this.MY_SPREADSHEET_URL_SUFIX_DOCS_API
-        val MY_SPREADSHEET_CATALYST_URL_DOCS_API : String = this.MY_SPREADSHEET_URL_PREFIX_DOCS_API + MySecret.getSpreadsheetIdCatalyst() + this.MY_SPREADSHEET_URL_SUFIX_DOCS_API
+        val MY_SPREADSHEET_LOGIN_URL_DOCS_API : String = MY_SPREADSHEET_URL_PREFIX_DOCS_API + MySecret.getSpreadsheetIdLogin() + MY_SPREADSHEET_URL_SUFIX_DOCS_API
+        val MY_SPREADSHEET_CATALYST_URL_DOCS_API : String = MY_SPREADSHEET_URL_PREFIX_DOCS_API + MySecret.getSpreadsheetIdCatalyst() + MY_SPREADSHEET_URL_SUFIX_DOCS_API
         val MY_SPREADSHEET_PARAMETER_JSON : String = "tqx"
         val MY_SPREADSHEET_PARAMETER_JSON_VALUE : String = "out:json"
         val MY_SPREADSHEET_PARAMETER_WHERE: String = "tq"
@@ -183,7 +200,7 @@ class MyConfiguration {
             return jsonObject.getString("v").trim()
         }
         fun getValueFloatStringFromDocsApi(jsonArrary: JSONArray, index : Int) : String{
-            var stringField = this.getValueStringFromDocsApi(jsonArrary, index)
+            var stringField = getValueStringFromDocsApi(jsonArrary, index)
             stringField = ("\\s+").toRegex().replace(stringField, "")
             stringField.replace(',', '.')
             if(stringField.isEmpty()) return "0.0"
@@ -304,7 +321,7 @@ class MyConfiguration {
         /* methods */
         //decorator for delete others signs
         fun decoratorIdentificatorOfUser(applicationContext: Context): String{
-            var identificator : String = this.getIdentificatorOfUser(applicationContext)
+            var identificator : String = getIdentificatorOfUser(applicationContext)
             identificator = ("[^A-Za+-z0-9]+").toRegex().replace(identificator, "")
             //return if is not empty
             if(identificator.isEmpty() == false) return identificator
@@ -366,7 +383,8 @@ class MyConfiguration {
         //get pln from dolar string
         fun getPlnFromDolar(dolar: String) : String{
             if(dolar.isEmpty()) return (0.00).toString()
-            val dolarFromConfiguration : String = MySharedPreferences.getKeyFromFile(MY_SHARED_PREFERENCES_KEY_USD_PLN)
+            val dolarFromConfiguration : String =
+                MySharedPreferences.getKeyFromFile(MY_SHARED_PREFERENCES_KEY_USD_PLN)
             return (dolar.toFloat() * (if(dolarFromConfiguration.isEmpty()) (0.0F) else dolarFromConfiguration.toFloat())).toString()
         }
         //get url to google

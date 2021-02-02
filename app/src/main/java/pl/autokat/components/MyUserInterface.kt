@@ -1,4 +1,4 @@
-package pl.autokat
+package pl.autokat.components
 
 import android.widget.LinearLayout
 import androidx.drawerlayout.widget.DrawerLayout

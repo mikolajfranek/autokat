@@ -1,4 +1,4 @@
-package pl.autokat
+package pl.autokat.components
 
 enum class MyTimeChecking {
     NOW_GREATER_THAN_TIME_FROM_INTERNET,

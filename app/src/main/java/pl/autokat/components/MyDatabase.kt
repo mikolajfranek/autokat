@@ -1,4 +1,4 @@
-package pl.autokat
+package pl.autokat.components
 
 import android.content.ContentValues
 import android.content.Context
@@ -10,7 +10,10 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.FileOutputStream
 
-class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.DATABASE_NAME_OF_FILE, null, MyConfiguration.DATABASE_VERSION){
+class MyDatabase(context: Context) : SQLiteAssetHelper(context,
+    MyConfiguration.DATABASE_NAME_OF_FILE, null,
+    MyConfiguration.DATABASE_VERSION
+){
     private val myContext: Context = context
 
     //override onupgrage of database
@@ -23,7 +26,9 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
                     db.endTransaction()
                     //copy database, from assets to directory system where is database of app
                     val fileDatabaseInAssets = myContext.assets.open(MyConfiguration.DATABASE_FILE_PATH_ASSETS)
-                    val fileDatabaseInSystem = FileOutputStream(myContext.getDatabasePath(MyConfiguration.DATABASE_NAME_OF_FILE))
+                    val fileDatabaseInSystem = FileOutputStream(myContext.getDatabasePath(
+                        MyConfiguration.DATABASE_NAME_OF_FILE
+                    ))
                     fileDatabaseInAssets.copyTo(fileDatabaseInSystem)
                     fileDatabaseInSystem.close()
                     fileDatabaseInAssets.close()
@@ -75,7 +80,9 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
             db.beginTransaction()
             val content = ContentValues()
             content.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_THUMBNAIL,thumbnail)
-            db.updateWithOnConflict(MyConfiguration.DATABASE_TABLE_CATALYST,  content,MyConfiguration.DATABASE_ELEMENT_CATALYST_ID + "= ?", Array(1){ i -> catalystId.toString()}, SQLiteDatabase.CONFLICT_IGNORE )
+            db.updateWithOnConflict(
+                MyConfiguration.DATABASE_TABLE_CATALYST,  content,
+                MyConfiguration.DATABASE_ELEMENT_CATALYST_ID + "= ?", Array(1){ i -> catalystId.toString()}, SQLiteDatabase.CONFLICT_IGNORE )
             db.setTransactionSuccessful()
             result = true
         }catch (e:Exception){
@@ -114,7 +121,10 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
             //iterate over elements (batch)
             for(i in 0 until values.length()) {
                 val element = values.getJSONObject(i).getJSONArray("c")
-                val salt : String = MyConfiguration.getValueStringFromDocsApi(element,MyConfiguration.MY_SPREADSHEET_CATALYST_ID) + MySecret.getPrivateKey()
+                val salt : String = MyConfiguration.getValueStringFromDocsApi(
+                    element,
+                    MyConfiguration.MY_SPREADSHEET_CATALYST_ID
+                ) + MySecret.getPrivateKey()
                 val row = ContentValues()
                 row.put(
                     MyConfiguration.DATABASE_ELEMENT_CATALYST_ID_PICTURE,
@@ -150,8 +160,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
                         MyConfiguration.getValueFloatStringFromDocsApi(
                             element,
                             MyConfiguration.MY_SPREADSHEET_CATALYST_PLATINUM
-                        )
-                        ,
+                        ),
                         salt
                     )
                 )
@@ -161,8 +170,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
                         MyConfiguration.getValueFloatStringFromDocsApi(
                             element,
                             MyConfiguration.MY_SPREADSHEET_CATALYST_PALLADIUM
-                        )
-                        ,
+                        ),
                         salt
                     )
                 )
@@ -172,8 +180,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
                         MyConfiguration.getValueFloatStringFromDocsApi(
                             element,
                             MyConfiguration.MY_SPREADSHEET_CATALYST_RHODIUM
-                        )
-                        ,
+                        ),
                         salt
                     )
                 )
@@ -190,8 +197,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
                         MyConfiguration.getValueFloatStringFromDocsApi(
                             element,
                             MyConfiguration.MY_SPREADSHEET_CATALYST_WEIGHT
-                        )
-                        ,
+                        ),
                         salt
                     )
                 )
@@ -226,8 +232,14 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
         val result = JSONArray()
         while (cursor.moveToNext()){
             val json = JSONObject()
-            json.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID, cursor.getInt(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID)))
-            json.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE, cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE)))
+            json.put(
+                MyConfiguration.DATABASE_ELEMENT_CATALYST_ID, cursor.getInt(cursor.getColumnIndex(
+                    MyConfiguration.DATABASE_ELEMENT_CATALYST_ID
+                )))
+            json.put(
+                MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE, cursor.getString(cursor.getColumnIndex(
+                    MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE
+                )))
             result.put(json)
         }
         cursor.close()
@@ -282,7 +294,9 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
         //iterate over data and prepare data
         val result : ArrayList<MyItemCatalyst> = ArrayList<MyItemCatalyst>()
         while (cursor.moveToNext()){
-            val blobImage : ByteArray? = if(cursor.isNull(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID))) null else cursor.getBlob(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_THUMBNAIL))
+            val blobImage : ByteArray? = if(cursor.isNull(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID))) null else cursor.getBlob(cursor.getColumnIndex(
+                MyConfiguration.DATABASE_ELEMENT_CATALYST_THUMBNAIL
+            ))
             val salt : String = cursor.getInt(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID)).toString() + MySecret.getPrivateKey()
             val myItemCatalyst = MyItemCatalyst(
                 cursor.getInt(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID)),
@@ -291,11 +305,23 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
                 if(blobImage == null) null else BitmapFactory.decodeByteArray(blobImage, 0, blobImage.size),
                 cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME)),
                 cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND)),
-                MyConfiguration.formatStringFloat(MyConfiguration.decrypt(cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_PLATINUM)), salt),3).toFloat(),
-                MyConfiguration.formatStringFloat(MyConfiguration.decrypt(cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_PALLADIUM)), salt),3).toFloat(),
-                MyConfiguration.formatStringFloat(MyConfiguration.decrypt(cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_RHODIUM)), salt),3).toFloat(),
+                MyConfiguration.formatStringFloat(
+                    MyConfiguration.decrypt(cursor.getString(cursor.getColumnIndex(
+                        MyConfiguration.DATABASE_ELEMENT_CATALYST_PLATINUM
+                    )), salt),3).toFloat(),
+                MyConfiguration.formatStringFloat(
+                    MyConfiguration.decrypt(cursor.getString(cursor.getColumnIndex(
+                        MyConfiguration.DATABASE_ELEMENT_CATALYST_PALLADIUM
+                    )), salt),3).toFloat(),
+                MyConfiguration.formatStringFloat(
+                    MyConfiguration.decrypt(cursor.getString(cursor.getColumnIndex(
+                        MyConfiguration.DATABASE_ELEMENT_CATALYST_RHODIUM
+                    )), salt),3).toFloat(),
                 cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_TYPE)),
-                MyConfiguration.formatStringFloat(MyConfiguration.decrypt(cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_WEIGHT)), salt),3).toFloat()
+                MyConfiguration.formatStringFloat(
+                    MyConfiguration.decrypt(cursor.getString(cursor.getColumnIndex(
+                        MyConfiguration.DATABASE_ELEMENT_CATALYST_WEIGHT
+                    )), salt),3).toFloat()
             )
             result.add(myItemCatalyst)
         }
@@ -331,7 +357,8 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
         try{
             db.beginTransaction()
             //delete element
-            rowAffected = db.delete(MyConfiguration.DATABASE_TABLE_HISTORY_FILTER,
+            rowAffected = db.delete(
+                MyConfiguration.DATABASE_TABLE_HISTORY_FILTER,
                 MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_ID + "=" + id, null)
             db.setTransactionSuccessful()
         }catch (e:Exception){
@@ -347,7 +374,8 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context, MyConfiguration.
         try{
             db.beginTransaction()
             //delete element
-            rowAffected = db.delete(MyConfiguration.DATABASE_TABLE_HISTORY_FILTER,
+            rowAffected = db.delete(
+                MyConfiguration.DATABASE_TABLE_HISTORY_FILTER,
                 MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_NAME + " LIKE '" + name + "'", null)
             db.setTransactionSuccessful()
         }catch (e:Exception){

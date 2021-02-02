@@ -69,14 +69,14 @@
                 android:textColor="@color/colorUser" />
 
             <TextView
-                android:id="@+id/activity_configuration_values_element_platinum"
+                android:id="@+id/platinum"
                 android:layout_weight="4"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:textColor="@android:color/holo_green_dark" />
 
             <TextView
-                android:id="@+id/activity_configuration_values_element_platinum_date"
+                android:id="@+id/platinum_date"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
@@ -99,14 +99,14 @@
                 android:textColor="@color/colorUser" />
 
             <TextView
-                android:id="@+id/activity_configuration_values_element_palladium"
+                android:id="@+id/palladium"
                 android:layout_weight="4"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:textColor="@android:color/holo_green_dark" />
 
             <TextView
-                android:id="@+id/activity_configuration_values_element_palladium_date"
+                android:id="@+id/palladium_date"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
@@ -129,14 +129,14 @@
                 android:textColor="@color/colorUser" />
 
             <TextView
-                android:id="@+id/activity_configuration_values_element_rhodium"
+                android:id="@+id/rhodium"
                 android:layout_weight="4"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:textColor="@android:color/holo_green_dark" />
 
             <TextView
-                android:id="@+id/activity_configuration_values_element_rhodium_date"
+                android:id="@+id/rhodium_date"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
@@ -204,14 +204,14 @@
                 android:textColor="@color/colorUser" />
 
             <TextView
-                android:id="@+id/activity_configuration_values_element_eur_pln"
+                android:id="@+id/eur_pln"
                 android:layout_weight="4"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:textColor="@android:color/holo_green_dark" />
 
             <TextView
-                android:id="@+id/activity_configuration_values_element_eur_pln_date"
+                android:id="@+id/eur_pln_date"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
@@ -234,14 +234,14 @@
                 android:textColor="@color/colorUser" />
 
             <TextView
-                android:id="@+id/activity_configuration_values_element_usd_pln"
+                android:id="@+id/usd_pln"
                 android:layout_weight="4"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
                 android:textColor="@android:color/holo_green_dark" />
 
             <TextView
-                android:id="@+id/activity_configuration_values_element_usd_pln_date"
+                android:id="@+id/usd_pln_date"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif"
                 android:gravity="center"

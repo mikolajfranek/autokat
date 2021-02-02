@@ -8,23 +8,27 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import pl.autokat.components.MyCatalystValues
+import pl.autokat.components.MyConfiguration
+import pl.autokat.components.MyProcessStep
+import pl.autokat.components.MySharedPreferences
 import pl.autokat.databinding.ActivityConfigurationValuesBinding
 import java.net.UnknownHostException
 
 class ConfigurationValuesActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityConfigurationValuesBinding
+    private lateinit var bindingActivityConfigurationValues: ActivityConfigurationValuesBinding
 
     //oncreate
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityConfigurationValuesBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+        this.bindingActivityConfigurationValues = ActivityConfigurationValuesBinding.inflate(this.layoutInflater)
+        val view = this.bindingActivityConfigurationValues.root
+        this.setContentView(view)
         //set toolbar
-        setSupportActionBar(binding.toolbar as Toolbar?)
+        this.setSupportActionBar(this.bindingActivityConfigurationValues.toolbar as Toolbar?)
         //navigate up
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        this.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         //init shared preferences
         MySharedPreferences.init(this)
         //set values in view
@@ -34,41 +38,46 @@ class ConfigurationValuesActivity : AppCompatActivity() {
     //set all values in view
     private fun setValuesInView(){
         //pallad
-        val pallad : String = MyConfiguration.getPlnFromDolar((MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PALLADIUM)))
+        val pallad : String = MyConfiguration.getPlnFromDolar((MySharedPreferences.getKeyFromFile(
+            MyConfiguration.MY_SHARED_PREFERENCES_KEY_PALLADIUM)))
         val palladDate : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PALLADIUM_DATE)
-        binding.activityConfigurationValuesElementPalladium.text = (MyConfiguration.formatStringFloat(pallad, 2) + " zł/g")
-        binding.activityConfigurationValuesElementPalladiumDate.text = MyConfiguration.formatDate(palladDate)
+        this.bindingActivityConfigurationValues.palladium.text = (MyConfiguration.formatStringFloat(pallad, 2) + " zł/g")
+        this.bindingActivityConfigurationValues.palladiumDate.text = MyConfiguration.formatDate(palladDate)
         //platinum
-        val platinum : String = MyConfiguration.getPlnFromDolar(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PLATIUNUM))
+        val platinum : String = MyConfiguration.getPlnFromDolar(
+            MySharedPreferences.getKeyFromFile(
+                MyConfiguration.MY_SHARED_PREFERENCES_KEY_PLATIUNUM))
         val platinumDate : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PLATIUNUM_DATE)
-        binding.activityConfigurationValuesElementPlatinum.text = (MyConfiguration.formatStringFloat(platinum, 2) + " zł/g")
-        binding.activityConfigurationValuesElementPlatinumDate.text = MyConfiguration.formatDate(platinumDate)
+        this.bindingActivityConfigurationValues.platinum.text = (MyConfiguration.formatStringFloat(platinum, 2) + " zł/g")
+        this.bindingActivityConfigurationValues.platinumDate.text = MyConfiguration.formatDate(platinumDate)
         //rhodium
-        val rhodium : String = MyConfiguration.getPlnFromDolar(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_RHODIUM))
+        val rhodium : String = MyConfiguration.getPlnFromDolar(
+            MySharedPreferences.getKeyFromFile(
+                MyConfiguration.MY_SHARED_PREFERENCES_KEY_RHODIUM))
         val rhodiumDate : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_RHODIUM_DATE)
-        binding.activityConfigurationValuesElementRhodium.text = (MyConfiguration.formatStringFloat(rhodium, 2) + " zł/g")
-        binding.activityConfigurationValuesElementRhodiumDate.text = MyConfiguration.formatDate(rhodiumDate)
+        this.bindingActivityConfigurationValues.rhodium.text = (MyConfiguration.formatStringFloat(rhodium, 2) + " zł/g")
+        this.bindingActivityConfigurationValues.rhodiumDate.text = MyConfiguration.formatDate(rhodiumDate)
         //euro
         val courseEurPln : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_EUR_PLN)
         val courseEurPlnDate : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_EUR_PLN_DATE)
-        binding.activityConfigurationValuesElementEurPln.text = (MyConfiguration.formatStringFloat(courseEurPln, 2) + " zł")
-        binding.activityConfigurationValuesElementEurPlnDate.text = MyConfiguration.formatDate(courseEurPlnDate)
+        this.bindingActivityConfigurationValues.eurPln.text = (MyConfiguration.formatStringFloat(courseEurPln, 2) + " zł")
+        this.bindingActivityConfigurationValues.eurPlnDate.text = MyConfiguration.formatDate(courseEurPlnDate)
         //dolar
         val courseUsdPln : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN)
         val courseUsdPlnDate : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN_DATE)
-        binding.activityConfigurationValuesElementUsdPln.text = (MyConfiguration.formatStringFloat(courseUsdPln, 2) + " zł")
-        binding.activityConfigurationValuesElementUsdPlnDate.text = MyConfiguration.formatDate(courseUsdPlnDate)
+        this.bindingActivityConfigurationValues.usdPln.text = (MyConfiguration.formatStringFloat(courseUsdPln, 2) + " zł")
+        this.bindingActivityConfigurationValues.usdPlnDate.text = MyConfiguration.formatDate(courseUsdPlnDate)
     }
 
     //navigate up
     override fun onSupportNavigateUp(): Boolean {
-        finish()
+        this.finish()
         return true
     }
 
     //toolbar option menu
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.toolbar_list_configurationvalues, menu)
+        this.menuInflater.inflate(R.menu.toolbar_list_configurationvalues, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -77,12 +86,12 @@ class ConfigurationValuesActivity : AppCompatActivity() {
         return when(item.itemId){
             R.id.toolbar_list_refresh_courses -> {
                 //make async task and execute
-                val task = UpdateCourses()
+                val task = this.UpdateCourses()
                 task.execute()
                 true
             }
             else -> {
-                finish()
+                this.finish()
                 true
             }
         }

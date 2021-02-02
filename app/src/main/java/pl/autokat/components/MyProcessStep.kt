@@ -1,4 +1,4 @@
-package pl.autokat
+package pl.autokat.components
 
 enum class MyProcessStep {
     SUCCESS,

@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.drawerlayout.widget.DrawerLayout.DrawerListener
 import org.json.JSONArray
+import pl.autokat.components.*
 import pl.autokat.databinding.ActivityResultBinding
 import pl.autokat.databinding.MyItemCatalystBinding
 import pl.autokat.databinding.MyItemHistoryFilterBinding
@@ -25,9 +26,9 @@ import java.util.*
 
 class ResultActivity : AppCompatActivity()  {
 
-    private lateinit var bindingResult: ActivityResultBinding
-    private lateinit var bindingCatalyst : MyItemCatalystBinding
-    private lateinit var bindingHistoryFilter: MyItemHistoryFilterBinding
+    private lateinit var bindingActivityResult: ActivityResultBinding
+    private lateinit var bindingMyItemCatalyst : MyItemCatalystBinding
+    private lateinit var bindingMyItemHistoryFilter: MyItemHistoryFilterBinding
     private lateinit var database: MyDatabase
     private lateinit var databaseAdapterCatalysts: ArrayAdapter<MyItemCatalyst>
     private var scrollPreLastCatalyst: Int = 0
@@ -40,21 +41,23 @@ class ResultActivity : AppCompatActivity()  {
     //oncreate
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        bindingResult = ActivityResultBinding.inflate(layoutInflater)
-        val view = bindingResult.root
-        setContentView(view)
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        this.bindingActivityResult = ActivityResultBinding.inflate(this.layoutInflater)
+        val view = this.bindingActivityResult.root
+        this.setContentView(view)
+        this.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         //set toolbar
-        setSupportActionBar(bindingResult.toolbar as Toolbar?)
+        this.setSupportActionBar(this.bindingActivityResult.toolbar as Toolbar?)
         //navigate up
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        this.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         //init shared preferences
         MySharedPreferences.init(this)
         //init database object
-        database = MyDatabase(applicationContext)
+        this.database = MyDatabase(this.applicationContext)
         //text listener on change text
-        bindingResult.activityResultEdittext.setText(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT))
-        bindingResult.activityResultEdittext.addTextChangedListener(object : TextWatcher {
+        this.bindingActivityResult.editText.setText(
+            MySharedPreferences.getKeyFromFile(
+                MyConfiguration.MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT))
+        this.bindingActivityResult.editText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -67,56 +70,56 @@ class ResultActivity : AppCompatActivity()  {
             }
         })
         //init database adapter catalyst
-        databaseAdapterCatalysts = object : ArrayAdapter<MyItemCatalyst>(
-            applicationContext,
+        this.databaseAdapterCatalysts = object : ArrayAdapter<MyItemCatalyst>(
+            this.applicationContext,
             R.layout.my_item_catalyst
         ) {
             @SuppressLint("ViewHolder")
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                 //set layout of element
-                bindingCatalyst = MyItemCatalystBinding.inflate(layoutInflater, parent,  false)
-                val view = bindingCatalyst.root
+                this@ResultActivity.bindingMyItemCatalyst = MyItemCatalystBinding.inflate(this@ResultActivity.layoutInflater, parent,  false)
+                val view = this@ResultActivity.bindingMyItemCatalyst.root
                 //get element
-                val itemCatalyst = getItem(position)!!
+                val itemCatalyst = this.getItem(position)!!
                 //visibility of feature of element
                 val visibilityCatalyst : Boolean = MySharedPreferences.getKeyFromFile(
                     MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY
                 ).toInt() == 1
                 //item thumbnail
-                bindingCatalyst.itemPicture.setImageBitmap(itemCatalyst.thumbnail)
-                bindingCatalyst.itemPicture.setOnLongClickListener(OnLongClickListener {
-                    Toast.makeText(applicationContext, itemCatalyst.idPicture, Toast.LENGTH_LONG)
+                this@ResultActivity.bindingMyItemCatalyst.imageView.setImageBitmap(itemCatalyst.thumbnail)
+                this@ResultActivity.bindingMyItemCatalyst.imageView.setOnLongClickListener(OnLongClickListener {
+                    Toast.makeText(this@ResultActivity.applicationContext, itemCatalyst.idPicture, Toast.LENGTH_LONG)
                         .show()
                     return@OnLongClickListener true
                 })
-                bindingCatalyst.itemPicture.setOnClickListener {
-                    val intent = Intent(applicationContext, PictureActivity::class.java)
+                this@ResultActivity.bindingMyItemCatalyst.imageView.setOnClickListener {
+                    val intent = Intent(this@ResultActivity.applicationContext, PictureActivity::class.java)
                     intent.putExtra("urlPicture", itemCatalyst.urlPicture)
-                    startActivity(intent)
+                    this@ResultActivity.startActivity(intent)
                 }
                 //item brand
-                bindingCatalyst.itemBrand.text = itemCatalyst.brand
+                this@ResultActivity.bindingMyItemCatalyst.brand.text = itemCatalyst.brand
                 //item type
-                bindingCatalyst.itemType.text = itemCatalyst.type
+                this@ResultActivity.bindingMyItemCatalyst.type.text = itemCatalyst.type
                 //item name
-                bindingCatalyst.itemName.text = itemCatalyst.name
+                this@ResultActivity.bindingMyItemCatalyst.name.text = itemCatalyst.name
                 //item weight
-                bindingCatalyst.itemWeight.text = (MyConfiguration.formatStringFloat(
+                this@ResultActivity.bindingMyItemCatalyst.weight.text = (MyConfiguration.formatStringFloat(
                     itemCatalyst.weight.toString(),
                     3
                 ) + " kg")
                 //item platinum
-                bindingCatalyst.itemPlatinum.text = (MyConfiguration.formatStringFloat(
+                this@ResultActivity.bindingMyItemCatalyst.platinum.text = (MyConfiguration.formatStringFloat(
                     if (visibilityCatalyst) itemCatalyst.platinum.toString() else "0.0",
                     3
                 ) + " g/kg")
                 //item palladium
-                bindingCatalyst.itemPalladium.text = (MyConfiguration.formatStringFloat(
+                this@ResultActivity.bindingMyItemCatalyst.palladium.text = (MyConfiguration.formatStringFloat(
                     if (visibilityCatalyst) itemCatalyst.palladium.toString() else "0.0",
                     3
                 ) + " g/kg")
                 //item rhodium
-                bindingCatalyst.itemRhodium.text = (MyConfiguration.formatStringFloat(
+                this@ResultActivity.bindingMyItemCatalyst.rhodium.text = (MyConfiguration.formatStringFloat(
                     if (visibilityCatalyst) itemCatalyst.rhodium.toString() else "0.0",
                     3
                 ) + " g/kg")
@@ -138,21 +141,21 @@ class ResultActivity : AppCompatActivity()  {
                     2
                 ) + " zł")
                 if(visibilityCatalyst){
-                    bindingCatalyst.itemPriceVisibilityEur.text = resultPriceEur
-                    bindingCatalyst.itemPriceVisibilityPln.text = resultPricePln
-                    bindingCatalyst.itemTableRowPlattinum.visibility = VISIBLE
-                    bindingCatalyst.itemTableRowPalladium.visibility = VISIBLE
-                    bindingCatalyst.itemTableRowRhodium.visibility = VISIBLE
+                    this@ResultActivity.bindingMyItemCatalyst.priceEur.text = resultPriceEur
+                    this@ResultActivity.bindingMyItemCatalyst.pricePln.text = resultPricePln
+                    this@ResultActivity.bindingMyItemCatalyst.rowPlattinum.visibility = VISIBLE
+                    this@ResultActivity.bindingMyItemCatalyst.rowPalladium.visibility = VISIBLE
+                    this@ResultActivity.bindingMyItemCatalyst.rowRhodium.visibility = VISIBLE
                 }else{
-                    bindingCatalyst.itemPriceNotvisibilityEur.text = resultPriceEur
-                    bindingCatalyst.itemPriceNotvisibilityPln.text = resultPricePln
+                    this@ResultActivity.bindingMyItemCatalyst.priceEurWithoutMetal.text = resultPriceEur
+                    this@ResultActivity.bindingMyItemCatalyst.pricePlnWithoutMetal.text = resultPricePln
                 }
                 return view
             }
         }
-        bindingResult.activityResultCatalystList.setAdapter(databaseAdapterCatalysts)
+        this.bindingActivityResult.catalystListView.setAdapter(this.databaseAdapterCatalysts)
         //scroll listener
-        bindingResult.activityResultCatalystList.setOnScrollListener(object : AbsListView.OnScrollListener {
+        this.bindingActivityResult.catalystListView.setOnScrollListener(object : AbsListView.OnScrollListener {
             override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) {}
             override fun onScroll(
                 view: AbsListView,
@@ -163,41 +166,42 @@ class ResultActivity : AppCompatActivity()  {
                 //helper variable which equals first visible item on list plus many of item which can be on the screen
                 val lastItem: Int = firstVisibleItem + visibleItemCount
                 //if helper equals total elements on list and helper is different that the last helper then refresh list (add elements)
-                if (lastItem == totalItemCount && lastItem != scrollPreLastCatalyst) {
-                    scrollLimitCatalyst += MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST
+                if (lastItem == totalItemCount && lastItem != this@ResultActivity.scrollPreLastCatalyst) {
+                    this@ResultActivity.scrollLimitCatalyst += MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST
                     this@ResultActivity.refreshCatalystListView(MyScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS)
-                    scrollPreLastCatalyst = lastItem
+                    this@ResultActivity.scrollPreLastCatalyst = lastItem
                 }
             }
         })
         //init database adapter history filter
-        databaseAdapterHistoryFilter = object : ArrayAdapter<MyItemHistoryFilter>(
-            applicationContext,
+        this.databaseAdapterHistoryFilter = object : ArrayAdapter<MyItemHistoryFilter>(
+            this.applicationContext,
             R.layout.my_item_history_filter
         ){
             @SuppressLint("ViewHolder")
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                 //set layout of element
-                bindingHistoryFilter = MyItemHistoryFilterBinding.inflate(layoutInflater, parent,  false)
-                val view = bindingHistoryFilter.root
+                this@ResultActivity.bindingMyItemHistoryFilter = MyItemHistoryFilterBinding.inflate(
+                    this@ResultActivity.layoutInflater, parent,  false)
+                val view = this@ResultActivity.bindingMyItemHistoryFilter.root
                 //get element
-                val itemHistoryFilter = getItem(position)!!
+                val itemHistoryFilter = this.getItem(position)!!
                 //item name
-                bindingHistoryFilter.itemName.text = itemHistoryFilter.name
+                this@ResultActivity.bindingMyItemHistoryFilter.name.text = itemHistoryFilter.name
                 //click on name history filter
                 view.setOnClickListener {
-                    bindingResult.activityResultEdittext.setText(itemHistoryFilter.name)
-                    bindingResult.activityResultDrawerlayout.closeDrawers()
+                    this@ResultActivity.bindingActivityResult.editText.setText(itemHistoryFilter.name)
+                    this@ResultActivity.bindingActivityResult.drawerLayout.closeDrawers()
                 }
                 //click for delete history filter
-                bindingHistoryFilter.itemDelete.setOnClickListener {
+                this@ResultActivity.bindingMyItemHistoryFilter.crossDelete.setOnClickListener {
                     this@ResultActivity.deleteRecordHistoryOfSearch(itemHistoryFilter.id)
                 }
                 return view
             }
         }
-        bindingResult.activityResultHistoryFilterList.setAdapter(databaseAdapterHistoryFilter)
-        bindingResult.activityResultHistoryFilterList.setOnScrollListener(object : AbsListView.OnScrollListener {
+        this.bindingActivityResult.historyFilterListView.setAdapter(this.databaseAdapterHistoryFilter)
+        this.bindingActivityResult.historyFilterListView.setOnScrollListener(object : AbsListView.OnScrollListener {
             override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) {}
             override fun onScroll(
                 view: AbsListView,
@@ -208,21 +212,22 @@ class ResultActivity : AppCompatActivity()  {
                 //helper variable which equals first visible item on list plus many of item which can be on the screen
                 val lastItem: Int = firstVisibleItem + visibleItemCount
                 //if helper equals total elements on list and helper is different that the last helper then refresh list (add elements)
-                if (lastItem == totalItemCount && lastItem != scrollPreLastHistoryFilter) {
-                    scrollLimitHistoryFilter += MyConfiguration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER
+                if (lastItem == totalItemCount && lastItem != this@ResultActivity.scrollPreLastHistoryFilter) {
+                    this@ResultActivity.scrollLimitHistoryFilter += MyConfiguration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER
                     this@ResultActivity.refreshHistoryFilterListView(MyScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS)
-                    scrollPreLastHistoryFilter = lastItem
+                    this@ResultActivity.scrollPreLastHistoryFilter = lastItem
                 }
             }
         })
         //drawer layout
-        bindingResult.activityResultDrawerlayout.addDrawerListener(object : DrawerListener {
+        this.bindingActivityResult.drawerLayout.addDrawerListener(object : DrawerListener {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
             override fun onDrawerOpened(drawerView: View) {}
             override fun onDrawerClosed(drawerView: View) {}
             override fun onDrawerStateChanged(newState: Int) {
                 //when opening drawer is on final position
-                if(newState == DrawerLayout.STATE_SETTLING && bindingResult.activityResultDrawerlayout.isDrawerOpen(bindingResult.activityResultNavigationHistoryFilter) == false) {
+                if(newState == DrawerLayout.STATE_SETTLING && this@ResultActivity.bindingActivityResult.drawerLayout.isDrawerOpen(
+                        this@ResultActivity.bindingActivityResult.navigationHistoryFilter) == false) {
                     this@ResultActivity.refreshHistoryFilterListView(MyScrollRefresh.RESET_LIST)
                 }
             }
@@ -230,7 +235,7 @@ class ResultActivity : AppCompatActivity()  {
     }
     //navigate up
     override fun onSupportNavigateUp(): Boolean {
-        finish()
+        this.finish()
         return true
     }
     //onresume
@@ -239,31 +244,31 @@ class ResultActivity : AppCompatActivity()  {
         /* checking time */
         if(MyConfiguration.checkTimeOnPhone("", MyTimeChecking.CHECKING_LICENCE) == false) this.openMainActivity()
         //make async task and execute
-        val task = CheckUpdate()
+        val task = this.CheckUpdate()
         task.execute()
     }
     //toolbar option menu
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.toolbar_list_result, menu)
+        this.menuInflater.inflate(R.menu.toolbar_list_result, menu)
         this.menu = menu
         return super.onCreateOptionsMenu(menu)
     }
     //open main activity
     fun openMainActivity(){
-        startActivity(Intent(applicationContext, MainActivity::class.java))
-        finish()
+        this.startActivity(Intent(this.applicationContext, MainActivity::class.java))
+        this.finish()
     }
     //open configuration values activity
     fun openConfigurationValuesActivity(){
-        startActivity(Intent(applicationContext, ConfigurationValuesActivity::class.java))
+        this.startActivity(Intent(this.applicationContext, ConfigurationValuesActivity::class.java))
     }
     //open update activity
     fun openUpdateActivity() {
-        startActivity(Intent(applicationContext, UpdateActivity::class.java))
+        this.startActivity(Intent(this.applicationContext, UpdateActivity::class.java))
     }
     //open about activity
     fun openAboutActivity(){
-        startActivity(Intent(applicationContext, AboutActivity::class.java))
+        this.startActivity(Intent(this.applicationContext, AboutActivity::class.java))
     }
     //option menu selected
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -281,7 +286,7 @@ class ResultActivity : AppCompatActivity()  {
                 true
             }
             else -> {
-                finish()
+                this.finish()
                 true
             }
         }
@@ -295,30 +300,30 @@ class ResultActivity : AppCompatActivity()  {
                 this.scrollPreLastCatalyst = 0
                 this.scrollLimitCatalyst = MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST
                 //get data from database
-                val result = database.getDataCatalyst(searchedText, this.scrollLimitCatalyst.toString())
-                databaseAdapterCatalysts.clear()
-                databaseAdapterCatalysts.addAll(result)
+                val result = this.database.getDataCatalyst(searchedText, this.scrollLimitCatalyst.toString())
+                this.databaseAdapterCatalysts.clear()
+                this.databaseAdapterCatalysts.addAll(result)
             }
             MyScrollRefresh.UPDATE_LIST -> {
                 //get data from database
-                val result = database.getDataCatalyst(searchedText, this.scrollLimitCatalyst.toString())
-                databaseAdapterCatalysts.clear()
-                databaseAdapterCatalysts.addAll(result)
+                val result = this.database.getDataCatalyst(searchedText, this.scrollLimitCatalyst.toString())
+                this.databaseAdapterCatalysts.clear()
+                this.databaseAdapterCatalysts.addAll(result)
             }
             MyScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS -> {
                 //limit as offset in format: skip elements, count elements to get
                 val limitWithOffset: String =
                     (this.scrollLimitCatalyst - MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST).toString() + "," + MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST
                 //get data from database
-                val result = database.getDataCatalyst(searchedText, limitWithOffset)
+                val result = this.database.getDataCatalyst(searchedText, limitWithOffset)
                 //add to list
-                databaseAdapterCatalysts.addAll(result)
+                this.databaseAdapterCatalysts.addAll(result)
             }
         }
-        if(databaseAdapterCatalysts.count == 0 && searchedText.isEmpty() == false){
-            bindingResult.activityResultCatalystTextviewEmptyList.visibility = VISIBLE
+        if(this.databaseAdapterCatalysts.count == 0 && searchedText.isEmpty() == false){
+            this.bindingActivityResult.catalystTextViewEmptyList.visibility = VISIBLE
         }else{
-            bindingResult.activityResultCatalystTextviewEmptyList.visibility = GONE
+            this.bindingActivityResult.catalystTextViewEmptyList.visibility = GONE
         }
     }
     //refresh history filter list view
@@ -329,34 +334,34 @@ class ResultActivity : AppCompatActivity()  {
                 this.scrollPreLastHistoryFilter = 0
                 this.scrollLimitHistoryFilter = MyConfiguration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER
                 //get data from database
-                val result = database.getDataHistoryFilter(this.scrollLimitHistoryFilter.toString())
-                databaseAdapterHistoryFilter.clear()
-                databaseAdapterHistoryFilter.addAll(result)
+                val result = this.database.getDataHistoryFilter(this.scrollLimitHistoryFilter.toString())
+                this.databaseAdapterHistoryFilter.clear()
+                this.databaseAdapterHistoryFilter.addAll(result)
             }
             MyScrollRefresh.UPDATE_LIST -> {
                 //get data from database
-                val result = database.getDataHistoryFilter(this.scrollLimitHistoryFilter.toString())
-                databaseAdapterHistoryFilter.clear()
-                databaseAdapterHistoryFilter.addAll(result)
+                val result = this.database.getDataHistoryFilter(this.scrollLimitHistoryFilter.toString())
+                this.databaseAdapterHistoryFilter.clear()
+                this.databaseAdapterHistoryFilter.addAll(result)
             }
             MyScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS -> {
                 //limit as offset in format: skip elements, count elements to get
                 val limitWithOffset: String =
                     (this.scrollLimitHistoryFilter - MyConfiguration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER).toString() + "," + MyConfiguration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER
                 //get data from database
-                val result = database.getDataHistoryFilter(limitWithOffset)
+                val result = this.database.getDataHistoryFilter(limitWithOffset)
                 //add to list
-                databaseAdapterHistoryFilter.addAll(result)
+                this.databaseAdapterHistoryFilter.addAll(result)
             }
         }
-        if(databaseAdapterHistoryFilter.count == 0){
-            bindingResult.activityResultHistoryFilterTextviewWaiting.visibility = GONE
-            bindingResult.activityResultHistoryFilterTextviewEmptyList.visibility = VISIBLE
-            bindingResult.activityResultHistoryFilterList.visibility = GONE
+        if(this.databaseAdapterHistoryFilter.count == 0){
+            this.bindingActivityResult.historyFilterTextViewWaiting.visibility = GONE
+            this.bindingActivityResult.historyFilterTextViewEmptyList.visibility = VISIBLE
+            this.bindingActivityResult.historyFilterListView.visibility = GONE
         }else{
-            bindingResult.activityResultHistoryFilterTextviewWaiting.visibility = GONE
-            bindingResult.activityResultHistoryFilterTextviewEmptyList.visibility = GONE
-            bindingResult.activityResultHistoryFilterList.visibility = VISIBLE
+            this.bindingActivityResult.historyFilterTextViewWaiting.visibility = GONE
+            this.bindingActivityResult.historyFilterTextViewEmptyList.visibility = GONE
+            this.bindingActivityResult.historyFilterListView.visibility = VISIBLE
         }
     }
     //async class which check if exists update of app and update it
@@ -369,11 +374,11 @@ class ResultActivity : AppCompatActivity()  {
         override fun onPreExecute() {
             super.onPreExecute()
             //disable user interface on process application
-            MyUserInterface.enableActivity(bindingResult.activityResultDrawerlayout, false)
+            MyUserInterface.enableActivity(this@ResultActivity.bindingActivityResult.drawerLayout, false)
             //visibility of content
-            bindingResult.activityResultCatalystTextviewWaiting.visibility = VISIBLE
-            bindingResult.activityResultCatalystTextviewEmptyDatabase.visibility = GONE
-            bindingResult.activityResultCatalystList.visibility = GONE
+            this@ResultActivity.bindingActivityResult.catalystTextViewWaiting.visibility = VISIBLE
+            this@ResultActivity.bindingActivityResult.catalystTextViewEmptyDatabase.visibility = GONE
+            this@ResultActivity.bindingActivityResult.catalystListView.visibility = GONE
         }
         //do in async mode - in here can't modify user interface
         override fun doInBackground(vararg p0: Void?): MyProcessStep {
@@ -386,10 +391,10 @@ class ResultActivity : AppCompatActivity()  {
                     MyCatalystValues.getValues()
                 }
                 //flag update catalyst - if amount in spreadsheet is greater than in local database
-                val databaseCatalystCount : Int = database.getCountCatalyst()
-                databaseEmpty = databaseCatalystCount == 0
+                val databaseCatalystCount : Int = this@ResultActivity.database.getCountCatalyst()
+                this.databaseEmpty = databaseCatalystCount == 0
                 val spreadsheetCatalystCount : Int = MySpreadsheet.getCountCatalyst()
-                updateCatalyst = databaseCatalystCount == 0 || spreadsheetCatalystCount > databaseCatalystCount
+                this.updateCatalyst = databaseCatalystCount == 0 || spreadsheetCatalystCount > databaseCatalystCount
                 /* authentication */
                 val user : JSONArray = MySpreadsheet.getDataLogin(
                     MySharedPreferences.getKeyFromFile(
@@ -452,7 +457,7 @@ class ResultActivity : AppCompatActivity()  {
                     ).toString()
                 )
                 //can run service - assuming that app has connection to internet
-                ServiceOfThumbnail.enqueueWork(applicationContext)
+                ServiceOfThumbnail.enqueueWork(this@ResultActivity.applicationContext)
             }catch (e: Exception){
                 //nothing
             }
@@ -471,29 +476,29 @@ class ResultActivity : AppCompatActivity()  {
                 this@ResultActivity.openMainActivity()
             }
             //visibility of content
-            if(databaseEmpty){
-                bindingResult.activityResultCatalystTextviewWaiting.visibility = GONE
-                bindingResult.activityResultCatalystTextviewEmptyDatabase.visibility = VISIBLE
-                bindingResult.activityResultCatalystList.visibility = GONE
+            if(this.databaseEmpty){
+                this@ResultActivity.bindingActivityResult.catalystTextViewWaiting.visibility = GONE
+                this@ResultActivity.bindingActivityResult.catalystTextViewEmptyDatabase.visibility = VISIBLE
+                this@ResultActivity.bindingActivityResult.catalystListView.visibility = GONE
             }else{
-                bindingResult.activityResultCatalystTextviewWaiting.visibility = GONE
-                bindingResult.activityResultCatalystTextviewEmptyDatabase.visibility = GONE
-                bindingResult.activityResultCatalystList.visibility = VISIBLE
+                this@ResultActivity.bindingActivityResult.catalystTextViewWaiting.visibility = GONE
+                this@ResultActivity.bindingActivityResult.catalystTextViewEmptyDatabase.visibility = GONE
+                this@ResultActivity.bindingActivityResult.catalystListView.visibility = VISIBLE
             }
             //set visibility of ability update catalyst
             if(this@ResultActivity.menu != null){
-                if(updateCatalyst){
+                if(this.updateCatalyst){
                     MyConfiguration.IS_AVAILABLE_UPDATE = true
                     this@ResultActivity.menu!!.getItem(1).setIcon(
                         ContextCompat.getDrawable(
-                            applicationContext,
+                            this@ResultActivity.applicationContext,
                             R.mipmap.ic_action_update_catalyst_color
                         )
                     )
                 }else{
                     this@ResultActivity.menu!!.getItem(1).setIcon(
                         ContextCompat.getDrawable(
-                            applicationContext,
+                            this@ResultActivity.applicationContext,
                             R.mipmap.ic_action_update_catalyst
                         )
                     )
@@ -502,7 +507,7 @@ class ResultActivity : AppCompatActivity()  {
             //refresh list view
             this@ResultActivity.refreshCatalystListView(MyScrollRefresh.UPDATE_LIST)
             //enable user interface on process application
-            MyUserInterface.enableActivity(bindingResult.activityResultDrawerlayout, true)
+            MyUserInterface.enableActivity(this@ResultActivity.bindingActivityResult.drawerLayout, true)
         }
     }
 
@@ -526,10 +531,10 @@ class ResultActivity : AppCompatActivity()  {
 
 
 
-        if(searchedText.isEmpty() == false && database.deleteHistoryFilter(searchedText) != -1 && database.insertHistoryFilter(searchedText) == true){
-            Toast.makeText(applicationContext, MyConfiguration.INFO_MESSAGE_ADDED_HISTORY_FILTER, Toast.LENGTH_LONG).show()
+        if(searchedText.isEmpty() == false && this.database.deleteHistoryFilter(searchedText) != -1 && this.database.insertHistoryFilter(searchedText) == true){
+            Toast.makeText(this.applicationContext, MyConfiguration.INFO_MESSAGE_ADDED_HISTORY_FILTER, Toast.LENGTH_LONG).show()
         }else {
-            Toast.makeText(applicationContext, MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION, Toast.LENGTH_LONG).show()
+            Toast.makeText(this.applicationContext, MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION, Toast.LENGTH_LONG).show()
         }
 
 
@@ -559,10 +564,10 @@ class ResultActivity : AppCompatActivity()  {
 
 
 
-        if(database.deleteHistoryFilter(id) != -1){
-            Toast.makeText(applicationContext, MyConfiguration.INFO_MESSAGE_DELETED_HISTORY_FILTER, Toast.LENGTH_LONG).show()
+        if(this.database.deleteHistoryFilter(id) != -1){
+            Toast.makeText(this.applicationContext, MyConfiguration.INFO_MESSAGE_DELETED_HISTORY_FILTER, Toast.LENGTH_LONG).show()
         }else{
-            Toast.makeText(applicationContext, MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION, Toast.LENGTH_LONG).show()
+            Toast.makeText(this.applicationContext, MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION, Toast.LENGTH_LONG).show()
         }
         this@ResultActivity.refreshHistoryFilterListView(MyScrollRefresh.UPDATE_LIST)
 

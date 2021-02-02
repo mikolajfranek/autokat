@@ -1,4 +1,4 @@
-package pl.autokat
+package pl.autokat.components
 
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.extensions.authentication
@@ -13,7 +13,8 @@ class MySpreadsheet {
         fun saveSerialId(userId: Int, serialId: String) {
             val sheetCell : String  = "użytkownicy!" + MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_UUID + ((userId+1).toString())
             val bodyJson = """{"range": "$sheetCell", "majorDimension": "ROWS", "values": [["$serialId"]]}"""
-            val (_, response, result) = Fuel.put(MyConfiguration.MY_SPREADSHEET_URL_PREFIX_SHEETS_API + MySecret.getSpreadsheetIdLogin() + "/values/$sheetCell",
+            val (_, response, result) = Fuel.put(
+                MyConfiguration.MY_SPREADSHEET_URL_PREFIX_SHEETS_API + MySecret.getSpreadsheetIdLogin() + "/values/$sheetCell",
                 listOf(
                     MyConfiguration.MY_SPREADSHEET_PARAMETER_INPUT to MyConfiguration.MY_SPREADSHEET_PARAMETER_INPUT_VALUE
                 )
@@ -28,7 +29,8 @@ class MySpreadsheet {
         /* docs api */
         //get login from database login
         fun getDataLogin(login: String) : JSONArray? {
-            val (_, response, result) = Fuel.get(MyConfiguration.MY_SPREADSHEET_LOGIN_URL_DOCS_API,
+            val (_, response, result) = Fuel.get(
+                MyConfiguration.MY_SPREADSHEET_LOGIN_URL_DOCS_API,
                 listOf(
                     MyConfiguration.MY_SPREADSHEET_PARAMETER_JSON to MyConfiguration.MY_SPREADSHEET_PARAMETER_JSON_VALUE,
                     MyConfiguration.MY_SPREADSHEET_PARAMETER_WHERE to "select * where ${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_LOGIN}='$login' AND " +
@@ -47,21 +49,67 @@ class MySpreadsheet {
             if(rows.length() != 1) return null
             val user = JSONArray()
             val element : JSONArray = rows.getJSONObject(0).getJSONArray("c")
-            user.put(MyConfiguration.getValueStringFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_ID))
-            user.put(MyConfiguration.getValueStringFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_LOGIN))
-            user.put(MyConfiguration.getValueStringFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_UUID))
-            user.put(MyConfiguration.getValueStringFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_LICENCE))
-            user.put(MyConfiguration.getValueStringFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT))
-            user.put(MyConfiguration.getValueStringFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY))
-            user.put(MyConfiguration.getValueFloatStringFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PLATINIUM))
-            user.put(MyConfiguration.getValueFloatStringFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PALLADIUM))
-            user.put(MyConfiguration.getValueFloatStringFromDocsApi(element, MyConfiguration.MY_SPREADSHEET_USERS_MINUS_RHODIUM))
+            user.put(
+                MyConfiguration.getValueStringFromDocsApi(
+                    element,
+                    MyConfiguration.MY_SPREADSHEET_USERS_ID
+                )
+            )
+            user.put(
+                MyConfiguration.getValueStringFromDocsApi(
+                    element,
+                    MyConfiguration.MY_SPREADSHEET_USERS_LOGIN
+                )
+            )
+            user.put(
+                MyConfiguration.getValueStringFromDocsApi(
+                    element,
+                    MyConfiguration.MY_SPREADSHEET_USERS_UUID
+                )
+            )
+            user.put(
+                MyConfiguration.getValueStringFromDocsApi(
+                    element,
+                    MyConfiguration.MY_SPREADSHEET_USERS_LICENCE
+                )
+            )
+            user.put(
+                MyConfiguration.getValueStringFromDocsApi(
+                    element,
+                    MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT
+                )
+            )
+            user.put(
+                MyConfiguration.getValueStringFromDocsApi(
+                    element,
+                    MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY
+                )
+            )
+            user.put(
+                MyConfiguration.getValueFloatStringFromDocsApi(
+                    element,
+                    MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PLATINIUM
+                )
+            )
+            user.put(
+                MyConfiguration.getValueFloatStringFromDocsApi(
+                    element,
+                    MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PALLADIUM
+                )
+            )
+            user.put(
+                MyConfiguration.getValueFloatStringFromDocsApi(
+                    element,
+                    MyConfiguration.MY_SPREADSHEET_USERS_MINUS_RHODIUM
+                )
+            )
             return user
         }
 
         //get count catalyst from database catalyst
         fun getCountCatalyst(): Int {
-            val (_, response, result) = Fuel.get(MyConfiguration.MY_SPREADSHEET_CATALYST_URL_DOCS_API,
+            val (_, response, result) = Fuel.get(
+                MyConfiguration.MY_SPREADSHEET_CATALYST_URL_DOCS_API,
                 listOf(
                     MyConfiguration.MY_SPREADSHEET_PARAMETER_JSON to MyConfiguration.MY_SPREADSHEET_PARAMETER_JSON_VALUE,
                     MyConfiguration.MY_SPREADSHEET_PARAMETER_WHERE to "select count(${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_ID}) where " +
@@ -75,7 +123,8 @@ class MySpreadsheet {
         }
         //get catalysts from database catalyst
         fun getDataCatalyst(fromRow: Int): JSONArray {
-            val (_, response, result) = Fuel.get(MyConfiguration.MY_SPREADSHEET_CATALYST_URL_DOCS_API,
+            val (_, response, result) = Fuel.get(
+                MyConfiguration.MY_SPREADSHEET_CATALYST_URL_DOCS_API,
                 listOf(
                     MyConfiguration.MY_SPREADSHEET_PARAMETER_JSON to MyConfiguration.MY_SPREADSHEET_PARAMETER_JSON_VALUE,
                     MyConfiguration.MY_SPREADSHEET_PARAMETER_WHERE to "select * where ${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_ID}>$fromRow"
