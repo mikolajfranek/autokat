@@ -23,7 +23,6 @@ import pl.autokat.databinding.MyItemCatalystBinding
 import pl.autokat.databinding.MyItemHistoryFilterBinding
 import java.util.*
 
-
 class ResultActivity : AppCompatActivity()  {
 
     private lateinit var bindingActivityResult: ActivityResultBinding
@@ -531,7 +530,8 @@ class ResultActivity : AppCompatActivity()  {
 
 
 
-        if(searchedText.isEmpty() == false && this.database.deleteHistoryFilter(searchedText) != -1 && this.database.insertHistoryFilter(searchedText) == true){
+        if(searchedText.isEmpty() == false && this.database.deleteHistoryFilter(searchedText) != -1){
+            this.database.insertHistoryFilter(searchedText)
             Toast.makeText(this.applicationContext, MyConfiguration.INFO_MESSAGE_ADDED_HISTORY_FILTER, Toast.LENGTH_LONG).show()
         }else {
             Toast.makeText(this.applicationContext, MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION, Toast.LENGTH_LONG).show()

@@ -12,7 +12,7 @@
         android:layout_height="@android:dimen/app_icon_size"
         android:fontFamily="sans-serif"
         android:gravity="center"
-        android:text="@string/nav_header_main_last_searched"
+        android:text="@string/nav_header_main_ostatnio_wyszukiwane"
         android:textColor="@android:color/white" />
 
 </LinearLayout>

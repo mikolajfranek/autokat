@@ -149,7 +149,7 @@ class UpdateActivity : AppCompatActivity() {
                 //check if user click sync database
                 if(this.fullUpdate) {
                     //truncate tables
-                    if(this@UpdateActivity.myDatabase.resetDatabase() == false) throw Exception()
+                    this@UpdateActivity.myDatabase.resetDatabase()
                 }else{
                     //calculate count of catalyst
                     countDatabase = this@UpdateActivity.myDatabase.getCountCatalyst()
@@ -174,7 +174,7 @@ class UpdateActivity : AppCompatActivity() {
                 }
                 //iterate over batch array
                 for(i in 0 until (batchJsonArray.length())){
-                    if(this@UpdateActivity.myDatabase.insertCatalysts(batchJsonArray[i] as JSONArray) == false) throw Exception()
+                    this@UpdateActivity.myDatabase.insertCatalysts(batchJsonArray[i] as JSONArray)
                     //update and publish state of process update
                     progressStep = ((i*batchSize).toFloat()/progressAll.toFloat()) * (100).toFloat()
                     this.publishProgress(progressStep.toInt())

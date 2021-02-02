@@ -38,7 +38,7 @@
                     android:background="@drawable/drawable_rectangle"
                     android:enabled="true"
                     android:fontFamily="sans-serif"
-                    android:hint="@string/activity_result_hint_text"
+                    android:hint="@string/activity_result_wprowadz_nazwe_do_filtrowania"
                     android:inputType="text"
                     android:padding="10dp"
                     android:text=""
@@ -79,7 +79,7 @@
             android:layout_marginRight="10dp"
             android:fontFamily="sans-serif"
             android:gravity="center"
-            android:text="@string/activity_result_waiting"
+            android:text="@string/activity_result_trwa_pobieranie_danych"
             android:textColor="@color/colorUser" />
 
         <TextView
@@ -91,7 +91,7 @@
             android:layout_marginRight="10dp"
             android:fontFamily="sans-serif"
             android:gravity="center"
-            android:text="@string/activity_result_empty_list"
+            android:text="@string/activity_result_nie_znaleziono_elementow"
             android:textColor="@color/colorUser" />
 
         <TextView
@@ -103,7 +103,7 @@
             android:layout_marginRight="10dp"
             android:fontFamily="sans-serif"
             android:gravity="center"
-            android:text="@string/activity_result_empty_database"
+            android:text="@string/activity_result_baza_danych_jest_pusta"
             android:textColor="@color/colorUser" />
     </LinearLayout>
 
@@ -140,7 +140,7 @@
                 android:layout_marginRight="10dp"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:text="@string/activity_result_waiting"
+                android:text="@string/activity_result_trwa_pobieranie_danych"
                 android:textColor="@color/colorUser" />
 
             <TextView
@@ -152,7 +152,7 @@
                 android:layout_marginRight="10dp"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:text="@string/activity_result_empty_list"
+                android:text="@string/activity_result_nie_znaleziono_elementow"
                 android:textColor="@color/colorUser" />
         </LinearLayout>
     </com.google.android.material.navigation.NavigationView>

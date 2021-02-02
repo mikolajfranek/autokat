@@ -63,7 +63,7 @@
             <TextView
                 android:layout_weight="4"
                 android:fontFamily="sans-serif"
-                android:text="@string/activity_about_wlasciciel_value"
+                android:text="@string/activity_about_wlasciciel_wartosc"
                 android:textColor="@color/colorUser" />
         </TableRow>
 
@@ -87,7 +87,7 @@
                 android:layout_weight="4"
                 android:autoLink="phone"
                 android:fontFamily="sans-serif"
-                android:text="@string/activity_about_telefon_value" />
+                android:text="@string/activity_about_telefon_wartosc" />
         </TableRow>
 
         <TableRow
@@ -110,7 +110,7 @@
                 android:layout_weight="4"
                 android:autoLink="email"
                 android:fontFamily="sans-serif"
-                android:text="@string/activity_about_email_value"/>
+                android:text="@string/activity_about_email_wartosc"/>
         </TableRow>
 
         <TableRow
@@ -133,7 +133,7 @@
                 android:layout_weight="4"
                 android:autoLink="web"
                 android:fontFamily="sans-serif"
-                android:text="@string/activity_about_stronawww_value"/>
+                android:text="@string/activity_about_stronawww_wartosc"/>
         </TableRow>
     </TableLayout>
 </TableLayout>

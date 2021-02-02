@@ -35,7 +35,7 @@
         android:background="@drawable/drawable_rectangle"
         android:enabled="true"
         android:fontFamily="sans-serif"
-        android:hint="@string/activity_main_text_hint"
+        android:hint="@string/activity_main_wprowadz_nazwe_uzytkownika"
         android:inputType="text"
         android:padding="10dp"
         android:text=""
@@ -64,6 +64,6 @@
         android:layout_marginRight="10dp"
         android:fontFamily="sans-serif"
         android:onClick="activityMainButtonOnClick"
-        android:text="@string/activity_main_button_text"
+        android:text="@string/activity_main_zaloguj"
         android:textAllCaps="false" />
 </LinearLayout>

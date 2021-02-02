@@ -17,7 +17,6 @@ import pl.autokat.components.*
 import pl.autokat.databinding.ActivityMainBinding
 import java.net.UnknownHostException
 
-
 class MainActivity : AppCompatActivity() {
 
     private lateinit var bindingActivityMain: ActivityMainBinding

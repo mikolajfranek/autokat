@@ -1,63 +1,41 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">AUTO-KAT</string>
-    <string name="activity_main_text_hint">Wprowadź nazwę użytkownika</string>
-    <string name="activity_main_button_text">Zaloguj</string>
-    <string name="menu_toolbar_list_configuration_values">Wartości kursów</string>
-    <string name="menu_toolbar_list_update">Aktualizacja</string>
-    <string name="menu_toolbar_list_refresh">Odśwież</string>
-    <string name="activity_result_hint_text">Wprowadź nazwę do filtrowania</string>
-    <string name="menu_toolbar_list_configuration_about">O aplikacji</string>
+    <string name="menu_toolbar_list_wartosci_kursow">Wartości kursów</string>
+    <string name="menu_toolbar_list_aktualizacja">Aktualizacja</string>
+    <string name="menu_toolbar_list_odswiez">Odśwież</string>
+    <string name="menu_toolbar_list_o_aplikacji">O aplikacji</string>
+    <string name="activity_main_wprowadz_nazwe_uzytkownika">Wprowadź nazwę użytkownika</string>
+    <string name="activity_main_zaloguj">Zaloguj</string>
+    <string name="activity_result_wprowadz_nazwe_do_filtrowania">Wprowadź nazwę do filtrowania</string>
+    <string name="activity_result_baza_danych_jest_pusta">Baza danych jest pusta</string>
+    <string name="activity_result_trwa_pobieranie_danych">Trwa pobieranie danych…</string>
+    <string name="activity_result_nie_znaleziono_elementow">Nie znaleziono elementów</string>
     <string name="activity_about_dane_kontaktowe">Dane kontaktowe:</string>
     <string name="activity_about_wlasciciel">Właściciel:</string>
-    <string name="activity_about_wlasciciel_value">Sławomir Szukała</string>
+    <string name="activity_about_wlasciciel_wartosc">Sławomir Szukała</string>
     <string name="activity_about_telefon">Telefon:</string>
-    <string name="activity_about_telefon_value">510–076–585</string>
+    <string name="activity_about_telefon_wartosc">510–076–585</string>
     <string name="activity_about_email">Email:</string>
-    <string name="activity_about_email_value">autokat.katalizatory@gmail.com</string>
+    <string name="activity_about_email_wartosc">autokat.katalizatory@gmail.com</string>
     <string name="activity_about_stronawww">Strona:</string>
-    <string name="activity_about_stronawww_value">katalizatorypoznan.pl</string>
+    <string name="activity_about_stronawww_wartosc">katalizatorypoznan.pl</string>
     <string name="my_item_catalyst_marka">Marka:</string>
     <string name="my_item_catalyst_waga">Waga:</string>
     <string name="my_item_catalyst_platyna">Platyna:</string>
     <string name="my_item_catalyst_pallad">Pallad:</string>
     <string name="my_item_catalyst_rod">Rod:</string>
-    <string name="activity_configuration_values_dane_o_kursach_metali">Kurs metali:</string>
-    <string name="activity_configuration_values_metali">Metal</string>
+    <string name="activity_configuration_values_kurs_metali">Kurs metali:</string>
+    <string name="activity_configuration_values_metal">Metal</string>
     <string name="activity_configuration_values_wartosc">Wartość</string>
     <string name="activity_configuration_values_z_dnia">Z dnia</string>
     <string name="activity_configuration_values_platyna">platyna</string>
     <string name="activity_configuration_values_pallad">pallad</string>
     <string name="activity_configuration_values_rod">rod</string>
-    <string name="activity_configuration_values_dane_o_kursach_walut">Kurs walut:</string>
+    <string name="activity_configuration_values_kurs_walut">Kurs walut:</string>
     <string name="activity_configuration_values_dolar">USD</string>
     <string name="activity_configuration_values_euro">EUR</string>
+    <string name="activity_configuration_values_waluta">Waluta</string>
     <string name="activity_update_pobierz_nowe_katalizatory" tools:ignore="Typos">Pobierz nowe katalizatory</string>
     <string name="activity_update_synchronizacja_baz_danych">Synchronizacja bazy danych</string>
-    <string name="activity_configuration_values_waluta">Waluta</string>
-    <string name="activity_result_empty_database">Baza danych jest pusta</string>
-    <string name="activity_result_waiting">Trwa pobieranie danych…</string>
-    <string name="activity_result_empty_list">Nie znaleziono elementów</string>
-    <string name="nav_header_main_last_searched">Ostatnio wyszukiwane</string>
-
-
-
-
-
-
-
-
-
-
-
-    <string name="title_activity_list">ListActivity</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_desc">Navigation header</string>
-
-    <string name="action_settings">Settings</string>
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="nav_header_main_ostatnio_wyszukiwane">Ostatnio wyszukiwane</string>
 </resources>

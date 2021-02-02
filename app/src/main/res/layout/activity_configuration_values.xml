@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:fontFamily="sans-serif"
-        android:text="@string/activity_configuration_values_dane_o_kursach_metali"
+        android:text="@string/activity_configuration_values_kurs_metali"
         android:textColor="@color/colorUser" />
 
     <TableLayout
@@ -35,7 +35,7 @@
                 android:layout_width="96dp"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:text="@string/activity_configuration_values_metali"
+                android:text="@string/activity_configuration_values_metal"
                 android:textColor="@color/colorUser" />
 
             <TextView
@@ -152,7 +152,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
         android:fontFamily="sans-serif"
-        android:text="@string/activity_configuration_values_dane_o_kursach_walut"
+        android:text="@string/activity_configuration_values_kurs_walut"
         android:textColor="@color/colorUser" />
 
     <TableLayout
