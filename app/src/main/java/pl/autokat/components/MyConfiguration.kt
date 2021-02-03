@@ -306,6 +306,7 @@ class MyConfiguration {
         val INFO_MESSAGE_USER_FAILED_SERIAL: String = "Błędne urządzenie"
         val INFO_MESSAGE_NETWORK_FAILED : String = "Brak połączenia"
         val INFO_MESSAGE_UNHANDLED_EXCEPTION : String = "Wystąpił błąd"
+        val INFO_MESSAGE_SAVE_EMPTY_VALUE : String = "Nie można zapisać pustej wartości"
         val INFO_MESSAGE_WAIT_UPDATE : String = "Trwa aktualizacja…"
         val INFO_UPDATE_SUCCESS : String = "Aktualizacja przebiegła pomyślnie"
         val INFO_UPDATE_FAILED : String = "Wystąpił błąd podczas aktualizacji"

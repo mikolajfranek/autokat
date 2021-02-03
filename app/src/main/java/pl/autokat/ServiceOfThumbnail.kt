@@ -25,7 +25,6 @@ class ServiceOfThumbnail : JobIntentService() {
             }
         }
     }
-
     //download thumbnails
     override fun onHandleWork(intent: Intent) {
         try{
@@ -42,14 +41,6 @@ class ServiceOfThumbnail : JobIntentService() {
             //nothing
         }finally {
             JOB_IS_EXISTS = false
-        }
-    }
-
-    //method for debuging
-    val mHandler: Handler = Handler()
-    fun showToast(text: CharSequence?) {
-        mHandler.post {
-            Toast.makeText(this@ServiceOfThumbnail, text, Toast.LENGTH_SHORT).show()
         }
     }
 }

@@ -1,6 +1,7 @@
 package pl.autokat.components
 
 enum class MyProcessStep {
+    NONE,
     SUCCESS,
     UNHANDLED_EXCEPTION,
     USER_NEVER_LOGGED,

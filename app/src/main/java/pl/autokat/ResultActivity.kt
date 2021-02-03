@@ -2,7 +2,6 @@ package pl.autokat
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.os.AsyncTask
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -243,8 +242,7 @@ class ResultActivity : AppCompatActivity()  {
         /* checking time */
         if(MyConfiguration.checkTimeOnPhone("", MyTimeChecking.CHECKING_LICENCE) == false) this.openMainActivity()
         //make async task and execute
-        val task = this.CheckUpdate()
-        task.execute()
+        Thread(this.TaskUpdate()).start()
     }
     //toolbar option menu
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -290,6 +288,18 @@ class ResultActivity : AppCompatActivity()  {
             }
         }
     }
+    //click button adding new record history of search
+    fun addRecordHistoryOfSearch(view: View?) {
+        Thread(this.TaskAddRecordHistoryFilter()).start()
+    }
+    //click button delete record history of search
+    fun deleteRecordHistoryOfSearch(id: Int) {
+        Thread(this.TaskDeleteRecordHistoryFilter(id)).start()
+    }
+
+
+
+//oczekiwanie na te wątki
     //refresh catalyst list view
     fun refreshCatalystListView(myScrollRefresh: MyScrollRefresh){
         val searchedText = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT)
@@ -363,29 +373,38 @@ class ResultActivity : AppCompatActivity()  {
             this.bindingActivityResult.historyFilterListView.visibility = VISIBLE
         }
     }
-    //async class which check if exists update of app and update it
-    @SuppressLint("StaticFieldLeak")
-    private inner class CheckUpdate : AsyncTask<Void, Void, MyProcessStep>() {
+
+
+
+
+
+
+
+
+
+
+
+    //update of app
+    inner class TaskUpdate : Runnable {
         //fields
         private var updateCatalyst : Boolean = false
         private var databaseEmpty : Boolean = false
-        //pre execute
-        override fun onPreExecute() {
-            super.onPreExecute()
-            //disable user interface on process application
-            MyUserInterface.enableActivity(this@ResultActivity.bindingActivityResult.drawerLayout, false)
-            //visibility of content
-            this@ResultActivity.bindingActivityResult.catalystTextViewWaiting.visibility = VISIBLE
-            this@ResultActivity.bindingActivityResult.catalystTextViewEmptyDatabase.visibility = GONE
-            this@ResultActivity.bindingActivityResult.catalystListView.visibility = GONE
-        }
-        //do in async mode - in here can't modify user interface
-        override fun doInBackground(vararg p0: Void?): MyProcessStep {
+        //run
+        override fun run() {
+            //--- onPreExecute
+            this@ResultActivity.runOnUiThread {
+                //disable user interface on process application
+                MyUserInterface.enableActivity(this@ResultActivity.bindingActivityResult.drawerLayout, false)
+                //visibility of content
+                this@ResultActivity.bindingActivityResult.catalystTextViewWaiting.visibility = VISIBLE
+                this@ResultActivity.bindingActivityResult.catalystTextViewEmptyDatabase.visibility = GONE
+                this@ResultActivity.bindingActivityResult.catalystListView.visibility = GONE
+            }
+            //--- doInBackground
+            var myProcessStep : MyProcessStep = MyProcessStep.NONE
             try{
                 //update value of courses - if from last update passed 6h
-                val lastTimestampUpdateCourseFromConfiguration : String = MySharedPreferences.getKeyFromFile(
-                    MyConfiguration.MY_SHARED_PREFERENCES_KEY_UPDATE_COURSE_TIMESTAMP
-                )
+                val lastTimestampUpdateCourseFromConfiguration : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_UPDATE_COURSE_TIMESTAMP)
                 if(lastTimestampUpdateCourseFromConfiguration.isEmpty() || ((Date().time - lastTimestampUpdateCourseFromConfiguration.toLong()) > (MyConfiguration.ONE_DAY_IN_MILLISECONDS/4))){
                     MyCatalystValues.getValues()
                 }
@@ -395,26 +414,25 @@ class ResultActivity : AppCompatActivity()  {
                 val spreadsheetCatalystCount : Int = MySpreadsheet.getCountCatalyst()
                 this.updateCatalyst = databaseCatalystCount == 0 || spreadsheetCatalystCount > databaseCatalystCount
                 /* authentication */
-                val user : JSONArray = MySpreadsheet.getDataLogin(
-                    MySharedPreferences.getKeyFromFile(
-                        MyConfiguration.MY_SHARED_PREFERENCES_KEY_LOGIN
-                    )
-                ) ?: return MyProcessStep.USER_ELAPSED_DATE_LICENCE
+                val user : JSONArray? = MySpreadsheet.getDataLogin(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LOGIN))
+                if(user == null){
+                    myProcessStep = MyProcessStep.USER_ELAPSED_DATE_LICENCE
+                    throw Exception()
+                }
                 /* checking time */
-                if(MyConfiguration.checkTimeOnPhone(
-                        user.getString(MyConfiguration.MY_SPREADSHEET_USERS_LICENCE),
-                        MyTimeChecking.PARAMETER_IS_GREATER_THAN_NOW
-                    ) == false) return MyProcessStep.USER_ELAPSED_DATE_LICENCE
+                if(MyConfiguration.checkTimeOnPhone(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_LICENCE),MyTimeChecking.PARAMETER_IS_GREATER_THAN_NOW) == false){
+                    myProcessStep = MyProcessStep.USER_ELAPSED_DATE_LICENCE
+                    throw Exception()
+                }
                 /* save configuration */
                 //save licence date
-                MySharedPreferences.setKeyToFile(
-                    MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END, user.getString(
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END,
+                    user.getString(
                         MyConfiguration.MY_SPREADSHEET_USERS_LICENCE
                     )
                 )
                 //save discount
-                MySharedPreferences.setKeyToFile(
-                    MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT,
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT,
                     MyConfiguration.getIntFromString(
                         user.getString(
                             MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT
@@ -422,8 +440,7 @@ class ResultActivity : AppCompatActivity()  {
                     ).toString()
                 )
                 //save visibility
-                MySharedPreferences.setKeyToFile(
-                    MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY,
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY,
                     MyConfiguration.getIntFromEnumBoolean(
                         user.getString(
                             MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY
@@ -431,24 +448,21 @@ class ResultActivity : AppCompatActivity()  {
                     ).toString()
                 )
                 //save minus elements
-                MySharedPreferences.setKeyToFile(
-                    MyConfiguration.MY_SHARED_PREFERENCES_KEY_MINUS_PLATINIUM,
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_MINUS_PLATINIUM,
                     MyConfiguration.getIntFromString(
                         user.getString(
                             MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PLATINIUM
                         )
                     ).toString()
                 )
-                MySharedPreferences.setKeyToFile(
-                    MyConfiguration.MY_SHARED_PREFERENCES_KEY_MINUS_PALLADIUM,
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_MINUS_PALLADIUM,
                     MyConfiguration.getIntFromString(
                         user.getString(
                             MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PALLADIUM
                         )
                     ).toString()
                 )
-                MySharedPreferences.setKeyToFile(
-                    MyConfiguration.MY_SHARED_PREFERENCES_KEY_MINUS_RHODIUM,
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_MINUS_RHODIUM,
                     MyConfiguration.getIntFromString(
                         user.getString(
                             MyConfiguration.MY_SPREADSHEET_USERS_MINUS_RHODIUM
@@ -457,134 +471,134 @@ class ResultActivity : AppCompatActivity()  {
                 )
                 //can run service - assuming that app has connection to internet
                 ServiceOfThumbnail.enqueueWork(this@ResultActivity.applicationContext)
+                myProcessStep = MyProcessStep.SUCCESS
             }catch (e: Exception){
                 //nothing
             }
-            return MyProcessStep.SUCCESS
-        }
-        //post execute
-        override fun onPostExecute(result: MyProcessStep) {
-            super.onPostExecute(result)
-            //if elapsed time then go to main activity
-            if(result == MyProcessStep.USER_ELAPSED_DATE_LICENCE) {
-                /* set licence as empty */
-                MySharedPreferences.setKeyToFile(
-                    MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END,
-                    ""
-                )
-                this@ResultActivity.openMainActivity()
-            }
-            //visibility of content
-            if(this.databaseEmpty){
-                this@ResultActivity.bindingActivityResult.catalystTextViewWaiting.visibility = GONE
-                this@ResultActivity.bindingActivityResult.catalystTextViewEmptyDatabase.visibility = VISIBLE
-                this@ResultActivity.bindingActivityResult.catalystListView.visibility = GONE
-            }else{
-                this@ResultActivity.bindingActivityResult.catalystTextViewWaiting.visibility = GONE
-                this@ResultActivity.bindingActivityResult.catalystTextViewEmptyDatabase.visibility = GONE
-                this@ResultActivity.bindingActivityResult.catalystListView.visibility = VISIBLE
-            }
-            //set visibility of ability update catalyst
-            if(this@ResultActivity.menu != null){
-                if(this.updateCatalyst){
-                    MyConfiguration.IS_AVAILABLE_UPDATE = true
-                    this@ResultActivity.menu!!.getItem(1).setIcon(
-                        ContextCompat.getDrawable(
-                            this@ResultActivity.applicationContext,
-                            R.mipmap.ic_action_update_catalyst_color
-                        )
+            //--- onPostExecute
+            this@ResultActivity.runOnUiThread {
+                //if elapsed time then go to main activity
+                if(myProcessStep == MyProcessStep.USER_ELAPSED_DATE_LICENCE) {
+                    /* set licence as empty */
+                    MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END,
+                        ""
                     )
-                }else{
-                    this@ResultActivity.menu!!.getItem(1).setIcon(
-                        ContextCompat.getDrawable(
-                            this@ResultActivity.applicationContext,
-                            R.mipmap.ic_action_update_catalyst
-                        )
-                    )
+                    this@ResultActivity.openMainActivity()
                 }
+                //visibility of content
+                if(this.databaseEmpty){
+                    this@ResultActivity.bindingActivityResult.catalystTextViewWaiting.visibility = GONE
+                    this@ResultActivity.bindingActivityResult.catalystTextViewEmptyDatabase.visibility = VISIBLE
+                    this@ResultActivity.bindingActivityResult.catalystListView.visibility = GONE
+                }else{
+                    this@ResultActivity.bindingActivityResult.catalystTextViewWaiting.visibility = GONE
+                    this@ResultActivity.bindingActivityResult.catalystTextViewEmptyDatabase.visibility = GONE
+                    this@ResultActivity.bindingActivityResult.catalystListView.visibility = VISIBLE
+                }
+                //set visibility of ability update catalyst
+                if(this@ResultActivity.menu != null){
+                    if(this.updateCatalyst){
+                        MyConfiguration.IS_AVAILABLE_UPDATE = true
+                        this@ResultActivity.menu!!.getItem(1).setIcon(
+                            ContextCompat.getDrawable(
+                                this@ResultActivity.applicationContext,
+                                R.mipmap.ic_action_update_catalyst_color
+                            )
+                        )
+                    }else{
+                        this@ResultActivity.menu!!.getItem(1).setIcon(
+                            ContextCompat.getDrawable(
+                                this@ResultActivity.applicationContext,
+                                R.mipmap.ic_action_update_catalyst
+                            )
+                        )
+                    }
+                }
+                //refresh list view
+                this@ResultActivity.refreshCatalystListView(MyScrollRefresh.UPDATE_LIST)
+                //enable user interface on process application
+                MyUserInterface.enableActivity(this@ResultActivity.bindingActivityResult.drawerLayout, true)
             }
-            //refresh list view
-            this@ResultActivity.refreshCatalystListView(MyScrollRefresh.UPDATE_LIST)
-            //enable user interface on process application
-            MyUserInterface.enableActivity(this@ResultActivity.bindingActivityResult.drawerLayout, true)
         }
     }
-
-
-
-
-
-
-
-
-
-
-    //TODO
-
-    //click button adding new record history of search
-    fun addRecordHistoryOfSearch(view: View?) {
-        val searchedText = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT)
-
-
-
-
-
-
-        if(searchedText.isEmpty() == false && this.database.deleteHistoryFilter(searchedText) != -1){
-            this.database.insertHistoryFilter(searchedText)
-            Toast.makeText(this.applicationContext, MyConfiguration.INFO_MESSAGE_ADDED_HISTORY_FILTER, Toast.LENGTH_LONG).show()
-        }else {
-            Toast.makeText(this.applicationContext, MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION, Toast.LENGTH_LONG).show()
+    //add history filter
+    inner class TaskAddRecordHistoryFilter : Runnable {
+        //fields
+        //run
+        override fun run() {
+            //--- onPreExecute
+            this@ResultActivity.runOnUiThread {
+                //disable user interface on process application
+                MyUserInterface.enableActivity(this@ResultActivity.bindingActivityResult.drawerLayout, false)
+            }
+            //--- doInBackground
+            var myProcessStep : MyProcessStep = MyProcessStep.NONE
+            try{
+                val searchedText = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT)
+                if(searchedText.isEmpty() == false && this@ResultActivity.database.deleteHistoryFilter(searchedText) != -1) {
+                    this@ResultActivity.database.insertHistoryFilter(searchedText)
+                    myProcessStep = MyProcessStep.SUCCESS
+                }
+            }catch (e: Exception){
+                //nothing
+                myProcessStep = MyProcessStep.UNHANDLED_EXCEPTION
+            }
+            //--- onPostExecute
+            this@ResultActivity.runOnUiThread {
+                //do job depends on situation
+                when(myProcessStep){
+                    MyProcessStep.NONE -> {
+                        Toast.makeText(this@ResultActivity.applicationContext, MyConfiguration.INFO_MESSAGE_SAVE_EMPTY_VALUE, Toast.LENGTH_LONG).show()
+                    }
+                    MyProcessStep.UNHANDLED_EXCEPTION -> {
+                        Toast.makeText(this@ResultActivity.applicationContext, MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION, Toast.LENGTH_LONG).show()
+                    }
+                    MyProcessStep.SUCCESS -> {
+                        Toast.makeText(this@ResultActivity.applicationContext, MyConfiguration.INFO_MESSAGE_ADDED_HISTORY_FILTER, Toast.LENGTH_LONG).show()
+                    }
+                }
+                //enable user interface on process application
+                MyUserInterface.enableActivity(this@ResultActivity.bindingActivityResult.drawerLayout, true)
+            }
         }
-
-
-
-
-
-
-        //znowu asynchronicznie?
-        //zablokuj widok
-            //dodaj
-                //usun taki sam jeśli jest
-        //odkryj widok
-
-
-        //TODO
-
     }
-    //click button delete record history of search
-    fun deleteRecordHistoryOfSearch(id: Int) {
-
-
-        //znowu asynchronicznie?
-        //zablokuj widok
-            //usun
-            //odśwież listę - długa operacja
-        //odkryj widok
-
-
-
-        if(this.database.deleteHistoryFilter(id) != -1){
-            Toast.makeText(this.applicationContext, MyConfiguration.INFO_MESSAGE_DELETED_HISTORY_FILTER, Toast.LENGTH_LONG).show()
-        }else{
-            Toast.makeText(this.applicationContext, MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION, Toast.LENGTH_LONG).show()
+    //delete history filter
+    inner class TaskDeleteRecordHistoryFilter(idInput: Int): Runnable {
+        //fields
+        private var id : Int = idInput
+        //run
+        override fun run() {
+            //--- onPreExecute
+            this@ResultActivity.runOnUiThread {
+                //disable user interface on process application
+                MyUserInterface.enableActivity(this@ResultActivity.bindingActivityResult.drawerLayout, false)
+            }
+            //--- doInBackground
+            var myProcessStep : MyProcessStep = MyProcessStep.UNHANDLED_EXCEPTION
+            try{
+                if(this@ResultActivity.database.deleteHistoryFilter(id) != -1){
+                    myProcessStep = MyProcessStep.SUCCESS
+                }
+            }catch (e: Exception){
+                //nothing
+                myProcessStep = MyProcessStep.UNHANDLED_EXCEPTION
+            }
+            //--- onPostExecute
+            this@ResultActivity.runOnUiThread {
+                //do job depends on situation
+                when(myProcessStep){
+                    MyProcessStep.UNHANDLED_EXCEPTION -> {
+                        Toast.makeText(this@ResultActivity.applicationContext, MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION, Toast.LENGTH_LONG).show()
+                    }
+                    MyProcessStep.SUCCESS -> {
+                        Toast.makeText(this@ResultActivity.applicationContext, MyConfiguration.INFO_MESSAGE_DELETED_HISTORY_FILTER, Toast.LENGTH_LONG).show()
+                    }
+                }
+                //refresh list
+                this@ResultActivity.refreshHistoryFilterListView(MyScrollRefresh.UPDATE_LIST)
+                //enable user interface on process application
+                MyUserInterface.enableActivity(this@ResultActivity.bindingActivityResult.drawerLayout, true)
+            }
         }
-        this@ResultActivity.refreshHistoryFilterListView(MyScrollRefresh.UPDATE_LIST)
-
-
-        //TODO
-
     }
-
-
-    //async class which prepare drawer layout for searching
-        //ustaw 'trwa pobieranie danych w drawer'
-            //pobierz rekordy
-        //ustaw tekst lub elementy do adaptera
-
-
-
-
-
-
 }
