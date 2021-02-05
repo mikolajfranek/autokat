@@ -520,7 +520,7 @@ class ResultActivity : AppCompatActivity()  {
             var myProcessStep : MyProcessStep = MyProcessStep.NONE
             try{
                 var searchedText = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT)
-                searchedText = ("\\s{2,}").toRegex().replace(searchedText, " ")
+                searchedText = ("\\s{2,}").toRegex().replace(searchedText.trim(), " ")
                 if(searchedText.isEmpty() == false) {
                     this@ResultActivity.database.deleteHistoryFilter(searchedText)
                     this@ResultActivity.database.insertHistoryFilter(searchedText)
