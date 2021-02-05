@@ -93,8 +93,7 @@ class MyCatalystValues {
             //course of rhoudium
             getCourseRhodium()
             //save timestamp of update
-            MySharedPreferences.setKeyToFile(
-                MyConfiguration.MY_SHARED_PREFERENCES_KEY_UPDATE_COURSE_TIMESTAMP,
+            MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_UPDATE_COURSE_TIMESTAMP,
                 Date().time.toString()
             )
         }

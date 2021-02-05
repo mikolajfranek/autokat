@@ -25,7 +25,6 @@ class MySpreadsheet {
             val resultJson = JSONObject(result.get())
             if(resultJson.getInt("updatedRows") != 1 || resultJson.getInt("updatedColumns") != 1 || resultJson.getInt("updatedCells") != 1) throw Exception()
         }
-
         /* docs api */
         //get login from database login
         fun getDataLogin(login: String) : JSONArray? {
@@ -105,7 +104,6 @@ class MySpreadsheet {
             )
             return user
         }
-
         //get count catalyst from database catalyst
         fun getCountCatalyst(): Int {
             val (_, response, result) = Fuel.get(

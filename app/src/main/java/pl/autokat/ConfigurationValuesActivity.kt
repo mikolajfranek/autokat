@@ -1,17 +1,12 @@
 package pl.autokat
 
-import android.annotation.SuppressLint
-import android.os.AsyncTask
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import pl.autokat.components.MyCatalystValues
-import pl.autokat.components.MyConfiguration
-import pl.autokat.components.MyProcessStep
-import pl.autokat.components.MySharedPreferences
+import pl.autokat.components.*
 import pl.autokat.databinding.ActivityConfigurationValuesBinding
 import java.net.UnknownHostException
 
@@ -34,7 +29,6 @@ class ConfigurationValuesActivity : AppCompatActivity() {
         //set values in view
         this.setValuesInView()
     }
-
     //set all values in view
     private fun setValuesInView(){
         //pallad
@@ -68,26 +62,22 @@ class ConfigurationValuesActivity : AppCompatActivity() {
         this.bindingActivityConfigurationValues.usdPln.text = (MyConfiguration.formatStringFloat(courseUsdPln, 2) + " zł")
         this.bindingActivityConfigurationValues.usdPlnDate.text = MyConfiguration.formatDate(courseUsdPlnDate)
     }
-
     //navigate up
     override fun onSupportNavigateUp(): Boolean {
         this.finish()
         return true
     }
-
     //toolbar option menu
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         this.menuInflater.inflate(R.menu.toolbar_list_configurationvalues, menu)
         return super.onCreateOptionsMenu(menu)
     }
-
     //option menu selected
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
             R.id.toolbar_list_refresh_courses -> {
                 //make async task and execute
-                val task = this.UpdateCourses()
-                task.execute()
+                Thread(this.TaskUpdateCourses()).start()
                 true
             }
             else -> {
@@ -96,46 +86,47 @@ class ConfigurationValuesActivity : AppCompatActivity() {
             }
         }
     }
-
     //async class which update values of courses
-    @SuppressLint("StaticFieldLeak")
-    private inner class UpdateCourses() : AsyncTask<Void, Void, MyProcessStep>() {
-        //pre execute
-        override fun onPreExecute() {
-            super.onPreExecute()
-            Toast.makeText(this@ConfigurationValuesActivity.applicationContext, MyConfiguration.INFO_MESSAGE_WAIT_UPDATE, Toast.LENGTH_SHORT).show()
-        }
-        //do in async mode - in here can't modify user interface
-        override fun doInBackground(vararg p0: Void?): MyProcessStep {
+    inner class TaskUpdateCourses : Runnable {
+        //fields
+        //run
+        override fun run() {
+            //--- onPreExecute
+            this@ConfigurationValuesActivity.runOnUiThread {
+                //disable user interface on process application
+                MyUserInterface.enableActivity(this@ConfigurationValuesActivity.bindingActivityConfigurationValues.linearLayout,false)
+                Toast.makeText(this@ConfigurationValuesActivity.applicationContext, MyConfiguration.INFO_MESSAGE_WAIT_UPDATE, Toast.LENGTH_SHORT).show()
+            }
+            //--- doInBackground
+            var myProcessStep : MyProcessStep = MyProcessStep.SUCCESS
             try{
                 MyCatalystValues.getValues()
             }
             catch(e: UnknownHostException){
-                return MyProcessStep.NETWORK_FAILED
+                myProcessStep = MyProcessStep.NETWORK_FAILED
             }
             catch(e: Exception){
-                return MyProcessStep.UNHANDLED_EXCEPTION
+                myProcessStep = MyProcessStep.UNHANDLED_EXCEPTION
             }
-            return MyProcessStep.SUCCESS
-        }
-        //post execute
-        override fun onPostExecute(result: MyProcessStep) {
-            super.onPostExecute(result)
-            //do job depends on situation
-            when(result){
-                MyProcessStep.NETWORK_FAILED -> {
-                    Toast.makeText(this@ConfigurationValuesActivity.applicationContext, MyConfiguration.INFO_MESSAGE_NETWORK_FAILED, Toast.LENGTH_SHORT).show()
+            //--- onPostExecute
+            this@ConfigurationValuesActivity.runOnUiThread {
+                when(myProcessStep){
+                    MyProcessStep.NETWORK_FAILED -> {
+                        Toast.makeText(this@ConfigurationValuesActivity.applicationContext, MyConfiguration.INFO_MESSAGE_NETWORK_FAILED, Toast.LENGTH_SHORT).show()
+                    }
+                    MyProcessStep.UNHANDLED_EXCEPTION -> {
+                        Toast.makeText(this@ConfigurationValuesActivity.applicationContext, MyConfiguration.INFO_UPDATE_FAILED, Toast.LENGTH_SHORT).show()
+                    }
+                    MyProcessStep.SUCCESS -> {
+                        Toast.makeText(this@ConfigurationValuesActivity.applicationContext, MyConfiguration.INFO_UPDATE_SUCCESS, Toast.LENGTH_SHORT).show()
+                        this@ConfigurationValuesActivity.setValuesInView()
+                    }
+                    else -> {
+                        Toast.makeText(this@ConfigurationValuesActivity.applicationContext, MyConfiguration.INFO_UPDATE_FAILED, Toast.LENGTH_SHORT).show()
+                    }
                 }
-                MyProcessStep.UNHANDLED_EXCEPTION -> {
-                    Toast.makeText(this@ConfigurationValuesActivity.applicationContext, MyConfiguration.INFO_UPDATE_FAILED, Toast.LENGTH_SHORT).show()
-                }
-                MyProcessStep.SUCCESS -> {
-                    Toast.makeText(this@ConfigurationValuesActivity.applicationContext, MyConfiguration.INFO_UPDATE_SUCCESS, Toast.LENGTH_SHORT).show()
-                    this@ConfigurationValuesActivity.setValuesInView()
-                }
-                else -> {
-                    Toast.makeText(this@ConfigurationValuesActivity.applicationContext, MyConfiguration.INFO_UPDATE_FAILED, Toast.LENGTH_SHORT).show()
-                }
+                //enable user interface on process application
+                MyUserInterface.enableActivity(this@ConfigurationValuesActivity.bindingActivityConfigurationValues.linearLayout,false)
             }
         }
     }

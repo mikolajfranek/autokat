@@ -10,6 +10,8 @@ import com.readystatesoftware.sqliteasset.SQLiteAssetHelper
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.FileOutputStream
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MyDatabase(context: Context) : SQLiteAssetHelper(context,
     MyConfiguration.DATABASE_NAME_OF_FILE, null,
@@ -273,13 +275,13 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
             val argumentsWhere = mutableListOf<String>()
             var queryString = "SELECT  ${fields.joinToString()}"
             if(arrayFields.size > 0){
-                var addPlus : Boolean = false
-                var hitCountQuery : String = "("
+                var addPlus = false
+                var hitCountQuery = "("
                 for(item in arrayFields){
                     val subArrayFields = item.split("*")
                     for(subItem in subArrayFields){
-                        argumentsSelect.add(subItem.toLowerCase())
-                        argumentsSelect.add(subItem.toLowerCase())
+                        argumentsSelect.add(subItem.toLowerCase(Locale.getDefault()))
+                        argumentsSelect.add(subItem.toLowerCase(Locale.getDefault()))
                         hitCountQuery += (if(addPlus) " + " else "") +  "(instr(LOWER(${MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME}), ?) > 0) + (instr(LOWER(${MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND}), ?) > 0)"
                         addPlus = true
                     }
@@ -297,7 +299,6 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
             queryString += " LIMIT ${limitElements}"
             cursor = readableDatabase.rawQuery(queryString, (argumentsSelect + argumentsWhere).toTypedArray())
             //iterate over data and prepare data
-
             while (cursor.moveToNext()){
                 val blobImage : ByteArray? = if(cursor.isNull(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID))) null else cursor.getBlob(cursor.getColumnIndex(
                     MyConfiguration.DATABASE_ELEMENT_CATALYST_THUMBNAIL
@@ -353,13 +354,12 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
         }
     }
     //delete history filter
-    fun deleteHistoryFilter(id: Int) : Int {
-        var rowAffected = -1
+    fun deleteHistoryFilter(id: Int) {
         val db = this.writableDatabase
         try {
             db.beginTransaction()
             //delete element
-            rowAffected = db.delete(
+            db.delete(
                 MyConfiguration.DATABASE_TABLE_HISTORY_FILTER,
                 MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_ID + "=" + id, null
             )
@@ -367,22 +367,19 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
         }finally {
             db.endTransaction()
         }
-        return rowAffected
     }
-    fun deleteHistoryFilter(name: String) : Int {
-        var rowAffected = -1
+    fun deleteHistoryFilter(name: String) {
         val db = this.writableDatabase
         try{
             db.beginTransaction()
             //delete element
-            rowAffected = db.delete(
+            db.delete(
                 MyConfiguration.DATABASE_TABLE_HISTORY_FILTER,
                 MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_NAME + " LIKE '" + name + "'", null)
             db.setTransactionSuccessful()
         }finally {
             db.endTransaction()
         }
-        return rowAffected
     }
     //get data history filter
     fun getDataHistoryFilter(limitElements: String): ArrayList<MyItemHistoryFilter> {

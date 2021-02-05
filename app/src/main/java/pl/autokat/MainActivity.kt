@@ -1,9 +1,7 @@
 package pl.autokat
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.AsyncTask
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -103,133 +101,151 @@ class MainActivity : AppCompatActivity() {
     //process login
     fun tryLogin(login: String, hasClickedButton: Boolean){
         //make async task and execute
-        val task = this.TryLogin(login, hasClickedButton)
-        task.execute()
+        Thread(this.TaskTryLogin(login, hasClickedButton)).start()
     }
     //async class which make all job - when job is finished then go to next activity in success otherwise set view application with message and unblock user interface
-    @SuppressLint("StaticFieldLeak")
-    private inner class TryLogin(loginInput: String, hasClickedButtonInput : Boolean) : AsyncTask<Void, Void, MyProcessStep>() {
-        //field
+    inner class TaskTryLogin(loginInput: String, hasClickedButtonInput : Boolean): Runnable {
+        //fields
         private var login : String = loginInput.trim()
         private var hasClickedButton : Boolean = hasClickedButtonInput
-        //pre execute
-        override fun onPreExecute() {
-            super.onPreExecute()
-            //disable user interface on process application
-            MyUserInterface.enableActivity(this@MainActivity.bindingActivityMain.linearLayout, false)
-            //set edit text (user not click on button, trying auto login)
-            if(this.hasClickedButton == false) {
-                this@MainActivity.bindingActivityMain.editText.setText(this.login)
+        //run
+        override fun run() {
+            //--- onPreExecute
+            this@MainActivity.runOnUiThread {
+                //disable user interface on process application
+                MyUserInterface.enableActivity(this@MainActivity.bindingActivityMain.linearLayout, false)
+                //set edit text (user not click on button, trying auto login)
+                if(this.hasClickedButton == false) {
+                    this@MainActivity.bindingActivityMain.editText.setText(this.login)
+                }
+                //set info message
+                this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
+                this@MainActivity.bindingActivityMain.textView.setText(MyConfiguration.INFO_MESSAGE_WAIT_AUTHENTICATE)
             }
-            //set info message
-            this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
-            this@MainActivity.bindingActivityMain.textView.setText(MyConfiguration.INFO_MESSAGE_WAIT_AUTHENTICATE)
-        }
-        //do in async mode - in here can't modify user interface
-        @SuppressLint("MissingPermission")
-        override fun doInBackground(vararg p0: Void?): MyProcessStep {
+            //--- doInBackground
+            var myProcessStep : MyProcessStep = MyProcessStep.NONE
             try{
                 //user never logged (not click on button, trying auto login)
-                if(this.login.isEmpty()) return MyProcessStep.USER_NEVER_LOGGED
-                //check licence without connection to internet
-                if(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END).isEmpty() == false){
-                    /* checking time */
-                    if(MyConfiguration.checkTimeOnPhone("", MyTimeChecking.CHECKING_LICENCE) == false) return MyProcessStep.USER_ELAPSED_DATE_LICENCE
-                    return MyProcessStep.SUCCESS
-                }
-                /* checking time */
-                if(MyConfiguration.checkTimeOnPhone("", MyTimeChecking.NOW_GREATER_THAN_TIME_FROM_INTERNET) == false) return MyProcessStep.USER_ELAPSED_DATE_LICENCE
-                /* authentication */
-                //get user from database
-                val user : JSONArray = MySpreadsheet.getDataLogin(this.login) ?: return MyProcessStep.USER_FAILED_LOGIN
-                /* checking time */
-                if(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_LICENCE).isEmpty() || MyConfiguration.checkTimeOnPhone(user.getString(
-                        MyConfiguration.MY_SPREADSHEET_USERS_LICENCE), MyTimeChecking.PARAMETER_IS_GREATER_THAN_NOW) == false) return MyProcessStep.USER_ELAPSED_DATE_LICENCE
-                //read serial id from phone
-                val serialId : String = MyConfiguration.decoratorIdentificatorOfUser(this@MainActivity.applicationContext)
-                //check if serial id is correct or save serial id to database
-                if(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_UUID).isEmpty()){
-                    //save serial id
-                    MySpreadsheet.saveSerialId(user.getInt(MyConfiguration.MY_SPREADSHEET_USERS_ID), serialId)
+                if(this.login.isEmpty()){
+                    myProcessStep = MyProcessStep.USER_NEVER_LOGGED
                 }else{
-                    //check if current serial id is the same as in database
-                    if(serialId.equals(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_UUID)) == false) return MyProcessStep.USER_FAILED_SERIAL
+                    //check licence without connection to internet
+                    if(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END).isEmpty() == false){
+                        /* checking time */
+                        if(MyConfiguration.checkTimeOnPhone("", MyTimeChecking.CHECKING_LICENCE) == false){
+                            myProcessStep = MyProcessStep.USER_ELAPSED_DATE_LICENCE
+                        }else{
+                            myProcessStep = MyProcessStep.SUCCESS
+                        }
+                    }else{
+                        /* checking time */
+                        if(MyConfiguration.checkTimeOnPhone("", MyTimeChecking.NOW_GREATER_THAN_TIME_FROM_INTERNET) == false){
+                            myProcessStep = MyProcessStep.USER_ELAPSED_DATE_LICENCE
+                        }else{
+                            /* authentication */
+                            //get user from database
+                            val user : JSONArray? = MySpreadsheet.getDataLogin(this.login)
+                            if(user == null){
+                                myProcessStep = MyProcessStep.USER_FAILED_LOGIN
+                            }else{
+                                /* checking time */
+                                if(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_LICENCE).isEmpty()
+                                    || MyConfiguration.checkTimeOnPhone(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_LICENCE), MyTimeChecking.PARAMETER_IS_GREATER_THAN_NOW) == false){
+                                    myProcessStep = MyProcessStep.USER_ELAPSED_DATE_LICENCE
+                                }else{
+                                    //read serial id from phone
+                                    val serialId : String = MyConfiguration.decoratorIdentificatorOfUser(this@MainActivity.applicationContext)
+                                    //check if serial id is correct or save serial id to database
+                                    if(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_UUID).isEmpty()){
+                                        //save serial id
+                                        MySpreadsheet.saveSerialId(user.getInt(MyConfiguration.MY_SPREADSHEET_USERS_ID), serialId)
+                                    }else{
+                                        //check if current serial id is the same as in database
+                                        if(serialId.equals(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_UUID)) == false){
+                                            myProcessStep =  MyProcessStep.USER_FAILED_SERIAL
+                                        }
+                                    }
+                                    if(myProcessStep == MyProcessStep.NONE){
+                                        /* save configuration */
+                                        //save licence date
+                                        MySharedPreferences.setKeyToFile(
+                                            MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END, user.getString(
+                                                MyConfiguration.MY_SPREADSHEET_USERS_LICENCE))
+                                        //save discount
+                                        MySharedPreferences.setKeyToFile(
+                                            MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT, MyConfiguration.getIntFromString(user.getString(
+                                                MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT)).toString())
+                                        //save visibility
+                                        MySharedPreferences.setKeyToFile(
+                                            MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY, MyConfiguration.getIntFromEnumBoolean(user.getString(
+                                                MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY)).toString())
+                                        //save minus elements
+                                        MySharedPreferences.setKeyToFile(
+                                            MyConfiguration.MY_SHARED_PREFERENCES_KEY_MINUS_PLATINIUM, MyConfiguration.getIntFromString(user.getString(
+                                                MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PLATINIUM)).toString())
+                                        MySharedPreferences.setKeyToFile(
+                                            MyConfiguration.MY_SHARED_PREFERENCES_KEY_MINUS_PALLADIUM, MyConfiguration.getIntFromString(user.getString(
+                                                MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PALLADIUM)).toString())
+                                        MySharedPreferences.setKeyToFile(
+                                            MyConfiguration.MY_SHARED_PREFERENCES_KEY_MINUS_RHODIUM, MyConfiguration.getIntFromString(user.getString(
+                                                MyConfiguration.MY_SPREADSHEET_USERS_MINUS_RHODIUM)).toString())
+                                        //save login
+                                        MySharedPreferences.setKeyToFile(
+                                            MyConfiguration.MY_SHARED_PREFERENCES_KEY_LOGIN,
+                                            this.login
+                                        )
+                                        //success
+                                        myProcessStep = MyProcessStep.SUCCESS
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-                /* save configuration */
-                //save licence date
-                MySharedPreferences.setKeyToFile(
-                    MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END, user.getString(
-                        MyConfiguration.MY_SPREADSHEET_USERS_LICENCE))
-                //save discount
-                MySharedPreferences.setKeyToFile(
-                    MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT, MyConfiguration.getIntFromString(user.getString(
-                        MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT)).toString())
-                //save visibility
-                MySharedPreferences.setKeyToFile(
-                    MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY, MyConfiguration.getIntFromEnumBoolean(user.getString(
-                        MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY)).toString())
-                //save minus elements
-                MySharedPreferences.setKeyToFile(
-                    MyConfiguration.MY_SHARED_PREFERENCES_KEY_MINUS_PLATINIUM, MyConfiguration.getIntFromString(user.getString(
-                        MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PLATINIUM)).toString())
-                MySharedPreferences.setKeyToFile(
-                    MyConfiguration.MY_SHARED_PREFERENCES_KEY_MINUS_PALLADIUM, MyConfiguration.getIntFromString(user.getString(
-                        MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PALLADIUM)).toString())
-                MySharedPreferences.setKeyToFile(
-                    MyConfiguration.MY_SHARED_PREFERENCES_KEY_MINUS_RHODIUM, MyConfiguration.getIntFromString(user.getString(
-                        MyConfiguration.MY_SPREADSHEET_USERS_MINUS_RHODIUM)).toString())
-                //save login
-                MySharedPreferences.setKeyToFile(
-                    MyConfiguration.MY_SHARED_PREFERENCES_KEY_LOGIN,
-                    this.login
-                )
-                //success
-                return MyProcessStep.SUCCESS
             }
             catch(e: UnknownHostException){
-                return MyProcessStep.NETWORK_FAILED
+                myProcessStep = MyProcessStep.NETWORK_FAILED
             }
             catch(e: Exception){
-                return MyProcessStep.UNHANDLED_EXCEPTION
+                myProcessStep = MyProcessStep.UNHANDLED_EXCEPTION
             }
-        }
-        //post execute
-        override fun onPostExecute(result: MyProcessStep) {
-            super.onPostExecute(result)
-            //do job depends on situation
-            when(result){
-                MyProcessStep.USER_NEVER_LOGGED -> {
-                    this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
-                    this@MainActivity.bindingActivityMain.textView.text = MyConfiguration.INFO_MESSAGE_USER_NEVER_LOGGED
+            //--- onPostExecute
+            this@MainActivity.runOnUiThread {
+                //do job depends on situation
+                when(myProcessStep){
+                    MyProcessStep.USER_NEVER_LOGGED -> {
+                        this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
+                        this@MainActivity.bindingActivityMain.textView.text = MyConfiguration.INFO_MESSAGE_USER_NEVER_LOGGED
+                    }
+                    MyProcessStep.USER_ELAPSED_DATE_LICENCE -> {
+                        this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
+                        this@MainActivity.bindingActivityMain.textView.text = MyConfiguration.INFO_MESSAGE_USER_FAILED_LICENCE
+                        /* set licence as empty */
+                        MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END, "")
+                    }
+                    MyProcessStep.USER_FAILED_LOGIN -> {
+                        this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
+                        this@MainActivity.bindingActivityMain.textView.text = MyConfiguration.INFO_MESSAGE_USER_FAILED_LOGIN
+                    }
+                    MyProcessStep.USER_FAILED_SERIAL -> {
+                        this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
+                        this@MainActivity.bindingActivityMain.textView.text = MyConfiguration.INFO_MESSAGE_USER_FAILED_SERIAL
+                    }
+                    MyProcessStep.NETWORK_FAILED -> {
+                        this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
+                        this@MainActivity.bindingActivityMain.textView.text = MyConfiguration.INFO_MESSAGE_NETWORK_FAILED
+                    }
+                    MyProcessStep.UNHANDLED_EXCEPTION -> {
+                        this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
+                        this@MainActivity.bindingActivityMain.textView.text = MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION
+                    }
+                    MyProcessStep.SUCCESS -> {
+                        this@MainActivity.openResultActivity()
+                    }
                 }
-                MyProcessStep.USER_ELAPSED_DATE_LICENCE -> {
-                    this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
-                    this@MainActivity.bindingActivityMain.textView.text = MyConfiguration.INFO_MESSAGE_USER_FAILED_LICENCE
-                    /* set licence as empty */
-                    MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END, "")
-                }
-                MyProcessStep.USER_FAILED_LOGIN -> {
-                    this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
-                    this@MainActivity.bindingActivityMain.textView.text = MyConfiguration.INFO_MESSAGE_USER_FAILED_LOGIN
-                }
-                MyProcessStep.USER_FAILED_SERIAL -> {
-                    this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
-                    this@MainActivity.bindingActivityMain.textView.text = MyConfiguration.INFO_MESSAGE_USER_FAILED_SERIAL
-                }
-                MyProcessStep.NETWORK_FAILED -> {
-                    this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
-                    this@MainActivity.bindingActivityMain.textView.text = MyConfiguration.INFO_MESSAGE_NETWORK_FAILED
-                }
-                MyProcessStep.UNHANDLED_EXCEPTION -> {
-                    this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
-                    this@MainActivity.bindingActivityMain.textView.text = MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION
-                }
-                MyProcessStep.SUCCESS -> {
-                    this@MainActivity.openResultActivity()
-                }
+                //enable user interface on process application
+                MyUserInterface.enableActivity(this@MainActivity.bindingActivityMain.linearLayout, true)
             }
-            //enable user interface on process application
-            MyUserInterface.enableActivity(this@MainActivity.bindingActivityMain.linearLayout, true)
         }
     }
 }

@@ -398,6 +398,7 @@ class MyConfiguration {
         }
         val CIPHER_TRANSFORMATION : String = "BLOWFISH/ECB/PKCS5Padding"
         //get encrypted
+        @SuppressLint("GetInstance")
         fun encrypt(input: String, salt: String) : String{
             val secret = SecretKeySpec(salt.toByteArray(charset("UTF8")), "BLOWFISH")
             val cipher = Cipher.getInstance(CIPHER_TRANSFORMATION)
@@ -405,6 +406,7 @@ class MyConfiguration {
             return Base64.encodeToString(cipher.doFinal(input.toByteArray(charset("UTF8"))), Base64.DEFAULT)
         }
         //get decrypted
+        @SuppressLint("GetInstance")
         fun decrypt(input: String, salt: String) : String{
             val secret = SecretKeySpec(salt.toByteArray(charset("UTF8")), "BLOWFISH")
             val cipher = Cipher.getInstance(CIPHER_TRANSFORMATION)

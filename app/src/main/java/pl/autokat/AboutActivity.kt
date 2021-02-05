@@ -1,6 +1,5 @@
 package pl.autokat
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
@@ -14,7 +13,6 @@ class AboutActivity : AppCompatActivity() {
     private lateinit var bindingActivityAbout: ActivityAboutBinding
 
     //oncreate
-    @SuppressLint("SimpleDateFormat")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.bindingActivityAbout = ActivityAboutBinding.inflate(this.layoutInflater)
@@ -36,7 +34,6 @@ class AboutActivity : AppCompatActivity() {
         }
         this.bindingActivityAbout.version.text = ("Wersja aplikacji: " + MyConfiguration.VERSION_APP)
     }
-
     //navigate up
     override fun onSupportNavigateUp(): Boolean {
         this.finish()

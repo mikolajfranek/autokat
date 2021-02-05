@@ -20,6 +20,7 @@ import pl.autokat.components.*
 import pl.autokat.databinding.ActivityResultBinding
 import pl.autokat.databinding.MyItemCatalystBinding
 import pl.autokat.databinding.MyItemHistoryFilterBinding
+import java.lang.Runnable
 import java.util.*
 
 class ResultActivity : AppCompatActivity()  {
@@ -76,7 +77,7 @@ class ResultActivity : AppCompatActivity()  {
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                 //set layout of element
                 this@ResultActivity.bindingMyItemCatalyst = MyItemCatalystBinding.inflate(this@ResultActivity.layoutInflater, parent,  false)
-                val view = this@ResultActivity.bindingMyItemCatalyst.root
+                val viewItem = this@ResultActivity.bindingMyItemCatalyst.root
                 //get element
                 val itemCatalyst = this.getItem(position)!!
                 //visibility of feature of element
@@ -148,7 +149,7 @@ class ResultActivity : AppCompatActivity()  {
                     this@ResultActivity.bindingMyItemCatalyst.priceEurWithoutMetal.text = resultPriceEur
                     this@ResultActivity.bindingMyItemCatalyst.pricePlnWithoutMetal.text = resultPricePln
                 }
-                return view
+                return viewItem
             }
         }
         this.bindingActivityResult.catalystListView.setAdapter(this.databaseAdapterCatalysts)
@@ -181,13 +182,13 @@ class ResultActivity : AppCompatActivity()  {
                 //set layout of element
                 this@ResultActivity.bindingMyItemHistoryFilter = MyItemHistoryFilterBinding.inflate(
                     this@ResultActivity.layoutInflater, parent,  false)
-                val view = this@ResultActivity.bindingMyItemHistoryFilter.root
+                val viewItem = this@ResultActivity.bindingMyItemHistoryFilter.root
                 //get element
                 val itemHistoryFilter = this.getItem(position)!!
                 //item name
                 this@ResultActivity.bindingMyItemHistoryFilter.name.text = itemHistoryFilter.name
                 //click on name history filter
-                view.setOnClickListener {
+                viewItem.setOnClickListener {
                     this@ResultActivity.bindingActivityResult.editText.setText(itemHistoryFilter.name)
                     this@ResultActivity.bindingActivityResult.drawerLayout.closeDrawers()
                 }
@@ -195,7 +196,7 @@ class ResultActivity : AppCompatActivity()  {
                 this@ResultActivity.bindingMyItemHistoryFilter.crossDelete.setOnClickListener {
                     this@ResultActivity.deleteRecordHistoryOfSearch(itemHistoryFilter.id)
                 }
-                return view
+                return viewItem
             }
         }
         this.bindingActivityResult.historyFilterListView.setAdapter(this.databaseAdapterHistoryFilter)
@@ -296,10 +297,6 @@ class ResultActivity : AppCompatActivity()  {
     fun deleteRecordHistoryOfSearch(id: Int) {
         Thread(this.TaskDeleteRecordHistoryFilter(id)).start()
     }
-
-
-
-//oczekiwanie na te wątki
     //refresh catalyst list view
     fun refreshCatalystListView(myScrollRefresh: MyScrollRefresh){
         val searchedText = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT)
@@ -321,8 +318,7 @@ class ResultActivity : AppCompatActivity()  {
             }
             MyScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS -> {
                 //limit as offset in format: skip elements, count elements to get
-                val limitWithOffset: String =
-                    (this.scrollLimitCatalyst - MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST).toString() + "," + MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST
+                val limitWithOffset: String = (this.scrollLimitCatalyst - MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST).toString() + "," + MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST
                 //get data from database
                 val result = this.database.getDataCatalyst(searchedText, limitWithOffset)
                 //add to list
@@ -373,17 +369,6 @@ class ResultActivity : AppCompatActivity()  {
             this.bindingActivityResult.historyFilterListView.visibility = VISIBLE
         }
     }
-
-
-
-
-
-
-
-
-
-
-
     //update of app
     inner class TaskUpdate : Runnable {
         //fields
@@ -534,8 +519,10 @@ class ResultActivity : AppCompatActivity()  {
             //--- doInBackground
             var myProcessStep : MyProcessStep = MyProcessStep.NONE
             try{
-                val searchedText = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT)
-                if(searchedText.isEmpty() == false && this@ResultActivity.database.deleteHistoryFilter(searchedText) != -1) {
+                var searchedText = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT)
+                searchedText = ("\\s{2,}").toRegex().replace(searchedText, " ")
+                if(searchedText.isEmpty() == false) {
+                    this@ResultActivity.database.deleteHistoryFilter(searchedText)
                     this@ResultActivity.database.insertHistoryFilter(searchedText)
                     myProcessStep = MyProcessStep.SUCCESS
                 }
@@ -574,11 +561,9 @@ class ResultActivity : AppCompatActivity()  {
                 MyUserInterface.enableActivity(this@ResultActivity.bindingActivityResult.drawerLayout, false)
             }
             //--- doInBackground
-            var myProcessStep : MyProcessStep = MyProcessStep.UNHANDLED_EXCEPTION
+            var myProcessStep : MyProcessStep = MyProcessStep.SUCCESS
             try{
-                if(this@ResultActivity.database.deleteHistoryFilter(id) != -1){
-                    myProcessStep = MyProcessStep.SUCCESS
-                }
+                this@ResultActivity.database.deleteHistoryFilter(this.id)
             }catch (e: Exception){
                 //nothing
                 myProcessStep = MyProcessStep.UNHANDLED_EXCEPTION

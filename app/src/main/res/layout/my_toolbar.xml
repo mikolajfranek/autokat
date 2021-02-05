@@ -2,7 +2,5 @@
 <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/colorUser"
-    tools:viewBindingIgnore="true"
     android:theme="@style/ToolbarTheme" />
