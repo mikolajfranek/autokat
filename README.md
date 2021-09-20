@@ -2,12 +2,12 @@
 Catalyst app
 
 #### run android studio
-"/home/debian/android-studio/bin/studio.sh"
+"/home/debian/android-studio-2021.1.1.12-linux/android-studio/bin/studio.sh"
 
-#### run emulator
+#### older running emulator
 "/home/debian/Android/Sdk/emulator/emulator -avd api27"
 
-#### run emulator (as root)
+#### older running emulator (as root)
 "/home/debian/Android/Sdk/emulator/emulator -avd api27 -writable-system -qemu -enable-kvm" 
 
 #### create file *.jks for deploy app
