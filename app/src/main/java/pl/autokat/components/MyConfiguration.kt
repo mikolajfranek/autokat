@@ -30,7 +30,7 @@ class MyConfiguration {
     companion object {
         /* production mode = true / development mode = false */
         val PRODUCTION : Boolean = false
-        val VERSION_APP : String = "1.0.5"
+        val VERSION_APP : String = "1.0.6"
 
         /* creating access token */
         private val GOOGLE_TOKEN_URL : String = "https://oauth2.googleapis.com/token"
