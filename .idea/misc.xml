@@ -3,7 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/layout/activity_calendar_view.xml" value="0.21770833333333334" />
+        <entry key="app/src/main/res/layout/activity_configuration_values.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/layout/activity_result.xml" value="0.13405797101449277" />
+        <entry key="app/src/main/res/layout/calendar_day_layout.xml" value="0.21770833333333334" />
         <entry key="app/src/main/res/layout/my_item_catalyst.xml" value="0.13903985507246377" />
+        <entry key="app/src/main/res/layout/my_item_history_filter.xml" value="0.13405797101449277" />
+        <entry key="app/src/main/res/layout/my_toolbar.xml" value="0.13405797101449277" />
+        <entry key="app/src/main/res/layout/nav_header_main.xml" value="0.13405797101449277" />
       </map>
     </option>
   </component>

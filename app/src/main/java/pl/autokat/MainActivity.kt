@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
@@ -35,6 +34,11 @@ class MainActivity : AppCompatActivity() {
     //onresume
     override fun onResume() {
         super.onResume()
+
+        this.startActivity(Intent(this.applicationContext, CalendarViewActivity::class.java))
+        finish()
+        return
+
         //check permission about phone state (required for getting serial id)
         if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED){
             //ask about permission
@@ -46,6 +50,7 @@ class MainActivity : AppCompatActivity() {
     }
     //on request permission
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             MyConfiguration.REQUEST_CODE_READ_PHONE_STATE -> {
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
@@ -95,7 +100,7 @@ class MainActivity : AppCompatActivity() {
         this.finish()
     }
     //click button
-    fun activityMainButtonOnClick(view: View) {
+    fun activityMainButtonOnClick() {
         this.tryLogin(this.bindingActivityMain.editText.text.toString(), true)
     }
     //process login

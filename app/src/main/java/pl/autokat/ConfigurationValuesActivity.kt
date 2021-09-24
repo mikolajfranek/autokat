@@ -7,8 +7,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import pl.autokat.components.*
+import pl.autokat.databinding.ActivityCalendarViewBinding
 import pl.autokat.databinding.ActivityConfigurationValuesBinding
 import java.net.UnknownHostException
+
 
 class ConfigurationValuesActivity : AppCompatActivity() {
 
@@ -28,6 +30,10 @@ class ConfigurationValuesActivity : AppCompatActivity() {
         MySharedPreferences.init(this)
         //set values in view
         this.setValuesInView()
+        //TODO daty
+
+
+
     }
     //set all values in view
     private fun setValuesInView(){
@@ -35,31 +41,36 @@ class ConfigurationValuesActivity : AppCompatActivity() {
         val pallad : String = MyConfiguration.getPlnFromDolar((MySharedPreferences.getKeyFromFile(
             MyConfiguration.MY_SHARED_PREFERENCES_KEY_PALLADIUM)))
         val palladDate : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PALLADIUM_DATE)
-        this.bindingActivityConfigurationValues.palladium.text = (MyConfiguration.formatStringFloat(pallad, 2) + " zł/g")
+        val palladiumText = (MyConfiguration.formatStringFloat(pallad, 2) + " zł/g")
+        this.bindingActivityConfigurationValues.palladium.text = palladiumText
         this.bindingActivityConfigurationValues.palladiumDate.text = MyConfiguration.formatDate(palladDate)
         //platinum
         val platinum : String = MyConfiguration.getPlnFromDolar(
             MySharedPreferences.getKeyFromFile(
                 MyConfiguration.MY_SHARED_PREFERENCES_KEY_PLATIUNUM))
         val platinumDate : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PLATIUNUM_DATE)
-        this.bindingActivityConfigurationValues.platinum.text = (MyConfiguration.formatStringFloat(platinum, 2) + " zł/g")
+        val platiniumText = (MyConfiguration.formatStringFloat(platinum, 2) + " zł/g")
+        this.bindingActivityConfigurationValues.platinum.text = platiniumText
         this.bindingActivityConfigurationValues.platinumDate.text = MyConfiguration.formatDate(platinumDate)
         //rhodium
         val rhodium : String = MyConfiguration.getPlnFromDolar(
             MySharedPreferences.getKeyFromFile(
                 MyConfiguration.MY_SHARED_PREFERENCES_KEY_RHODIUM))
         val rhodiumDate : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_RHODIUM_DATE)
-        this.bindingActivityConfigurationValues.rhodium.text = (MyConfiguration.formatStringFloat(rhodium, 2) + " zł/g")
+        val rhodiumText = (MyConfiguration.formatStringFloat(rhodium, 2) + " zł/g")
+        this.bindingActivityConfigurationValues.rhodium.text = rhodiumText
         this.bindingActivityConfigurationValues.rhodiumDate.text = MyConfiguration.formatDate(rhodiumDate)
         //euro
         val courseEurPln : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_EUR_PLN)
         val courseEurPlnDate : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_EUR_PLN_DATE)
-        this.bindingActivityConfigurationValues.eurPln.text = (MyConfiguration.formatStringFloat(courseEurPln, 2) + " zł")
+        val eurPlnText = (MyConfiguration.formatStringFloat(courseEurPln, 2) + " zł")
+        this.bindingActivityConfigurationValues.eurPln.text = eurPlnText
         this.bindingActivityConfigurationValues.eurPlnDate.text = MyConfiguration.formatDate(courseEurPlnDate)
         //dolar
         val courseUsdPln : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN)
         val courseUsdPlnDate : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN_DATE)
-        this.bindingActivityConfigurationValues.usdPln.text = (MyConfiguration.formatStringFloat(courseUsdPln, 2) + " zł")
+        val usdPlnText = (MyConfiguration.formatStringFloat(courseUsdPln, 2) + " zł")
+        this.bindingActivityConfigurationValues.usdPln.text = usdPlnText
         this.bindingActivityConfigurationValues.usdPlnDate.text = MyConfiguration.formatDate(courseUsdPlnDate)
     }
     //navigate up
@@ -101,6 +112,7 @@ class ConfigurationValuesActivity : AppCompatActivity() {
             var myProcessStep : MyProcessStep = MyProcessStep.SUCCESS
             try{
                 MyCatalystValues.getValues()
+                //TODO ustaw kalendarz/wartosci na dzisiejsze tzn. na najwcześniejsze
             }
             catch(e: UnknownHostException){
                 myProcessStep = MyProcessStep.NETWORK_FAILED
