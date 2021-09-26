@@ -73,11 +73,6 @@ class ConfigurationValuesActivity : AppCompatActivity() {
         this.bindingActivityConfigurationValues.usdPln.text = usdPlnText
         this.bindingActivityConfigurationValues.usdPlnDate.text = MyConfiguration.formatDate(courseUsdPlnDate)
     }
-    //navigate up
-    override fun onSupportNavigateUp(): Boolean {
-        this.finish()
-        return true
-    }
     //toolbar option menu
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         this.menuInflater.inflate(R.menu.toolbar_list_configurationvalues, menu)

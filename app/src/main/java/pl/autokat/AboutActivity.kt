@@ -28,11 +28,11 @@ class AboutActivity : AppCompatActivity() {
         val licenceDateOfEnd : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END)
         if(licenceDateOfEnd.isEmpty() == false) {
             this.bindingActivityAbout.licence.visibility = VISIBLE
-            this.bindingActivityAbout.licence.text = ("Licencja ważna do: " + MyConfiguration.formatDate(
-                licenceDateOfEnd
-            ))
+            val licenceText = "Licencja ważna do: " + MyConfiguration.formatDate(licenceDateOfEnd)
+            this.bindingActivityAbout.licence.text = licenceText
         }
-        this.bindingActivityAbout.version.text = ("Wersja aplikacji: " + MyConfiguration.VERSION_APP)
+        val versionText = "Wersja aplikacji: " + MyConfiguration.VERSION_APP
+        this.bindingActivityAbout.version.text = versionText
     }
     //navigate up
     override fun onSupportNavigateUp(): Boolean {

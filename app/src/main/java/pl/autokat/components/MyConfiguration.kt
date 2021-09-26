@@ -296,6 +296,7 @@ class MyConfiguration {
 
         /* info */
         //color
+        val INFO_MESSAGE_COLOR_WHITE:  Int = Color.parseColor("#FFFFFF")
         val INFO_MESSAGE_COLOR_FAILED:  Int = Color.parseColor("#EF4836")
         val INFO_MESSAGE_COLOR_SUCCESS: Int = Color.parseColor("#363636")
         //message

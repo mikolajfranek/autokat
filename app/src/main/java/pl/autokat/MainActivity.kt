@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
@@ -67,11 +68,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-    //navigate up
-    override fun onSupportNavigateUp(): Boolean {
-        this.finish()
-        return true
-    }
     //toolbar option menu
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         this.menuInflater.inflate(R.menu.toolbar_list_main, menu)
@@ -100,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         this.finish()
     }
     //click button
-    fun activityMainButtonOnClick() {
+    fun activityMainButtonOnClick(view: View) {
         this.tryLogin(this.bindingActivityMain.editText.text.toString(), true)
     }
     //process login
@@ -246,6 +242,9 @@ class MainActivity : AppCompatActivity() {
                     }
                     MyProcessStep.SUCCESS -> {
                         this@MainActivity.openResultActivity()
+                    }
+                    else -> {
+                        //nothing
                     }
                 }
                 //enable user interface on process application

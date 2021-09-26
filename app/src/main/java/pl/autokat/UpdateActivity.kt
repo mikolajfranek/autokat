@@ -55,7 +55,8 @@ class UpdateActivity : AppCompatActivity() {
                 this.bindingActivityUpdate.textView.text = MyConfiguration.INFO_DATABASE_EXPIRE
             }else{
                 if(itemsWithThumbnail/itemsFromDatabase != 1){
-                    this.bindingActivityUpdate.textView.text = (MyConfiguration.INFO_DOWNLOAD_BITMAP_STATUS + " (" + itemsWithThumbnail + "/" + itemsWithUrlThumbnail + "/" + itemsFromDatabase+ ")")
+                    val textView = MyConfiguration.INFO_DOWNLOAD_BITMAP_STATUS + " (" + itemsWithThumbnail + "/" + itemsWithUrlThumbnail + "/" + itemsFromDatabase+ ")"
+                    this.bindingActivityUpdate.textView.text = textView
                     //make async task and execute - refresh state of downloading
                     this.refreshingDatabase = true
                     Thread(this.TaskUpdateProgressOfUpdateThumbnail()).start()
@@ -100,7 +101,8 @@ class UpdateActivity : AppCompatActivity() {
                         val itemsFromDatabase : Int = this@UpdateActivity.myDatabase.getCountCatalyst()
                         //--- onProgressUpdate
                         this@UpdateActivity.runOnUiThread {
-                            this@UpdateActivity.bindingActivityUpdate.textView.text = (MyConfiguration.INFO_DOWNLOAD_BITMAP_STATUS + " (" + itemsWithThumbnail.toString() + "/" + itemsWithUrlThumbnail.toString() + "/" + itemsFromDatabase.toString()+ ")")
+                            val textView = MyConfiguration.INFO_DOWNLOAD_BITMAP_STATUS + " (" + itemsWithThumbnail.toString() + "/" + itemsWithUrlThumbnail.toString() + "/" + itemsFromDatabase.toString()+ ")"
+                            this@UpdateActivity.bindingActivityUpdate.textView.text = textView
                             this@UpdateActivity.bindingActivityUpdate.progessBar.progress = ((itemsWithThumbnail.toFloat()/itemsWithUrlThumbnail.toFloat())*100.toFloat()).toInt()
                         }
                     }
@@ -206,6 +208,9 @@ class UpdateActivity : AppCompatActivity() {
                         this@UpdateActivity.bindingActivityUpdate.progessBar.progress = 100
                         this@UpdateActivity.bindingActivityUpdate.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
                         this@UpdateActivity.bindingActivityUpdate.textView.text = MyConfiguration.INFO_UPDATE_SUCCESS
+                    }
+                    else -> {
+                        //nothing
                     }
                 }
                 //enable user interface on process application

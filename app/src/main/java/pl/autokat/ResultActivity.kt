@@ -232,11 +232,6 @@ class ResultActivity : AppCompatActivity()  {
             }
         })
     }
-    //navigate up
-    override fun onSupportNavigateUp(): Boolean {
-        this.finish()
-        return true
-    }
     //onresume
     override fun onResume() {
         super.onResume()

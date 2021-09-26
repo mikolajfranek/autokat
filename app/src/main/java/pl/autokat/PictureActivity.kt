@@ -66,6 +66,9 @@ class PictureActivity : AppCompatActivity() {
                     MyProcessStep.SUCCESS -> {
                         this@PictureActivity.bindingActivityPicture.photoView.setImageBitmap(this.bitmap)
                     }
+                    else -> {
+                        //nothing
+                    }
                 }
                 //enable user interface on process application
                 MyUserInterface.enableActivity(this@PictureActivity.bindingActivityPicture.linearLayout,true)
