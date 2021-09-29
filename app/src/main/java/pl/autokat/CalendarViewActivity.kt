@@ -62,7 +62,7 @@ class CalendarViewActivity : AppCompatActivity() {
                     when (day.date) {
                         selectedDate -> {
                             textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_WHITE)
-                            textView.setBackgroundResource(R.drawable.drawable_selectedday_background)
+                            textView.setBackgroundResource(R.drawable.drawable_selectday_background)
                         }
                         today -> {
                             textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
@@ -90,7 +90,9 @@ class CalendarViewActivity : AppCompatActivity() {
         bindingActivityCalendarView.calendarView.setup(YearMonth.now().minusYears(100), YearMonth.now(), DayOfWeek.MONDAY)
         bindingActivityCalendarView.calendarView.scrollToDate(today)
 
-
+//------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -98,7 +100,7 @@ class CalendarViewActivity : AppCompatActivity() {
 
         /*
         TODO
-        - zaznaczyć pierwszą datę z miesiąca projekt Example3
+        - zaznaczyć pierwszą datę z miesiąca projekt Example3!
 
          */
 
@@ -172,6 +174,9 @@ class CalendarViewActivity : AppCompatActivity() {
     }
 
 
+//------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -189,7 +194,15 @@ class CalendarViewActivity : AppCompatActivity() {
 
 
 
-
+    private fun selectDate(date: LocalDate) {
+        if (selectedDate != date) {
+            val oldDate = selectedDate
+            selectedDate = date
+            oldDate?.let { bindingActivityCalendarView.calendarView.notifyDateChanged(it) }
+            bindingActivityCalendarView.calendarView.notifyDateChanged(date)
+            updateAdapterForDate(date)
+        }
+    }
 
 
 
@@ -202,23 +215,14 @@ class CalendarViewActivity : AppCompatActivity() {
             .setNegativeButton(R.string.close, null)
             .show()
     }
-    private fun selectDate(date: LocalDate) {
-        if (selectedDate != date) {
-            val oldDate = selectedDate
-            selectedDate = date
-            oldDate?.let { bindingActivityCalendarView.calendarView.notifyDateChanged(it) }
-            bindingActivityCalendarView.calendarView.notifyDateChanged(date)
-            updateAdapterForDate(date)
-        }
-    }
+
 
     private fun updateAdapterForDate(date: LocalDate) {
         eventsAdapter.apply {
             events.clear()
-            events.addAll(this@Example3Fragment.events[date].orEmpty())
+            events.addAll(events[date].orEmpty())
             notifyDataSetChanged()
         }
-        binding.exThreeSelectedDateText.text = selectionFormatter.format(date)
     }
 
 
@@ -252,6 +256,13 @@ class CalendarViewActivity : AppCompatActivity() {
             }
         }
     }
+
+
+
+
+
+
+
 
 
 
