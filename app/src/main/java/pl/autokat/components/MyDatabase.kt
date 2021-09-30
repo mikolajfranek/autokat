@@ -7,10 +7,12 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteQueryBuilder
 import android.graphics.BitmapFactory
+import android.util.Log
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.FileOutputStream
+import java.lang.Exception
 import java.time.LocalDate
 import java.util.*
 import kotlin.collections.ArrayList
@@ -21,14 +23,45 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
 ){
     private val myContext: Context = context
 
+    private fun upgrade_1_0_6(db: SQLiteDatabase){
+        //create table
+        try{
+            db.beginTransaction()
+            val query =
+                "CREATE TABLE `" + MyConfiguration.DATABASE_TABLE_COURSES + "` (\n" +
+                        "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_ID + "` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n" +
+                        "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_DATE + "` TEXT NOT NULL,\n" +
+                        "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_PLATINUM + "` TEXT NOT NULL,\n" +
+                        "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_PALLADIUM + "` TEXT NOT NULL,\n" +
+                        "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_RHODIUM + "` TEXT NOT NULL,\n" +
+                        "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_EUR + "` TEXT NOT NULL,\n" +
+                        "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_USD + "` TEXT NOT NULL\n" +
+                        ");"
+            db.execSQL(query)
+            db.setTransactionSuccessful()
+        }finally {
+            db.endTransaction()
+        }
+        //add index
+        try{
+            db.beginTransaction()
+            val query =
+                "CREATE UNIQUE INDEX `courses_date` ON `" + MyConfiguration.DATABASE_TABLE_COURSES + "` (\n" +
+                        "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_DATE + "` ASC\n" +
+                        ");"
+            db.execSQL(query)
+            db.setTransactionSuccessful()
+        }finally {
+            db.endTransaction()
+        }
+    }
     //override onupgrage of database
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         if (newVersion > oldVersion) {
             when(newVersion){
                 //in case, when database need to be override
                 MyConfiguration.DATABASE_VERSION_1_0_6 -> {
-                    createTableCourses()
-                    addIndexCourses()
+                    upgrade_1_0_6(db)
                 }
                 else -> {
                     //end transaction, unlock database
@@ -47,40 +80,6 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
                     onCreate(db)
                 }
             }
-        }
-    }
-    private fun createTableCourses() {
-        val db = this.writableDatabase
-        try{
-            db.beginTransaction()
-            val query =
-                "CREATE TABLE `" + MyConfiguration.DATABASE_TABLE_COURSES + "` (\n" +
-                    "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_ID + "` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n" +
-                    "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_DATE + "` TEXT NOT NULL,\n" +
-                    "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_PLATINUM + "` TEXT NOT NULL,\n" +
-                    "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_PALLADIUM + "` TEXT NOT NULL,\n" +
-                    "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_RHODIUM + "` TEXT NOT NULL,\n" +
-                    "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_EUR + "` TEXT NOT NULL,\n" +
-                    "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_USD + "` TEXT NOT NULL\n" +
-                    ");"
-            db.execSQL(query)
-            db.setTransactionSuccessful()
-        }finally {
-            db.endTransaction()
-        }
-    }
-    private fun addIndexCourses() {
-        val db = this.writableDatabase
-        try{
-            db.beginTransaction()
-            val query =
-                "CREATE INDEX `courses_date` ON `" + MyConfiguration.DATABASE_TABLE_COURSES + "` (\n" +
-                    "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_DATE + "` ASC\n" +
-                    ");"
-            db.execSQL(query)
-            db.setTransactionSuccessful()
-        }finally {
-            db.endTransaction()
         }
     }
     //get courses
@@ -135,7 +134,8 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
                 "value"
             )
             //insert element
-            db.insert(MyConfiguration.DATABASE_TABLE_COURSES,null, row)
+            val countInserted = db.insert(MyConfiguration.DATABASE_TABLE_COURSES,null, row)
+            if(countInserted == -1L) throw IllegalArgumentException()
             db.setTransactionSuccessful()
         }finally {
             db.endTransaction()
@@ -308,7 +308,8 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
                     )
                 )
                 //insert element
-                db.insert(MyConfiguration.DATABASE_TABLE_CATALYST, null, row)
+                val countInserted = db.insert(MyConfiguration.DATABASE_TABLE_CATALYST, null, row)
+                if(countInserted == -1L) throw IllegalArgumentException()
             }
             db.setTransactionSuccessful()
         }finally {
@@ -451,7 +452,8 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
                 searchedText
             )
             //insert element
-            db.insert(MyConfiguration.DATABASE_TABLE_HISTORY_FILTER, null, row)
+            val countInserted =db.insert(MyConfiguration.DATABASE_TABLE_HISTORY_FILTER, null, row)
+            if(countInserted == -1L) throw IllegalArgumentException()
             db.setTransactionSuccessful()
         }finally {
             db.endTransaction()

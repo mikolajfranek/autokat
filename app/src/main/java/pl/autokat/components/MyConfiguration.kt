@@ -31,8 +31,8 @@ class MyConfiguration {
         /* production mode = true / development mode = false */
         val PRODUCTION : Boolean = false
         val VERSION_APP : String = "1.0.6"
-        val DATABASE_VERSION_1_0_6 : Int = 4
-        val DATABASE_VERSION : Int = 4
+        val DATABASE_VERSION_1_0_6 : Int = 101
+        val DATABASE_VERSION : Int = 101//4
         val DATABASE_NAME_OF_FILE : String = "autokat.db"
         val DATABASE_FILE_PATH_ASSETS : String = "databases/" + DATABASE_NAME_OF_FILE
 
