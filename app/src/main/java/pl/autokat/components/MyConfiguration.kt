@@ -257,11 +257,12 @@ class MyConfiguration {
         //columns courses
         val DATABASE_ELEMENT_COURSES_ID = "id"
         val DATABASE_ELEMENT_COURSES_DATE = "date"
+        val DATABASE_ELEMENT_COURSES_YEARMONTH = "yearmonth"
         val DATABASE_ELEMENT_COURSES_PLATINUM = "platinum"
         val DATABASE_ELEMENT_COURSES_PALLADIUM = "palladium"
         val DATABASE_ELEMENT_COURSES_RHODIUM = "rhodium"
-        val DATABASE_ELEMENT_COURSES_EUR = "eur"
-        val DATABASE_ELEMENT_COURSES_USD = "usd"
+        val DATABASE_ELEMENT_COURSES_EUR_PLN = "eur_pln"
+        val DATABASE_ELEMENT_COURSES_USD_PLN = "usd_pln"
         //columns catalyst
         val DATABASE_ELEMENT_CATALYST_ID = "id"
         val DATABASE_ELEMENT_CATALYST_ID_PICTURE = "id_picture"
@@ -348,6 +349,7 @@ class MyConfiguration {
                 serialId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     Build.getSerial()
                 } else {
+                    @Suppress("DEPRECATION")
                     Build.SERIAL
                 }
             }catch(e: Exception){

@@ -11,8 +11,9 @@ import com.readystatesoftware.sqliteasset.SQLiteAssetHelper
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.FileOutputStream
-import java.time.LocalDate
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class MyDatabase(context: Context) : SQLiteAssetHelper(context,
     MyConfiguration.DATABASE_NAME_OF_FILE, null,
@@ -29,11 +30,12 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
                 "CREATE TABLE `${MyConfiguration.DATABASE_TABLE_COURSES}` (\n" +
                         "`${MyConfiguration.DATABASE_ELEMENT_COURSES_ID}` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n" +
                         "`${MyConfiguration.DATABASE_ELEMENT_COURSES_DATE}` TEXT NOT NULL,\n" +
+                        "`${MyConfiguration.DATABASE_ELEMENT_COURSES_YEARMONTH}` TEXT NOT NULL,\n" +
                         "`${MyConfiguration.DATABASE_ELEMENT_COURSES_PLATINUM}` TEXT NOT NULL,\n" +
                         "`${MyConfiguration.DATABASE_ELEMENT_COURSES_PALLADIUM}` TEXT NOT NULL,\n" +
                         "`${MyConfiguration.DATABASE_ELEMENT_COURSES_RHODIUM}` TEXT NOT NULL,\n" +
-                        "`${MyConfiguration.DATABASE_ELEMENT_COURSES_EUR}` TEXT NOT NULL,\n" +
-                        "`${MyConfiguration.DATABASE_ELEMENT_COURSES_USD}` TEXT NOT NULL\n" +
+                        "`${MyConfiguration.DATABASE_ELEMENT_COURSES_EUR_PLN}` TEXT NOT NULL,\n" +
+                        "`${MyConfiguration.DATABASE_ELEMENT_COURSES_USD_PLN}` TEXT NOT NULL\n" +
                         ");"
             db.execSQL(queryString)
             db.setTransactionSuccessful()
@@ -44,8 +46,8 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
         try{
             db.beginTransaction()
             val queryString =
-                "CREATE UNIQUE INDEX `courses_date` ON `${MyConfiguration.DATABASE_TABLE_COURSES}` (\n" +
-                        "`${MyConfiguration.DATABASE_ELEMENT_COURSES_DATE}` ASC\n" +
+                "CREATE UNIQUE INDEX `courses_yearmonth` ON `${MyConfiguration.DATABASE_TABLE_COURSES}` (\n" +
+                        "`${MyConfiguration.DATABASE_ELEMENT_COURSES_YEARMONTH}` ASC\n" +
                         ");"
             db.execSQL(queryString)
             db.setTransactionSuccessful()
@@ -82,7 +84,8 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
     }
     //get courses from date
     @SuppressLint("Range")
-    fun getCourses(localDate: LocalDate) : MyCourses? {
+    fun getCoursesOfYearMonths(setOfYearMonth: Set<String>) : HashMap<String, HashMap<String,MyCourses>> {
+        val result : HashMap<String, HashMap<String,MyCourses>> = hashMapOf()
         var cursor : Cursor? = null
         try {
             //set fields which will be retrieved
@@ -90,45 +93,36 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
                 MyConfiguration.DATABASE_ELEMENT_COURSES_PLATINUM,
                 MyConfiguration.DATABASE_ELEMENT_COURSES_PALLADIUM,
                 MyConfiguration.DATABASE_ELEMENT_COURSES_RHODIUM,
-                MyConfiguration.DATABASE_ELEMENT_COURSES_EUR,
-                MyConfiguration.DATABASE_ELEMENT_COURSES_USD
+                MyConfiguration.DATABASE_ELEMENT_COURSES_EUR_PLN,
+                MyConfiguration.DATABASE_ELEMENT_COURSES_USD_PLN,
+                MyConfiguration.DATABASE_ELEMENT_COURSES_DATE,
+                MyConfiguration.DATABASE_ELEMENT_COURSES_YEARMONTH,
             )
             //make query
             val queryString = "SELECT ${fields.joinToString()}\n" +
                     "FROM ${MyConfiguration.DATABASE_TABLE_COURSES}\n" +
-                    "WHERE ${MyConfiguration.DATABASE_ELEMENT_COURSES_DATE} = '${MyConfiguration.formatDate(localDate.toString())}'\n" +
-                    "LIMIT 1"
+                    "WHERE ${MyConfiguration.DATABASE_ELEMENT_COURSES_YEARMONTH} IN (${setOfYearMonth.joinToString(prefix = "'", postfix = "'", separator = "','" )})\n"
             cursor = readableDatabase.rawQuery(queryString, null)
             //return data if exist
             while (cursor.moveToNext()){
-                return MyCourses(
+                val myCourses = MyCourses(
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_COURSES_PLATINUM)),
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_COURSES_PALLADIUM)),
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_COURSES_RHODIUM)),
-                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_COURSES_EUR)),
-                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_COURSES_USD)),
-                    localDate)
+                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_COURSES_EUR_PLN)),
+                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_COURSES_USD_PLN)),
+                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_COURSES_DATE)),
+                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_COURSES_YEARMONTH))
+                )
+                if(result.contains(myCourses.yearMonth) == false){
+                    result.put(myCourses.yearMonth, hashMapOf())
+                }
+                result[myCourses.yearMonth]!!.put(myCourses.date, myCourses)
             }
         }finally {
             cursor?.close()
         }
-        return null
-    }
-    //get amount of courses in day
-    @SuppressLint("Range")
-    fun getCountCourses(localDate: LocalDate) : Int {
-        var count = 0
-        var cursor : Cursor? = null
-        try {
-            cursor = readableDatabase.rawQuery("SELECT count(*) as count FROM ${MyConfiguration.DATABASE_TABLE_COURSES}\n" +
-                    "WHERE ${MyConfiguration.DATABASE_ELEMENT_COURSES_DATE} = '${MyConfiguration.formatDate(localDate.toString())}'", null)
-            if(cursor.moveToFirst()){
-                count = cursor.getInt(cursor.getColumnIndex("count"))
-            }
-        }finally {
-            cursor?.close()
-        }
-        return count
+        return result
     }
     //insert courses
     fun insertCourses(myCourses: MyCourses){
@@ -138,7 +132,11 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
             val row = ContentValues()
             row.put(
                 MyConfiguration.DATABASE_ELEMENT_COURSES_DATE,
-                MyConfiguration.formatDate(myCourses.date.toString())
+                MyConfiguration.formatDate(myCourses.date)
+            )
+            row.put(
+                MyConfiguration.DATABASE_ELEMENT_COURSES_YEARMONTH,
+                myCourses.yearMonth
             )
             row.put(
                 MyConfiguration.DATABASE_ELEMENT_COURSES_PLATINUM,
@@ -153,12 +151,12 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
                 myCourses.rhodium
             )
             row.put(
-                MyConfiguration.DATABASE_ELEMENT_COURSES_EUR,
-                myCourses.eur
+                MyConfiguration.DATABASE_ELEMENT_COURSES_EUR_PLN,
+                myCourses.eurPln
             )
             row.put(
-                MyConfiguration.DATABASE_ELEMENT_COURSES_USD,
-                myCourses.usd
+                MyConfiguration.DATABASE_ELEMENT_COURSES_USD_PLN,
+                myCourses.usdPln
             )
             //insert element
             val countInserted = db.insert(MyConfiguration.DATABASE_TABLE_COURSES,null, row)
@@ -405,7 +403,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
             val argumentsSelect = mutableListOf<String>()
             val argumentsWhere = mutableListOf<String>()
             var queryString = "SELECT  ${fields.joinToString()}"
-            if(arrayFields.size > 0){
+            if(arrayFields.isNotEmpty()){
                 var addPlus = false
                 var hitCountQuery = "("
                 for(item in arrayFields){
@@ -420,7 +418,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
                     argumentsWhere.add("%${item.replace("*", "%")}%")
                 }
                 hitCountQuery += ") as ${MyConfiguration.DATABASE_ELEMENT_CATALYST_TEMP_HITCOUNT}"
-                queryString += ", ${hitCountQuery}"
+                queryString += ", $hitCountQuery"
                 queryString += " FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}"
                 queryString += " WHERE " + arrayFields.joinToString (separator = " OR ") { "${MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME} LIKE ? OR ${MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND} LIKE ?"}
                 queryString += " ORDER BY ${MyConfiguration.DATABASE_ELEMENT_CATALYST_TEMP_HITCOUNT} DESC"
@@ -525,7 +523,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
                 MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_NAME
             )
             //make query
-            var queryString = "SELECT  ${fields.joinToString()}\n" +
+            val queryString = "SELECT  ${fields.joinToString()}\n" +
                     "FROM ${MyConfiguration.DATABASE_TABLE_HISTORY_FILTER}\n" +
                     "ORDER BY ${MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_ID} DESC\n" +
                     "LIMIT $limitElements"

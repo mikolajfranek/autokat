@@ -5,6 +5,7 @@ import java.time.LocalDate
 class MyCourses(var platinum: String,
                 var palladium: String,
                 var rhodium: String,
-                var eur: String,
-                var usd: String,
-                var date: LocalDate) {}
+                var eurPln: String,
+                var usdPln: String,
+                var date: String,
+                var yearMonth: String) {}

@@ -16,6 +16,7 @@ import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
 import com.kizitonwose.calendarview.utils.yearMonth
 import pl.autokat.components.MyConfiguration
+import pl.autokat.components.MyCourses
 import pl.autokat.components.MyDatabase
 import pl.autokat.components.MySharedPreferences
 import pl.autokat.databinding.ActivityCalendarViewBinding
@@ -34,7 +35,7 @@ class CalendarViewActivity : AppCompatActivity() {
     private val today = LocalDate.now()
     private val mapOfMonthNames = mapOf(1 to "Styczeń", 2 to "Luty", 3 to "Marzec", 4 to "Kwiecień", 5 to "Maj", 6 to "Czerwiec", 7 to "Lipiec", 8 to "Sierpień", 9 to "Wrzesień", 10 to "Październik", 11 to "Listopad", 12 to "Grudzień")
     private val featureStart = LocalDate.parse("01-01-2021", DateTimeFormatter.ofPattern("dd-MM-yyyy"))
-    private val mapDaysCoursesOfYearMonth = hashMapOf<String, MutableSet<String>>()
+    private var mapDaysCoursesOfYearMonth = HashMap<String, HashMap<String, MyCourses>>()
     private lateinit var myDatabase: MyDatabase
 
     //oncreate
@@ -51,10 +52,6 @@ class CalendarViewActivity : AppCompatActivity() {
         MySharedPreferences.init(this)
         //init database object
         this.myDatabase = MyDatabase(this.applicationContext)
-
-        //this.myDatabase.insertCourses()
-        val zzz = this.myDatabase.getCourses(LocalDate.now())
-
         //calendar day binder
         bindingActivityCalendarView.calendarView.dayBinder = object : DayBinder<DayViewContainer> {
             override fun create(view: View) = DayViewContainer(view)
@@ -75,10 +72,10 @@ class CalendarViewActivity : AppCompatActivity() {
                         }
                         else -> {
                             textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
-                            val key = day.date.yearMonth.toString()
-                            if(mapDaysCoursesOfYearMonth.contains(key)){
-                                val keyDay = day.date.dayOfMonth.toString()
-                                if(mapDaysCoursesOfYearMonth[key]!!.contains(keyDay)){
+                            val keyYearMonth = day.date.yearMonth.toString()
+                            if(mapDaysCoursesOfYearMonth.contains(keyYearMonth)){
+                                val keyDate = MyConfiguration.formatDate(day.date.toString())
+                                if(mapDaysCoursesOfYearMonth[keyYearMonth]!!.contains(keyDate)){
                                     textView.setBackgroundResource(R.drawable.drawable_selectedday_background)
                                 }else{
                                     textView.background = null
@@ -103,73 +100,45 @@ class CalendarViewActivity : AppCompatActivity() {
         }
         //calendar setup
         bindingActivityCalendarView.calendarView.setup(featureStart.yearMonth, YearMonth.now(), DayOfWeek.MONDAY)
+
+
         //TODO today lub data pobrana z konfiguracji (ostatnia wybrana data tzn. data kursów)
         bindingActivityCalendarView.calendarView.scrollToDate(today)
 
-//------------------------------------------------------------------------------------------------------------------------------------------
-//------------------------------------------------------------------------------------------------------------------------------------------
-//------------------------------------------------------------------------------------------------------------------------------------------
 
-
-
+        //TODO insert
+/*
+        myDatabase.insertCourses(MyCourses("1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "2021-09-30",
+        "2021-09"))
+ */
 
 
         //calendar listeners
         bindingActivityCalendarView.calendarView.scrollMode = ScrollMode.PAGED
         bindingActivityCalendarView.calendarView.monthScrollListener = {actualMonth ->
-
+            val setOfYearMonth = hashSetOf<String>()
+            setOfYearMonth.add(actualMonth.yearMonth.toString())
             val firstMonth = bindingActivityCalendarView.calendarView.findFirstVisibleMonth()
+            if (firstMonth != null) {
+                setOfYearMonth.add(firstMonth.yearMonth.toString())
+            }
             val lastMonth = bindingActivityCalendarView.calendarView.findLastVisibleMonth()
-
-            val title = "=> ${mapOfMonthNames[firstMonth?.month]}, ${mapOfMonthNames[actualMonth.month]}, ${mapOfMonthNames[lastMonth?.month]}"
-            Toast.makeText(this@CalendarViewActivity.applicationContext, title, Toast.LENGTH_LONG).show()
-
-
-            val formatter = DateTimeFormatter.ofPattern("d-M-yyyy")
-            val localDate = LocalDate.parse("5-9-2021", formatter)
-            val month = "2021-09"
-            if(mapDaysCoursesOfYearMonth.contains(month)){
-                mapDaysCoursesOfYearMonth.get(month)!!.add("5")
-            }else{
-                mapDaysCoursesOfYearMonth.put(month, mutableSetOf())
-                mapDaysCoursesOfYearMonth.get(month)!!.add("5")
+            if (lastMonth != null) {
+                setOfYearMonth.add(lastMonth.yearMonth.toString())
             }
-            bindingActivityCalendarView.calendarView.notifyDateChanged(localDate)
-
-
-            val localDate2 = LocalDate.parse("10-9-2021", formatter)
-            if(mapDaysCoursesOfYearMonth.contains(month)){
-                mapDaysCoursesOfYearMonth.get(month)!!.add("10")
-            }else{
-                mapDaysCoursesOfYearMonth.put(month, mutableSetOf())
-            }
-            bindingActivityCalendarView.calendarView.notifyDateChanged(localDate2)
-
-
-            val localDate3 = LocalDate.parse("31-8-2021", formatter)
-            if(mapDaysCoursesOfYearMonth.contains("2021-08")){
-                mapDaysCoursesOfYearMonth.get("2021-08")!!.add("31")
-            }else{
-                mapDaysCoursesOfYearMonth.put("2021-08", mutableSetOf())
-                mapDaysCoursesOfYearMonth.get("2021-08")!!.add("31")
-            }
-            bindingActivityCalendarView.calendarView.notifyDateChanged(localDate3)
-
-/*
-            // Select the first day of the month when
-            // we scroll to a new month.
-            first?.yearMonth?.let {
-                val key = it.month.value.toString().plus("-").plus(it.year.toString())
-                if(setOfMonthYear.contains(key) == false){
-                    setOfMonthYear.add(key)
-                    val formatter = DateTimeFormatter.ofPattern("d-M-yyyy")
-                    val localDate = LocalDate.parse("1-".plus(key), formatter)
-                    selectDate(localDate)
+            mapDaysCoursesOfYearMonth = this.myDatabase.getCoursesOfYearMonths(setOfYearMonth)
+            for ((_, hashMap) in mapDaysCoursesOfYearMonth) {
+                for((keyDate, _) in hashMap){
+                    val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+                    val localDate = LocalDate.parse(keyDate, formatter)
+                    bindingActivityCalendarView.calendarView.notifyDateChanged(localDate)
                 }
             }
-*/
-
-
         }
     }
     //toolbar option menu
@@ -183,6 +152,7 @@ class CalendarViewActivity : AppCompatActivity() {
         return when(item.itemId){
             R.id.toolbar_list_calendar_check -> {
                 val date = selectedDate ?: return false
+
 
                 //TODO
                 val text = "Selected: ${DateTimeFormatter.ofPattern("d MMMM yyyy").format(date)}"
@@ -221,21 +191,24 @@ class CalendarViewActivity : AppCompatActivity() {
                         bindingActivityCalendarView.calendarView.notifyDateChanged(day.date)
                         oldDate?.let { bindingActivityCalendarView.calendarView.notifyDateChanged(oldDate) }
                     }
-                    val key = selectedDate?.yearMonth.toString()
-                    val keyDay = selectedDate?.dayOfMonth.toString()
-                    if(mapDaysCoursesOfYearMonth.contains(key)){
-                        menuItemCalendarCheck.isVisible = mapDaysCoursesOfYearMonth.get(key)!!.contains(keyDay)
+                    val keyYearMonth = selectedDate?.yearMonth.toString()
+                    val keyDate = selectedDate?.toString()?.let { it1 -> MyConfiguration.formatDate(it1) }
+                    if(mapDaysCoursesOfYearMonth.contains(keyYearMonth)){
+                        menuItemCalendarCheck.isVisible = mapDaysCoursesOfYearMonth.get(keyYearMonth)!!.contains(keyDate)
                         if(menuItemCalendarCheck.isVisible){
-                            bindingActivityCalendarView.calendarViewCourses.visibility = View.VISIBLE
-                            //TODO wypisać użytkownikowi ceny kursów z tego dnia
-                            bindingActivityCalendarView.calendarViewActualDate.text = "Z dnia ".plus(MyConfiguration.formatDate(day.date.toString()))
-                            bindingActivityCalendarView.calendarViewActualPlatinum.text = "1"
-                            bindingActivityCalendarView.calendarViewActualPalladium.text = "2"
-                            bindingActivityCalendarView.calendarViewActualRhodium.text = "3"
-                            bindingActivityCalendarView.calendarViewActualEurPln.text = "4"
-                            bindingActivityCalendarView.calendarViewActualUsdPln.text = "5"
+                            val courses = mapDaysCoursesOfYearMonth.get(keyYearMonth)!![keyDate]
+                            if (courses != null) {
+                                bindingActivityCalendarView.calendarViewCourses.visibility = View.VISIBLE
+                                val text = "Z dnia ${MyConfiguration.formatDate(day.date.toString())}"
+                                bindingActivityCalendarView.calendarViewActualDate.text = text
+                                bindingActivityCalendarView.calendarViewActualPlatinum.text = courses.platinum
+                                bindingActivityCalendarView.calendarViewActualPalladium.text = courses.palladium
+                                bindingActivityCalendarView.calendarViewActualRhodium.text = courses.rhodium
+                                bindingActivityCalendarView.calendarViewActualEurPln.text = courses.eurPln
+                                bindingActivityCalendarView.calendarViewActualUsdPln.text = courses.usdPln
+                            }
                         }
-                    }else{
+                    } else {
                         menuItemCalendarCheck.isVisible = false
                     }
                 }
