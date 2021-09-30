@@ -52,8 +52,8 @@ class CalendarViewActivity : AppCompatActivity() {
         //init database object
         this.myDatabase = MyDatabase(this.applicationContext)
 
-        this.myDatabase.insertCourses()
-        val zzz = this.myDatabase.getCountCourses(LocalDate.now())
+        //this.myDatabase.insertCourses()
+        val zzz = this.myDatabase.getCourses(LocalDate.now())
 
         //calendar day binder
         bindingActivityCalendarView.calendarView.dayBinder = object : DayBinder<DayViewContainer> {

@@ -7,37 +7,35 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteQueryBuilder
 import android.graphics.BitmapFactory
-import android.util.Log
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.FileOutputStream
-import java.lang.Exception
 import java.time.LocalDate
 import java.util.*
-import kotlin.collections.ArrayList
 
 class MyDatabase(context: Context) : SQLiteAssetHelper(context,
     MyConfiguration.DATABASE_NAME_OF_FILE, null,
-    MyConfiguration.DATABASE_VERSION
-){
+    MyConfiguration.DATABASE_VERSION)
+{
     private val myContext: Context = context
 
+    //upgrade
     private fun upgrade_1_0_6(db: SQLiteDatabase){
         //create table
         try{
             db.beginTransaction()
-            val query =
-                "CREATE TABLE `" + MyConfiguration.DATABASE_TABLE_COURSES + "` (\n" +
-                        "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_ID + "` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n" +
-                        "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_DATE + "` TEXT NOT NULL,\n" +
-                        "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_PLATINUM + "` TEXT NOT NULL,\n" +
-                        "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_PALLADIUM + "` TEXT NOT NULL,\n" +
-                        "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_RHODIUM + "` TEXT NOT NULL,\n" +
-                        "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_EUR + "` TEXT NOT NULL,\n" +
-                        "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_USD + "` TEXT NOT NULL\n" +
+            val queryString =
+                "CREATE TABLE `${MyConfiguration.DATABASE_TABLE_COURSES}` (\n" +
+                        "`${MyConfiguration.DATABASE_ELEMENT_COURSES_ID}` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n" +
+                        "`${MyConfiguration.DATABASE_ELEMENT_COURSES_DATE}` TEXT NOT NULL,\n" +
+                        "`${MyConfiguration.DATABASE_ELEMENT_COURSES_PLATINUM}` TEXT NOT NULL,\n" +
+                        "`${MyConfiguration.DATABASE_ELEMENT_COURSES_PALLADIUM}` TEXT NOT NULL,\n" +
+                        "`${MyConfiguration.DATABASE_ELEMENT_COURSES_RHODIUM}` TEXT NOT NULL,\n" +
+                        "`${MyConfiguration.DATABASE_ELEMENT_COURSES_EUR}` TEXT NOT NULL,\n" +
+                        "`${MyConfiguration.DATABASE_ELEMENT_COURSES_USD}` TEXT NOT NULL\n" +
                         ");"
-            db.execSQL(query)
+            db.execSQL(queryString)
             db.setTransactionSuccessful()
         }finally {
             db.endTransaction()
@@ -45,11 +43,11 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
         //add index
         try{
             db.beginTransaction()
-            val query =
-                "CREATE UNIQUE INDEX `courses_date` ON `" + MyConfiguration.DATABASE_TABLE_COURSES + "` (\n" +
-                        "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_DATE + "` ASC\n" +
+            val queryString =
+                "CREATE UNIQUE INDEX `courses_date` ON `${MyConfiguration.DATABASE_TABLE_COURSES}` (\n" +
+                        "`${MyConfiguration.DATABASE_ELEMENT_COURSES_DATE}` ASC\n" +
                         ");"
-            db.execSQL(query)
+            db.execSQL(queryString)
             db.setTransactionSuccessful()
         }finally {
             db.endTransaction()
@@ -82,19 +80,48 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
             }
         }
     }
-    //get courses
-    fun getCourses(){
-        //TODO
+    //get courses from date
+    @SuppressLint("Range")
+    fun getCourses(localDate: LocalDate) : MyCourses? {
+        var cursor : Cursor? = null
+        try {
+            //set fields which will be retrieved
+            val fields = arrayOf(
+                MyConfiguration.DATABASE_ELEMENT_COURSES_PLATINUM,
+                MyConfiguration.DATABASE_ELEMENT_COURSES_PALLADIUM,
+                MyConfiguration.DATABASE_ELEMENT_COURSES_RHODIUM,
+                MyConfiguration.DATABASE_ELEMENT_COURSES_EUR,
+                MyConfiguration.DATABASE_ELEMENT_COURSES_USD
+            )
+            //make query
+            val queryString = "SELECT ${fields.joinToString()}\n" +
+                    "FROM ${MyConfiguration.DATABASE_TABLE_COURSES}\n" +
+                    "WHERE ${MyConfiguration.DATABASE_ELEMENT_COURSES_DATE} = '${MyConfiguration.formatDate(localDate.toString())}'\n" +
+                    "LIMIT 1"
+            cursor = readableDatabase.rawQuery(queryString, null)
+            //return data if exist
+            while (cursor.moveToNext()){
+                return MyCourses(
+                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_COURSES_PLATINUM)),
+                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_COURSES_PALLADIUM)),
+                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_COURSES_RHODIUM)),
+                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_COURSES_EUR)),
+                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_COURSES_USD)),
+                    localDate)
+            }
+        }finally {
+            cursor?.close()
+        }
+        return null
     }
     //get amount of courses in day
     @SuppressLint("Range")
     fun getCountCourses(localDate: LocalDate) : Int {
-        val inputDate = MyConfiguration.formatDate(localDate.toString())
         var count = 0
         var cursor : Cursor? = null
         try {
-            cursor = readableDatabase.rawQuery("SELECT count(*) as count FROM " + MyConfiguration.DATABASE_TABLE_COURSES +
-                    " WHERE " + MyConfiguration.DATABASE_ELEMENT_COURSES_DATE + "=" + "'" + inputDate + "'", null)
+            cursor = readableDatabase.rawQuery("SELECT count(*) as count FROM ${MyConfiguration.DATABASE_TABLE_COURSES}\n" +
+                    "WHERE ${MyConfiguration.DATABASE_ELEMENT_COURSES_DATE} = '${MyConfiguration.formatDate(localDate.toString())}'", null)
             if(cursor.moveToFirst()){
                 count = cursor.getInt(cursor.getColumnIndex("count"))
             }
@@ -104,34 +131,34 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
         return count
     }
     //insert courses
-    fun insertCourses(){
+    fun insertCourses(myCourses: MyCourses){
         val db = this.writableDatabase
         try {
             db.beginTransaction()
             val row = ContentValues()
             row.put(
                 MyConfiguration.DATABASE_ELEMENT_COURSES_DATE,
-                MyConfiguration.formatDate(LocalDate.now().toString())
+                MyConfiguration.formatDate(myCourses.date.toString())
             )
             row.put(
                 MyConfiguration.DATABASE_ELEMENT_COURSES_PLATINUM,
-                "value"
+                myCourses.platinum
             )
             row.put(
                 MyConfiguration.DATABASE_ELEMENT_COURSES_PALLADIUM,
-                "value"
+                myCourses.palladium
             )
             row.put(
                 MyConfiguration.DATABASE_ELEMENT_COURSES_RHODIUM,
-                "value"
+                myCourses.rhodium
             )
             row.put(
                 MyConfiguration.DATABASE_ELEMENT_COURSES_EUR,
-                "value"
+                myCourses.eur
             )
             row.put(
                 MyConfiguration.DATABASE_ELEMENT_COURSES_USD,
-                "value"
+                myCourses.usd
             )
             //insert element
             val countInserted = db.insert(MyConfiguration.DATABASE_TABLE_COURSES,null, row)
@@ -141,15 +168,14 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
             db.endTransaction()
         }
     }
-
     //get amount of elements which they don't have thumbnail
     @SuppressLint("Range")
     fun getCountCatalystWithThumbnail(): Int {
         var count = 0
         var cursor : Cursor? = null
         try {
-            cursor = readableDatabase.rawQuery("SELECT count(*) as count FROM " + MyConfiguration.DATABASE_TABLE_CATALYST +
-                    " WHERE " + MyConfiguration.DATABASE_ELEMENT_CATALYST_THUMBNAIL + " IS NOT NULL", null)
+            cursor = readableDatabase.rawQuery("SELECT count(*) as count FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}\n" +
+                    "WHERE ${MyConfiguration.DATABASE_ELEMENT_CATALYST_THUMBNAIL} IS NOT NULL", null)
             if(cursor.moveToFirst()){
                 count = cursor.getInt(cursor.getColumnIndex("count"))
             }
@@ -164,8 +190,8 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
         var count = 0
         var cursor : Cursor? = null
         try {
-            cursor = readableDatabase.rawQuery("SELECT count(*) as count FROM " + MyConfiguration.DATABASE_TABLE_CATALYST +
-                    " WHERE LENGTH(" + MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE + ") != 0", null)
+            cursor = readableDatabase.rawQuery("SELECT count(*) as count FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}\n" +
+                    "WHERE LENGTH(${MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE}) != 0", null)
             if(cursor.moveToFirst()){
                 count = cursor.getInt(cursor.getColumnIndex("count"))
             }
@@ -180,7 +206,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
         var count = 0
         var cursor : Cursor? = null
         try {
-            cursor = readableDatabase.rawQuery("SELECT count(*) as count FROM " + MyConfiguration.DATABASE_TABLE_CATALYST, null)
+            cursor = readableDatabase.rawQuery("SELECT count(*) as count FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}", null)
             if(cursor.moveToFirst()){
                 count = cursor.getInt(cursor.getColumnIndex("count"))
             }
@@ -210,10 +236,10 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
         try{
             db.beginTransaction()
             //truncate tables
-            db.execSQL("DELETE FROM " + MyConfiguration.DATABASE_TABLE_CATALYST + ";VACUUM;")
+            db.execSQL("DELETE FROM ${MyConfiguration.DATABASE_TABLE_CATALYST};VACUUM;")
             //delete row from sqlite sequence
-            db.execSQL("DELETE FROM " + MyConfiguration.DATABASE_TABLE_SQLITE_SEQUENCE
-                    + " WHERE " + MyConfiguration.DATABASE_ELEMENT_SQLITE_SEQUENCE_NAME + " LIKE '" + MyConfiguration.DATABASE_TABLE_CATALYST + "';VACUUM;")
+            db.execSQL("DELETE FROM ${MyConfiguration.DATABASE_TABLE_SQLITE_SEQUENCE}\n" +
+                    "WHERE ${MyConfiguration.DATABASE_ELEMENT_SQLITE_SEQUENCE_NAME} LIKE '${MyConfiguration.DATABASE_TABLE_CATALYST}';VACUUM;")
             db.setTransactionSuccessful()
         }finally {
             db.endTransaction()
@@ -385,8 +411,8 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
                 for(item in arrayFields){
                     val subArrayFields = item.split("*")
                     for(subItem in subArrayFields){
-                        argumentsSelect.add(subItem.toLowerCase(Locale.getDefault()))
-                        argumentsSelect.add(subItem.toLowerCase(Locale.getDefault()))
+                        argumentsSelect.add(subItem.lowercase(Locale.getDefault()))
+                        argumentsSelect.add(subItem.lowercase(Locale.getDefault()))
                         hitCountQuery += (if(addPlus) " + " else "") +  "(instr(LOWER(${MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME}), ?) > 0) + (instr(LOWER(${MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND}), ?) > 0)"
                         addPlus = true
                     }
@@ -452,7 +478,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
                 searchedText
             )
             //insert element
-            val countInserted =db.insert(MyConfiguration.DATABASE_TABLE_HISTORY_FILTER, null, row)
+            val countInserted = db.insert(MyConfiguration.DATABASE_TABLE_HISTORY_FILTER, null, row)
             if(countInserted == -1L) throw IllegalArgumentException()
             db.setTransactionSuccessful()
         }finally {
@@ -467,7 +493,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
             //delete element
             db.delete(
                 MyConfiguration.DATABASE_TABLE_HISTORY_FILTER,
-                MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_ID + "=" + id, null
+                MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_ID + "= $id", null
             )
             db.setTransactionSuccessful()
         }finally {
@@ -481,7 +507,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
             //delete element
             db.delete(
                 MyConfiguration.DATABASE_TABLE_HISTORY_FILTER,
-                MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_NAME + " LIKE '" + name + "'", null)
+                MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_NAME + " LIKE '$name'", null)
             db.setTransactionSuccessful()
         }finally {
             db.endTransaction()
@@ -499,10 +525,10 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
                 MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_NAME
             )
             //make query
-            var queryString = "SELECT  ${fields.joinToString()}"
-            queryString += " FROM ${MyConfiguration.DATABASE_TABLE_HISTORY_FILTER}"
-            queryString += " ORDER BY ${MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_ID} DESC"
-            queryString += " LIMIT ${limitElements}"
+            var queryString = "SELECT  ${fields.joinToString()}\n" +
+                    "FROM ${MyConfiguration.DATABASE_TABLE_HISTORY_FILTER}\n" +
+                    "ORDER BY ${MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_ID} DESC\n" +
+                    "LIMIT $limitElements"
             cursor = readableDatabase.rawQuery(queryString, null)
             //prepare data
             while (cursor.moveToNext()){
