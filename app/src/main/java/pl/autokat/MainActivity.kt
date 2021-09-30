@@ -14,6 +14,7 @@ import org.json.JSONArray
 import pl.autokat.components.*
 import pl.autokat.databinding.ActivityMainBinding
 import java.net.UnknownHostException
+import java.time.LocalDate
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,7 +36,6 @@ class MainActivity : AppCompatActivity() {
     //onresume
     override fun onResume() {
         super.onResume()
-
         this.startActivity(Intent(this.applicationContext, CalendarViewActivity::class.java))
         finish()
         return

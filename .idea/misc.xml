@@ -12,8 +12,8 @@
         <entry key="app/src/main/res/drawable/selectedDay_background.xml" value="0.2585" />
         <entry key="app/src/main/res/drawable/selectedday_background.xml" value="0.236" />
         <entry key="app/src/main/res/layout/activity_about.xml" value="0.19202898550724637" />
-        <entry key="app/src/main/res/layout/activity_calendar_view.xml" value="0.21770833333333334" />
-        <entry key="app/src/main/res/layout/activity_configuration_values.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_calendar_view.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_configuration_values.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/layout/activity_result.xml" value="0.13405797101449277" />
         <entry key="app/src/main/res/layout/calendar_day.xml" value="0.20989583333333334" />

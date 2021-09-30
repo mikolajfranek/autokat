@@ -2,7 +2,8 @@
 <resources>
     <color name="colorUser">#363636</color>
     <color name="colorGreen">#26A65B</color>
-    <color name="colorLightGreen">#BDE4CD</color>
+    <color name="colorLightGreen">#DEF2E6</color>
+    <color name="colorGray">#EEEEEE</color>
     <color name="colorLine">#E7E7E7</color>
     <color name="colorBlack">#000000</color>
 </resources>

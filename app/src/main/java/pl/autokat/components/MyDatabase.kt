@@ -1,5 +1,6 @@
 package pl.autokat.components
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
@@ -10,6 +11,7 @@ import com.readystatesoftware.sqliteasset.SQLiteAssetHelper
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.FileOutputStream
+import java.time.LocalDate
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -24,6 +26,10 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
         if (newVersion > oldVersion) {
             when(newVersion){
                 //in case, when database need to be override
+                MyConfiguration.DATABASE_VERSION_1_0_6 -> {
+                    createTableCourses()
+                    addIndexCourses()
+                }
                 else -> {
                     //end transaction, unlock database
                     db.endTransaction()
@@ -43,7 +49,101 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
             }
         }
     }
+    private fun createTableCourses() {
+        val db = this.writableDatabase
+        try{
+            db.beginTransaction()
+            val query =
+                "CREATE TABLE `" + MyConfiguration.DATABASE_TABLE_COURSES + "` (\n" +
+                    "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_ID + "` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n" +
+                    "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_DATE + "` TEXT NOT NULL,\n" +
+                    "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_PLATINUM + "` TEXT NOT NULL,\n" +
+                    "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_PALLADIUM + "` TEXT NOT NULL,\n" +
+                    "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_RHODIUM + "` TEXT NOT NULL,\n" +
+                    "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_EUR + "` TEXT NOT NULL,\n" +
+                    "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_USD + "` TEXT NOT NULL\n" +
+                    ");"
+            db.execSQL(query)
+            db.setTransactionSuccessful()
+        }finally {
+            db.endTransaction()
+        }
+    }
+    private fun addIndexCourses() {
+        val db = this.writableDatabase
+        try{
+            db.beginTransaction()
+            val query =
+                "CREATE INDEX `courses_date` ON `" + MyConfiguration.DATABASE_TABLE_COURSES + "` (\n" +
+                    "`" + MyConfiguration.DATABASE_ELEMENT_COURSES_DATE + "` ASC\n" +
+                    ");"
+            db.execSQL(query)
+            db.setTransactionSuccessful()
+        }finally {
+            db.endTransaction()
+        }
+    }
+    //get courses
+    fun getCourses(){
+        //TODO
+    }
+    //get amount of courses in day
+    @SuppressLint("Range")
+    fun getCountCourses(localDate: LocalDate) : Int {
+        val inputDate = MyConfiguration.formatDate(localDate.toString())
+        var count = 0
+        var cursor : Cursor? = null
+        try {
+            cursor = readableDatabase.rawQuery("SELECT count(*) as count FROM " + MyConfiguration.DATABASE_TABLE_COURSES +
+                    " WHERE " + MyConfiguration.DATABASE_ELEMENT_COURSES_DATE + "=" + "'" + inputDate + "'", null)
+            if(cursor.moveToFirst()){
+                count = cursor.getInt(cursor.getColumnIndex("count"))
+            }
+        }finally {
+            cursor?.close()
+        }
+        return count
+    }
+    //insert courses
+    fun insertCourses(){
+        val db = this.writableDatabase
+        try {
+            db.beginTransaction()
+            val row = ContentValues()
+            row.put(
+                MyConfiguration.DATABASE_ELEMENT_COURSES_DATE,
+                MyConfiguration.formatDate(LocalDate.now().toString())
+            )
+            row.put(
+                MyConfiguration.DATABASE_ELEMENT_COURSES_PLATINUM,
+                "value"
+            )
+            row.put(
+                MyConfiguration.DATABASE_ELEMENT_COURSES_PALLADIUM,
+                "value"
+            )
+            row.put(
+                MyConfiguration.DATABASE_ELEMENT_COURSES_RHODIUM,
+                "value"
+            )
+            row.put(
+                MyConfiguration.DATABASE_ELEMENT_COURSES_EUR,
+                "value"
+            )
+            row.put(
+                MyConfiguration.DATABASE_ELEMENT_COURSES_USD,
+                "value"
+            )
+            //insert element
+            db.insert(MyConfiguration.DATABASE_TABLE_COURSES,null, row)
+            db.setTransactionSuccessful()
+        }finally {
+            db.endTransaction()
+        }
+    }
+
     //get amount of elements which they don't have thumbnail
+    @SuppressLint("Range")
     fun getCountCatalystWithThumbnail(): Int {
         var count = 0
         var cursor : Cursor? = null
@@ -59,6 +159,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
         return count
     }
     //get amount of elements which has url picture
+    @SuppressLint("Range")
     fun getCountCatalystWithUrlOfThumbnail(): Int {
         var count = 0
         var cursor : Cursor? = null
@@ -74,6 +175,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
         return count
     }
     //get count of catalysts
+    @SuppressLint("Range")
     fun getCountCatalyst() : Int {
         var count = 0
         var cursor : Cursor? = null
@@ -214,6 +316,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
         }
     }
     //get string of jsonarray elements which they don't have thumbnail
+    @SuppressLint("Range")
     fun getCatalystWithoutThumbnail(): JSONArray {
         val result = JSONArray()
         var cursor : Cursor? = null
@@ -250,6 +353,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
         return result
     }
     //get data catalysts
+    @SuppressLint("Range")
     fun getDataCatalyst(nameCatalystOrBrandCarInput: String, limitElements: String): ArrayList<MyItemCatalyst> {
         val result : ArrayList<MyItemCatalyst> = ArrayList<MyItemCatalyst>()
         var cursor : Cursor? = null
@@ -382,6 +486,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
         }
     }
     //get data history filter
+    @SuppressLint("Range")
     fun getDataHistoryFilter(limitElements: String): ArrayList<MyItemHistoryFilter> {
         val result : ArrayList<MyItemHistoryFilter> = ArrayList<MyItemHistoryFilter>()
         var cursor : Cursor? = null

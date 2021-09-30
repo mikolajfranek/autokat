@@ -31,6 +31,10 @@ class MyConfiguration {
         /* production mode = true / development mode = false */
         val PRODUCTION : Boolean = false
         val VERSION_APP : String = "1.0.6"
+        val DATABASE_VERSION_1_0_6 : Int = 4
+        val DATABASE_VERSION : Int = 4
+        val DATABASE_NAME_OF_FILE : String = "autokat.db"
+        val DATABASE_FILE_PATH_ASSETS : String = "databases/" + DATABASE_NAME_OF_FILE
 
         /* creating access token */
         private val GOOGLE_TOKEN_URL : String = "https://oauth2.googleapis.com/token"
@@ -243,15 +247,21 @@ class MyConfiguration {
         val MY_SHARED_PREFERENCES_KEY_EUR_PLN_DATE : String = "EurPlnDate"
 
         /* database */
-        val DATABASE_VERSION : Int = 3
-        val DATABASE_NAME_OF_FILE : String = "autokat.db"
-        val DATABASE_FILE_PATH_ASSETS : String = "databases/" + DATABASE_NAME_OF_FILE
         val DATABASE_PAGINATE_LIMIT_CATALYST : Int = 5
         val DATABASE_PAGINATE_LIMIT_HISTORY_FILTER : Int = 10
         // tables
         val DATABASE_TABLE_CATALYST = "catalyst"
         val DATABASE_TABLE_HISTORY_FILTER = "history_filter"
         val DATABASE_TABLE_SQLITE_SEQUENCE = "sqlite_sequence"
+        val DATABASE_TABLE_COURSES = "courses"
+        //columns courses
+        val DATABASE_ELEMENT_COURSES_ID = "id"
+        val DATABASE_ELEMENT_COURSES_DATE = "date"
+        val DATABASE_ELEMENT_COURSES_PLATINUM = "platinum"
+        val DATABASE_ELEMENT_COURSES_PALLADIUM = "palladium"
+        val DATABASE_ELEMENT_COURSES_RHODIUM = "rhodium"
+        val DATABASE_ELEMENT_COURSES_EUR = "eur"
+        val DATABASE_ELEMENT_COURSES_USD = "usd"
         //columns catalyst
         val DATABASE_ELEMENT_CATALYST_ID = "id"
         val DATABASE_ELEMENT_CATALYST_ID_PICTURE = "id_picture"
