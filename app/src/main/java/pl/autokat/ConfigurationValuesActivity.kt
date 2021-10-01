@@ -1,13 +1,14 @@
 package pl.autokat
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import pl.autokat.components.*
-import pl.autokat.databinding.ActivityCalendarViewBinding
 import pl.autokat.databinding.ActivityConfigurationValuesBinding
 import java.net.UnknownHostException
 
@@ -15,6 +16,7 @@ import java.net.UnknownHostException
 class ConfigurationValuesActivity : AppCompatActivity() {
 
     private lateinit var bindingActivityConfigurationValues: ActivityConfigurationValuesBinding
+    private lateinit var database: MyDatabase
 
     //oncreate
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,34 +30,66 @@ class ConfigurationValuesActivity : AppCompatActivity() {
         this.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         //init shared preferences
         MySharedPreferences.init(this)
+        //init database object
+        this.database = MyDatabase(this.applicationContext)
+        //switch listener
+        this.bindingActivityConfigurationValues.switchCourses.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                val lastCoursesDate = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_ACTUAL_COURSES_DATE)
+                this.bindingActivityConfigurationValues.actualDateCoursesButton.visibility = View.GONE
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_ACTUAL_COURSES_DATE, "")
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_ACTUAL_COURSES_CHOICE, "1")
+                if(lastCoursesDate.isNotEmpty()){
+                    Toast.makeText(this@ConfigurationValuesActivity.applicationContext, MyConfiguration.INFO_MESSAGE_REFRESH_COURSES, Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                this.bindingActivityConfigurationValues.actualDateCoursesButton.visibility = View.VISIBLE
+                MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_ACTUAL_COURSES_CHOICE, "0")
+            }
+        }
+    }
+    //onresume
+    override fun onResume() {
+        super.onResume()
+        val actualCoursesChoice = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_ACTUAL_COURSES_CHOICE)
+        val actualCoursesDate = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_ACTUAL_COURSES_DATE)
+        val gettingFromDatabase : Boolean = actualCoursesChoice.equals("0") && actualCoursesDate.isNotEmpty()
+        if(gettingFromDatabase){
+            this.bindingActivityConfigurationValues.switchCourses.isChecked = false
+            this.bindingActivityConfigurationValues.actualDateCoursesButton.visibility = View.VISIBLE
+        }else{
+            this.bindingActivityConfigurationValues.switchCourses.isChecked = true
+            this.bindingActivityConfigurationValues.actualDateCoursesButton.visibility = View.GONE
+        }
         //set values in view
         this.setValuesInView()
-        //TODO daty
-
-
-
+    }
+    //open calendar activity
+    fun openCalendarActivity(view: View) {
+        this.startActivity(Intent(this.applicationContext, CalendarViewActivity::class.java))
     }
     //set all values in view
     private fun setValuesInView(){
-        //pallad
-        val pallad : String = MyConfiguration.getPlnFromDolar((MySharedPreferences.getKeyFromFile(
-            MyConfiguration.MY_SHARED_PREFERENCES_KEY_PALLADIUM)))
-        val palladDate : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PALLADIUM_DATE)
-        val palladiumText = (MyConfiguration.formatStringFloat(pallad, 2) + " zł/g")
-        this.bindingActivityConfigurationValues.palladium.text = palladiumText
-        this.bindingActivityConfigurationValues.palladiumDate.text = MyConfiguration.formatDate(palladDate)
         //platinum
         val platinum : String = MyConfiguration.getPlnFromDolar(
-            MySharedPreferences.getKeyFromFile(
-                MyConfiguration.MY_SHARED_PREFERENCES_KEY_PLATIUNUM))
+            MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PLATIUNUM),
+            MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN))
         val platinumDate : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PLATIUNUM_DATE)
         val platiniumText = (MyConfiguration.formatStringFloat(platinum, 2) + " zł/g")
         this.bindingActivityConfigurationValues.platinum.text = platiniumText
         this.bindingActivityConfigurationValues.platinumDate.text = MyConfiguration.formatDate(platinumDate)
+        //pallad
+        val pallad : String = MyConfiguration.getPlnFromDolar(
+            MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PALLADIUM),
+            MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN))
+        val palladDate : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PALLADIUM_DATE)
+        val palladiumText = (MyConfiguration.formatStringFloat(pallad, 2) + " zł/g")
+        this.bindingActivityConfigurationValues.palladium.text = palladiumText
+        this.bindingActivityConfigurationValues.palladiumDate.text = MyConfiguration.formatDate(palladDate)
         //rhodium
         val rhodium : String = MyConfiguration.getPlnFromDolar(
-            MySharedPreferences.getKeyFromFile(
-                MyConfiguration.MY_SHARED_PREFERENCES_KEY_RHODIUM))
+            MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_RHODIUM),
+            MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN))
         val rhodiumDate : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_RHODIUM_DATE)
         val rhodiumText = (MyConfiguration.formatStringFloat(rhodium, 2) + " zł/g")
         this.bindingActivityConfigurationValues.rhodium.text = rhodiumText
@@ -106,8 +140,7 @@ class ConfigurationValuesActivity : AppCompatActivity() {
             //--- doInBackground
             var myProcessStep : MyProcessStep = MyProcessStep.SUCCESS
             try{
-                MyCatalystValues.getValues()
-                //TODO ustaw kalendarz/wartosci na dzisiejsze tzn. na najwcześniejsze
+                MyCoursesValues.getValues(database)
             }
             catch(e: UnknownHostException){
                 myProcessStep = MyProcessStep.NETWORK_FAILED
@@ -133,7 +166,7 @@ class ConfigurationValuesActivity : AppCompatActivity() {
                     }
                 }
                 //enable user interface on process application
-                MyUserInterface.enableActivity(this@ConfigurationValuesActivity.bindingActivityConfigurationValues.linearLayout,false)
+                MyUserInterface.enableActivity(this@ConfigurationValuesActivity.bindingActivityConfigurationValues.linearLayout,true)
             }
         }
     }

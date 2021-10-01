@@ -36,10 +36,6 @@ class MainActivity : AppCompatActivity() {
     //onresume
     override fun onResume() {
         super.onResume()
-        this.startActivity(Intent(this.applicationContext, CalendarViewActivity::class.java))
-        finish()
-        return
-
         //check permission about phone state (required for getting serial id)
         if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED){
             //ask about permission

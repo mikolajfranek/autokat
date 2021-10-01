@@ -15,10 +15,7 @@ import com.kizitonwose.calendarview.ui.DayBinder
 import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
 import com.kizitonwose.calendarview.utils.yearMonth
-import pl.autokat.components.MyConfiguration
-import pl.autokat.components.MyCourses
-import pl.autokat.components.MyDatabase
-import pl.autokat.components.MySharedPreferences
+import pl.autokat.components.*
 import pl.autokat.databinding.ActivityCalendarViewBinding
 import pl.autokat.databinding.CalendarDayBinding
 import pl.autokat.databinding.CalendarHeaderBinding
@@ -66,10 +63,6 @@ class CalendarViewActivity : AppCompatActivity() {
                             textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_WHITE)
                             textView.setBackgroundResource(R.drawable.drawable_selectday_background)
                         }
-                        today -> {
-                            textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
-                            textView.background = null
-                        }
                         else -> {
                             textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
                             val keyYearMonth = day.date.yearMonth.toString()
@@ -81,6 +74,9 @@ class CalendarViewActivity : AppCompatActivity() {
                                     textView.background = null
                                 }
                             }else{
+                                if(day.date == today){
+                                    textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
+                                }
                                 textView.background = null
                             }
                         }
@@ -100,24 +96,13 @@ class CalendarViewActivity : AppCompatActivity() {
         }
         //calendar setup
         bindingActivityCalendarView.calendarView.setup(featureStart.yearMonth, YearMonth.now(), DayOfWeek.MONDAY)
-
-
-        //TODO today lub data pobrana z konfiguracji (ostatnia wybrana data tzn. data kursów)
-        bindingActivityCalendarView.calendarView.scrollToDate(today)
-
-
-        //TODO insert
-/*
-        myDatabase.insertCourses(MyCourses("1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "2021-09-30",
-        "2021-09"))
- */
-
-
+        val actualCoursesDate = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_ACTUAL_COURSES_DATE)
+        if(actualCoursesDate.isEmpty()){
+            bindingActivityCalendarView.calendarView.scrollToDate(today)
+        }else{
+            val localDate = MyConfiguration.formatDateToLocalDate(actualCoursesDate)
+            bindingActivityCalendarView.calendarView.scrollToDate(localDate)
+        }
         //calendar listeners
         bindingActivityCalendarView.calendarView.scrollMode = ScrollMode.PAGED
         bindingActivityCalendarView.calendarView.monthScrollListener = {actualMonth ->
@@ -134,8 +119,7 @@ class CalendarViewActivity : AppCompatActivity() {
             mapDaysCoursesOfYearMonth = this.myDatabase.getCoursesOfYearMonths(setOfYearMonth)
             for ((_, hashMap) in mapDaysCoursesOfYearMonth) {
                 for((keyDate, _) in hashMap){
-                    val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-                    val localDate = LocalDate.parse(keyDate, formatter)
+                    val localDate = MyConfiguration.formatDateToLocalDate(keyDate)
                     bindingActivityCalendarView.calendarView.notifyDateChanged(localDate)
                 }
             }
@@ -151,14 +135,18 @@ class CalendarViewActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
             R.id.toolbar_list_calendar_check -> {
-                val date = selectedDate ?: return false
-
-
-                //TODO
-                val text = "Selected: ${DateTimeFormatter.ofPattern("d MMMM yyyy").format(date)}"
-                Toast.makeText(this@CalendarViewActivity.applicationContext, text, Toast.LENGTH_LONG).show()
-
-
+                selectedDate ?: return false
+                val keyYearMonth = selectedDate!!.yearMonth.toString()
+                val keyDate = selectedDate.toString().let { it1 -> MyConfiguration.formatDate(it1) }
+                val courses = mapDaysCoursesOfYearMonth[keyYearMonth]!![keyDate]
+                if(courses != null){
+                    //saving courses values
+                    MyCoursesValues.saveSelectedCourses(courses)
+                    Toast.makeText(this@CalendarViewActivity.applicationContext, "Wybrano: $keyDate", Toast.LENGTH_SHORT).show()
+                }else{
+                    Toast.makeText(this@CalendarViewActivity.applicationContext, MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION, Toast.LENGTH_SHORT).show()
+                }
+                this.finish()
                 true
             }
             else -> {
@@ -194,18 +182,26 @@ class CalendarViewActivity : AppCompatActivity() {
                     val keyYearMonth = selectedDate?.yearMonth.toString()
                     val keyDate = selectedDate?.toString()?.let { it1 -> MyConfiguration.formatDate(it1) }
                     if(mapDaysCoursesOfYearMonth.contains(keyYearMonth)){
-                        menuItemCalendarCheck.isVisible = mapDaysCoursesOfYearMonth.get(keyYearMonth)!!.contains(keyDate)
+                        menuItemCalendarCheck.isVisible = mapDaysCoursesOfYearMonth[keyYearMonth]!!.contains(keyDate)
                         if(menuItemCalendarCheck.isVisible){
-                            val courses = mapDaysCoursesOfYearMonth.get(keyYearMonth)!![keyDate]
+                            val courses = mapDaysCoursesOfYearMonth[keyYearMonth]!![keyDate]
                             if (courses != null) {
                                 bindingActivityCalendarView.calendarViewCourses.visibility = View.VISIBLE
                                 val text = "Z dnia ${MyConfiguration.formatDate(day.date.toString())}"
                                 bindingActivityCalendarView.calendarViewActualDate.text = text
-                                bindingActivityCalendarView.calendarViewActualPlatinum.text = courses.platinum
-                                bindingActivityCalendarView.calendarViewActualPalladium.text = courses.palladium
-                                bindingActivityCalendarView.calendarViewActualRhodium.text = courses.rhodium
-                                bindingActivityCalendarView.calendarViewActualEurPln.text = courses.eurPln
-                                bindingActivityCalendarView.calendarViewActualUsdPln.text = courses.usdPln
+                                val platinum = MyConfiguration.getPlnFromDolar(courses.platinum, courses.usdPln)
+                                val platinumText = (MyConfiguration.formatStringFloat(platinum, 2) + " zł/g")
+                                bindingActivityCalendarView.calendarViewActualPlatinum.text = platinumText
+                                val palladium = MyConfiguration.getPlnFromDolar(courses.palladium, courses.usdPln)
+                                val palladiumText = (MyConfiguration.formatStringFloat(palladium, 2) + " zł/g")
+                                bindingActivityCalendarView.calendarViewActualPalladium.text = palladiumText
+                                val rhodium = MyConfiguration.getPlnFromDolar(courses.rhodium, courses.usdPln)
+                                val rhodiumText = (MyConfiguration.formatStringFloat(rhodium, 2) + " zł/g")
+                                bindingActivityCalendarView.calendarViewActualRhodium.text = rhodiumText
+                                val eurText = (MyConfiguration.formatStringFloat(courses.eurPln, 2) + " zł")
+                                bindingActivityCalendarView.calendarViewActualEurPln.text = eurText
+                                val usdText = (MyConfiguration.formatStringFloat(courses.usdPln, 2) + " zł")
+                                bindingActivityCalendarView.calendarViewActualUsdPln.text = usdText
                             }
                         }
                     } else {

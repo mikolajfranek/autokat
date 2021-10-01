@@ -29,7 +29,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
             val queryString =
                 "CREATE TABLE `${MyConfiguration.DATABASE_TABLE_COURSES}` (\n" +
                         "`${MyConfiguration.DATABASE_ELEMENT_COURSES_ID}` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n" +
-                        "`${MyConfiguration.DATABASE_ELEMENT_COURSES_DATE}` TEXT NOT NULL,\n" +
+                        "`${MyConfiguration.DATABASE_ELEMENT_COURSES_DATE}` TEXT NOT NULL UNIQUE,\n" +
                         "`${MyConfiguration.DATABASE_ELEMENT_COURSES_YEARMONTH}` TEXT NOT NULL,\n" +
                         "`${MyConfiguration.DATABASE_ELEMENT_COURSES_PLATINUM}` TEXT NOT NULL,\n" +
                         "`${MyConfiguration.DATABASE_ELEMENT_COURSES_PALLADIUM}` TEXT NOT NULL,\n" +
@@ -46,7 +46,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
         try{
             db.beginTransaction()
             val queryString =
-                "CREATE UNIQUE INDEX `courses_yearmonth` ON `${MyConfiguration.DATABASE_TABLE_COURSES}` (\n" +
+                "CREATE INDEX `courses_yearmonth` ON `${MyConfiguration.DATABASE_TABLE_COURSES}` (\n" +
                         "`${MyConfiguration.DATABASE_ELEMENT_COURSES_YEARMONTH}` ASC\n" +
                         ");"
             db.execSQL(queryString)
@@ -55,6 +55,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
             db.endTransaction()
         }
     }
+
     //override onupgrage of database
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         if (newVersion > oldVersion) {
@@ -132,7 +133,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
             val row = ContentValues()
             row.put(
                 MyConfiguration.DATABASE_ELEMENT_COURSES_DATE,
-                MyConfiguration.formatDate(myCourses.date)
+                myCourses.date
             )
             row.put(
                 MyConfiguration.DATABASE_ELEMENT_COURSES_YEARMONTH,

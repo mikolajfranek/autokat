@@ -38,4 +38,8 @@
     <string name="activity_update_pobierz_nowe_katalizatory" tools:ignore="Typos">Pobierz nowe katalizatory</string>
     <string name="activity_update_synchronizacja_baz_danych">Synchronizacja bazy danych</string>
     <string name="nav_header_main_ostatnio_wyszukiwane">Ostatnio wyszukiwane</string>
+    <string name="activity_configuration_values_switchCourses">Korzystanie z najnowszych kursów:</string>
+    <string name="activity_configuration_values_actualDateCourses">Wybierz datę kursów</string>
+    <string name="activity_configuration_values_switchCourses_no">Nie</string>
+    <string name="activity_configuration_values_switchCourses_yes">Tak</string>
 </resources>

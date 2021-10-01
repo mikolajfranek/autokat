@@ -22,6 +22,8 @@ import java.security.KeyFactory
 import java.security.interfaces.RSAPrivateKey
 import java.security.spec.PKCS8EncodedKeySpec
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
@@ -240,6 +242,9 @@ class MyConfiguration {
         val MY_SHARED_PREFERENCES_KEY_PALLADIUM_DATE : String = "PalladiumDate"
         val MY_SHARED_PREFERENCES_KEY_RHODIUM : String = "Rhodium"
         val MY_SHARED_PREFERENCES_KEY_RHODIUM_DATE : String = "RhodiumDate"
+        val MY_SHARED_PREFERENCES_KEY_ACTUAL_COURSES_DATE : String = "ActualCoursesDate"
+        val MY_SHARED_PREFERENCES_KEY_ACTUAL_COURSES_CHOICE : String = "ActualCoursesChoice"
+
         //about courses exchanges
         val MY_SHARED_PREFERENCES_KEY_USD_PLN : String = "UsdPln"
         val MY_SHARED_PREFERENCES_KEY_USD_PLN_DATE : String = "UsdPlnDate"
@@ -330,6 +335,7 @@ class MyConfiguration {
         val INFO_DATABASE_EXPIRE : String = "Baza danych nie jest aktualna"
         val INFO_MESSAGE_ADDED_HISTORY_FILTER : String = "Pomyślnie zapisano nazwę do filtrowania"
         val INFO_MESSAGE_DELETED_HISTORY_FILTER : String = "Pomyślnie usunięto nazwę do filtrowania"
+        val INFO_MESSAGE_REFRESH_COURSES : String = "Odśwież wartości kursów"
 
         /* methods */
         //decorator for delete others signs
@@ -389,17 +395,19 @@ class MyConfiguration {
             if(date.isEmpty()) return ""
             return SimpleDateFormat("dd.MM.yyyy").format((SimpleDateFormat("yyyy-MM-dd").parse(date)!!)).toString()
         }
+        fun formatDateToLocalDate(date: String): LocalDate{
+            val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+            return LocalDate.parse(date, formatter)
+        }
         //get format of float from string
         fun formatStringFloat(floatString: String, precision: Int) : String{
             if(floatString.isEmpty()) return (String.format("%." + precision + "f", (0.00).toFloat())).replace(",", ".")
             return String.format("%." + precision + "f", floatString.toFloat()).replace(",", ".")
         }
         //get pln from dolar string
-        fun getPlnFromDolar(dolar: String) : String{
+        fun getPlnFromDolar(dolar: String, dolarCourses: String) : String{
             if(dolar.isEmpty()) return (0.00).toString()
-            val dolarFromConfiguration : String =
-                MySharedPreferences.getKeyFromFile(MY_SHARED_PREFERENCES_KEY_USD_PLN)
-            return (dolar.toFloat() * (if(dolarFromConfiguration.isEmpty()) (0.0F) else dolarFromConfiguration.toFloat())).toString()
+            return (dolar.toFloat() * (if(dolarCourses.isEmpty()) (0.0F) else dolarCourses.toFloat())).toString()
         }
         //get url to google
         fun getPictureUrlFromGoogle(urlShared: String, width: Int, height: Int) : String {

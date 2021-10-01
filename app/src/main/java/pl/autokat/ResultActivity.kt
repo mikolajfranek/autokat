@@ -386,7 +386,7 @@ class ResultActivity : AppCompatActivity()  {
                 //update value of courses - if from last update passed 6h
                 val lastTimestampUpdateCourseFromConfiguration : String = MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_UPDATE_COURSE_TIMESTAMP)
                 if(lastTimestampUpdateCourseFromConfiguration.isEmpty() || ((Date().time - lastTimestampUpdateCourseFromConfiguration.toLong()) > (MyConfiguration.ONE_DAY_IN_MILLISECONDS/4))){
-                    MyCatalystValues.getValues()
+                    MyCoursesValues.getValues(database)
                 }
                 //flag update catalyst - if amount in spreadsheet is greater than in local database
                 val databaseCatalystCount : Int = this@ResultActivity.database.getCountCatalyst()
