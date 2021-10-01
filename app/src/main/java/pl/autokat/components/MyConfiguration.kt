@@ -31,23 +31,23 @@ import javax.crypto.spec.SecretKeySpec
 class MyConfiguration {
     companion object {
         /* production mode = true / development mode = false */
-        val PRODUCTION: Boolean = false
-        val VERSION_APP: String = "1.0.6"
-        val DATABASE_VERSION_1_0_6: Int = 4
-        val DATABASE_VERSION: Int = 4
-        val DATABASE_NAME_OF_FILE: String = "autokat.db"
-        val DATABASE_FILE_PATH_ASSETS: String = "databases/" + DATABASE_NAME_OF_FILE
+        const val PRODUCTION: Boolean = false
+        const val VERSION_APP: String = "1.0.6"
+        const val DATABASE_VERSION_1_0_6: Int = 4
+        const val DATABASE_VERSION: Int = 4
+        const val DATABASE_NAME_OF_FILE: String = "autokat.db"
+        const val DATABASE_FILE_PATH_ASSETS: String = "databases/$DATABASE_NAME_OF_FILE"
 
         /* creating access token */
-        private val GOOGLE_TOKEN_URL: String = "https://oauth2.googleapis.com/token"
-        private val GOOGLE_PARAMETER_SCOPE: String = "scope"
-        private val GOOGLE_PARAMETER_SCOPE_VALUE: String =
+        private const val GOOGLE_TOKEN_URL: String = "https://oauth2.googleapis.com/token"
+        private const val GOOGLE_PARAMETER_SCOPE: String = "scope"
+        private const val GOOGLE_PARAMETER_SCOPE_VALUE: String =
             "https://www.googleapis.com/auth/spreadsheets"
-        private val ONE_HOUR_IN_MILLISECONDS: Long = 3600000L
+        private const val ONE_HOUR_IN_MILLISECONDS: Long = 3600000L
 
         //shared preferences
-        private val MY_SHARED_PREFERENCES_KEY_ACCESS_TOKEN: String = "AccessToken"
-        private val MY_SHARED_PREFERENCES_KEY_ACCESS_TOKEN_TIMESTAMP: String =
+        private const val MY_SHARED_PREFERENCES_KEY_ACCESS_TOKEN: String = "AccessToken"
+        private const val MY_SHARED_PREFERENCES_KEY_ACCESS_TOKEN_TIMESTAMP: String =
             "AccessTokenTimestamp"
 
         //generate new access token
@@ -97,11 +97,11 @@ class MyConfiguration {
         }
 
         /* licence and time */
-        private val URL_TIMESTAMP: String = "https://worldtimeapi.org/api/timezone/Europe/Warsaw"
-        val ONE_DAY_IN_MILLISECONDS: Long = 86400000
+        private const val URL_TIMESTAMP: String = "https://worldtimeapi.org/api/timezone/Europe/Warsaw"
+        const val ONE_DAY_IN_MILLISECONDS: Long = 86400000
 
         //shared preferences
-        private val MY_SHARED_PREFERENCES_KEY_CURRENT_TIMESTAMP: String = "CurrentTimestamp"
+        private const val MY_SHARED_PREFERENCES_KEY_CURRENT_TIMESTAMP: String = "CurrentTimestamp"
 
         //check time depends from parameter
         @SuppressLint("SimpleDateFormat")
@@ -152,68 +152,68 @@ class MyConfiguration {
 
         /* spreadsheet */
         //users column number
-        val MY_SPREADSHEET_USERS_ID: Int = 0
-        val MY_SPREADSHEET_USERS_LOGIN: Int = 1
-        val MY_SPREADSHEET_USERS_UUID: Int = 2
-        val MY_SPREADSHEET_USERS_LICENCE: Int = 3
-        val MY_SPREADSHEET_USERS_DISCOUNT: Int = 4
-        val MY_SPREADSHEET_USERS_VISIBILITY: Int = 5
-        val MY_SPREADSHEET_USERS_MINUS_PLATINIUM: Int = 6
-        val MY_SPREADSHEET_USERS_MINUS_PALLADIUM: Int = 7
-        val MY_SPREADSHEET_USERS_MINUS_RHODIUM: Int = 8
+        const val MY_SPREADSHEET_USERS_ID: Int = 0
+        const val MY_SPREADSHEET_USERS_LOGIN: Int = 1
+        const val MY_SPREADSHEET_USERS_UUID: Int = 2
+        const val MY_SPREADSHEET_USERS_LICENCE: Int = 3
+        const val MY_SPREADSHEET_USERS_DISCOUNT: Int = 4
+        const val MY_SPREADSHEET_USERS_VISIBILITY: Int = 5
+        const val MY_SPREADSHEET_USERS_MINUS_PLATINIUM: Int = 6
+        const val MY_SPREADSHEET_USERS_MINUS_PALLADIUM: Int = 7
+        const val MY_SPREADSHEET_USERS_MINUS_RHODIUM: Int = 8
 
         //users column letter
-        val MY_SPREADSHEET_USERS_COLUMN_ID: String = "A"
-        val MY_SPREADSHEET_USERS_COLUMN_LOGIN: String = "B"
-        val MY_SPREADSHEET_USERS_COLUMN_UUID: String = "C"
-        val MY_SPREADSHEET_USERS_COLUMN_LICENCE: String = "D"
-        val MY_SPREADSHEET_USERS_COLUMN_DISCOUNT: String = "E"
-        val MY_SPREADSHEET_USERS_COLUMN_VISIBILITY: String = "F"
-        val MY_SPREADSHEET_USERS_COLUMN_MINUS_PLATINIUM: String = "G"
-        val MY_SPREADSHEET_USERS_COLUMN_MINUS_PALLADIUM: String = "H"
-        val MY_SPREADSHEET_USERS_COLUMN_MINUS_RHODIUM: String = "I"
+        const val MY_SPREADSHEET_USERS_COLUMN_ID: String = "A"
+        const val MY_SPREADSHEET_USERS_COLUMN_LOGIN: String = "B"
+        const val MY_SPREADSHEET_USERS_COLUMN_UUID: String = "C"
+        const val MY_SPREADSHEET_USERS_COLUMN_LICENCE: String = "D"
+        const val MY_SPREADSHEET_USERS_COLUMN_DISCOUNT: String = "E"
+        const val MY_SPREADSHEET_USERS_COLUMN_VISIBILITY: String = "F"
+        const val MY_SPREADSHEET_USERS_COLUMN_MINUS_PLATINIUM: String = "G"
+        const val MY_SPREADSHEET_USERS_COLUMN_MINUS_PALLADIUM: String = "H"
+        const val MY_SPREADSHEET_USERS_COLUMN_MINUS_RHODIUM: String = "I"
 
         //catalysts column number
-        val MY_SPREADSHEET_CATALYST_ID: Int = 0
-        val MY_SPREADSHEET_CATALYST_NAME: Int = 1
-        val MY_SPREADSHEET_CATALYST_BRAND: Int = 2
-        val MY_SPREADSHEET_CATALYST_WEIGHT: Int = 3
-        val MY_SPREADSHEET_CATALYST_PLATINUM: Int = 4
-        val MY_SPREADSHEET_CATALYST_PALLADIUM: Int = 5
-        val MY_SPREADSHEET_CATALYST_RHODIUM: Int = 6
-        val MY_SPREADSHEET_CATALYST_TYPE: Int = 7
-        val MY_SPREADSHEET_CATALYST_ID_PICTURE: Int = 8
-        val MY_SPREADSHEET_CATALYST_URL_PICTURE: Int = 9
+        const val MY_SPREADSHEET_CATALYST_ID: Int = 0
+        const val MY_SPREADSHEET_CATALYST_NAME: Int = 1
+        const val MY_SPREADSHEET_CATALYST_BRAND: Int = 2
+        const val MY_SPREADSHEET_CATALYST_WEIGHT: Int = 3
+        const val MY_SPREADSHEET_CATALYST_PLATINUM: Int = 4
+        const val MY_SPREADSHEET_CATALYST_PALLADIUM: Int = 5
+        const val MY_SPREADSHEET_CATALYST_RHODIUM: Int = 6
+        const val MY_SPREADSHEET_CATALYST_TYPE: Int = 7
+        const val MY_SPREADSHEET_CATALYST_ID_PICTURE: Int = 8
+        const val MY_SPREADSHEET_CATALYST_URL_PICTURE: Int = 9
 
         //catalysts column letter
-        val MY_SPREADSHEET_CATALYST_COLUMN_ID: String = "A"
-        val MY_SPREADSHEET_CATALYST_COLUMN_NAME: String = "B"
-        val MY_SPREADSHEET_CATALYST_COLUMN_BRAND: String = "C"
-        val MY_SPREADSHEET_CATALYST_COLUMN_WEIGHT: String = "D"
-        val MY_SPREADSHEET_CATALYST_COLUMN_PLATTINUM: String = "E"
-        val MY_SPREADSHEET_CATALYST_COLUMN_PALLADIUM: String = "F"
-        val MY_SPREADSHEET_CATALYST_COLUMN_RHODIUM: String = "G"
-        val MY_SPREADSHEET_CATALYST_COLUMN_TYPE: String = "H"
-        val MY_SPREADSHEET_CATALYST_COLUMN_ID_PICTURE: String = "I"
-        val MY_SPREADSHEET_CATALYST_COLUMN_URL_PICTURE: String = "J"
+        const val MY_SPREADSHEET_CATALYST_COLUMN_ID: String = "A"
+        const val MY_SPREADSHEET_CATALYST_COLUMN_NAME: String = "B"
+        const val MY_SPREADSHEET_CATALYST_COLUMN_BRAND: String = "C"
+        const val MY_SPREADSHEET_CATALYST_COLUMN_WEIGHT: String = "D"
+        const val MY_SPREADSHEET_CATALYST_COLUMN_PLATTINUM: String = "E"
+        const val MY_SPREADSHEET_CATALYST_COLUMN_PALLADIUM: String = "F"
+        const val MY_SPREADSHEET_CATALYST_COLUMN_RHODIUM: String = "G"
+        const val MY_SPREADSHEET_CATALYST_COLUMN_TYPE: String = "H"
+        const val MY_SPREADSHEET_CATALYST_COLUMN_ID_PICTURE: String = "I"
+        const val MY_SPREADSHEET_CATALYST_COLUMN_URL_PICTURE: String = "J"
 
         /* spreadsheet sheet api v4 */
-        val MY_SPREADSHEET_URL_PREFIX_SHEETS_API: String =
+        const val MY_SPREADSHEET_URL_PREFIX_SHEETS_API: String =
             "https://sheets.googleapis.com/v4/spreadsheets/"
-        val MY_SPREADSHEET_PARAMETER_INPUT: String = "valueInputOption"
-        val MY_SPREADSHEET_PARAMETER_INPUT_VALUE: String = "USER_ENTERED"
+        const val MY_SPREADSHEET_PARAMETER_INPUT: String = "valueInputOption"
+        const val MY_SPREADSHEET_PARAMETER_INPUT_VALUE: String = "USER_ENTERED"
 
         /* spreadsheet docs api */
-        private val MY_SPREADSHEET_URL_PREFIX_DOCS_API: String =
+        private const val MY_SPREADSHEET_URL_PREFIX_DOCS_API: String =
             "https://docs.google.com/a/google.com/spreadsheets/d/"
-        private val MY_SPREADSHEET_URL_SUFIX_DOCS_API: String = "/gviz/tq"
+        private const val MY_SPREADSHEET_URL_SUFIX_DOCS_API: String = "/gviz/tq"
         val MY_SPREADSHEET_LOGIN_URL_DOCS_API: String =
             MY_SPREADSHEET_URL_PREFIX_DOCS_API + MySecret.getSpreadsheetIdLogin() + MY_SPREADSHEET_URL_SUFIX_DOCS_API
         val MY_SPREADSHEET_CATALYST_URL_DOCS_API: String =
             MY_SPREADSHEET_URL_PREFIX_DOCS_API + MySecret.getSpreadsheetIdCatalyst() + MY_SPREADSHEET_URL_SUFIX_DOCS_API
-        val MY_SPREADSHEET_PARAMETER_JSON: String = "tqx"
-        val MY_SPREADSHEET_PARAMETER_JSON_VALUE: String = "out:json"
-        val MY_SPREADSHEET_PARAMETER_WHERE: String = "tq"
+        const val MY_SPREADSHEET_PARAMETER_JSON: String = "tqx"
+        const val MY_SPREADSHEET_PARAMETER_JSON_VALUE: String = "out:json"
+        const val MY_SPREADSHEET_PARAMETER_WHERE: String = "tq"
 
         @Suppress("RegExpRedundantEscape")
         fun parseToJsonFromResultDocsApi(text: String): JSONObject {
@@ -239,93 +239,93 @@ class MyConfiguration {
         }
 
         /* courses exchange */
-        val MY_CATALYST_VALUES_URL_USD_PLN =
+        const val MY_CATALYST_VALUES_URL_USD_PLN =
             "https://api.nbp.pl/api/exchangerates/rates/a/usd?format=json"
-        val MY_CATALYST_VALUES_URL_EUR_PLN =
+        const val MY_CATALYST_VALUES_URL_EUR_PLN =
             "https://api.nbp.pl/api/exchangerates/rates/a/eur?format=json"
-        val MY_CATALYST_VALUES_URL_CATALYST_PLATINUM =
+        const val MY_CATALYST_VALUES_URL_CATALYST_PLATINUM =
             "https://proxy.kitco.com/getPM?symbol=PT&unit=gram&currency=USD"
-        val MY_CATALYST_VALUES_URL_CATALYST_PALLADIUM =
+        const val MY_CATALYST_VALUES_URL_CATALYST_PALLADIUM =
             "https://proxy.kitco.com/getPM?symbol=PD&unit=gram&currency=USD"
-        val MY_CATALYST_VALUES_URL_CATALYST_RHODIUM =
+        const val MY_CATALYST_VALUES_URL_CATALYST_RHODIUM =
             "https://proxy.kitco.com/getPM?symbol=RH&unit=gram&currency=USD"
-        val MY_CATALYST_VALUES_HEADER_ORIGIN = "https://www.kitco.com"
+        const val MY_CATALYST_VALUES_HEADER_ORIGIN = "https://www.kitco.com"
 
         /* shared preferences */
-        val MY_SHARED_PREFERENCES_NAME: String = "MyKatSharedPreferences"
-        val MY_SHARED_PREFERENCES_MODE = Context.MODE_PRIVATE
+        const val MY_SHARED_PREFERENCES_NAME: String = "MyKatSharedPreferences"
+        const val MY_SHARED_PREFERENCES_MODE = Context.MODE_PRIVATE
 
         //about user
-        val MY_SHARED_PREFERENCES_KEY_LOGIN: String = "Login"
-        val MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END: String = "LicenceDate"
-        val MY_SHARED_PREFERENCES_KEY_DISCOUNT: String = "Discount"
-        val MY_SHARED_PREFERENCES_KEY_VISIBILITY: String = "Visibility"
-        val MY_SHARED_PREFERENCES_KEY_UPDATE_COURSE_TIMESTAMP: String = "UpdateCourseTimestamp"
-        val MY_SHARED_PREFERENCES_KEY_MINUS_PLATINIUM: String = "MinusPlatinium"
-        val MY_SHARED_PREFERENCES_KEY_MINUS_PALLADIUM: String = "MinusPalladium"
-        val MY_SHARED_PREFERENCES_KEY_MINUS_RHODIUM: String = "MinusRhodium"
-        val MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT: String = "LastSearchedText"
+        const val MY_SHARED_PREFERENCES_KEY_LOGIN: String = "Login"
+        const val MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END: String = "LicenceDate"
+        const val MY_SHARED_PREFERENCES_KEY_DISCOUNT: String = "Discount"
+        const val MY_SHARED_PREFERENCES_KEY_VISIBILITY: String = "Visibility"
+        const val MY_SHARED_PREFERENCES_KEY_UPDATE_COURSE_TIMESTAMP: String = "UpdateCourseTimestamp"
+        const val MY_SHARED_PREFERENCES_KEY_MINUS_PLATINIUM: String = "MinusPlatinium"
+        const val MY_SHARED_PREFERENCES_KEY_MINUS_PALLADIUM: String = "MinusPalladium"
+        const val MY_SHARED_PREFERENCES_KEY_MINUS_RHODIUM: String = "MinusRhodium"
+        const val MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT: String = "LastSearchedText"
 
         //about courses elements
-        val MY_SHARED_PREFERENCES_KEY_PLATIUNUM: String = "Platinum"
-        val MY_SHARED_PREFERENCES_KEY_PLATIUNUM_DATE: String = "PlatinumDate"
-        val MY_SHARED_PREFERENCES_KEY_PALLADIUM: String = "Palladium"
-        val MY_SHARED_PREFERENCES_KEY_PALLADIUM_DATE: String = "PalladiumDate"
-        val MY_SHARED_PREFERENCES_KEY_RHODIUM: String = "Rhodium"
-        val MY_SHARED_PREFERENCES_KEY_RHODIUM_DATE: String = "RhodiumDate"
-        val MY_SHARED_PREFERENCES_KEY_ACTUAL_COURSES_DATE: String = "ActualCoursesDate"
-        val MY_SHARED_PREFERENCES_KEY_ACTUAL_COURSES_CHOICE: String = "ActualCoursesChoice"
+        const val MY_SHARED_PREFERENCES_KEY_PLATIUNUM: String = "Platinum"
+        const val MY_SHARED_PREFERENCES_KEY_PLATIUNUM_DATE: String = "PlatinumDate"
+        const val MY_SHARED_PREFERENCES_KEY_PALLADIUM: String = "Palladium"
+        const val MY_SHARED_PREFERENCES_KEY_PALLADIUM_DATE: String = "PalladiumDate"
+        const val MY_SHARED_PREFERENCES_KEY_RHODIUM: String = "Rhodium"
+        const val MY_SHARED_PREFERENCES_KEY_RHODIUM_DATE: String = "RhodiumDate"
+        const val MY_SHARED_PREFERENCES_KEY_ACTUAL_COURSES_DATE: String = "ActualCoursesDate"
+        const val MY_SHARED_PREFERENCES_KEY_ACTUAL_COURSES_CHOICE: String = "ActualCoursesChoice"
 
         //about courses exchanges
-        val MY_SHARED_PREFERENCES_KEY_USD_PLN: String = "UsdPln"
-        val MY_SHARED_PREFERENCES_KEY_USD_PLN_DATE: String = "UsdPlnDate"
-        val MY_SHARED_PREFERENCES_KEY_EUR_PLN: String = "EurPln"
-        val MY_SHARED_PREFERENCES_KEY_EUR_PLN_DATE: String = "EurPlnDate"
+        const val MY_SHARED_PREFERENCES_KEY_USD_PLN: String = "UsdPln"
+        const val MY_SHARED_PREFERENCES_KEY_USD_PLN_DATE: String = "UsdPlnDate"
+        const val MY_SHARED_PREFERENCES_KEY_EUR_PLN: String = "EurPln"
+        const val MY_SHARED_PREFERENCES_KEY_EUR_PLN_DATE: String = "EurPlnDate"
 
         /* database */
-        val DATABASE_PAGINATE_LIMIT_CATALYST: Int = 5
-        val DATABASE_PAGINATE_LIMIT_HISTORY_FILTER: Int = 10
+        const val DATABASE_PAGINATE_LIMIT_CATALYST: Int = 5
+        const val DATABASE_PAGINATE_LIMIT_HISTORY_FILTER: Int = 10
 
         // tables
-        val DATABASE_TABLE_CATALYST = "catalyst"
-        val DATABASE_TABLE_HISTORY_FILTER = "history_filter"
-        val DATABASE_TABLE_SQLITE_SEQUENCE = "sqlite_sequence"
-        val DATABASE_TABLE_COURSES = "courses"
+        const val DATABASE_TABLE_CATALYST = "catalyst"
+        const val DATABASE_TABLE_HISTORY_FILTER = "history_filter"
+        const val DATABASE_TABLE_SQLITE_SEQUENCE = "sqlite_sequence"
+        const val DATABASE_TABLE_COURSES = "courses"
 
         //columns courses
-        val DATABASE_ELEMENT_COURSES_ID = "id"
-        val DATABASE_ELEMENT_COURSES_DATE = "date"
-        val DATABASE_ELEMENT_COURSES_YEARMONTH = "yearmonth"
-        val DATABASE_ELEMENT_COURSES_PLATINUM = "platinum"
-        val DATABASE_ELEMENT_COURSES_PALLADIUM = "palladium"
-        val DATABASE_ELEMENT_COURSES_RHODIUM = "rhodium"
-        val DATABASE_ELEMENT_COURSES_EUR_PLN = "eur_pln"
-        val DATABASE_ELEMENT_COURSES_USD_PLN = "usd_pln"
+        const val DATABASE_ELEMENT_COURSES_ID = "id"
+        const val DATABASE_ELEMENT_COURSES_DATE = "date"
+        const val DATABASE_ELEMENT_COURSES_YEARMONTH = "yearmonth"
+        const val DATABASE_ELEMENT_COURSES_PLATINUM = "platinum"
+        const val DATABASE_ELEMENT_COURSES_PALLADIUM = "palladium"
+        const val DATABASE_ELEMENT_COURSES_RHODIUM = "rhodium"
+        const val DATABASE_ELEMENT_COURSES_EUR_PLN = "eur_pln"
+        const val DATABASE_ELEMENT_COURSES_USD_PLN = "usd_pln"
 
         //columns catalyst
-        val DATABASE_ELEMENT_CATALYST_ID = "id"
-        val DATABASE_ELEMENT_CATALYST_ID_PICTURE = "id_picture"
-        val DATABASE_ELEMENT_CATALYST_URL_PICTURE = "url_picture"
-        val DATABASE_ELEMENT_CATALYST_THUMBNAIL = "thumbnail"
-        val DATABASE_ELEMENT_CATALYST_NAME = "name"
-        val DATABASE_ELEMENT_CATALYST_BRAND = "brand"
-        val DATABASE_ELEMENT_CATALYST_PLATINUM = "platinum"
-        val DATABASE_ELEMENT_CATALYST_PALLADIUM = "palladium"
-        val DATABASE_ELEMENT_CATALYST_RHODIUM = "rhodium"
-        val DATABASE_ELEMENT_CATALYST_TYPE = "type"
-        val DATABASE_ELEMENT_CATALYST_WEIGHT = "weight"
-        val DATABASE_ELEMENT_CATALYST_TEMP_HITCOUNT = "hitcount"
+        const val DATABASE_ELEMENT_CATALYST_ID = "id"
+        const val DATABASE_ELEMENT_CATALYST_ID_PICTURE = "id_picture"
+        const val DATABASE_ELEMENT_CATALYST_URL_PICTURE = "url_picture"
+        const val DATABASE_ELEMENT_CATALYST_THUMBNAIL = "thumbnail"
+        const val DATABASE_ELEMENT_CATALYST_NAME = "name"
+        const val DATABASE_ELEMENT_CATALYST_BRAND = "brand"
+        const val DATABASE_ELEMENT_CATALYST_PLATINUM = "platinum"
+        const val DATABASE_ELEMENT_CATALYST_PALLADIUM = "palladium"
+        const val DATABASE_ELEMENT_CATALYST_RHODIUM = "rhodium"
+        const val DATABASE_ELEMENT_CATALYST_TYPE = "type"
+        const val DATABASE_ELEMENT_CATALYST_WEIGHT = "weight"
+        const val DATABASE_ELEMENT_CATALYST_TEMP_HITCOUNT = "hitcount"
 
         //columns history_filter
-        val DATABASE_ELEMENT_HISTORY_FILTER_ID = "id"
-        val DATABASE_ELEMENT_HISTORY_FILTER_NAME = "name"
+        const val DATABASE_ELEMENT_HISTORY_FILTER_ID = "id"
+        const val DATABASE_ELEMENT_HISTORY_FILTER_NAME = "name"
 
         //columns sqlite_sequence
-        val DATABASE_ELEMENT_SQLITE_SEQUENCE_SEQ = "seq"
-        val DATABASE_ELEMENT_SQLITE_SEQUENCE_NAME = "name"
+        const val DATABASE_ELEMENT_SQLITE_SEQUENCE_SEQ = "seq"
+        const val DATABASE_ELEMENT_SQLITE_SEQUENCE_NAME = "name"
 
         /* others */
-        val REQUEST_CODE_READ_PHONE_STATE: Int = 0
+        const val REQUEST_CODE_READ_PHONE_STATE: Int = 0
         var IS_AVAILABLE_UPDATE: Boolean = false
         fun getIntFromString(input: String): Int {
             var result = ("\\s+").toRegex().replace(input, "")
@@ -342,6 +342,7 @@ class MyConfiguration {
             return resultInt
         }
 
+        @Suppress("ReplaceCallWithBinaryOperator")
         fun getIntFromEnumBoolean(input: String): Int {
             val result = ("[^a-zA-Z]").toRegex().replace(input, "")
             if (result.equals("tak")) return 1
@@ -355,26 +356,26 @@ class MyConfiguration {
         val INFO_MESSAGE_COLOR_SUCCESS: Int = Color.parseColor("#363636")
 
         //message
-        val INFO_MESSAGE_USER_NEVER_LOGGED: String = "Wprowadź nazwę użytkownika"
-        val INFO_MESSAGE_WAIT_AUTHENTICATE: String = "Trwa uwierzytelnianie…"
-        val INFO_MESSAGE_USER_FAILED_LICENCE: String = "Brak licencji"
-        val INFO_MESSAGE_USER_FAILED_LOGIN: String = "Błędna nazwa użytkownika"
-        val INFO_MESSAGE_USER_FAILED_SERIAL: String = "Błędne urządzenie"
-        val INFO_MESSAGE_NETWORK_FAILED: String = "Brak połączenia"
-        val INFO_MESSAGE_UNHANDLED_EXCEPTION: String = "Wystąpił błąd"
-        val INFO_MESSAGE_SAVE_EMPTY_VALUE: String = "Nie można zapisać pustej wartości"
-        val INFO_MESSAGE_WAIT_UPDATE: String = "Trwa aktualizacja…"
-        val INFO_UPDATE_SUCCESS: String = "Aktualizacja przebiegła pomyślnie"
-        val INFO_UPDATE_FAILED: String = "Wystąpił błąd podczas aktualizacji"
-        val INFO_DOWNLOAD_BITMAP_WAIT: String = "Trwa pobieranie obrazu…"
-        val INFO_DOWNLOAD_BITMAP_FAILED: String = "Wystąpił błąd podczas pobierania obrazu"
-        val INFO_DOWNLOAD_BITMAP_STATUS: String = "Status pobieranych miniatur"
-        val INFO_DOWNLOAD_BITMAP_SUCCESS: String = "Baza danych jest aktualna"
-        val INFO_EMPTY_DATABASE: String = "Baza danych jest pusta"
-        val INFO_DATABASE_EXPIRE: String = "Baza danych nie jest aktualna"
-        val INFO_MESSAGE_ADDED_HISTORY_FILTER: String = "Pomyślnie zapisano nazwę do filtrowania"
-        val INFO_MESSAGE_DELETED_HISTORY_FILTER: String = "Pomyślnie usunięto nazwę do filtrowania"
-        val INFO_MESSAGE_REFRESH_COURSES: String = "Odśwież wartości kursów"
+        const val INFO_MESSAGE_USER_NEVER_LOGGED: String = "Wprowadź nazwę użytkownika"
+        const val INFO_MESSAGE_WAIT_AUTHENTICATE: String = "Trwa uwierzytelnianie…"
+        const val INFO_MESSAGE_USER_FAILED_LICENCE: String = "Brak licencji"
+        const val INFO_MESSAGE_USER_FAILED_LOGIN: String = "Błędna nazwa użytkownika"
+        const val INFO_MESSAGE_USER_FAILED_SERIAL: String = "Błędne urządzenie"
+        const val INFO_MESSAGE_NETWORK_FAILED: String = "Brak połączenia"
+        const val INFO_MESSAGE_UNHANDLED_EXCEPTION: String = "Wystąpił błąd"
+        const val INFO_MESSAGE_SAVE_EMPTY_VALUE: String = "Nie można zapisać pustej wartości"
+        const val INFO_MESSAGE_WAIT_UPDATE: String = "Trwa aktualizacja…"
+        const val INFO_UPDATE_SUCCESS: String = "Aktualizacja przebiegła pomyślnie"
+        const val INFO_UPDATE_FAILED: String = "Wystąpił błąd podczas aktualizacji"
+        const val INFO_DOWNLOAD_BITMAP_WAIT: String = "Trwa pobieranie obrazu…"
+        const val INFO_DOWNLOAD_BITMAP_FAILED: String = "Wystąpił błąd podczas pobierania obrazu"
+        const val INFO_DOWNLOAD_BITMAP_STATUS: String = "Status pobieranych miniatur"
+        const val INFO_DOWNLOAD_BITMAP_SUCCESS: String = "Baza danych jest aktualna"
+        const val INFO_EMPTY_DATABASE: String = "Baza danych jest pusta"
+        const val INFO_DATABASE_EXPIRE: String = "Baza danych nie jest aktualna"
+        const val INFO_MESSAGE_ADDED_HISTORY_FILTER: String = "Pomyślnie zapisano nazwę do filtrowania"
+        const val INFO_MESSAGE_DELETED_HISTORY_FILTER: String = "Pomyślnie usunięto nazwę do filtrowania"
+        const val INFO_MESSAGE_REFRESH_COURSES: String = "Odśwież wartości kursów"
 
         /* methods */
         //decorator for delete others signs
@@ -472,7 +473,7 @@ class MyConfiguration {
             return "https://lh3.googleusercontent.com/u/0/d/$pictureIdFromGoogle=w$width-h$height"
         }
 
-        val CIPHER_TRANSFORMATION: String = "BLOWFISH/ECB/PKCS5Padding"
+        private const val CIPHER_TRANSFORMATION: String = "BLOWFISH/ECB/PKCS5Padding"
 
         //get encrypted
         @SuppressLint("GetInstance")
@@ -499,7 +500,7 @@ class MyConfiguration {
         fun getSearchingString(input: String): List<String> {
             var searchString = ("\\*{2,}").toRegex().replace(input.trim(), "*")
             searchString = ("\\s{2,}").toRegex().replace(searchString, " ")
-            return if (searchString.isEmpty()) mutableListOf<String>() else searchString.split(" ")
+            return if (searchString.isEmpty()) mutableListOf() else searchString.split(" ")
         }
 
         //get colored text

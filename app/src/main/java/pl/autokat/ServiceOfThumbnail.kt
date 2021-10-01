@@ -1,30 +1,28 @@
 package pl.autokat
 
 import android.content.Context
-import android.content.Intent
-import androidx.core.app.JobIntentService
+import androidx.work.Worker
+import androidx.work.WorkerParameters
 import org.json.JSONArray
 import org.json.JSONObject
 import pl.autokat.components.MyConfiguration
 import pl.autokat.components.MyDatabase
 import java.net.URL
 
-class ServiceOfThumbnail : JobIntentService() {
-
-    companion object {
-        private const val UNIQUE_JOB_ID: Int = 1000
-        private var JOB_IS_EXISTS: Boolean = false
-        fun enqueueWork(context: Context) {
-            //assuming that it is atomic (change variable) - in this case will be only one job which something do
-            if (JOB_IS_EXISTS == false) {
-                JOB_IS_EXISTS = true
-                enqueueWork(context, ServiceOfThumbnail::class.java, UNIQUE_JOB_ID, Intent())
-            }
+class UploadWorker(appContext: Context, workerParams: WorkerParameters) :
+    Worker(appContext, workerParams) {
+    override fun doWork(): Result {
+        //assuming that it is atomic (change variable) - in this case will be only one job which something do
+        if (jobExists == false) {
+            jobExists = true
+            uploadImages()
         }
+        return Result.success()
     }
 
-    //download thumbnails
-    override fun onHandleWork(intent: Intent) {
+    private var jobExists: Boolean = false
+
+    private fun uploadImages() {
         try {
             val database = MyDatabase(applicationContext)
             val items: JSONArray = database.getCatalystWithoutThumbnail()
@@ -40,7 +38,7 @@ class ServiceOfThumbnail : JobIntentService() {
         } catch (e: Exception) {
             //nothing
         } finally {
-            JOB_IS_EXISTS = false
+            jobExists = false
         }
     }
 }

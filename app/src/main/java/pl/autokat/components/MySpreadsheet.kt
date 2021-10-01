@@ -144,10 +144,8 @@ class MySpreadsheet {
             )
                 .authentication().bearer(MyConfiguration.getAccessToken()).responseString()
             if (response.statusCode != 200) throw UnknownHostException()
-            val rows =
-                MyConfiguration.parseToJsonFromResultDocsApi(result.get()).getJSONObject("table")
-                    .getJSONArray("rows")
-            return rows
+            return MyConfiguration.parseToJsonFromResultDocsApi(result.get()).getJSONObject("table")
+                .getJSONArray("rows")
         }
     }
 }

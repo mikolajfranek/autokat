@@ -14,6 +14,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.drawerlayout.widget.DrawerLayout.DrawerListener
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import org.json.JSONArray
 import pl.autokat.components.*
 import pl.autokat.databinding.ActivityResultBinding
@@ -512,7 +515,12 @@ class ResultActivity : AppCompatActivity() {
                     ).toString()
                 )
                 //can run service - assuming that app has connection to internet
-                ServiceOfThumbnail.enqueueWork(this@ResultActivity.applicationContext)
+                //ServiceOfThumbnail.enqueueWork(this@ResultActivity.applicationContext)
+                val uploadWorkRequest: WorkRequest = OneTimeWorkRequestBuilder<UploadWorker>().build()
+                WorkManager
+                    .getInstance(this@ResultActivity.applicationContext)
+                    .enqueue(uploadWorkRequest)
+
                 myProcessStep = MyProcessStep.SUCCESS
             } catch (e: Exception) {
                 //nothing

@@ -66,9 +66,7 @@ class MyItemCatalyst(
         //minus 5euro per kilogram of catalyst
         val fiveEuroPerKilogram: Float = (((5.0F).toFloat()) * courseEurPln) * this.weight
         //calculate result price
-        val result: Float =
-            ((pricePlatinum + pricePalladium + priceRhodium) * discount) - fiveEuroPerKilogram
         //return
-        return result
+        return ((pricePlatinum + pricePalladium + priceRhodium) * discount) - fiveEuroPerKilogram
     }
 }

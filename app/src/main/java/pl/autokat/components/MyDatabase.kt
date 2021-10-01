@@ -23,7 +23,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
     private val myContext: Context = context
 
     //upgrade
-    private fun upgrade_1_0_6(db: SQLiteDatabase) {
+    private fun upgrade106(db: SQLiteDatabase) {
         //create table
         try {
             db.beginTransaction()
@@ -63,7 +63,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
             when (newVersion) {
                 //in case, when database need to be override
                 MyConfiguration.DATABASE_VERSION_1_0_6 -> {
-                    upgrade_1_0_6(db)
+                    upgrade106(db)
                 }
                 else -> {
                     //end transaction, unlock database
@@ -127,9 +127,9 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_COURSES_YEARMONTH))
                 )
                 if (result.contains(myCourses.yearMonth) == false) {
-                    result.put(myCourses.yearMonth, hashMapOf())
+                    result[myCourses.yearMonth] = hashMapOf()
                 }
-                result[myCourses.yearMonth]!!.put(myCourses.date, myCourses)
+                result[myCourses.yearMonth]!![myCourses.date] = myCourses
             }
         } finally {
             cursor?.close()
@@ -250,7 +250,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
                 MyConfiguration.DATABASE_TABLE_CATALYST,
                 content,
                 MyConfiguration.DATABASE_ELEMENT_CATALYST_ID + "= ?",
-                Array(1) { i -> catalystId.toString() },
+                Array(1) { catalystId.toString() },
                 SQLiteDatabase.CONFLICT_IGNORE
             )
             db.setTransactionSuccessful()
@@ -265,14 +265,12 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
         try {
             db.beginTransaction()
             //truncate tables
-            db.execSQL("DELETE FROM ${MyConfiguration.DATABASE_TABLE_CATALYST};")
-            db.execSQL("VACUUM;")
+            db.execSQL("DELETE FROM ${MyConfiguration.DATABASE_TABLE_CATALYST};VACUUM;")
             //delete row from sqlite sequence
             db.execSQL(
                 "DELETE FROM ${MyConfiguration.DATABASE_TABLE_SQLITE_SEQUENCE}\n" +
-                        "WHERE ${MyConfiguration.DATABASE_ELEMENT_SQLITE_SEQUENCE_NAME} LIKE '${MyConfiguration.DATABASE_TABLE_CATALYST}';"
+                        "WHERE ${MyConfiguration.DATABASE_ELEMENT_SQLITE_SEQUENCE_NAME} LIKE '${MyConfiguration.DATABASE_TABLE_CATALYST}';VACUUM;"
             )
-            db.execSQL("VACUUM;")
             db.setTransactionSuccessful()
         } finally {
             db.endTransaction()
@@ -429,7 +427,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
         nameCatalystOrBrandCarInput: String,
         limitElements: String
     ): ArrayList<MyItemCatalyst> {
-        val result: ArrayList<MyItemCatalyst> = ArrayList<MyItemCatalyst>()
+        val result: ArrayList<MyItemCatalyst> = ArrayList()
         var cursor: Cursor? = null
         try {
             //get searching string
@@ -474,7 +472,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
             } else {
                 queryString += " FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}"
             }
-            queryString += " LIMIT ${limitElements}"
+            queryString += " LIMIT $limitElements"
             cursor = readableDatabase.rawQuery(
                 queryString,
                 (argumentsSelect + argumentsWhere).toTypedArray()
@@ -600,7 +598,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
     //get data history filter
     @SuppressLint("Range")
     fun getDataHistoryFilter(limitElements: String): ArrayList<MyItemHistoryFilter> {
-        val result: ArrayList<MyItemHistoryFilter> = ArrayList<MyItemHistoryFilter>()
+        val result: ArrayList<MyItemHistoryFilter> = ArrayList()
         var cursor: Cursor? = null
         try {
             //set fields which will be retrieved

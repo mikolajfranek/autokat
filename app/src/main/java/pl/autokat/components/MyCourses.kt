@@ -1,7 +1,5 @@
 package pl.autokat.components
 
-import java.time.LocalDate
-
 class MyCourses(
     var platinum: String,
     var palladium: String,
@@ -10,4 +8,4 @@ class MyCourses(
     var usdPln: String,
     var date: String,
     var yearMonth: String
-) {}
+) 
