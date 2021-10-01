@@ -120,7 +120,7 @@ class CalendarViewActivity : AppCompatActivity() {
         if (actualCoursesDate.isEmpty()) {
             bindingActivityCalendarView.calendarView.scrollToDate(today)
         } else {
-            val date =  MyConfiguration.formatDate(actualCoursesDate)
+            val date = MyConfiguration.formatDate(actualCoursesDate)
             val localDate = MyConfiguration.formatDateToLocalDate(date)
             bindingActivityCalendarView.calendarView.scrollToDate(localDate)
         }

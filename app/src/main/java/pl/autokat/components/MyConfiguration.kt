@@ -97,7 +97,8 @@ class MyConfiguration {
         }
 
         /* licence and time */
-        private const val URL_TIMESTAMP: String = "https://worldtimeapi.org/api/timezone/Europe/Warsaw"
+        private const val URL_TIMESTAMP: String =
+            "https://worldtimeapi.org/api/timezone/Europe/Warsaw"
         const val ONE_DAY_IN_MILLISECONDS: Long = 86400000
 
         //shared preferences
@@ -260,7 +261,8 @@ class MyConfiguration {
         const val MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END: String = "LicenceDate"
         const val MY_SHARED_PREFERENCES_KEY_DISCOUNT: String = "Discount"
         const val MY_SHARED_PREFERENCES_KEY_VISIBILITY: String = "Visibility"
-        const val MY_SHARED_PREFERENCES_KEY_UPDATE_COURSE_TIMESTAMP: String = "UpdateCourseTimestamp"
+        const val MY_SHARED_PREFERENCES_KEY_UPDATE_COURSE_TIMESTAMP: String =
+            "UpdateCourseTimestamp"
         const val MY_SHARED_PREFERENCES_KEY_MINUS_PLATINIUM: String = "MinusPlatinium"
         const val MY_SHARED_PREFERENCES_KEY_MINUS_PALLADIUM: String = "MinusPalladium"
         const val MY_SHARED_PREFERENCES_KEY_MINUS_RHODIUM: String = "MinusRhodium"
@@ -373,8 +375,10 @@ class MyConfiguration {
         const val INFO_DOWNLOAD_BITMAP_SUCCESS: String = "Baza danych jest aktualna"
         const val INFO_EMPTY_DATABASE: String = "Baza danych jest pusta"
         const val INFO_DATABASE_EXPIRE: String = "Baza danych nie jest aktualna"
-        const val INFO_MESSAGE_ADDED_HISTORY_FILTER: String = "Pomyślnie zapisano nazwę do filtrowania"
-        const val INFO_MESSAGE_DELETED_HISTORY_FILTER: String = "Pomyślnie usunięto nazwę do filtrowania"
+        const val INFO_MESSAGE_ADDED_HISTORY_FILTER: String =
+            "Pomyślnie zapisano nazwę do filtrowania"
+        const val INFO_MESSAGE_DELETED_HISTORY_FILTER: String =
+            "Pomyślnie usunięto nazwę do filtrowania"
         const val INFO_MESSAGE_REFRESH_COURSES: String = "Odśwież wartości kursów"
 
         /* methods */

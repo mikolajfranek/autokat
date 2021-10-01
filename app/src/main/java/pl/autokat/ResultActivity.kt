@@ -515,12 +515,11 @@ class ResultActivity : AppCompatActivity() {
                     ).toString()
                 )
                 //can run service - assuming that app has connection to internet
-                //ServiceOfThumbnail.enqueueWork(this@ResultActivity.applicationContext)
-                val uploadWorkRequest: WorkRequest = OneTimeWorkRequestBuilder<UploadWorker>().build()
+                val uploadWorkRequest: WorkRequest =
+                    OneTimeWorkRequestBuilder<UploadWorker>().build()
                 WorkManager
                     .getInstance(this@ResultActivity.applicationContext)
                     .enqueue(uploadWorkRequest)
-
                 myProcessStep = MyProcessStep.SUCCESS
             } catch (e: Exception) {
                 //nothing
