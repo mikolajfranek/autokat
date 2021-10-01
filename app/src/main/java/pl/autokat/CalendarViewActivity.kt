@@ -45,7 +45,7 @@ class CalendarViewActivity : AppCompatActivity() {
         12 to "Grudzień"
     )
     private val featureStart =
-        LocalDate.parse("01-01-2021", DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+        LocalDate.parse("01-10-2021", DateTimeFormatter.ofPattern("dd-MM-yyyy"))
     private var mapDaysCoursesOfYearMonth = HashMap<String, HashMap<String, MyCourses>>()
     private lateinit var myDatabase: MyDatabase
 
@@ -88,10 +88,10 @@ class CalendarViewActivity : AppCompatActivity() {
                                     textView.background = null
                                 }
                             } else {
-                                if (day.date == today) {
-                                    textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
-                                }
                                 textView.background = null
+                            }
+                            if (day.date == today) {
+                                textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
                             }
                         }
                     }
@@ -196,6 +196,7 @@ class CalendarViewActivity : AppCompatActivity() {
             textView.setOnClickListener {
                 //reset actual values
                 bindingActivityCalendarView.calendarViewCourses.visibility = View.GONE
+                menuItemCalendarCheck.isVisible = false
                 bindingActivityCalendarView.calendarViewActualDate.text = ""
                 bindingActivityCalendarView.calendarViewActualPlatinum.text = ""
                 bindingActivityCalendarView.calendarViewActualPalladium.text = ""
@@ -258,10 +259,10 @@ class CalendarViewActivity : AppCompatActivity() {
                                 val usdText =
                                     (MyConfiguration.formatStringFloat(courses.usdPln, 2) + " zł")
                                 bindingActivityCalendarView.calendarViewActualUsdPln.text = usdText
+                            } else {
+                                menuItemCalendarCheck.isVisible = false
                             }
                         }
-                    } else {
-                        menuItemCalendarCheck.isVisible = false
                     }
                 }
             }
