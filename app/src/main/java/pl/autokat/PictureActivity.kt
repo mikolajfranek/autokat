@@ -23,44 +23,61 @@ class PictureActivity : AppCompatActivity() {
         val view = this.bindingActivityPicture.root
         this.setContentView(view)
         //get data which sent
-        val urlPicture : String = this.intent.getStringExtra("urlPicture")!!.toString()
+        val urlPicture: String = this.intent.getStringExtra("urlPicture")!!.toString()
         //make async task and execute
         Thread(this.TaskDownloadFullPicture(urlPicture)).start()
     }
+
     //async class which download and set oryginal picture in full size
     inner class TaskDownloadFullPicture(urlPictureInput: String) : Runnable {
         //fields
-        private var bitmap : Bitmap? = null
-        private var urlPicture : String = urlPictureInput
+        private var bitmap: Bitmap? = null
+        private var urlPicture: String = urlPictureInput
+
         //run
         override fun run() {
             //--- onPreExecute
             this@PictureActivity.runOnUiThread {
                 //disable user interface on process application
-                MyUserInterface.enableActivity(this@PictureActivity.bindingActivityPicture.linearLayout,false)
-                Toast.makeText(this@PictureActivity.applicationContext, MyConfiguration.INFO_DOWNLOAD_BITMAP_WAIT, Toast.LENGTH_SHORT).show()
+                MyUserInterface.enableActivity(
+                    this@PictureActivity.bindingActivityPicture.linearLayout,
+                    false
+                )
+                Toast.makeText(
+                    this@PictureActivity.applicationContext,
+                    MyConfiguration.INFO_DOWNLOAD_BITMAP_WAIT,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             //--- doInBackground
-            var myProcessStep : MyProcessStep = MyProcessStep.SUCCESS
-            try{
-                val urlThumbnail = MyConfiguration.getPictureUrlFromGoogle(this.urlPicture, 1920, 1080)
-                this.bitmap = BitmapFactory.decodeStream(URL(urlThumbnail).openConnection().getInputStream())
-            }
-            catch(e: UnknownHostException){
+            var myProcessStep: MyProcessStep = MyProcessStep.SUCCESS
+            try {
+                val urlThumbnail =
+                    MyConfiguration.getPictureUrlFromGoogle(this.urlPicture, 1920, 1080)
+                this.bitmap =
+                    BitmapFactory.decodeStream(URL(urlThumbnail).openConnection().getInputStream())
+            } catch (e: UnknownHostException) {
                 myProcessStep = MyProcessStep.NETWORK_FAILED
-            }
-            catch(e: Exception){
+            } catch (e: Exception) {
                 myProcessStep = MyProcessStep.UNHANDLED_EXCEPTION
             }
             //--- onPostExecute
             this@PictureActivity.runOnUiThread {
-                when(myProcessStep){
+                when (myProcessStep) {
                     MyProcessStep.NETWORK_FAILED -> {
-                        Toast.makeText(this@PictureActivity.applicationContext, MyConfiguration.INFO_MESSAGE_NETWORK_FAILED, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@PictureActivity.applicationContext,
+                            MyConfiguration.INFO_MESSAGE_NETWORK_FAILED,
+                            Toast.LENGTH_SHORT
+                        ).show()
                         this@PictureActivity.finish()
                     }
                     MyProcessStep.UNHANDLED_EXCEPTION -> {
-                        Toast.makeText(this@PictureActivity.applicationContext, MyConfiguration.INFO_DOWNLOAD_BITMAP_FAILED, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@PictureActivity.applicationContext,
+                            MyConfiguration.INFO_DOWNLOAD_BITMAP_FAILED,
+                            Toast.LENGTH_SHORT
+                        ).show()
                         this@PictureActivity.finish()
                     }
                     MyProcessStep.SUCCESS -> {
@@ -71,7 +88,10 @@ class PictureActivity : AppCompatActivity() {
                     }
                 }
                 //enable user interface on process application
-                MyUserInterface.enableActivity(this@PictureActivity.bindingActivityPicture.linearLayout,true)
+                MyUserInterface.enableActivity(
+                    this@PictureActivity.bindingActivityPicture.linearLayout,
+                    true
+                )
             }
         }
     }

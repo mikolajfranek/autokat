@@ -7,11 +7,13 @@
     android:orientation="vertical"
     tools:context="pl.autokat.MainActivity">
 
-    <include
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        layout="@layout/my_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@color/colorUser"
+        android:theme="@style/ToolbarTheme"
+        tools:viewBindingIgnore="true" />
 
     <TextView
         android:layout_width="match_parent"
@@ -36,11 +38,11 @@
         android:enabled="true"
         android:fontFamily="sans-serif"
         android:hint="@string/activity_main_wprowadz_nazwe_uzytkownika"
+        android:importantForAutofill="no"
         android:inputType="text"
         android:padding="10dp"
         android:text=""
-        android:textColor="@color/colorUser"
-        android:importantForAutofill="no" />
+        android:textColor="@color/colorUser" />
 
     <TextView
         android:id="@+id/text_view"
@@ -56,6 +58,7 @@
         android:textColor="@color/colorUser" />
 
     <Button
+        android:id="@+id/login_button"
         style="@style/Widget.AppCompat.Button"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -63,7 +66,6 @@
         android:layout_marginTop="5dp"
         android:layout_marginRight="10dp"
         android:fontFamily="sans-serif"
-        android:onClick="activityMainButtonOnClick"
         android:text="@string/activity_main_zaloguj"
         android:textAllCaps="false" />
 </LinearLayout>

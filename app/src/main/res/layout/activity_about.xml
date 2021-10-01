@@ -6,19 +6,21 @@
     android:orientation="vertical"
     tools:context=".AboutActivity">
 
-    <include
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        layout="@layout/my_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@color/colorUser"
+        android:theme="@style/ToolbarTheme"
+        tools:viewBindingIgnore="true" />
 
     <TextView
         android:id="@+id/licence"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
         android:fontFamily="sans-serif"
         android:textColor="@color/colorUser"
         android:visibility="gone" />
@@ -28,8 +30,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
         android:fontFamily="sans-serif"
         android:textColor="@color/colorUser" />
 
@@ -110,7 +112,7 @@
                 android:layout_weight="4"
                 android:autoLink="email"
                 android:fontFamily="sans-serif"
-                android:text="@string/activity_about_email_wartosc"/>
+                android:text="@string/activity_about_email_wartosc" />
         </TableRow>
 
         <TableRow
@@ -133,7 +135,7 @@
                 android:layout_weight="4"
                 android:autoLink="web"
                 android:fontFamily="sans-serif"
-                android:text="@string/activity_about_stronawww_wartosc"/>
+                android:text="@string/activity_about_stronawww_wartosc" />
         </TableRow>
     </TableLayout>
 </TableLayout>

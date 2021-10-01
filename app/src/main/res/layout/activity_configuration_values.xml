@@ -1,41 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linear_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="pl.autokat.ConfigurationValuesActivity">
 
-    <include
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        layout="@layout/my_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@color/colorUser"
+        android:theme="@style/ToolbarTheme"
+        tools:viewBindingIgnore="true" />
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/switch_courses"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        app:switchMinWidth="68dp"
-        android:text="@string/activity_configuration_values_switchCourses"
         android:checked="true"
+        android:text="@string/activity_configuration_values_switchCourses"
         android:textOff="@string/activity_configuration_values_switchCourses_no"
-        android:textOn="@string/activity_configuration_values_switchCourses_yes"/>
+        android:textOn="@string/activity_configuration_values_switchCourses_yes"
+        app:switchMinWidth="68dp" />
 
     <Button
         android:id="@+id/actual_date_courses_button"
         style="@style/Widget.AppCompat.Button"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:visibility="gone"
         android:layout_margin="10dp"
         android:fontFamily="sans-serif"
-        android:onClick="openCalendarActivity"
         android:text="@string/activity_configuration_values_actualDateCourses"
-        android:textAllCaps="false" />
+        android:textAllCaps="false"
+        android:visibility="gone" />
 
     <TextView
         android:layout_width="match_parent"

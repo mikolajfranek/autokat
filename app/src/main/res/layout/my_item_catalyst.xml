@@ -8,23 +8,23 @@
     android:layout_marginRight="10dp">
 
     <TableRow
-        android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
         android:layout_weight="0">
 
         <ImageView
             android:id="@+id/image_view"
-            android:background="@drawable/question_mark"
             android:layout_width="96dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
             android:adjustViewBounds="true"
+            android:background="@drawable/question_mark"
             android:clickable="true"
-            android:focusable="true"
-            android:contentDescription="@string/app_name" />
+            android:contentDescription="@string/app_name"
+            android:focusable="true" />
 
         <TextView
             android:id="@+id/name"
@@ -105,11 +105,11 @@
 
     <TableRow
         android:id="@+id/row_plattinum"
-        android:layout_weight="0"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
+        android:layout_weight="0"
         android:visibility="gone">
 
         <TextView
@@ -132,11 +132,11 @@
 
     <TableRow
         android:id="@+id/row_palladium"
-        android:layout_weight="0"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
+        android:layout_weight="0"
         android:visibility="gone">
 
         <TextView
@@ -165,11 +165,11 @@
 
     <TableRow
         android:id="@+id/row_rhodium"
-        android:layout_weight="0"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
+        android:layout_weight="0"
         android:visibility="gone">
 
         <TextView
@@ -199,9 +199,9 @@
     <View
         android:layout_width="wrap_content"
         android:layout_height="1dp"
-        android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
         android:background="@color/colorLine" />

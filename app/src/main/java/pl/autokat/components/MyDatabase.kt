@@ -15,16 +15,17 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class MyDatabase(context: Context) : SQLiteAssetHelper(context,
+class MyDatabase(context: Context) : SQLiteAssetHelper(
+    context,
     MyConfiguration.DATABASE_NAME_OF_FILE, null,
-    MyConfiguration.DATABASE_VERSION)
-{
+    MyConfiguration.DATABASE_VERSION
+) {
     private val myContext: Context = context
 
     //upgrade
-    private fun upgrade_1_0_6(db: SQLiteDatabase){
+    private fun upgrade_1_0_6(db: SQLiteDatabase) {
         //create table
-        try{
+        try {
             db.beginTransaction()
             val queryString =
                 "CREATE TABLE `${MyConfiguration.DATABASE_TABLE_COURSES}` (\n" +
@@ -39,11 +40,11 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
                         ");"
             db.execSQL(queryString)
             db.setTransactionSuccessful()
-        }finally {
+        } finally {
             db.endTransaction()
         }
         //add index
-        try{
+        try {
             db.beginTransaction()
             val queryString =
                 "CREATE INDEX `courses_yearmonth` ON `${MyConfiguration.DATABASE_TABLE_COURSES}` (\n" +
@@ -51,7 +52,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
                         ");"
             db.execSQL(queryString)
             db.setTransactionSuccessful()
-        }finally {
+        } finally {
             db.endTransaction()
         }
     }
@@ -59,7 +60,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
     //override onupgrage of database
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         if (newVersion > oldVersion) {
-            when(newVersion){
+            when (newVersion) {
                 //in case, when database need to be override
                 MyConfiguration.DATABASE_VERSION_1_0_6 -> {
                     upgrade_1_0_6(db)
@@ -68,10 +69,13 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
                     //end transaction, unlock database
                     db.endTransaction()
                     //copy database, from assets to directory system where is database of app
-                    val fileDatabaseInAssets = myContext.assets.open(MyConfiguration.DATABASE_FILE_PATH_ASSETS)
-                    val fileDatabaseInSystem = FileOutputStream(myContext.getDatabasePath(
-                        MyConfiguration.DATABASE_NAME_OF_FILE
-                    ))
+                    val fileDatabaseInAssets =
+                        myContext.assets.open(MyConfiguration.DATABASE_FILE_PATH_ASSETS)
+                    val fileDatabaseInSystem = FileOutputStream(
+                        myContext.getDatabasePath(
+                            MyConfiguration.DATABASE_NAME_OF_FILE
+                        )
+                    )
                     fileDatabaseInAssets.copyTo(fileDatabaseInSystem)
                     fileDatabaseInSystem.close()
                     fileDatabaseInAssets.close()
@@ -83,11 +87,12 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
             }
         }
     }
+
     //get courses from date
     @SuppressLint("Range")
-    fun getCoursesOfYearMonths(setOfYearMonth: Set<String>) : HashMap<String, HashMap<String,MyCourses>> {
-        val result : HashMap<String, HashMap<String,MyCourses>> = hashMapOf()
-        var cursor : Cursor? = null
+    fun getCoursesOfYearMonths(setOfYearMonth: Set<String>): HashMap<String, HashMap<String, MyCourses>> {
+        val result: HashMap<String, HashMap<String, MyCourses>> = hashMapOf()
+        var cursor: Cursor? = null
         try {
             //set fields which will be retrieved
             val fields = arrayOf(
@@ -102,10 +107,16 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
             //make query
             val queryString = "SELECT ${fields.joinToString()}\n" +
                     "FROM ${MyConfiguration.DATABASE_TABLE_COURSES}\n" +
-                    "WHERE ${MyConfiguration.DATABASE_ELEMENT_COURSES_YEARMONTH} IN (${setOfYearMonth.joinToString(prefix = "'", postfix = "'", separator = "','" )})\n"
+                    "WHERE ${MyConfiguration.DATABASE_ELEMENT_COURSES_YEARMONTH} IN (${
+                        setOfYearMonth.joinToString(
+                            prefix = "'",
+                            postfix = "'",
+                            separator = "','"
+                        )
+                    })\n"
             cursor = readableDatabase.rawQuery(queryString, null)
             //return data if exist
-            while (cursor.moveToNext()){
+            while (cursor.moveToNext()) {
                 val myCourses = MyCourses(
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_COURSES_PLATINUM)),
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_COURSES_PALLADIUM)),
@@ -115,18 +126,19 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_COURSES_DATE)),
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_COURSES_YEARMONTH))
                 )
-                if(result.contains(myCourses.yearMonth) == false){
+                if (result.contains(myCourses.yearMonth) == false) {
                     result.put(myCourses.yearMonth, hashMapOf())
                 }
                 result[myCourses.yearMonth]!!.put(myCourses.date, myCourses)
             }
-        }finally {
+        } finally {
             cursor?.close()
         }
         return result
     }
+
     //insert courses
-    fun insertCourses(myCourses: MyCourses){
+    fun insertCourses(myCourses: MyCourses) {
         val db = this.writableDatabase
         try {
             db.beginTransaction()
@@ -160,99 +172,122 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
                 myCourses.usdPln
             )
             //insert element
-            val countInserted = db.insert(MyConfiguration.DATABASE_TABLE_COURSES,null, row)
-            if(countInserted == -1L) throw IllegalArgumentException()
+            val countInserted = db.insert(MyConfiguration.DATABASE_TABLE_COURSES, null, row)
+            if (countInserted == -1L) throw IllegalArgumentException()
             db.setTransactionSuccessful()
-        }finally {
+        } finally {
             db.endTransaction()
         }
     }
+
     //get amount of elements which they don't have thumbnail
     @SuppressLint("Range")
     fun getCountCatalystWithThumbnail(): Int {
         var count = 0
-        var cursor : Cursor? = null
+        var cursor: Cursor? = null
         try {
-            cursor = readableDatabase.rawQuery("SELECT count(*) as count FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}\n" +
-                    "WHERE ${MyConfiguration.DATABASE_ELEMENT_CATALYST_THUMBNAIL} IS NOT NULL", null)
-            if(cursor.moveToFirst()){
+            cursor = readableDatabase.rawQuery(
+                "SELECT count(*) as count FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}\n" +
+                        "WHERE ${MyConfiguration.DATABASE_ELEMENT_CATALYST_THUMBNAIL} IS NOT NULL",
+                null
+            )
+            if (cursor.moveToFirst()) {
                 count = cursor.getInt(cursor.getColumnIndex("count"))
             }
-        }finally {
+        } finally {
             cursor?.close()
         }
         return count
     }
+
     //get amount of elements which has url picture
     @SuppressLint("Range")
     fun getCountCatalystWithUrlOfThumbnail(): Int {
         var count = 0
-        var cursor : Cursor? = null
+        var cursor: Cursor? = null
         try {
-            cursor = readableDatabase.rawQuery("SELECT count(*) as count FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}\n" +
-                    "WHERE LENGTH(${MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE}) != 0", null)
-            if(cursor.moveToFirst()){
+            cursor = readableDatabase.rawQuery(
+                "SELECT count(*) as count FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}\n" +
+                        "WHERE LENGTH(${MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE}) != 0",
+                null
+            )
+            if (cursor.moveToFirst()) {
                 count = cursor.getInt(cursor.getColumnIndex("count"))
             }
-        }finally {
+        } finally {
             cursor?.close()
         }
         return count
     }
+
     //get count of catalysts
     @SuppressLint("Range")
-    fun getCountCatalyst() : Int {
+    fun getCountCatalyst(): Int {
         var count = 0
-        var cursor : Cursor? = null
+        var cursor: Cursor? = null
         try {
-            cursor = readableDatabase.rawQuery("SELECT count(*) as count FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}", null)
-            if(cursor.moveToFirst()){
+            cursor = readableDatabase.rawQuery(
+                "SELECT count(*) as count FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}",
+                null
+            )
+            if (cursor.moveToFirst()) {
                 count = cursor.getInt(cursor.getColumnIndex("count"))
             }
-        }finally {
+        } finally {
             cursor?.close()
         }
         return count
     }
+
     //update catalyst
     fun updateCatalyst(catalystId: Int, thumbnail: ByteArray) {
         val db = this.writableDatabase
-        try{
+        try {
             db.beginTransaction()
             val content = ContentValues()
-            content.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_THUMBNAIL,thumbnail)
+            content.put(MyConfiguration.DATABASE_ELEMENT_CATALYST_THUMBNAIL, thumbnail)
             db.updateWithOnConflict(
-                MyConfiguration.DATABASE_TABLE_CATALYST,  content,
-                MyConfiguration.DATABASE_ELEMENT_CATALYST_ID + "= ?", Array(1){ i -> catalystId.toString()}, SQLiteDatabase.CONFLICT_IGNORE )
+                MyConfiguration.DATABASE_TABLE_CATALYST,
+                content,
+                MyConfiguration.DATABASE_ELEMENT_CATALYST_ID + "= ?",
+                Array(1) { i -> catalystId.toString() },
+                SQLiteDatabase.CONFLICT_IGNORE
+            )
             db.setTransactionSuccessful()
-        }finally {
+        } finally {
             db.endTransaction()
         }
     }
+
     //reset database - truncate tables
     fun resetDatabase() {
         val db = this.writableDatabase
-        try{
+        try {
             db.beginTransaction()
             //truncate tables
-            db.execSQL("DELETE FROM ${MyConfiguration.DATABASE_TABLE_CATALYST};VACUUM;")
+            db.execSQL("DELETE FROM ${MyConfiguration.DATABASE_TABLE_CATALYST};")
+            db.execSQL("VACUUM;")
             //delete row from sqlite sequence
-            db.execSQL("DELETE FROM ${MyConfiguration.DATABASE_TABLE_SQLITE_SEQUENCE}\n" +
-                    "WHERE ${MyConfiguration.DATABASE_ELEMENT_SQLITE_SEQUENCE_NAME} LIKE '${MyConfiguration.DATABASE_TABLE_CATALYST}';VACUUM;")
+            db.execSQL(
+                "DELETE FROM ${MyConfiguration.DATABASE_TABLE_SQLITE_SEQUENCE}\n" +
+                        "WHERE ${MyConfiguration.DATABASE_ELEMENT_SQLITE_SEQUENCE_NAME} LIKE '${MyConfiguration.DATABASE_TABLE_CATALYST}';"
+            )
+            db.execSQL("VACUUM;")
             db.setTransactionSuccessful()
-        }finally {
+        } finally {
             db.endTransaction()
         }
     }
+
     //insert one row of element
     fun insertCatalysts(values: JSONArray) {
         val db = this.writableDatabase
-        try{
+        try {
             db.beginTransaction()
             //iterate over elements (batch)
-            for(i in 0 until values.length()) {
+            for (i in 0 until values.length()) {
                 val element = values.getJSONObject(i).getJSONArray("c")
-                val salt : String = MyConfiguration.getValueStringFromDocsApi(
+                val salt: String = MyConfiguration.getValueStringFromDocsApi(
                     element,
                     MyConfiguration.MY_SPREADSHEET_CATALYST_ID
                 ) + MySecret.getPrivateKey()
@@ -334,18 +369,19 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
                 )
                 //insert element
                 val countInserted = db.insert(MyConfiguration.DATABASE_TABLE_CATALYST, null, row)
-                if(countInserted == -1L) throw IllegalArgumentException()
+                if (countInserted == -1L) throw IllegalArgumentException()
             }
             db.setTransactionSuccessful()
-        }finally {
+        } finally {
             db.endTransaction()
         }
     }
+
     //get string of jsonarray elements which they don't have thumbnail
     @SuppressLint("Range")
     fun getCatalystWithoutThumbnail(): JSONArray {
         val result = JSONArray()
-        var cursor : Cursor? = null
+        var cursor: Cursor? = null
         try {
             //set fields which will be retrieved
             val fields = arrayOf(
@@ -355,34 +391,46 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
             //make query
             val queryBuilder = SQLiteQueryBuilder()
             queryBuilder.tables = MyConfiguration.DATABASE_TABLE_CATALYST
-            cursor = queryBuilder.query(readableDatabase, fields,
+            cursor = queryBuilder.query(
+                readableDatabase, fields,
                 MyConfiguration.DATABASE_ELEMENT_CATALYST_THUMBNAIL + " IS NULL",
                 null,
                 null,
                 null,
-                null)
-            while (cursor.moveToNext()){
+                null
+            )
+            while (cursor.moveToNext()) {
                 val json = JSONObject()
                 json.put(
-                    MyConfiguration.DATABASE_ELEMENT_CATALYST_ID, cursor.getInt(cursor.getColumnIndex(
-                        MyConfiguration.DATABASE_ELEMENT_CATALYST_ID
-                    )))
+                    MyConfiguration.DATABASE_ELEMENT_CATALYST_ID, cursor.getInt(
+                        cursor.getColumnIndex(
+                            MyConfiguration.DATABASE_ELEMENT_CATALYST_ID
+                        )
+                    )
+                )
                 json.put(
-                    MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE, cursor.getString(cursor.getColumnIndex(
-                        MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE
-                    )))
+                    MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE, cursor.getString(
+                        cursor.getColumnIndex(
+                            MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE
+                        )
+                    )
+                )
                 result.put(json)
             }
-        }finally {
+        } finally {
             cursor?.close()
         }
         return result
     }
+
     //get data catalysts
     @SuppressLint("Range")
-    fun getDataCatalyst(nameCatalystOrBrandCarInput: String, limitElements: String): ArrayList<MyItemCatalyst> {
-        val result : ArrayList<MyItemCatalyst> = ArrayList<MyItemCatalyst>()
-        var cursor : Cursor? = null
+    fun getDataCatalyst(
+        nameCatalystOrBrandCarInput: String,
+        limitElements: String
+    ): ArrayList<MyItemCatalyst> {
+        val result: ArrayList<MyItemCatalyst> = ArrayList<MyItemCatalyst>()
+        var cursor: Cursor? = null
         try {
             //get searching string
             val arrayFields = MyConfiguration.getSearchingString(nameCatalystOrBrandCarInput)
@@ -404,15 +452,15 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
             val argumentsSelect = mutableListOf<String>()
             val argumentsWhere = mutableListOf<String>()
             var queryString = "SELECT  ${fields.joinToString()}"
-            if(arrayFields.isNotEmpty()){
+            if (arrayFields.isNotEmpty()) {
                 var addPlus = false
                 var hitCountQuery = "("
-                for(item in arrayFields){
+                for (item in arrayFields) {
                     val subArrayFields = item.split("*")
-                    for(subItem in subArrayFields){
+                    for (subItem in subArrayFields) {
                         argumentsSelect.add(subItem.lowercase(Locale.getDefault()))
                         argumentsSelect.add(subItem.lowercase(Locale.getDefault()))
-                        hitCountQuery += (if(addPlus) " + " else "") +  "(instr(LOWER(${MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME}), ?) > 0) + (instr(LOWER(${MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND}), ?) > 0)"
+                        hitCountQuery += (if (addPlus) " + " else "") + "(instr(LOWER(${MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME}), ?) > 0) + (instr(LOWER(${MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND}), ?) > 0)"
                         addPlus = true
                     }
                     argumentsWhere.add("%${item.replace("*", "%")}%")
@@ -421,55 +469,88 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
                 hitCountQuery += ") as ${MyConfiguration.DATABASE_ELEMENT_CATALYST_TEMP_HITCOUNT}"
                 queryString += ", $hitCountQuery"
                 queryString += " FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}"
-                queryString += " WHERE " + arrayFields.joinToString (separator = " OR ") { "${MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME} LIKE ? OR ${MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND} LIKE ?"}
+                queryString += " WHERE " + arrayFields.joinToString(separator = " OR ") { "${MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME} LIKE ? OR ${MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND} LIKE ?" }
                 queryString += " ORDER BY ${MyConfiguration.DATABASE_ELEMENT_CATALYST_TEMP_HITCOUNT} DESC"
-            }else{
+            } else {
                 queryString += " FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}"
             }
             queryString += " LIMIT ${limitElements}"
-            cursor = readableDatabase.rawQuery(queryString, (argumentsSelect + argumentsWhere).toTypedArray())
+            cursor = readableDatabase.rawQuery(
+                queryString,
+                (argumentsSelect + argumentsWhere).toTypedArray()
+            )
             //iterate over data and prepare data
-            while (cursor.moveToNext()){
-                val blobImage : ByteArray? = if(cursor.isNull(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID))) null else cursor.getBlob(cursor.getColumnIndex(
-                    MyConfiguration.DATABASE_ELEMENT_CATALYST_THUMBNAIL
-                ))
-                val salt : String = cursor.getInt(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID)).toString() + MySecret.getPrivateKey()
+            while (cursor.moveToNext()) {
+                val blobImage: ByteArray? =
+                    if (cursor.isNull(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID))) null else cursor.getBlob(
+                        cursor.getColumnIndex(
+                            MyConfiguration.DATABASE_ELEMENT_CATALYST_THUMBNAIL
+                        )
+                    )
+                val salt: String =
+                    cursor.getInt(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID))
+                        .toString() + MySecret.getPrivateKey()
                 val myItemCatalyst = MyItemCatalyst(
                     cursor.getInt(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID)),
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID_PICTURE)),
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE)),
-                    if(blobImage == null) null else BitmapFactory.decodeByteArray(blobImage, 0, blobImage.size),
+                    if (blobImage == null) null else BitmapFactory.decodeByteArray(
+                        blobImage,
+                        0,
+                        blobImage.size
+                    ),
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME)),
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND)),
                     MyConfiguration.formatStringFloat(
-                        MyConfiguration.decrypt(cursor.getString(cursor.getColumnIndex(
-                            MyConfiguration.DATABASE_ELEMENT_CATALYST_PLATINUM
-                        )), salt),3).toFloat(),
+                        MyConfiguration.decrypt(
+                            cursor.getString(
+                                cursor.getColumnIndex(
+                                    MyConfiguration.DATABASE_ELEMENT_CATALYST_PLATINUM
+                                )
+                            ), salt
+                        ), 3
+                    ).toFloat(),
                     MyConfiguration.formatStringFloat(
-                        MyConfiguration.decrypt(cursor.getString(cursor.getColumnIndex(
-                            MyConfiguration.DATABASE_ELEMENT_CATALYST_PALLADIUM
-                        )), salt),3).toFloat(),
+                        MyConfiguration.decrypt(
+                            cursor.getString(
+                                cursor.getColumnIndex(
+                                    MyConfiguration.DATABASE_ELEMENT_CATALYST_PALLADIUM
+                                )
+                            ), salt
+                        ), 3
+                    ).toFloat(),
                     MyConfiguration.formatStringFloat(
-                        MyConfiguration.decrypt(cursor.getString(cursor.getColumnIndex(
-                            MyConfiguration.DATABASE_ELEMENT_CATALYST_RHODIUM
-                        )), salt),3).toFloat(),
+                        MyConfiguration.decrypt(
+                            cursor.getString(
+                                cursor.getColumnIndex(
+                                    MyConfiguration.DATABASE_ELEMENT_CATALYST_RHODIUM
+                                )
+                            ), salt
+                        ), 3
+                    ).toFloat(),
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_TYPE)),
                     MyConfiguration.formatStringFloat(
-                        MyConfiguration.decrypt(cursor.getString(cursor.getColumnIndex(
-                            MyConfiguration.DATABASE_ELEMENT_CATALYST_WEIGHT
-                        )), salt),3).toFloat()
+                        MyConfiguration.decrypt(
+                            cursor.getString(
+                                cursor.getColumnIndex(
+                                    MyConfiguration.DATABASE_ELEMENT_CATALYST_WEIGHT
+                                )
+                            ), salt
+                        ), 3
+                    ).toFloat()
                 )
                 result.add(myItemCatalyst)
             }
-        }finally {
+        } finally {
             cursor?.close()
         }
         return result
     }
+
     //insert history filter
     fun insertHistoryFilter(searchedText: String) {
         val db = this.writableDatabase
-        try{
+        try {
             db.beginTransaction()
             val row = ContentValues()
             row.put(
@@ -478,12 +559,13 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
             )
             //insert element
             val countInserted = db.insert(MyConfiguration.DATABASE_TABLE_HISTORY_FILTER, null, row)
-            if(countInserted == -1L) throw IllegalArgumentException()
+            if (countInserted == -1L) throw IllegalArgumentException()
             db.setTransactionSuccessful()
-        }finally {
+        } finally {
             db.endTransaction()
         }
     }
+
     //delete history filter
     fun deleteHistoryFilter(id: Int) {
         val db = this.writableDatabase
@@ -495,28 +577,31 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
                 MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_ID + "= $id", null
             )
             db.setTransactionSuccessful()
-        }finally {
+        } finally {
             db.endTransaction()
         }
     }
+
     fun deleteHistoryFilter(name: String) {
         val db = this.writableDatabase
-        try{
+        try {
             db.beginTransaction()
             //delete element
             db.delete(
                 MyConfiguration.DATABASE_TABLE_HISTORY_FILTER,
-                MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_NAME + " LIKE '$name'", null)
+                MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_NAME + " LIKE '$name'", null
+            )
             db.setTransactionSuccessful()
-        }finally {
+        } finally {
             db.endTransaction()
         }
     }
+
     //get data history filter
     @SuppressLint("Range")
     fun getDataHistoryFilter(limitElements: String): ArrayList<MyItemHistoryFilter> {
-        val result : ArrayList<MyItemHistoryFilter> = ArrayList<MyItemHistoryFilter>()
-        var cursor : Cursor? = null
+        val result: ArrayList<MyItemHistoryFilter> = ArrayList<MyItemHistoryFilter>()
+        var cursor: Cursor? = null
         try {
             //set fields which will be retrieved
             val fields = arrayOf(
@@ -530,14 +615,14 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(context,
                     "LIMIT $limitElements"
             cursor = readableDatabase.rawQuery(queryString, null)
             //prepare data
-            while (cursor.moveToNext()){
+            while (cursor.moveToNext()) {
                 val myItemHistoryFilter = MyItemHistoryFilter(
                     cursor.getInt(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_ID)),
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_NAME))
                 )
                 result.add(myItemHistoryFilter)
             }
-        }finally {
+        } finally {
             cursor?.close()
         }
         return result

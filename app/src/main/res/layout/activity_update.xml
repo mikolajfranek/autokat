@@ -7,11 +7,13 @@
     android:orientation="vertical"
     tools:context=".UpdateActivity">
 
-    <include
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        layout="@layout/my_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@color/colorUser"
+        android:theme="@style/ToolbarTheme"
+        tools:viewBindingIgnore="true" />
 
     <ProgressBar
         android:id="@+id/progess_bar"
@@ -38,23 +40,23 @@
         android:textColor="@color/colorUser" />
 
     <Button
+        android:id="@+id/update_new_button"
         style="@style/Widget.AppCompat.Button"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_margin="10dp"
         android:fontFamily="sans-serif"
-        android:onClick="activityUpdateOnlyNew"
         android:text="@string/activity_update_pobierz_nowe_katalizatory"
         android:textAllCaps="false" />
 
     <Button
+        android:id="@+id/update_full_button"
         style="@style/Widget.AppCompat.Button"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:fontFamily="sans-serif"
-        android:onClick="activityUpdateFull"
         android:text="@string/activity_update_synchronizacja_baz_danych"
         android:textAllCaps="false" />
 </LinearLayout>
