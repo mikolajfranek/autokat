@@ -177,7 +177,7 @@ class MyCoursesValues {
             //course of rhoudium
             val (rhodium, rhodiumDate) = getCourseRhodium(savingToSharedPreferences)
             //always saving to database if dates are equal
-            //if(usdDate.equals(eurDate) && eurDate.equals(platinumDate) && platinumDate.equals(palladiumDate) && palladiumDate.equals(rhodiumDate)){
+            if(usdDate.equals(eurDate) && eurDate.equals(platinumDate) && platinumDate.equals(palladiumDate) && palladiumDate.equals(rhodiumDate)){
                 val commonDate = MyConfiguration.formatDate(eurDate)
                 val localDate = MyConfiguration.formatDateToLocalDate(commonDate)
                 try{
@@ -192,9 +192,8 @@ class MyCoursesValues {
                         ))
                 }catch (_ : Exception){
                     //nothing
-                    val x = 2
                 }
-            //}
+            }
             //save timestamp of update
             MySharedPreferences.setKeyToFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_UPDATE_COURSE_TIMESTAMP,
                 Date().time.toString()
