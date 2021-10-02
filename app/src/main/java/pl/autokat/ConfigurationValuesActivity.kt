@@ -73,13 +73,7 @@ class ConfigurationValuesActivity : AppCompatActivity() {
     @Suppress("ReplaceCallWithBinaryOperator")
     override fun onResume() {
         super.onResume()
-        val actualCoursesChoice =
-            MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_ACTUAL_COURSES_CHOICE)
-        val actualCoursesDate =
-            MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_ACTUAL_COURSES_DATE)
-        val gettingFromDatabase: Boolean =
-            actualCoursesChoice.equals("0") && actualCoursesDate.isNotEmpty()
-        if (gettingFromDatabase) {
+        if (MyCoursesValues.isCoursesSelected()) {
             this.bindingActivityConfigurationValues.switchCourses.isChecked = false
             this.bindingActivityConfigurationValues.actualDateCoursesButton.visibility =
                 View.VISIBLE

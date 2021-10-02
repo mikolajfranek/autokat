@@ -3,11 +3,21 @@ package pl.autokat.components
 import com.github.kittinunf.fuel.Fuel
 import com.kizitonwose.calendarview.utils.yearMonth
 import org.json.JSONObject
+import pl.autokat.components.MyCoursesValues.Companion.isCoursesSelected
 import java.net.UnknownHostException
 import java.util.*
 
 class MyCoursesValues {
     companion object {
+        //get status of selected courses
+        fun isCoursesSelected(): Boolean {
+            val actualCoursesChoice =
+                MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_ACTUAL_COURSES_CHOICE)
+            val actualCoursesDate =
+                MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_ACTUAL_COURSES_DATE)
+            return actualCoursesChoice.equals("0") && actualCoursesDate.isNotEmpty()
+        }
+
         //save courses
         fun saveSelectedCourses(myCourses: MyCourses) {
             val date = MyConfiguration.formatDateToLocalDate(myCourses.date)
@@ -174,13 +184,7 @@ class MyCoursesValues {
         //get all course
         @Suppress("ReplaceCallWithBinaryOperator")
         fun getValues(database: MyDatabase) {
-            val actualCoursesChoice =
-                MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_ACTUAL_COURSES_CHOICE)
-            val actualCoursesDate =
-                MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_ACTUAL_COURSES_DATE)
-            val gettingFromDatabase: Boolean =
-                actualCoursesChoice.equals("0") && actualCoursesDate.isNotEmpty()
-            val savingToSharedPreferences: Boolean = gettingFromDatabase == false
+            val savingToSharedPreferences: Boolean = isCoursesSelected() == false
             //course of usd -> pln
             val (usdPln, usdDate) = getCourseUsdPln(savingToSharedPreferences)
             //course of eur -> pln

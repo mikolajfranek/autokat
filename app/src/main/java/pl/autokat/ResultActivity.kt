@@ -22,6 +22,7 @@ import pl.autokat.components.*
 import pl.autokat.databinding.ActivityResultBinding
 import pl.autokat.databinding.MyItemCatalystBinding
 import pl.autokat.databinding.MyItemHistoryFilterBinding
+import java.time.LocalDate
 import java.util.*
 
 class ResultActivity : AppCompatActivity() {
@@ -417,6 +418,7 @@ class ResultActivity : AppCompatActivity() {
         private var databaseEmpty: Boolean = false
 
         //run
+        @Suppress("ReplaceCallWithBinaryOperator")
         override fun run() {
             //--- onPreExecute
             this@ResultActivity.runOnUiThread {
@@ -549,8 +551,8 @@ class ResultActivity : AppCompatActivity() {
                         GONE
                     this@ResultActivity.bindingActivityResult.catalystListView.visibility = VISIBLE
                 }
-                //set visibility of ability update catalyst
                 if (this@ResultActivity.menu != null) {
+                    //set visibility of ability update catalyst
                     if (this.updateCatalyst) {
                         MyConfiguration.IS_AVAILABLE_UPDATE = true
                         this@ResultActivity.menu!!.getItem(1).icon = ContextCompat.getDrawable(
@@ -562,6 +564,51 @@ class ResultActivity : AppCompatActivity() {
                             this@ResultActivity.applicationContext,
                             R.mipmap.ic_action_update_catalyst
                         )
+                    }
+                    //set visibility of status update courses
+                    if (MyCoursesValues.isCoursesSelected()) {
+                        val actualCoursesDate =
+                            MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_ACTUAL_COURSES_DATE)
+                        if (LocalDate.now().toString().equals(actualCoursesDate)) {
+                            this@ResultActivity.menu!!.getItem(0).icon = ContextCompat.getDrawable(
+                                this@ResultActivity.applicationContext,
+                                R.mipmap.ic_action_values
+                            )
+                        } else {
+                            this@ResultActivity.menu!!.getItem(0).icon = ContextCompat.getDrawable(
+                                this@ResultActivity.applicationContext,
+                                R.mipmap.ic_action_values_color
+                            )
+                        }
+                    } else {
+                        val usdDate =
+                            MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN_DATE)
+                        val eurDate =
+                            MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_EUR_PLN_DATE)
+                        val platinumDate =
+                            MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PLATIUNUM_DATE)
+                        val palladiumDate =
+                            MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PALLADIUM_DATE)
+                        val rhodiumDate =
+                            MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_RHODIUM_DATE)
+                        //yellow when dates are different
+                        if (LocalDate.now().toString()
+                                .equals(usdDate) && usdDate.equals(eurDate) && eurDate.equals(
+                                platinumDate
+                            ) && platinumDate.equals(
+                                palladiumDate
+                            ) && palladiumDate.equals(rhodiumDate)
+                        ) {
+                            this@ResultActivity.menu!!.getItem(0).icon = ContextCompat.getDrawable(
+                                this@ResultActivity.applicationContext,
+                                R.mipmap.ic_action_values
+                            )
+                        } else {
+                            this@ResultActivity.menu!!.getItem(0).icon = ContextCompat.getDrawable(
+                                this@ResultActivity.applicationContext,
+                                R.mipmap.ic_action_values_color
+                            )
+                        }
                     }
                 }
                 //refresh list view
