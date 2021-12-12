@@ -32,7 +32,7 @@ class MyConfiguration {
     companion object {
         /* production mode = true / development mode = false */
         const val PRODUCTION: Boolean = false
-        const val VERSION_APP: String = "1.0.6"
+        const val VERSION_APP: String = "1.0.7"
         const val DATABASE_VERSION_1_0_6: Int = 4
         const val DATABASE_VERSION: Int = 4
         const val DATABASE_NAME_OF_FILE: String = "autokat.db"
