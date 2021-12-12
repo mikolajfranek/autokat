@@ -597,10 +597,25 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
 
     //get data history filter
     @SuppressLint("Range")
-    fun getDataHistoryFilter(limitElements: String): ArrayList<MyItemHistoryFilter> {
+    fun getDataHistoryFilter(limitElements: String, nameCatalystOrBrandCarInput: String): ArrayList<MyItemHistoryFilter> {
         val result: ArrayList<MyItemHistoryFilter> = ArrayList()
         var cursor: Cursor? = null
         try {
+            //get searching string
+            val arrayFields = MyConfiguration.getSearchingString(nameCatalystOrBrandCarInput)
+            var whereClause = ""
+            if (arrayFields.isNotEmpty())
+            {
+                whereClause = "WHERE "
+                var firstElement = true
+                for (item in arrayFields)
+                {
+                    val arg = item.replace("*", "%")
+                    whereClause += (if (firstElement) "" else " OR " ) + "${MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_NAME} LIKE '%${arg}%'"
+                    firstElement = false
+                }
+                whereClause += "\n"
+            }
             //set fields which will be retrieved
             val fields = arrayOf(
                 MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_ID,
@@ -609,6 +624,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
             //make query
             val queryString = "SELECT  ${fields.joinToString()}\n" +
                     "FROM ${MyConfiguration.DATABASE_TABLE_HISTORY_FILTER}\n" +
+                    whereClause +
                     "ORDER BY ${MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_ID} DESC\n" +
                     "LIMIT $limitElements"
             cursor = readableDatabase.rawQuery(queryString, null)

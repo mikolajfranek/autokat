@@ -371,6 +371,7 @@ class ResultActivity : AppCompatActivity() {
 
     //refresh history filter list view
     fun refreshHistoryFilterListView(myScrollRefresh: MyScrollRefresh) {
+        val nameCatalystOrBrandCarInput = this@ResultActivity.bindingActivityResult.editText.text.toString()
         when (myScrollRefresh) {
             MyScrollRefresh.RESET_LIST -> {
                 //reset variable of scroll
@@ -379,14 +380,14 @@ class ResultActivity : AppCompatActivity() {
                     MyConfiguration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER
                 //get data from database
                 val result =
-                    this.database.getDataHistoryFilter(this.scrollLimitHistoryFilter.toString())
+                    this.database.getDataHistoryFilter(this.scrollLimitHistoryFilter.toString(), nameCatalystOrBrandCarInput)
                 this.databaseAdapterHistoryFilter.clear()
                 this.databaseAdapterHistoryFilter.addAll(result)
             }
             MyScrollRefresh.UPDATE_LIST -> {
                 //get data from database
                 val result =
-                    this.database.getDataHistoryFilter(this.scrollLimitHistoryFilter.toString())
+                    this.database.getDataHistoryFilter(this.scrollLimitHistoryFilter.toString(), nameCatalystOrBrandCarInput)
                 this.databaseAdapterHistoryFilter.clear()
                 this.databaseAdapterHistoryFilter.addAll(result)
             }
@@ -395,7 +396,7 @@ class ResultActivity : AppCompatActivity() {
                 val limitWithOffset: String =
                     (this.scrollLimitHistoryFilter - MyConfiguration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER).toString() + "," + MyConfiguration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER
                 //get data from database
-                val result = this.database.getDataHistoryFilter(limitWithOffset)
+                val result = this.database.getDataHistoryFilter(limitWithOffset, nameCatalystOrBrandCarInput)
                 //add to list
                 this.databaseAdapterHistoryFilter.addAll(result)
             }
