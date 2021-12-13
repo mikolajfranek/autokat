@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import pl.autokat.components.*
 import pl.autokat.databinding.ActivityConfigurationValuesBinding
+import pl.autokat.enums.ProcessStep
 import java.net.UnknownHostException
 
 
@@ -180,32 +181,32 @@ class ConfigurationValuesActivity : AppCompatActivity() {
                 ).show()
             }
             //--- doInBackground
-            var myProcessStep: MyProcessStep = MyProcessStep.SUCCESS
+            var processStep: ProcessStep = ProcessStep.SUCCESS
             try {
                 MyCoursesValues.getValues(database)
             } catch (e: UnknownHostException) {
-                myProcessStep = MyProcessStep.NETWORK_FAILED
+                processStep = ProcessStep.NETWORK_FAILED
             } catch (e: Exception) {
-                myProcessStep = MyProcessStep.UNHANDLED_EXCEPTION
+                processStep = ProcessStep.UNHANDLED_EXCEPTION
             }
             //--- onPostExecute
             this@ConfigurationValuesActivity.runOnUiThread {
-                when (myProcessStep) {
-                    MyProcessStep.NETWORK_FAILED -> {
+                when (processStep) {
+                    ProcessStep.NETWORK_FAILED -> {
                         Toast.makeText(
                             this@ConfigurationValuesActivity.applicationContext,
                             MyConfiguration.INFO_MESSAGE_NETWORK_FAILED,
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-                    MyProcessStep.UNHANDLED_EXCEPTION -> {
+                    ProcessStep.UNHANDLED_EXCEPTION -> {
                         Toast.makeText(
                             this@ConfigurationValuesActivity.applicationContext,
                             MyConfiguration.INFO_UPDATE_FAILED,
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-                    MyProcessStep.SUCCESS -> {
+                    ProcessStep.SUCCESS -> {
                         Toast.makeText(
                             this@ConfigurationValuesActivity.applicationContext,
                             MyConfiguration.INFO_UPDATE_SUCCESS,

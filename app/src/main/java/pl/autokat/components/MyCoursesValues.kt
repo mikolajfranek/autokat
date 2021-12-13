@@ -3,7 +3,7 @@ package pl.autokat.components
 import com.github.kittinunf.fuel.Fuel
 import com.kizitonwose.calendarview.utils.yearMonth
 import org.json.JSONObject
-import pl.autokat.components.MyCoursesValues.Companion.isCoursesSelected
+import pl.autokat.models.ModelCourse
 import java.net.UnknownHostException
 import java.util.*
 
@@ -19,8 +19,8 @@ class MyCoursesValues {
         }
 
         //save courses
-        fun saveSelectedCourses(myCourses: MyCourses) {
-            val date = MyConfiguration.formatDateToLocalDate(myCourses.date)
+        fun saveSelectedCourses(modelCourse: ModelCourse) {
+            val date = MyConfiguration.formatDateToLocalDate(modelCourse.date)
             //saving about choice date
             MySharedPreferences.setKeyToFile(
                 MyConfiguration.MY_SHARED_PREFERENCES_KEY_ACTUAL_COURSES_DATE,
@@ -29,7 +29,7 @@ class MyCoursesValues {
             //usd
             MySharedPreferences.setKeyToFile(
                 MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN,
-                myCourses.usdPln
+                modelCourse.usdPln
             )
             MySharedPreferences.setKeyToFile(
                 MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN_DATE,
@@ -38,7 +38,7 @@ class MyCoursesValues {
             //eur
             MySharedPreferences.setKeyToFile(
                 MyConfiguration.MY_SHARED_PREFERENCES_KEY_EUR_PLN,
-                myCourses.eurPln
+                modelCourse.eurPln
             )
             MySharedPreferences.setKeyToFile(
                 MyConfiguration.MY_SHARED_PREFERENCES_KEY_EUR_PLN_DATE,
@@ -47,7 +47,7 @@ class MyCoursesValues {
             //platinum
             MySharedPreferences.setKeyToFile(
                 MyConfiguration.MY_SHARED_PREFERENCES_KEY_PLATIUNUM,
-                myCourses.platinum
+                modelCourse.platinum
             )
             MySharedPreferences.setKeyToFile(
                 MyConfiguration.MY_SHARED_PREFERENCES_KEY_PLATIUNUM_DATE,
@@ -56,7 +56,7 @@ class MyCoursesValues {
             //palladium
             MySharedPreferences.setKeyToFile(
                 MyConfiguration.MY_SHARED_PREFERENCES_KEY_PALLADIUM,
-                myCourses.palladium
+                modelCourse.palladium
             )
             MySharedPreferences.setKeyToFile(
                 MyConfiguration.MY_SHARED_PREFERENCES_KEY_PALLADIUM_DATE,
@@ -65,7 +65,7 @@ class MyCoursesValues {
             //rhodium
             MySharedPreferences.setKeyToFile(
                 MyConfiguration.MY_SHARED_PREFERENCES_KEY_RHODIUM,
-                myCourses.rhodium
+                modelCourse.rhodium
             )
             MySharedPreferences.setKeyToFile(
                 MyConfiguration.MY_SHARED_PREFERENCES_KEY_RHODIUM_DATE,
@@ -204,7 +204,7 @@ class MyCoursesValues {
                 val localDate = MyConfiguration.formatDateToLocalDate(commonDate)
                 try {
                     database.insertCourses(
-                        MyCourses(
+                        ModelCourse(
                             platinum,
                             palladium,
                             rhodium,

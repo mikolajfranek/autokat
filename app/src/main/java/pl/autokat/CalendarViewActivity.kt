@@ -19,6 +19,7 @@ import pl.autokat.components.*
 import pl.autokat.databinding.ActivityCalendarViewBinding
 import pl.autokat.databinding.CalendarDayBinding
 import pl.autokat.databinding.CalendarHeaderBinding
+import pl.autokat.models.ModelCourse
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -46,7 +47,7 @@ class CalendarViewActivity : AppCompatActivity() {
     )
     private val featureStart =
         LocalDate.parse("01-10-2021", DateTimeFormatter.ofPattern("dd-MM-yyyy"))
-    private var mapDaysCoursesOfYearMonth = HashMap<String, HashMap<String, MyCourses>>()
+    private var mapDaysCoursesOfYearMonth = HashMap<String, HashMap<String, ModelCourse>>()
     private lateinit var myDatabase: MyDatabase
 
     //oncreate

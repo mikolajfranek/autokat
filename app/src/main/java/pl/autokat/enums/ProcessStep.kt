@@ -1,6 +1,6 @@
-package pl.autokat.components
+package pl.autokat.enums
 
-enum class MyProcessStep {
+enum class ProcessStep {
     NONE,
     SUCCESS,
     UNHANDLED_EXCEPTION,

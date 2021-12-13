@@ -11,6 +11,8 @@ import androidx.core.content.ContextCompat
 import org.json.JSONArray
 import pl.autokat.components.*
 import pl.autokat.databinding.ActivityMainBinding
+import pl.autokat.enums.ProcessStep
+import pl.autokat.enums.TimeChecking
 import java.net.UnknownHostException
 
 class MainActivity : AppCompatActivity() {
@@ -149,40 +151,40 @@ class MainActivity : AppCompatActivity() {
                     MyConfiguration.INFO_MESSAGE_WAIT_AUTHENTICATE
             }
             //--- doInBackground
-            var myProcessStep: MyProcessStep = MyProcessStep.NONE
+            var processStep: ProcessStep = ProcessStep.NONE
             try {
                 //user never logged (not click on button, trying auto login)
                 if (this.login.isEmpty()) {
-                    myProcessStep = MyProcessStep.USER_NEVER_LOGGED
+                    processStep = ProcessStep.USER_NEVER_LOGGED
                 } else {
                     //check licence without connection to internet
                     if (MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END)
                             .isEmpty() == false
                     ) {
                         /* checking time */
-                        myProcessStep = if (MyConfiguration.checkTimeOnPhone(
+                        processStep = if (MyConfiguration.checkTimeOnPhone(
                                 "",
-                                MyTimeChecking.CHECKING_LICENCE
+                                TimeChecking.CHECKING_LICENCE
                             ) == false
                         ) {
-                            MyProcessStep.USER_ELAPSED_DATE_LICENCE
+                            ProcessStep.USER_ELAPSED_DATE_LICENCE
                         } else {
-                            MyProcessStep.SUCCESS
+                            ProcessStep.SUCCESS
                         }
                     } else {
                         /* checking time */
                         if (MyConfiguration.checkTimeOnPhone(
                                 "",
-                                MyTimeChecking.NOW_GREATER_THAN_TIME_FROM_INTERNET
+                                TimeChecking.NOW_GREATER_THAN_TIME_FROM_INTERNET
                             ) == false
                         ) {
-                            myProcessStep = MyProcessStep.USER_ELAPSED_DATE_LICENCE
+                            processStep = ProcessStep.USER_ELAPSED_DATE_LICENCE
                         } else {
                             /* authentication */
                             //get user from database
                             val user: JSONArray? = MySpreadsheet.getDataLogin(this.login)
                             if (user == null) {
-                                myProcessStep = MyProcessStep.USER_FAILED_LOGIN
+                                processStep = ProcessStep.USER_FAILED_LOGIN
                             } else {
                                 /* checking time */
                                 if (user.getString(MyConfiguration.MY_SPREADSHEET_USERS_LICENCE)
@@ -190,10 +192,10 @@ class MainActivity : AppCompatActivity() {
                                     || MyConfiguration.checkTimeOnPhone(
                                         user.getString(
                                             MyConfiguration.MY_SPREADSHEET_USERS_LICENCE
-                                        ), MyTimeChecking.PARAMETER_IS_GREATER_THAN_NOW
+                                        ), TimeChecking.PARAMETER_IS_GREATER_THAN_NOW
                                     ) == false
                                 ) {
-                                    myProcessStep = MyProcessStep.USER_ELAPSED_DATE_LICENCE
+                                    processStep = ProcessStep.USER_ELAPSED_DATE_LICENCE
                                 } else {
                                     //read serial id from phone
                                     val serialId: String =
@@ -210,10 +212,10 @@ class MainActivity : AppCompatActivity() {
                                     } else {
                                         //check if current serial id is the same as in database
                                         if (serialId.equals(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_UUID)) == false) {
-                                            myProcessStep = MyProcessStep.USER_FAILED_SERIAL
+                                            processStep = ProcessStep.USER_FAILED_SERIAL
                                         }
                                     }
-                                    if (myProcessStep == MyProcessStep.NONE) {
+                                    if (processStep == ProcessStep.NONE) {
                                         /* save configuration */
                                         //save licence date
                                         MySharedPreferences.setKeyToFile(
@@ -271,7 +273,7 @@ class MainActivity : AppCompatActivity() {
                                             this.login
                                         )
                                         //success
-                                        myProcessStep = MyProcessStep.SUCCESS
+                                        processStep = ProcessStep.SUCCESS
                                     }
                                 }
                             }
@@ -279,20 +281,20 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             } catch (e: UnknownHostException) {
-                myProcessStep = MyProcessStep.NETWORK_FAILED
+                processStep = ProcessStep.NETWORK_FAILED
             } catch (e: Exception) {
-                myProcessStep = MyProcessStep.UNHANDLED_EXCEPTION
+                processStep = ProcessStep.UNHANDLED_EXCEPTION
             }
             //--- onPostExecute
             this@MainActivity.runOnUiThread {
                 //do job depends on situation
-                when (myProcessStep) {
-                    MyProcessStep.USER_NEVER_LOGGED -> {
+                when (processStep) {
+                    ProcessStep.USER_NEVER_LOGGED -> {
                         this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
                         this@MainActivity.bindingActivityMain.textView.text =
                             MyConfiguration.INFO_MESSAGE_USER_NEVER_LOGGED
                     }
-                    MyProcessStep.USER_ELAPSED_DATE_LICENCE -> {
+                    ProcessStep.USER_ELAPSED_DATE_LICENCE -> {
                         this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
                         this@MainActivity.bindingActivityMain.textView.text =
                             MyConfiguration.INFO_MESSAGE_USER_FAILED_LICENCE
@@ -302,27 +304,27 @@ class MainActivity : AppCompatActivity() {
                             ""
                         )
                     }
-                    MyProcessStep.USER_FAILED_LOGIN -> {
+                    ProcessStep.USER_FAILED_LOGIN -> {
                         this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
                         this@MainActivity.bindingActivityMain.textView.text =
                             MyConfiguration.INFO_MESSAGE_USER_FAILED_LOGIN
                     }
-                    MyProcessStep.USER_FAILED_SERIAL -> {
+                    ProcessStep.USER_FAILED_SERIAL -> {
                         this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
                         this@MainActivity.bindingActivityMain.textView.text =
                             MyConfiguration.INFO_MESSAGE_USER_FAILED_SERIAL
                     }
-                    MyProcessStep.NETWORK_FAILED -> {
+                    ProcessStep.NETWORK_FAILED -> {
                         this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
                         this@MainActivity.bindingActivityMain.textView.text =
                             MyConfiguration.INFO_MESSAGE_NETWORK_FAILED
                     }
-                    MyProcessStep.UNHANDLED_EXCEPTION -> {
+                    ProcessStep.UNHANDLED_EXCEPTION -> {
                         this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
                         this@MainActivity.bindingActivityMain.textView.text =
                             MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION
                     }
-                    MyProcessStep.SUCCESS -> {
+                    ProcessStep.SUCCESS -> {
                         this@MainActivity.openResultActivity()
                     }
                     else -> {

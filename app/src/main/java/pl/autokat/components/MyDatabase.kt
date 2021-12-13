@@ -10,6 +10,9 @@ import android.graphics.BitmapFactory
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper
 import org.json.JSONArray
 import org.json.JSONObject
+import pl.autokat.models.ModelCourse
+import pl.autokat.models.ModelCatalyst
+import pl.autokat.models.ModelHistoryFilter
 import java.io.FileOutputStream
 import java.util.*
 import kotlin.collections.ArrayList
@@ -90,8 +93,8 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
 
     //get courses from date
     @SuppressLint("Range")
-    fun getCoursesOfYearMonths(setOfYearMonth: Set<String>): HashMap<String, HashMap<String, MyCourses>> {
-        val result: HashMap<String, HashMap<String, MyCourses>> = hashMapOf()
+    fun getCoursesOfYearMonths(setOfYearMonth: Set<String>): HashMap<String, HashMap<String, ModelCourse>> {
+        val result: HashMap<String, HashMap<String, ModelCourse>> = hashMapOf()
         var cursor: Cursor? = null
         try {
             //set fields which will be retrieved
@@ -117,7 +120,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
             cursor = readableDatabase.rawQuery(queryString, null)
             //return data if exist
             while (cursor.moveToNext()) {
-                val myCourses = MyCourses(
+                val myCourses = ModelCourse(
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_COURSES_PLATINUM)),
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_COURSES_PALLADIUM)),
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_COURSES_RHODIUM)),
@@ -138,38 +141,38 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
     }
 
     //insert courses
-    fun insertCourses(myCourses: MyCourses) {
+    fun insertCourses(modelCourse: ModelCourse) {
         val db = this.writableDatabase
         try {
             db.beginTransaction()
             val row = ContentValues()
             row.put(
                 MyConfiguration.DATABASE_ELEMENT_COURSES_DATE,
-                myCourses.date
+                modelCourse.date
             )
             row.put(
                 MyConfiguration.DATABASE_ELEMENT_COURSES_YEARMONTH,
-                myCourses.yearMonth
+                modelCourse.yearMonth
             )
             row.put(
                 MyConfiguration.DATABASE_ELEMENT_COURSES_PLATINUM,
-                myCourses.platinum
+                modelCourse.platinum
             )
             row.put(
                 MyConfiguration.DATABASE_ELEMENT_COURSES_PALLADIUM,
-                myCourses.palladium
+                modelCourse.palladium
             )
             row.put(
                 MyConfiguration.DATABASE_ELEMENT_COURSES_RHODIUM,
-                myCourses.rhodium
+                modelCourse.rhodium
             )
             row.put(
                 MyConfiguration.DATABASE_ELEMENT_COURSES_EUR_PLN,
-                myCourses.eurPln
+                modelCourse.eurPln
             )
             row.put(
                 MyConfiguration.DATABASE_ELEMENT_COURSES_USD_PLN,
-                myCourses.usdPln
+                modelCourse.usdPln
             )
             //insert element
             val countInserted = db.insert(MyConfiguration.DATABASE_TABLE_COURSES, null, row)
@@ -426,8 +429,8 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
     fun getDataCatalyst(
         nameCatalystOrBrandCarInput: String,
         limitElements: String
-    ): ArrayList<MyItemCatalyst> {
-        val result: ArrayList<MyItemCatalyst> = ArrayList()
+    ): ArrayList<ModelCatalyst> {
+        val result: ArrayList<ModelCatalyst> = ArrayList()
         var cursor: Cursor? = null
         try {
             //get searching string
@@ -488,7 +491,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
                 val salt: String =
                     cursor.getInt(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID))
                         .toString() + MySecret.getPrivateKey()
-                val myItemCatalyst = MyItemCatalyst(
+                val modelCatalyst = ModelCatalyst(
                     cursor.getInt(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID)),
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID_PICTURE)),
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE)),
@@ -537,7 +540,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
                         ), 3
                     ).toFloat()
                 )
-                result.add(myItemCatalyst)
+                result.add(modelCatalyst)
             }
         } finally {
             cursor?.close()
@@ -597,8 +600,8 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
 
     //get data history filter
     @SuppressLint("Range")
-    fun getDataHistoryFilter(limitElements: String, nameCatalystOrBrandCarInput: String): ArrayList<MyItemHistoryFilter> {
-        val result: ArrayList<MyItemHistoryFilter> = ArrayList()
+    fun getDataHistoryFilter(limitElements: String, nameCatalystOrBrandCarInput: String): ArrayList<ModelHistoryFilter> {
+        val result: ArrayList<ModelHistoryFilter> = ArrayList()
         var cursor: Cursor? = null
         try {
             //get searching string
@@ -630,11 +633,11 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
             cursor = readableDatabase.rawQuery(queryString, null)
             //prepare data
             while (cursor.moveToNext()) {
-                val myItemHistoryFilter = MyItemHistoryFilter(
+                val modelHistoryFilter = ModelHistoryFilter(
                     cursor.getInt(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_ID)),
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_HISTORY_FILTER_NAME))
                 )
-                result.add(myItemHistoryFilter)
+                result.add(modelHistoryFilter)
             }
         } finally {
             cursor?.close()

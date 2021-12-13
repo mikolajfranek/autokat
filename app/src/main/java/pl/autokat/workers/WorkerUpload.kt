@@ -1,4 +1,4 @@
-package pl.autokat
+package pl.autokat.workers
 
 import android.content.Context
 import androidx.work.Worker
@@ -8,19 +8,20 @@ import org.json.JSONObject
 import pl.autokat.components.MyConfiguration
 import pl.autokat.components.MyDatabase
 import java.net.URL
+import java.util.concurrent.atomic.AtomicBoolean
 
-class UploadWorker(appContext: Context, workerParams: WorkerParameters) :
+class WorkerUpload(appContext: Context, workerParams: WorkerParameters) :
     Worker(appContext, workerParams) {
+
+    @Volatile
+    private var workerExists: AtomicBoolean = AtomicBoolean(false)
+
     override fun doWork(): Result {
-        //assuming that it is atomic (change variable) - in this case will be only one job which something do
-        if (jobExists == false) {
-            jobExists = true
+        if (workerExists.compareAndSet(false, true)) {
             uploadImages()
         }
         return Result.success()
     }
-
-    private var jobExists: Boolean = false
 
     private fun uploadImages() {
         try {
@@ -36,9 +37,9 @@ class UploadWorker(appContext: Context, workerParams: WorkerParameters) :
                 database.updateCatalyst(id, URL(urlPicture).readBytes())
             }
         } catch (e: Exception) {
-            //nothing
+            //
         } finally {
-            jobExists = false
+            workerExists.set(false)
         }
     }
 }

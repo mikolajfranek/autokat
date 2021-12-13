@@ -1,6 +1,6 @@
-package pl.autokat.components
+package pl.autokat.enums
 
-enum class MyScrollRefresh {
+enum class ScrollRefresh {
     RESET_LIST,
     UPDATE_LIST,
     UPDATE_LIST_WITH_NEW_ITEMS

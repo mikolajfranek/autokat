@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import pl.autokat.components.MyConfiguration
-import pl.autokat.components.MyProcessStep
+import pl.autokat.enums.ProcessStep
 import pl.autokat.components.MyUserInterface
 import pl.autokat.databinding.ActivityPictureBinding
 import java.net.URL
@@ -50,21 +50,21 @@ class PictureActivity : AppCompatActivity() {
                 ).show()
             }
             //--- doInBackground
-            var myProcessStep: MyProcessStep = MyProcessStep.SUCCESS
+            var processStep: ProcessStep = ProcessStep.SUCCESS
             try {
                 val urlThumbnail =
                     MyConfiguration.getPictureUrlFromGoogle(this.urlPicture, 1920, 1080)
                 this.bitmap =
                     BitmapFactory.decodeStream(URL(urlThumbnail).openConnection().getInputStream())
             } catch (e: UnknownHostException) {
-                myProcessStep = MyProcessStep.NETWORK_FAILED
+                processStep = ProcessStep.NETWORK_FAILED
             } catch (e: Exception) {
-                myProcessStep = MyProcessStep.UNHANDLED_EXCEPTION
+                processStep = ProcessStep.UNHANDLED_EXCEPTION
             }
             //--- onPostExecute
             this@PictureActivity.runOnUiThread {
-                when (myProcessStep) {
-                    MyProcessStep.NETWORK_FAILED -> {
+                when (processStep) {
+                    ProcessStep.NETWORK_FAILED -> {
                         Toast.makeText(
                             this@PictureActivity.applicationContext,
                             MyConfiguration.INFO_MESSAGE_NETWORK_FAILED,
@@ -72,7 +72,7 @@ class PictureActivity : AppCompatActivity() {
                         ).show()
                         this@PictureActivity.finish()
                     }
-                    MyProcessStep.UNHANDLED_EXCEPTION -> {
+                    ProcessStep.UNHANDLED_EXCEPTION -> {
                         Toast.makeText(
                             this@PictureActivity.applicationContext,
                             MyConfiguration.INFO_DOWNLOAD_BITMAP_FAILED,
@@ -80,7 +80,7 @@ class PictureActivity : AppCompatActivity() {
                         ).show()
                         this@PictureActivity.finish()
                     }
-                    MyProcessStep.SUCCESS -> {
+                    ProcessStep.SUCCESS -> {
                         this@PictureActivity.bindingActivityPicture.photoView.setImageBitmap(this.bitmap)
                     }
                     else -> {

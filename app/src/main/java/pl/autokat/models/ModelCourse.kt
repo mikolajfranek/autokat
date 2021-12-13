@@ -1,6 +1,6 @@
-package pl.autokat.components
+package pl.autokat.models
 
-class MyCourses(
+class ModelCourse(
     var platinum: String,
     var palladium: String,
     var rhodium: String,

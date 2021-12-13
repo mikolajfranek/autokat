@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import org.json.JSONArray
 import pl.autokat.components.*
 import pl.autokat.databinding.ActivityUpdateBinding
+import pl.autokat.enums.ProcessStep
 import java.net.UnknownHostException
 
 class UpdateActivity : AppCompatActivity() {
@@ -156,7 +157,7 @@ class UpdateActivity : AppCompatActivity() {
                     MyConfiguration.INFO_MESSAGE_WAIT_UPDATE
             }
             //--- doInBackground
-            var myProcessStep: MyProcessStep = MyProcessStep.NONE
+            var processStep: ProcessStep = ProcessStep.NONE
             try {
                 var countDatabase = 0
                 val countSpreadsheet: Int = MySpreadsheet.getCountCatalyst()
@@ -168,10 +169,10 @@ class UpdateActivity : AppCompatActivity() {
                     //calculate count of catalyst
                     countDatabase = this@UpdateActivity.myDatabase.getCountCatalyst()
                     if (countDatabase == countSpreadsheet) {
-                        myProcessStep = MyProcessStep.SUCCESS
+                        processStep = ProcessStep.SUCCESS
                     }
                 }
-                if (myProcessStep != MyProcessStep.SUCCESS) {
+                if (processStep != ProcessStep.SUCCESS) {
                     //difference between database local and database in spreadsheet
                     val progressAll: Int = (countSpreadsheet - countDatabase)
                     //profess step equals currenly state of process update
@@ -212,32 +213,32 @@ class UpdateActivity : AppCompatActivity() {
                                 MyConfiguration.INFO_MESSAGE_WAIT_UPDATE
                         }
                     }
-                    myProcessStep = MyProcessStep.SUCCESS
+                    processStep = ProcessStep.SUCCESS
                 }
             } catch (e: UnknownHostException) {
-                myProcessStep = MyProcessStep.NETWORK_FAILED
+                processStep = ProcessStep.NETWORK_FAILED
             } catch (e: Exception) {
-                myProcessStep = MyProcessStep.UNHANDLED_EXCEPTION
+                processStep = ProcessStep.UNHANDLED_EXCEPTION
             }
             //--- onPostExecute
             this@UpdateActivity.runOnUiThread {
                 //do job depends on situation
-                when (myProcessStep) {
-                    MyProcessStep.NETWORK_FAILED -> {
+                when (processStep) {
+                    ProcessStep.NETWORK_FAILED -> {
                         this@UpdateActivity.bindingActivityUpdate.textView.setTextColor(
                             MyConfiguration.INFO_MESSAGE_COLOR_FAILED
                         )
                         this@UpdateActivity.bindingActivityUpdate.textView.text =
                             MyConfiguration.INFO_MESSAGE_NETWORK_FAILED
                     }
-                    MyProcessStep.UNHANDLED_EXCEPTION -> {
+                    ProcessStep.UNHANDLED_EXCEPTION -> {
                         this@UpdateActivity.bindingActivityUpdate.textView.setTextColor(
                             MyConfiguration.INFO_MESSAGE_COLOR_FAILED
                         )
                         this@UpdateActivity.bindingActivityUpdate.textView.text =
                             MyConfiguration.INFO_UPDATE_FAILED
                     }
-                    MyProcessStep.SUCCESS -> {
+                    ProcessStep.SUCCESS -> {
                         MyConfiguration.IS_AVAILABLE_UPDATE = false
                         this@UpdateActivity.bindingActivityUpdate.progessBar.progress = 100
                         this@UpdateActivity.bindingActivityUpdate.textView.setTextColor(

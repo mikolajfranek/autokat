@@ -22,6 +22,12 @@ import pl.autokat.components.*
 import pl.autokat.databinding.ActivityResultBinding
 import pl.autokat.databinding.MyItemCatalystBinding
 import pl.autokat.databinding.MyItemHistoryFilterBinding
+import pl.autokat.enums.ProcessStep
+import pl.autokat.enums.ScrollRefresh
+import pl.autokat.enums.TimeChecking
+import pl.autokat.models.ModelCatalyst
+import pl.autokat.models.ModelHistoryFilter
+import pl.autokat.workers.WorkerUpload
 import java.time.LocalDate
 import java.util.*
 
@@ -31,10 +37,10 @@ class ResultActivity : AppCompatActivity() {
     private lateinit var bindingMyItemCatalyst: MyItemCatalystBinding
     private lateinit var bindingMyItemHistoryFilter: MyItemHistoryFilterBinding
     private lateinit var database: MyDatabase
-    private lateinit var databaseAdapterCatalysts: ArrayAdapter<MyItemCatalyst>
+    private lateinit var databaseAdapterCatalysts: ArrayAdapter<ModelCatalyst>
     private var scrollPreLastCatalyst: Int = 0
     private var scrollLimitCatalyst: Int = MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST
-    private lateinit var databaseAdapterHistoryFilter: ArrayAdapter<MyItemHistoryFilter>
+    private lateinit var databaseAdapterHistoryFilter: ArrayAdapter<ModelHistoryFilter>
     private var scrollPreLastHistoryFilter: Int = 0
     private var scrollLimitHistoryFilter: Int =
         MyConfiguration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER
@@ -70,11 +76,11 @@ class ResultActivity : AppCompatActivity() {
                     MyConfiguration.MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT,
                     s.toString()
                 )
-                this@ResultActivity.refreshCatalystListView(MyScrollRefresh.RESET_LIST)
+                this@ResultActivity.refreshCatalystListView(ScrollRefresh.RESET_LIST)
             }
         })
         //init database adapter catalyst
-        this.databaseAdapterCatalysts = object : ArrayAdapter<MyItemCatalyst>(
+        this.databaseAdapterCatalysts = object : ArrayAdapter<ModelCatalyst>(
             this.applicationContext,
             R.layout.my_item_catalyst
         ) {
@@ -187,13 +193,13 @@ class ResultActivity : AppCompatActivity() {
                 //if helper equals total elements on list and helper is different that the last helper then refresh list (add elements)
                 if (lastItem == totalItemCount && lastItem != this@ResultActivity.scrollPreLastCatalyst) {
                     this@ResultActivity.scrollLimitCatalyst += MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST
-                    this@ResultActivity.refreshCatalystListView(MyScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS)
+                    this@ResultActivity.refreshCatalystListView(ScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS)
                     this@ResultActivity.scrollPreLastCatalyst = lastItem
                 }
             }
         })
         //init database adapter history filter
-        this.databaseAdapterHistoryFilter = object : ArrayAdapter<MyItemHistoryFilter>(
+        this.databaseAdapterHistoryFilter = object : ArrayAdapter<ModelHistoryFilter>(
             this.applicationContext,
             R.layout.my_item_history_filter
         ) {
@@ -235,7 +241,7 @@ class ResultActivity : AppCompatActivity() {
                 //if helper equals total elements on list and helper is different that the last helper then refresh list (add elements)
                 if (lastItem == totalItemCount && lastItem != this@ResultActivity.scrollPreLastHistoryFilter) {
                     this@ResultActivity.scrollLimitHistoryFilter += MyConfiguration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER
-                    this@ResultActivity.refreshHistoryFilterListView(MyScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS)
+                    this@ResultActivity.refreshHistoryFilterListView(ScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS)
                     this@ResultActivity.scrollPreLastHistoryFilter = lastItem
                 }
             }
@@ -251,7 +257,7 @@ class ResultActivity : AppCompatActivity() {
                         this@ResultActivity.bindingActivityResult.navigationHistoryFilter
                     ) == false
                 ) {
-                    this@ResultActivity.refreshHistoryFilterListView(MyScrollRefresh.RESET_LIST)
+                    this@ResultActivity.refreshHistoryFilterListView(ScrollRefresh.RESET_LIST)
                 }
             }
         })
@@ -268,7 +274,7 @@ class ResultActivity : AppCompatActivity() {
         /* checking time */
         if (MyConfiguration.checkTimeOnPhone(
                 "",
-                MyTimeChecking.CHECKING_LICENCE
+                TimeChecking.CHECKING_LICENCE
             ) == false
         ) this.openMainActivity()
         //make async task and execute
@@ -331,11 +337,11 @@ class ResultActivity : AppCompatActivity() {
     }
 
     //refresh catalyst list view
-    fun refreshCatalystListView(myScrollRefresh: MyScrollRefresh) {
+    fun refreshCatalystListView(scrollRefresh: ScrollRefresh) {
         val searchedText =
             MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT)
-        when (myScrollRefresh) {
-            MyScrollRefresh.RESET_LIST -> {
+        when (scrollRefresh) {
+            ScrollRefresh.RESET_LIST -> {
                 //reset variable of scroll
                 this.scrollPreLastCatalyst = 0
                 this.scrollLimitCatalyst = MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST
@@ -345,14 +351,14 @@ class ResultActivity : AppCompatActivity() {
                 this.databaseAdapterCatalysts.clear()
                 this.databaseAdapterCatalysts.addAll(result)
             }
-            MyScrollRefresh.UPDATE_LIST -> {
+            ScrollRefresh.UPDATE_LIST -> {
                 //get data from database
                 val result =
                     this.database.getDataCatalyst(searchedText, this.scrollLimitCatalyst.toString())
                 this.databaseAdapterCatalysts.clear()
                 this.databaseAdapterCatalysts.addAll(result)
             }
-            MyScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS -> {
+            ScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS -> {
                 //limit as offset in format: skip elements, count elements to get
                 val limitWithOffset: String =
                     (this.scrollLimitCatalyst - MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST).toString() + "," + MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST
@@ -370,10 +376,10 @@ class ResultActivity : AppCompatActivity() {
     }
 
     //refresh history filter list view
-    fun refreshHistoryFilterListView(myScrollRefresh: MyScrollRefresh) {
+    fun refreshHistoryFilterListView(scrollRefresh: ScrollRefresh) {
         val nameCatalystOrBrandCarInput = this@ResultActivity.bindingActivityResult.editText.text.toString()
-        when (myScrollRefresh) {
-            MyScrollRefresh.RESET_LIST -> {
+        when (scrollRefresh) {
+            ScrollRefresh.RESET_LIST -> {
                 //reset variable of scroll
                 this.scrollPreLastHistoryFilter = 0
                 this.scrollLimitHistoryFilter =
@@ -384,14 +390,14 @@ class ResultActivity : AppCompatActivity() {
                 this.databaseAdapterHistoryFilter.clear()
                 this.databaseAdapterHistoryFilter.addAll(result)
             }
-            MyScrollRefresh.UPDATE_LIST -> {
+            ScrollRefresh.UPDATE_LIST -> {
                 //get data from database
                 val result =
                     this.database.getDataHistoryFilter(this.scrollLimitHistoryFilter.toString(), nameCatalystOrBrandCarInput)
                 this.databaseAdapterHistoryFilter.clear()
                 this.databaseAdapterHistoryFilter.addAll(result)
             }
-            MyScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS -> {
+            ScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS -> {
                 //limit as offset in format: skip elements, count elements to get
                 val limitWithOffset: String =
                     (this.scrollLimitHistoryFilter - MyConfiguration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER).toString() + "," + MyConfiguration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER
@@ -436,7 +442,7 @@ class ResultActivity : AppCompatActivity() {
                 this@ResultActivity.bindingActivityResult.catalystListView.visibility = GONE
             }
             //--- doInBackground
-            var myProcessStep: MyProcessStep = MyProcessStep.NONE
+            var processStep: ProcessStep = ProcessStep.NONE
             try {
                 //update value of courses - if from last update passed 6h
                 val lastTimestampUpdateCourseFromConfiguration: String =
@@ -454,16 +460,16 @@ class ResultActivity : AppCompatActivity() {
                 val user: JSONArray? =
                     MySpreadsheet.getDataLogin(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LOGIN))
                 if (user == null) {
-                    myProcessStep = MyProcessStep.USER_ELAPSED_DATE_LICENCE
+                    processStep = ProcessStep.USER_ELAPSED_DATE_LICENCE
                     throw Exception()
                 }
                 /* checking time */
                 if (MyConfiguration.checkTimeOnPhone(
                         user.getString(MyConfiguration.MY_SPREADSHEET_USERS_LICENCE),
-                        MyTimeChecking.PARAMETER_IS_GREATER_THAN_NOW
+                        TimeChecking.PARAMETER_IS_GREATER_THAN_NOW
                     ) == false
                 ) {
-                    myProcessStep = MyProcessStep.USER_ELAPSED_DATE_LICENCE
+                    processStep = ProcessStep.USER_ELAPSED_DATE_LICENCE
                     throw Exception()
                 }
                 /* save configuration */
@@ -518,19 +524,19 @@ class ResultActivity : AppCompatActivity() {
                     ).toString()
                 )
                 //can run service - assuming that app has connection to internet
-                val uploadWorkRequest: WorkRequest =
-                    OneTimeWorkRequestBuilder<UploadWorker>().build()
+                val workRequest: WorkRequest =
+                    OneTimeWorkRequestBuilder<WorkerUpload>().build()
                 WorkManager
                     .getInstance(this@ResultActivity.applicationContext)
-                    .enqueue(uploadWorkRequest)
-                myProcessStep = MyProcessStep.SUCCESS
+                    .enqueue(workRequest)
+                processStep = ProcessStep.SUCCESS
             } catch (e: Exception) {
                 //nothing
             }
             //--- onPostExecute
             this@ResultActivity.runOnUiThread {
                 //if elapsed time then go to main activity
-                if (myProcessStep == MyProcessStep.USER_ELAPSED_DATE_LICENCE) {
+                if (processStep == ProcessStep.USER_ELAPSED_DATE_LICENCE) {
                     /* set licence as empty */
                     MySharedPreferences.setKeyToFile(
                         MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END,
@@ -613,7 +619,7 @@ class ResultActivity : AppCompatActivity() {
                     }
                 }
                 //refresh list view
-                this@ResultActivity.refreshCatalystListView(MyScrollRefresh.UPDATE_LIST)
+                this@ResultActivity.refreshCatalystListView(ScrollRefresh.UPDATE_LIST)
                 //enable user interface on process application
                 MyUserInterface.enableActivity(
                     this@ResultActivity.bindingActivityResult.drawerLayout,
@@ -637,7 +643,7 @@ class ResultActivity : AppCompatActivity() {
                 )
             }
             //--- doInBackground
-            var myProcessStep: MyProcessStep = MyProcessStep.NONE
+            var processStep: ProcessStep = ProcessStep.NONE
             try {
                 var searchedText =
                     MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT)
@@ -645,31 +651,31 @@ class ResultActivity : AppCompatActivity() {
                 if (searchedText.isEmpty() == false) {
                     this@ResultActivity.database.deleteHistoryFilter(searchedText)
                     this@ResultActivity.database.insertHistoryFilter(searchedText)
-                    myProcessStep = MyProcessStep.SUCCESS
+                    processStep = ProcessStep.SUCCESS
                 }
             } catch (e: Exception) {
                 //nothing
-                myProcessStep = MyProcessStep.UNHANDLED_EXCEPTION
+                processStep = ProcessStep.UNHANDLED_EXCEPTION
             }
             //--- onPostExecute
             this@ResultActivity.runOnUiThread {
                 //do job depends on situation
-                when (myProcessStep) {
-                    MyProcessStep.NONE -> {
+                when (processStep) {
+                    ProcessStep.NONE -> {
                         Toast.makeText(
                             this@ResultActivity.applicationContext,
                             MyConfiguration.INFO_MESSAGE_SAVE_EMPTY_VALUE,
                             Toast.LENGTH_LONG
                         ).show()
                     }
-                    MyProcessStep.UNHANDLED_EXCEPTION -> {
+                    ProcessStep.UNHANDLED_EXCEPTION -> {
                         Toast.makeText(
                             this@ResultActivity.applicationContext,
                             MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION,
                             Toast.LENGTH_LONG
                         ).show()
                     }
-                    MyProcessStep.SUCCESS -> {
+                    ProcessStep.SUCCESS -> {
                         Toast.makeText(
                             this@ResultActivity.applicationContext,
                             MyConfiguration.INFO_MESSAGE_ADDED_HISTORY_FILTER,
@@ -705,25 +711,25 @@ class ResultActivity : AppCompatActivity() {
                 )
             }
             //--- doInBackground
-            var myProcessStep: MyProcessStep = MyProcessStep.SUCCESS
+            var processStep: ProcessStep = ProcessStep.SUCCESS
             try {
                 this@ResultActivity.database.deleteHistoryFilter(this.id)
             } catch (e: Exception) {
                 //nothing
-                myProcessStep = MyProcessStep.UNHANDLED_EXCEPTION
+                processStep = ProcessStep.UNHANDLED_EXCEPTION
             }
             //--- onPostExecute
             this@ResultActivity.runOnUiThread {
                 //do job depends on situation
-                when (myProcessStep) {
-                    MyProcessStep.UNHANDLED_EXCEPTION -> {
+                when (processStep) {
+                    ProcessStep.UNHANDLED_EXCEPTION -> {
                         Toast.makeText(
                             this@ResultActivity.applicationContext,
                             MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION,
                             Toast.LENGTH_LONG
                         ).show()
                     }
-                    MyProcessStep.SUCCESS -> {
+                    ProcessStep.SUCCESS -> {
                         Toast.makeText(
                             this@ResultActivity.applicationContext,
                             MyConfiguration.INFO_MESSAGE_DELETED_HISTORY_FILTER,
@@ -735,7 +741,7 @@ class ResultActivity : AppCompatActivity() {
                     }
                 }
                 //refresh list
-                this@ResultActivity.refreshHistoryFilterListView(MyScrollRefresh.UPDATE_LIST)
+                this@ResultActivity.refreshHistoryFilterListView(ScrollRefresh.UPDATE_LIST)
                 //enable user interface on process application
                 MyUserInterface.enableActivity(
                     this@ResultActivity.bindingActivityResult.drawerLayout,

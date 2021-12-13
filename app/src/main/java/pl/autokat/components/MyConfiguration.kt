@@ -16,6 +16,7 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.json.JSONArray
 import org.json.JSONObject
+import pl.autokat.enums.TimeChecking
 import java.net.URL
 import java.net.UnknownHostException
 import java.security.KeyFactory
@@ -106,9 +107,9 @@ class MyConfiguration {
 
         //check time depends from parameter
         @SuppressLint("SimpleDateFormat")
-        fun checkTimeOnPhone(dateInput: String, timeChecking: MyTimeChecking): Boolean {
+        fun checkTimeOnPhone(dateInput: String, timeChecking: TimeChecking): Boolean {
             when (timeChecking) {
-                MyTimeChecking.NOW_GREATER_THAN_TIME_FROM_INTERNET -> {
+                TimeChecking.NOW_GREATER_THAN_TIME_FROM_INTERNET -> {
                     //time from web minus 1 hour must by greater than time now
                     val json = JSONObject(URL(URL_TIMESTAMP).readText())
                     val timestampWeb: Long =
@@ -123,13 +124,13 @@ class MyConfiguration {
                     }
                     return false
                 }
-                MyTimeChecking.PARAMETER_IS_GREATER_THAN_NOW -> {
+                TimeChecking.PARAMETER_IS_GREATER_THAN_NOW -> {
                     val timestamp: Long = Date().time
                     val timestampInput: Long =
                         (SimpleDateFormat("yyyy-MM-dd").parse(dateInput)!!.time) + ONE_DAY_IN_MILLISECONDS
                     return timestampInput > timestamp
                 }
-                MyTimeChecking.CHECKING_LICENCE -> {
+                TimeChecking.CHECKING_LICENCE -> {
                     val timestamp: Long = Date().time
                     val timestampLicence: Long = (SimpleDateFormat("yyyy-MM-dd").parse(
                         MySharedPreferences.getKeyFromFile(
