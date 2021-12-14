@@ -7,7 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import pl.autokat.components.MyConfiguration
 import pl.autokat.enums.ProcessStep
-import pl.autokat.components.MyUserInterface
+import pl.autokat.components.UserInterface
 import pl.autokat.databinding.ActivityPictureBinding
 import java.net.URL
 import java.net.UnknownHostException
@@ -39,7 +39,7 @@ class PictureActivity : AppCompatActivity() {
             //--- onPreExecute
             this@PictureActivity.runOnUiThread {
                 //disable user interface on process application
-                MyUserInterface.enableActivity(
+                UserInterface.changeStatusLayout(
                     this@PictureActivity.bindingActivityPicture.linearLayout,
                     false
                 )
@@ -88,7 +88,7 @@ class PictureActivity : AppCompatActivity() {
                     }
                 }
                 //enable user interface on process application
-                MyUserInterface.enableActivity(
+                UserInterface.changeStatusLayout(
                     this@PictureActivity.bindingActivityPicture.linearLayout,
                     true
                 )

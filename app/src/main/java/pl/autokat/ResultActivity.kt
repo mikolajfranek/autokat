@@ -19,6 +19,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import org.json.JSONArray
 import pl.autokat.components.*
+import pl.autokat.components.Formatter
 import pl.autokat.databinding.ActivityResultBinding
 import pl.autokat.databinding.MyItemCatalystBinding
 import pl.autokat.databinding.MyItemHistoryFilterBinding
@@ -58,13 +59,13 @@ class ResultActivity : AppCompatActivity() {
         //navigate up
         this.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         //init shared preferences
-        MySharedPreferences.init(this)
+        SharedPreferences.init(this)
         //init database object
         this.database = MyDatabase(this.applicationContext)
         //text listener on change text
         this.bindingActivityResult.editText.setText(
-            MySharedPreferences.getKeyFromFile(
-                MyConfiguration.MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT
+            SharedPreferences.getKeyFromFile(
+                SharedPreferences.LAST_SEARCHED_TEXT
             )
         )
         this.bindingActivityResult.editText.addTextChangedListener(object : TextWatcher {
@@ -72,8 +73,8 @@ class ResultActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 //save last searched text
-                MySharedPreferences.setKeyToFile(
-                    MyConfiguration.MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT,
+                SharedPreferences.setKeyToFile(
+                    SharedPreferences.LAST_SEARCHED_TEXT,
                     s.toString()
                 )
                 this@ResultActivity.refreshCatalystListView(ScrollRefresh.RESET_LIST)
@@ -93,8 +94,8 @@ class ResultActivity : AppCompatActivity() {
                 //get element
                 val itemCatalyst = this.getItem(position)!!
                 //visibility of feature of element
-                val visibilityCatalyst: Boolean = MySharedPreferences.getKeyFromFile(
-                    MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY
+                val visibilityCatalyst: Boolean = SharedPreferences.getKeyFromFile(
+                    SharedPreferences.VISIBILITY
                 ).toInt() == 1
                 //item thumbnail
                 this@ResultActivity.bindingMyItemCatalyst.imageView.setImageBitmap(itemCatalyst.thumbnail)
@@ -121,44 +122,44 @@ class ResultActivity : AppCompatActivity() {
                 //item name
                 this@ResultActivity.bindingMyItemCatalyst.name.text = itemCatalyst.name
                 //item weight
-                val weightText = MyConfiguration.formatStringFloat(
+                val weightText = Formatter.formatStringFloat(
                     itemCatalyst.weight.toString(),
                     3
                 ) + " kg"
                 this@ResultActivity.bindingMyItemCatalyst.weight.text = weightText
                 //item platinum
-                val platinumText = MyConfiguration.formatStringFloat(
+                val platinumText = Formatter.formatStringFloat(
                     if (visibilityCatalyst) itemCatalyst.platinum.toString() else "0.0",
                     3
                 ) + " g/kg"
                 this@ResultActivity.bindingMyItemCatalyst.platinum.text = platinumText
                 //item palladium
-                val palladiumText = MyConfiguration.formatStringFloat(
+                val palladiumText = Formatter.formatStringFloat(
                     if (visibilityCatalyst) itemCatalyst.palladium.toString() else "0.0",
                     3
                 ) + " g/kg"
                 this@ResultActivity.bindingMyItemCatalyst.palladium.text = palladiumText
                 //item rhodium
-                val rhodiumText = MyConfiguration.formatStringFloat(
+                val rhodiumText = Formatter.formatStringFloat(
                     if (visibilityCatalyst) itemCatalyst.rhodium.toString() else "0.0",
                     3
                 ) + " g/kg"
                 this@ResultActivity.bindingMyItemCatalyst.rhodium.text = rhodiumText
                 //count price
                 var pricePl = itemCatalyst.countPricePln()
-                val courseEurlnFromConfiguration: String = MySharedPreferences.getKeyFromFile(
-                    MyConfiguration.MY_SHARED_PREFERENCES_KEY_EUR_PLN
+                val courseEurlnFromConfiguration: String = SharedPreferences.getKeyFromFile(
+                    SharedPreferences.EUR_PLN
                 )
                 val courseEurPln: Float =
                     if (courseEurlnFromConfiguration.isEmpty()) 0.0F else courseEurlnFromConfiguration.toFloat()
                 var priceEur = if (courseEurPln != 0.0F) (pricePl / courseEurPln) else 0.0F
                 pricePl = if (pricePl < 0) 0.0F else pricePl
                 priceEur = if (priceEur < 0) 0.0F else priceEur
-                val resultPriceEur: String = (MyConfiguration.formatStringFloat(
+                val resultPriceEur: String = (Formatter.formatStringFloat(
                     priceEur.toString(),
                     2
                 ) + " €")
-                val resultPricePln: String = (MyConfiguration.formatStringFloat(
+                val resultPricePln: String = (Formatter.formatStringFloat(
                     pricePl.toString(),
                     2
                 ) + " zł")
@@ -339,7 +340,7 @@ class ResultActivity : AppCompatActivity() {
     //refresh catalyst list view
     fun refreshCatalystListView(scrollRefresh: ScrollRefresh) {
         val searchedText =
-            MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT)
+            SharedPreferences.getKeyFromFile(SharedPreferences.LAST_SEARCHED_TEXT)
         when (scrollRefresh) {
             ScrollRefresh.RESET_LIST -> {
                 //reset variable of scroll
@@ -430,7 +431,7 @@ class ResultActivity : AppCompatActivity() {
             //--- onPreExecute
             this@ResultActivity.runOnUiThread {
                 //disable user interface on process application
-                MyUserInterface.enableActivity(
+                UserInterface.changeStatusLayout(
                     this@ResultActivity.bindingActivityResult.drawerLayout,
                     false
                 )
@@ -446,7 +447,7 @@ class ResultActivity : AppCompatActivity() {
             try {
                 //update value of courses - if from last update passed 6h
                 val lastTimestampUpdateCourseFromConfiguration: String =
-                    MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_UPDATE_COURSE_TIMESTAMP)
+                    SharedPreferences.getKeyFromFile(SharedPreferences.UPDATE_COURSE_TIMESTAMP)
                 if (lastTimestampUpdateCourseFromConfiguration.isEmpty() || ((Date().time - lastTimestampUpdateCourseFromConfiguration.toLong()) > (MyConfiguration.ONE_DAY_IN_MILLISECONDS / 4))) {
                     MyCoursesValues.getValues(database)
                 }
@@ -458,7 +459,7 @@ class ResultActivity : AppCompatActivity() {
                     databaseCatalystCount == 0 || spreadsheetCatalystCount > databaseCatalystCount
                 /* authentication */
                 val user: JSONArray? =
-                    MySpreadsheet.getDataLogin(MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LOGIN))
+                    MySpreadsheet.getDataLogin(SharedPreferences.getKeyFromFile(SharedPreferences.LOGIN))
                 if (user == null) {
                     processStep = ProcessStep.USER_ELAPSED_DATE_LICENCE
                     throw Exception()
@@ -474,15 +475,15 @@ class ResultActivity : AppCompatActivity() {
                 }
                 /* save configuration */
                 //save licence date
-                MySharedPreferences.setKeyToFile(
-                    MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END,
+                SharedPreferences.setKeyToFile(
+                    SharedPreferences.LICENCE_DATE_OF_END,
                     user.getString(
                         MyConfiguration.MY_SPREADSHEET_USERS_LICENCE
                     )
                 )
                 //save discount
-                MySharedPreferences.setKeyToFile(
-                    MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT,
+                SharedPreferences.setKeyToFile(
+                    SharedPreferences.DISCOUNT,
                     MyConfiguration.getIntFromString(
                         user.getString(
                             MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT
@@ -490,8 +491,8 @@ class ResultActivity : AppCompatActivity() {
                     ).toString()
                 )
                 //save visibility
-                MySharedPreferences.setKeyToFile(
-                    MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY,
+                SharedPreferences.setKeyToFile(
+                    SharedPreferences.VISIBILITY,
                     MyConfiguration.getIntFromEnumBoolean(
                         user.getString(
                             MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY
@@ -499,24 +500,24 @@ class ResultActivity : AppCompatActivity() {
                     ).toString()
                 )
                 //save minus elements
-                MySharedPreferences.setKeyToFile(
-                    MyConfiguration.MY_SHARED_PREFERENCES_KEY_MINUS_PLATINIUM,
+                SharedPreferences.setKeyToFile(
+                    SharedPreferences.MINUS_PLATINIUM,
                     MyConfiguration.getIntFromString(
                         user.getString(
                             MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PLATINIUM
                         )
                     ).toString()
                 )
-                MySharedPreferences.setKeyToFile(
-                    MyConfiguration.MY_SHARED_PREFERENCES_KEY_MINUS_PALLADIUM,
+                SharedPreferences.setKeyToFile(
+                    SharedPreferences.MINUS_PALLADIUM,
                     MyConfiguration.getIntFromString(
                         user.getString(
                             MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PALLADIUM
                         )
                     ).toString()
                 )
-                MySharedPreferences.setKeyToFile(
-                    MyConfiguration.MY_SHARED_PREFERENCES_KEY_MINUS_RHODIUM,
+                SharedPreferences.setKeyToFile(
+                    SharedPreferences.MINUS_RHODIUM,
                     MyConfiguration.getIntFromString(
                         user.getString(
                             MyConfiguration.MY_SPREADSHEET_USERS_MINUS_RHODIUM
@@ -538,8 +539,8 @@ class ResultActivity : AppCompatActivity() {
                 //if elapsed time then go to main activity
                 if (processStep == ProcessStep.USER_ELAPSED_DATE_LICENCE) {
                     /* set licence as empty */
-                    MySharedPreferences.setKeyToFile(
-                        MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END,
+                    SharedPreferences.setKeyToFile(
+                        SharedPreferences.LICENCE_DATE_OF_END,
                         ""
                     )
                     this@ResultActivity.openMainActivity()
@@ -575,7 +576,7 @@ class ResultActivity : AppCompatActivity() {
                     //set visibility of status update courses
                     if (MyCoursesValues.isCoursesSelected()) {
                         val actualCoursesDate =
-                            MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_ACTUAL_COURSES_DATE)
+                            SharedPreferences.getKeyFromFile(SharedPreferences.ACTUAL_COURSES_DATE)
                         if (LocalDate.now().toString().equals(actualCoursesDate)) {
                             this@ResultActivity.menu!!.getItem(0).icon = ContextCompat.getDrawable(
                                 this@ResultActivity.applicationContext,
@@ -589,15 +590,15 @@ class ResultActivity : AppCompatActivity() {
                         }
                     } else {
                         val usdDate =
-                            MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_USD_PLN_DATE)
+                            SharedPreferences.getKeyFromFile(SharedPreferences.USD_PLN_DATE)
                         val eurDate =
-                            MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_EUR_PLN_DATE)
+                            SharedPreferences.getKeyFromFile(SharedPreferences.EUR_PLN_DATE)
                         val platinumDate =
-                            MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PLATIUNUM_DATE)
+                            SharedPreferences.getKeyFromFile(SharedPreferences.PLATIUNUM_DATE)
                         val palladiumDate =
-                            MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_PALLADIUM_DATE)
+                            SharedPreferences.getKeyFromFile(SharedPreferences.PALLADIUM_DATE)
                         val rhodiumDate =
-                            MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_RHODIUM_DATE)
+                            SharedPreferences.getKeyFromFile(SharedPreferences.RHODIUM_DATE)
                         //yellow when dates are different
                         if (LocalDate.now().toString()
                                 .equals(usdDate) && usdDate.equals(eurDate) && eurDate.equals(
@@ -621,7 +622,7 @@ class ResultActivity : AppCompatActivity() {
                 //refresh list view
                 this@ResultActivity.refreshCatalystListView(ScrollRefresh.UPDATE_LIST)
                 //enable user interface on process application
-                MyUserInterface.enableActivity(
+                UserInterface.changeStatusLayout(
                     this@ResultActivity.bindingActivityResult.drawerLayout,
                     true
                 )
@@ -637,7 +638,7 @@ class ResultActivity : AppCompatActivity() {
             //--- onPreExecute
             this@ResultActivity.runOnUiThread {
                 //disable user interface on process application
-                MyUserInterface.enableActivity(
+                UserInterface.changeStatusLayout(
                     this@ResultActivity.bindingActivityResult.drawerLayout,
                     false
                 )
@@ -646,7 +647,7 @@ class ResultActivity : AppCompatActivity() {
             var processStep: ProcessStep = ProcessStep.NONE
             try {
                 var searchedText =
-                    MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LAST_SEARCHED_TEXT)
+                    SharedPreferences.getKeyFromFile(SharedPreferences.LAST_SEARCHED_TEXT)
                 searchedText = ("\\s{2,}").toRegex().replace(searchedText.trim(), " ")
                 if (searchedText.isEmpty() == false) {
                     this@ResultActivity.database.deleteHistoryFilter(searchedText)
@@ -687,7 +688,7 @@ class ResultActivity : AppCompatActivity() {
                     }
                 }
                 //enable user interface on process application
-                MyUserInterface.enableActivity(
+                UserInterface.changeStatusLayout(
                     this@ResultActivity.bindingActivityResult.drawerLayout,
                     true
                 )
@@ -705,7 +706,7 @@ class ResultActivity : AppCompatActivity() {
             //--- onPreExecute
             this@ResultActivity.runOnUiThread {
                 //disable user interface on process application
-                MyUserInterface.enableActivity(
+                UserInterface.changeStatusLayout(
                     this@ResultActivity.bindingActivityResult.drawerLayout,
                     false
                 )
@@ -743,7 +744,7 @@ class ResultActivity : AppCompatActivity() {
                 //refresh list
                 this@ResultActivity.refreshHistoryFilterListView(ScrollRefresh.UPDATE_LIST)
                 //enable user interface on process application
-                MyUserInterface.enableActivity(
+                UserInterface.changeStatusLayout(
                     this@ResultActivity.bindingActivityResult.drawerLayout,
                     true
                 )

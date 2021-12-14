@@ -1,8 +1,13 @@
 package pl.autokat
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
+import android.telephony.TelephonyManager
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -30,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         //navigate up
         this.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         //init shared preferences
-        MySharedPreferences.init(this)
+        SharedPreferences.init(this)
         //listeners
         bindingActivityMain.loginButton.setOnClickListener {
             this.tryLogin(this.bindingActivityMain.editText.text.toString(), true)
@@ -55,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             //has permission and try login
             this.tryLogin(
-                MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LOGIN),
+                SharedPreferences.getKeyFromFile(SharedPreferences.LOGIN),
                 false
             )
         }
@@ -73,7 +78,7 @@ class MainActivity : AppCompatActivity() {
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     // permission was granted
                     this.tryLogin(
-                        MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LOGIN),
+                        SharedPreferences.getKeyFromFile(SharedPreferences.LOGIN),
                         false
                     )
                 } else {
@@ -125,6 +130,63 @@ class MainActivity : AppCompatActivity() {
         Thread(this.TaskTryLogin(login, hasClickedButton)).start()
     }
 
+    //decorator for delete others signs
+    fun decoratorIdentificatorOfUser(applicationContext: Context): String {
+        var identificator: String = getIdentificatorOfUser(applicationContext)
+        identificator = ("[^A-Za+-z0-9]+").toRegex().replace(identificator, "")
+        //return if is not empty
+        if (identificator.isEmpty() == false) return identificator
+        throw Exception()
+    }
+
+    @SuppressLint("MissingPermission", "HardwareIds")
+    fun getIdentificatorOfUser(applicationContext: Context): String {
+        var serialId = ""
+        try {
+            serialId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Build.getSerial()
+            } else {
+                @Suppress("DEPRECATION")
+                Build.SERIAL
+            }
+        } catch (e: Exception) {
+            //nothing
+        }
+        //return if serial id is not empty
+        if (serialId.isEmpty() == false) return serialId
+        //phone number section
+        try {
+            serialId =
+                (applicationContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).line1Number.toString()
+        } catch (e: Exception) {
+            //nothing
+        }
+        //return if phone number is not empty
+        if (serialId.isEmpty() == false) return serialId
+        //phone number section
+        try {
+            serialId =
+                (applicationContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+        } catch (e: Exception) {
+            //nothing
+        }
+        //return if sim id is not empty
+        if (serialId.isEmpty() == false) return serialId
+        //android id for android > 10
+        try {
+            serialId = Settings.Secure.getString(
+                applicationContext.contentResolver,
+                Settings.Secure.ANDROID_ID
+            )
+        } catch (e: Exception) {
+            //nothing
+        }
+        //return if is not empty
+        if (serialId.isEmpty() == false) return serialId
+        throw Exception()
+    }
+
+
     //async class which make all job - when job is finished then go to next activity in success otherwise set view application with message and unblock user interface
     inner class TaskTryLogin(loginInput: String, hasClickedButtonInput: Boolean) : Runnable {
         //fields
@@ -137,7 +199,7 @@ class MainActivity : AppCompatActivity() {
             //--- onPreExecute
             this@MainActivity.runOnUiThread {
                 //disable user interface on process application
-                MyUserInterface.enableActivity(
+                UserInterface.changeStatusLayout(
                     this@MainActivity.bindingActivityMain.linearLayout,
                     false
                 )
@@ -158,7 +220,7 @@ class MainActivity : AppCompatActivity() {
                     processStep = ProcessStep.USER_NEVER_LOGGED
                 } else {
                     //check licence without connection to internet
-                    if (MySharedPreferences.getKeyFromFile(MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END)
+                    if (SharedPreferences.getKeyFromFile(SharedPreferences.LICENCE_DATE_OF_END)
                             .isEmpty() == false
                     ) {
                         /* checking time */
@@ -198,8 +260,7 @@ class MainActivity : AppCompatActivity() {
                                     processStep = ProcessStep.USER_ELAPSED_DATE_LICENCE
                                 } else {
                                     //read serial id from phone
-                                    val serialId: String =
-                                        MyConfiguration.decoratorIdentificatorOfUser(this@MainActivity.applicationContext)
+                                    val serialId: String = decoratorIdentificatorOfUser(this@MainActivity.applicationContext)
                                     //check if serial id is correct or save serial id to database
                                     if (user.getString(MyConfiguration.MY_SPREADSHEET_USERS_UUID)
                                             .isEmpty()
@@ -218,15 +279,15 @@ class MainActivity : AppCompatActivity() {
                                     if (processStep == ProcessStep.NONE) {
                                         /* save configuration */
                                         //save licence date
-                                        MySharedPreferences.setKeyToFile(
-                                            MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END,
+                                        SharedPreferences.setKeyToFile(
+                                            SharedPreferences.LICENCE_DATE_OF_END,
                                             user.getString(
                                                 MyConfiguration.MY_SPREADSHEET_USERS_LICENCE
                                             )
                                         )
                                         //save discount
-                                        MySharedPreferences.setKeyToFile(
-                                            MyConfiguration.MY_SHARED_PREFERENCES_KEY_DISCOUNT,
+                                        SharedPreferences.setKeyToFile(
+                                            SharedPreferences.DISCOUNT,
                                             MyConfiguration.getIntFromString(
                                                 user.getString(
                                                     MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT
@@ -234,8 +295,8 @@ class MainActivity : AppCompatActivity() {
                                             ).toString()
                                         )
                                         //save visibility
-                                        MySharedPreferences.setKeyToFile(
-                                            MyConfiguration.MY_SHARED_PREFERENCES_KEY_VISIBILITY,
+                                        SharedPreferences.setKeyToFile(
+                                            SharedPreferences.VISIBILITY,
                                             MyConfiguration.getIntFromEnumBoolean(
                                                 user.getString(
                                                     MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY
@@ -243,24 +304,24 @@ class MainActivity : AppCompatActivity() {
                                             ).toString()
                                         )
                                         //save minus elements
-                                        MySharedPreferences.setKeyToFile(
-                                            MyConfiguration.MY_SHARED_PREFERENCES_KEY_MINUS_PLATINIUM,
+                                        SharedPreferences.setKeyToFile(
+                                            SharedPreferences.MINUS_PLATINIUM,
                                             MyConfiguration.getIntFromString(
                                                 user.getString(
                                                     MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PLATINIUM
                                                 )
                                             ).toString()
                                         )
-                                        MySharedPreferences.setKeyToFile(
-                                            MyConfiguration.MY_SHARED_PREFERENCES_KEY_MINUS_PALLADIUM,
+                                        SharedPreferences.setKeyToFile(
+                                            SharedPreferences.MINUS_PALLADIUM,
                                             MyConfiguration.getIntFromString(
                                                 user.getString(
                                                     MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PALLADIUM
                                                 )
                                             ).toString()
                                         )
-                                        MySharedPreferences.setKeyToFile(
-                                            MyConfiguration.MY_SHARED_PREFERENCES_KEY_MINUS_RHODIUM,
+                                        SharedPreferences.setKeyToFile(
+                                            SharedPreferences.MINUS_RHODIUM,
                                             MyConfiguration.getIntFromString(
                                                 user.getString(
                                                     MyConfiguration.MY_SPREADSHEET_USERS_MINUS_RHODIUM
@@ -268,8 +329,8 @@ class MainActivity : AppCompatActivity() {
                                             ).toString()
                                         )
                                         //save login
-                                        MySharedPreferences.setKeyToFile(
-                                            MyConfiguration.MY_SHARED_PREFERENCES_KEY_LOGIN,
+                                        SharedPreferences.setKeyToFile(
+                                            SharedPreferences.LOGIN,
                                             this.login
                                         )
                                         //success
@@ -299,8 +360,8 @@ class MainActivity : AppCompatActivity() {
                         this@MainActivity.bindingActivityMain.textView.text =
                             MyConfiguration.INFO_MESSAGE_USER_FAILED_LICENCE
                         /* set licence as empty */
-                        MySharedPreferences.setKeyToFile(
-                            MyConfiguration.MY_SHARED_PREFERENCES_KEY_LICENCE_DATE_OF_END,
+                        SharedPreferences.setKeyToFile(
+                            SharedPreferences.LICENCE_DATE_OF_END,
                             ""
                         )
                     }
@@ -332,7 +393,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 //enable user interface on process application
-                MyUserInterface.enableActivity(
+                UserInterface.changeStatusLayout(
                     this@MainActivity.bindingActivityMain.linearLayout,
                     true
                 )

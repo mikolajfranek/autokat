@@ -26,7 +26,7 @@ class UpdateActivity : AppCompatActivity() {
         //navigate up
         this.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         //init shared preferences
-        MySharedPreferences.init(this)
+        SharedPreferences.init(this)
         //init database object
         this.myDatabase = MyDatabase(this.applicationContext)
         //listeneres
@@ -141,7 +141,7 @@ class UpdateActivity : AppCompatActivity() {
             //--- onPreExecute
             this@UpdateActivity.runOnUiThread {
                 //disable user interface on process application
-                MyUserInterface.enableActivity(
+                UserInterface.changeStatusLayout(
                     this@UpdateActivity.bindingActivityUpdate.linearLayout,
                     false
                 )
@@ -252,7 +252,7 @@ class UpdateActivity : AppCompatActivity() {
                     }
                 }
                 //enable user interface on process application
-                MyUserInterface.enableActivity(
+                UserInterface.changeStatusLayout(
                     this@UpdateActivity.bindingActivityUpdate.linearLayout,
                     true
                 )

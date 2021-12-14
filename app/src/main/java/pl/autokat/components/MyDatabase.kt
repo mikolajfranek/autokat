@@ -7,6 +7,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteQueryBuilder
 import android.graphics.BitmapFactory
+import android.util.Base64
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper
 import org.json.JSONArray
 import org.json.JSONObject
@@ -15,6 +16,8 @@ import pl.autokat.models.ModelCatalyst
 import pl.autokat.models.ModelHistoryFilter
 import java.io.FileOutputStream
 import java.util.*
+import javax.crypto.Cipher
+import javax.crypto.spec.SecretKeySpec
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -24,6 +27,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
     MyConfiguration.DATABASE_VERSION
 ) {
     private val myContext: Context = context
+    private val transformation: String = "BLOWFISH/ECB/PKCS5Padding"
 
     //upgrade
     private fun upgrade106(db: SQLiteDatabase) {
@@ -89,6 +93,24 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
                 }
             }
         }
+    }
+
+    @SuppressLint("GetInstance")
+    fun encrypt(input: String, salt: String): String {
+        val secret = SecretKeySpec(salt.toByteArray(charset("UTF8")), "BLOWFISH")
+        val cipher = Cipher.getInstance(transformation)
+        cipher.init(Cipher.ENCRYPT_MODE, secret)
+        return Base64.encodeToString(
+            cipher.doFinal(input.toByteArray(charset("UTF8"))),
+            Base64.DEFAULT
+        )
+    }
+    @SuppressLint("GetInstance")
+    fun decrypt(input: String, salt: String): String {
+        val secret = SecretKeySpec(salt.toByteArray(charset("UTF8")), "BLOWFISH")
+        val cipher = Cipher.getInstance(transformation)
+        cipher.init(Cipher.DECRYPT_MODE, secret)
+        return String(cipher.doFinal(Base64.decode(input, Base64.DEFAULT)))
     }
 
     //get courses from date
@@ -291,7 +313,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
                 val salt: String = MyConfiguration.getValueStringFromDocsApi(
                     element,
                     MyConfiguration.MY_SPREADSHEET_CATALYST_ID
-                ) + MySecret.getPrivateKey()
+                ) + Secret.getPrivateKey()
                 val row = ContentValues()
                 row.put(
                     MyConfiguration.DATABASE_ELEMENT_CATALYST_ID_PICTURE,
@@ -323,7 +345,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
                 )
                 row.put(
                     MyConfiguration.DATABASE_ELEMENT_CATALYST_PLATINUM,
-                    MyConfiguration.encrypt(
+                    encrypt(
                         MyConfiguration.getValueFloatStringFromDocsApi(
                             element,
                             MyConfiguration.MY_SPREADSHEET_CATALYST_PLATINUM
@@ -333,7 +355,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
                 )
                 row.put(
                     MyConfiguration.DATABASE_ELEMENT_CATALYST_PALLADIUM,
-                    MyConfiguration.encrypt(
+                    encrypt(
                         MyConfiguration.getValueFloatStringFromDocsApi(
                             element,
                             MyConfiguration.MY_SPREADSHEET_CATALYST_PALLADIUM
@@ -343,7 +365,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
                 )
                 row.put(
                     MyConfiguration.DATABASE_ELEMENT_CATALYST_RHODIUM,
-                    MyConfiguration.encrypt(
+                    encrypt(
                         MyConfiguration.getValueFloatStringFromDocsApi(
                             element,
                             MyConfiguration.MY_SPREADSHEET_CATALYST_RHODIUM
@@ -360,7 +382,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
                 )
                 row.put(
                     MyConfiguration.DATABASE_ELEMENT_CATALYST_WEIGHT,
-                    MyConfiguration.encrypt(
+                    encrypt(
                         MyConfiguration.getValueFloatStringFromDocsApi(
                             element,
                             MyConfiguration.MY_SPREADSHEET_CATALYST_WEIGHT
@@ -490,7 +512,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
                     )
                 val salt: String =
                     cursor.getInt(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID))
-                        .toString() + MySecret.getPrivateKey()
+                        .toString() + Secret.getPrivateKey()
                 val modelCatalyst = ModelCatalyst(
                     cursor.getInt(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID)),
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_ID_PICTURE)),
@@ -502,8 +524,8 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
                     ),
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME)),
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND)),
-                    MyConfiguration.formatStringFloat(
-                        MyConfiguration.decrypt(
+                    Formatter.formatStringFloat(
+                        decrypt(
                             cursor.getString(
                                 cursor.getColumnIndex(
                                     MyConfiguration.DATABASE_ELEMENT_CATALYST_PLATINUM
@@ -511,8 +533,8 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
                             ), salt
                         ), 3
                     ).toFloat(),
-                    MyConfiguration.formatStringFloat(
-                        MyConfiguration.decrypt(
+                    Formatter.formatStringFloat(
+                        decrypt(
                             cursor.getString(
                                 cursor.getColumnIndex(
                                     MyConfiguration.DATABASE_ELEMENT_CATALYST_PALLADIUM
@@ -520,8 +542,8 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
                             ), salt
                         ), 3
                     ).toFloat(),
-                    MyConfiguration.formatStringFloat(
-                        MyConfiguration.decrypt(
+                    Formatter.formatStringFloat(
+                        decrypt(
                             cursor.getString(
                                 cursor.getColumnIndex(
                                     MyConfiguration.DATABASE_ELEMENT_CATALYST_RHODIUM
@@ -530,8 +552,8 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
                         ), 3
                     ).toFloat(),
                     cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_ELEMENT_CATALYST_TYPE)),
-                    MyConfiguration.formatStringFloat(
-                        MyConfiguration.decrypt(
+                    Formatter.formatStringFloat(
+                        decrypt(
                             cursor.getString(
                                 cursor.getColumnIndex(
                                     MyConfiguration.DATABASE_ELEMENT_CATALYST_WEIGHT
