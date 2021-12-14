@@ -20,7 +20,34 @@ class MyConfiguration {
         const val DATABASE_NAME_OF_FILE: String = "autokat.db"
         const val DATABASE_FILE_PATH_ASSETS: String = "databases/$DATABASE_NAME_OF_FILE"
 
+        /* color */
+        val INFO_MESSAGE_COLOR_WHITE: Int = Color.parseColor("#FFFFFF")
+        val INFO_MESSAGE_COLOR_FAILED: Int = Color.parseColor("#EF4836")
+        val INFO_MESSAGE_COLOR_SUCCESS: Int = Color.parseColor("#363636")
 
+        /* info */
+        const val INFO_MESSAGE_USER_NEVER_LOGGED: String = "Wprowadź nazwę użytkownika"
+        const val INFO_MESSAGE_WAIT_AUTHENTICATE: String = "Trwa uwierzytelnianie…"
+        const val INFO_MESSAGE_USER_FAILED_LICENCE: String = "Brak licencji"
+        const val INFO_MESSAGE_USER_FAILED_LOGIN: String = "Błędna nazwa użytkownika"
+        const val INFO_MESSAGE_USER_FAILED_SERIAL: String = "Błędne urządzenie"
+        const val INFO_MESSAGE_NETWORK_FAILED: String = "Brak połączenia"
+        const val INFO_MESSAGE_UNHANDLED_EXCEPTION: String = "Wystąpił błąd"
+        const val INFO_MESSAGE_SAVE_EMPTY_VALUE: String = "Nie można zapisać pustej wartości"
+        const val INFO_MESSAGE_WAIT_UPDATE: String = "Trwa aktualizacja…"
+        const val INFO_UPDATE_SUCCESS: String = "Aktualizacja przebiegła pomyślnie"
+        const val INFO_UPDATE_FAILED: String = "Wystąpił błąd podczas aktualizacji"
+        const val INFO_DOWNLOAD_BITMAP_WAIT: String = "Trwa pobieranie obrazu…"
+        const val INFO_DOWNLOAD_BITMAP_FAILED: String = "Wystąpił błąd podczas pobierania obrazu"
+        const val INFO_DOWNLOAD_BITMAP_STATUS: String = "Status pobieranych miniatur"
+        const val INFO_DOWNLOAD_BITMAP_SUCCESS: String = "Baza danych jest aktualna"
+        const val INFO_EMPTY_DATABASE: String = "Baza danych jest pusta"
+        const val INFO_DATABASE_EXPIRE: String = "Baza danych nie jest aktualna"
+        const val INFO_MESSAGE_ADDED_HISTORY_FILTER: String =
+            "Pomyślnie zapisano nazwę do filtrowania"
+        const val INFO_MESSAGE_DELETED_HISTORY_FILTER: String =
+            "Pomyślnie usunięto nazwę do filtrowania"
+        const val INFO_MESSAGE_REFRESH_COURSES: String = "Odśwież wartości kursów"
 
 
 
@@ -185,35 +212,8 @@ class MyConfiguration {
         const val REQUEST_CODE_READ_PHONE_STATE: Int = 0
         var IS_AVAILABLE_UPDATE: Boolean = false
 
-        /* info */
-        //color
-        val INFO_MESSAGE_COLOR_WHITE: Int = Color.parseColor("#FFFFFF")
-        val INFO_MESSAGE_COLOR_FAILED: Int = Color.parseColor("#EF4836")
-        val INFO_MESSAGE_COLOR_SUCCESS: Int = Color.parseColor("#363636")
 
-        //message
-        const val INFO_MESSAGE_USER_NEVER_LOGGED: String = "Wprowadź nazwę użytkownika"
-        const val INFO_MESSAGE_WAIT_AUTHENTICATE: String = "Trwa uwierzytelnianie…"
-        const val INFO_MESSAGE_USER_FAILED_LICENCE: String = "Brak licencji"
-        const val INFO_MESSAGE_USER_FAILED_LOGIN: String = "Błędna nazwa użytkownika"
-        const val INFO_MESSAGE_USER_FAILED_SERIAL: String = "Błędne urządzenie"
-        const val INFO_MESSAGE_NETWORK_FAILED: String = "Brak połączenia"
-        const val INFO_MESSAGE_UNHANDLED_EXCEPTION: String = "Wystąpił błąd"
-        const val INFO_MESSAGE_SAVE_EMPTY_VALUE: String = "Nie można zapisać pustej wartości"
-        const val INFO_MESSAGE_WAIT_UPDATE: String = "Trwa aktualizacja…"
-        const val INFO_UPDATE_SUCCESS: String = "Aktualizacja przebiegła pomyślnie"
-        const val INFO_UPDATE_FAILED: String = "Wystąpił błąd podczas aktualizacji"
-        const val INFO_DOWNLOAD_BITMAP_WAIT: String = "Trwa pobieranie obrazu…"
-        const val INFO_DOWNLOAD_BITMAP_FAILED: String = "Wystąpił błąd podczas pobierania obrazu"
-        const val INFO_DOWNLOAD_BITMAP_STATUS: String = "Status pobieranych miniatur"
-        const val INFO_DOWNLOAD_BITMAP_SUCCESS: String = "Baza danych jest aktualna"
-        const val INFO_EMPTY_DATABASE: String = "Baza danych jest pusta"
-        const val INFO_DATABASE_EXPIRE: String = "Baza danych nie jest aktualna"
-        const val INFO_MESSAGE_ADDED_HISTORY_FILTER: String =
-            "Pomyślnie zapisano nazwę do filtrowania"
-        const val INFO_MESSAGE_DELETED_HISTORY_FILTER: String =
-            "Pomyślnie usunięto nazwę do filtrowania"
-        const val INFO_MESSAGE_REFRESH_COURSES: String = "Odśwież wartości kursów"
+
 
 
 
@@ -282,9 +282,17 @@ class MyConfiguration {
             }
         }
 
-        fun getValueStringFromDocsApi(jsonArrary: JSONArray, index: Int): String {
-            if (jsonArrary.isNull(index)) return ""
-            val jsonObject: JSONObject = jsonArrary.getJSONObject(index)
+
+
+
+
+
+
+
+
+        fun getValueStringFromDocsApi(jsonArray: JSONArray, index: Int): String {
+            if (jsonArray.isNull(index)) return ""
+            val jsonObject: JSONObject = jsonArray.getJSONObject(index)
             if (jsonObject.isNull("f") == false) {
                 return jsonObject.getString("f").replace(',', '.')
             }
@@ -292,13 +300,22 @@ class MyConfiguration {
             return jsonObject.getString("v").trim()
         }
 
-        fun getValueFloatStringFromDocsApi(jsonArrary: JSONArray, index: Int): String {
-            var stringField = getValueStringFromDocsApi(jsonArrary, index)
+        fun getValueFloatStringFromDocsApi(jsonArray: JSONArray, index: Int): String {
+            var stringField = getValueStringFromDocsApi(jsonArray, index)
             stringField = ("\\s+").toRegex().replace(stringField, "")
             stringField.replace(',', '.')
             if (stringField.isEmpty()) return "0.0"
             return stringField
         }
+
+
+
+
+
+
+
+
+
 
         fun getIntFromString(input: String): Int {
             var result = ("\\s+").toRegex().replace(input, "")
@@ -326,6 +343,10 @@ class MyConfiguration {
             val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
             return LocalDate.parse(date, formatter)
         }
+
+
+
+
 
 
         //get pln from dolar string
