@@ -310,35 +310,35 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
             //iterate over elements (batch)
             for (i in 0 until values.length()) {
                 val element = values.getJSONObject(i).getJSONArray("c")
-                val salt: String = MySpreadsheet.getValueStringFromDocsApi(
+                val salt: String = Spreadsheet.getValueStringFromDocsApi(
                     element,
                     MyConfiguration.MY_SPREADSHEET_CATALYST_ID
                 ) + Secret.getPrivateKey()
                 val row = ContentValues()
                 row.put(
                     MyConfiguration.DATABASE_ELEMENT_CATALYST_ID_PICTURE,
-                    MySpreadsheet.getValueStringFromDocsApi(
+                    Spreadsheet.getValueStringFromDocsApi(
                         element,
                         MyConfiguration.MY_SPREADSHEET_CATALYST_ID_PICTURE
                     )
                 )
                 row.put(
                     MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE,
-                    MySpreadsheet.getValueStringFromDocsApi(
+                    Spreadsheet.getValueStringFromDocsApi(
                         element,
                         MyConfiguration.MY_SPREADSHEET_CATALYST_URL_PICTURE
                     )
                 )
                 row.put(
                     MyConfiguration.DATABASE_ELEMENT_CATALYST_NAME,
-                    MySpreadsheet.getValueStringFromDocsApi(
+                    Spreadsheet.getValueStringFromDocsApi(
                         element,
                         MyConfiguration.MY_SPREADSHEET_CATALYST_NAME
                     )
                 )
                 row.put(
                     MyConfiguration.DATABASE_ELEMENT_CATALYST_BRAND,
-                    MySpreadsheet.getValueStringFromDocsApi(
+                    Spreadsheet.getValueStringFromDocsApi(
                         element,
                         MyConfiguration.MY_SPREADSHEET_CATALYST_BRAND
                     )
@@ -346,7 +346,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
                 row.put(
                     MyConfiguration.DATABASE_ELEMENT_CATALYST_PLATINUM,
                     encrypt(
-                        MySpreadsheet.getValueFloatStringFromDocsApi(
+                        Spreadsheet.getValueFloatStringFromDocsApi(
                             element,
                             MyConfiguration.MY_SPREADSHEET_CATALYST_PLATINUM
                         ),
@@ -356,7 +356,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
                 row.put(
                     MyConfiguration.DATABASE_ELEMENT_CATALYST_PALLADIUM,
                     encrypt(
-                        MySpreadsheet.getValueFloatStringFromDocsApi(
+                        Spreadsheet.getValueFloatStringFromDocsApi(
                             element,
                             MyConfiguration.MY_SPREADSHEET_CATALYST_PALLADIUM
                         ),
@@ -366,7 +366,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
                 row.put(
                     MyConfiguration.DATABASE_ELEMENT_CATALYST_RHODIUM,
                     encrypt(
-                        MySpreadsheet.getValueFloatStringFromDocsApi(
+                        Spreadsheet.getValueFloatStringFromDocsApi(
                             element,
                             MyConfiguration.MY_SPREADSHEET_CATALYST_RHODIUM
                         ),
@@ -375,7 +375,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
                 )
                 row.put(
                     MyConfiguration.DATABASE_ELEMENT_CATALYST_TYPE,
-                    MySpreadsheet.getValueStringFromDocsApi(
+                    Spreadsheet.getValueStringFromDocsApi(
                         element,
                         MyConfiguration.MY_SPREADSHEET_CATALYST_TYPE
                     )
@@ -383,7 +383,7 @@ class MyDatabase(context: Context) : SQLiteAssetHelper(
                 row.put(
                     MyConfiguration.DATABASE_ELEMENT_CATALYST_WEIGHT,
                     encrypt(
-                        MySpreadsheet.getValueFloatStringFromDocsApi(
+                        Spreadsheet.getValueFloatStringFromDocsApi(
                             element,
                             MyConfiguration.MY_SPREADSHEET_CATALYST_WEIGHT
                         ),

@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         //navigate up
         this.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         //init shared preferences
-        SharedPreferences.init(this)
+        SharedPreference.init(this)
         //listeners
         bindingActivityMain.loginButton.setOnClickListener {
             this.tryLogin(this.bindingActivityMain.editText.text.toString(), true)
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             //has permission and try login
             this.tryLogin(
-                SharedPreferences.getKeyFromFile(SharedPreferences.LOGIN),
+                SharedPreference.getKeyFromFile(SharedPreference.LOGIN),
                 false
             )
         }
@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     // permission was granted
                     this.tryLogin(
-                        SharedPreferences.getKeyFromFile(SharedPreferences.LOGIN),
+                        SharedPreference.getKeyFromFile(SharedPreference.LOGIN),
                         false
                     )
                 } else {
@@ -220,7 +220,7 @@ class MainActivity : AppCompatActivity() {
                     processStep = ProcessStep.USER_NEVER_LOGGED
                 } else {
                     //check licence without connection to internet
-                    if (SharedPreferences.getKeyFromFile(SharedPreferences.LICENCE_DATE_OF_END)
+                    if (SharedPreference.getKeyFromFile(SharedPreference.LICENCE_DATE_OF_END)
                             .isEmpty() == false
                     ) {
                         /* checking time */
@@ -244,7 +244,7 @@ class MainActivity : AppCompatActivity() {
                         } else {
                             /* authentication */
                             //get user from database
-                            val user: JSONArray? = MySpreadsheet.getDataLogin(this.login)
+                            val user: JSONArray? = Spreadsheet.getDataLogin(this.login)
                             if (user == null) {
                                 processStep = ProcessStep.USER_FAILED_LOGIN
                             } else {
@@ -266,7 +266,7 @@ class MainActivity : AppCompatActivity() {
                                             .isEmpty()
                                     ) {
                                         //save serial id
-                                        MySpreadsheet.saveSerialId(
+                                        Spreadsheet.saveSerialId(
                                             user.getInt(MyConfiguration.MY_SPREADSHEET_USERS_ID),
                                             serialId
                                         )
@@ -279,15 +279,15 @@ class MainActivity : AppCompatActivity() {
                                     if (processStep == ProcessStep.NONE) {
                                         /* save configuration */
                                         //save licence date
-                                        SharedPreferences.setKeyToFile(
-                                            SharedPreferences.LICENCE_DATE_OF_END,
+                                        SharedPreference.setKeyToFile(
+                                            SharedPreference.LICENCE_DATE_OF_END,
                                             user.getString(
                                                 MyConfiguration.MY_SPREADSHEET_USERS_LICENCE
                                             )
                                         )
                                         //save discount
-                                        SharedPreferences.setKeyToFile(
-                                            SharedPreferences.DISCOUNT,
+                                        SharedPreference.setKeyToFile(
+                                            SharedPreference.DISCOUNT,
                                             Parser.parseStringToInt(
                                                 user.getString(
                                                     MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT
@@ -295,8 +295,8 @@ class MainActivity : AppCompatActivity() {
                                             ).toString()
                                         )
                                         //save visibility
-                                        SharedPreferences.setKeyToFile(
-                                            SharedPreferences.VISIBILITY,
+                                        SharedPreference.setKeyToFile(
+                                            SharedPreference.VISIBILITY,
                                             Parser.parseStringBooleanToInt(
                                                 user.getString(
                                                     MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY
@@ -304,24 +304,24 @@ class MainActivity : AppCompatActivity() {
                                             ).toString()
                                         )
                                         //save minus elements
-                                        SharedPreferences.setKeyToFile(
-                                            SharedPreferences.MINUS_PLATINIUM,
+                                        SharedPreference.setKeyToFile(
+                                            SharedPreference.MINUS_PLATINIUM,
                                             Parser.parseStringToInt(
                                                 user.getString(
                                                     MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PLATINIUM
                                                 )
                                             ).toString()
                                         )
-                                        SharedPreferences.setKeyToFile(
-                                            SharedPreferences.MINUS_PALLADIUM,
+                                        SharedPreference.setKeyToFile(
+                                            SharedPreference.MINUS_PALLADIUM,
                                             Parser.parseStringToInt(
                                                 user.getString(
                                                     MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PALLADIUM
                                                 )
                                             ).toString()
                                         )
-                                        SharedPreferences.setKeyToFile(
-                                            SharedPreferences.MINUS_RHODIUM,
+                                        SharedPreference.setKeyToFile(
+                                            SharedPreference.MINUS_RHODIUM,
                                             Parser.parseStringToInt(
                                                 user.getString(
                                                     MyConfiguration.MY_SPREADSHEET_USERS_MINUS_RHODIUM
@@ -329,8 +329,8 @@ class MainActivity : AppCompatActivity() {
                                             ).toString()
                                         )
                                         //save login
-                                        SharedPreferences.setKeyToFile(
-                                            SharedPreferences.LOGIN,
+                                        SharedPreference.setKeyToFile(
+                                            SharedPreference.LOGIN,
                                             this.login
                                         )
                                         //success
@@ -360,8 +360,8 @@ class MainActivity : AppCompatActivity() {
                         this@MainActivity.bindingActivityMain.textView.text =
                             MyConfiguration.INFO_MESSAGE_USER_FAILED_LICENCE
                         /* set licence as empty */
-                        SharedPreferences.setKeyToFile(
-                            SharedPreferences.LICENCE_DATE_OF_END,
+                        SharedPreference.setKeyToFile(
+                            SharedPreference.LICENCE_DATE_OF_END,
                             ""
                         )
                     }

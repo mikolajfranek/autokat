@@ -14,14 +14,71 @@ import java.security.interfaces.RSAPrivateKey
 import java.security.spec.PKCS8EncodedKeySpec
 import java.util.*
 
-class MySpreadsheet {
+/* (sheet, docs) api v4 */
+class Spreadsheet {
     companion object {
-
-        private const val GOOGLE_TOKEN_URL: String = "https://oauth2.googleapis.com/token"
-        private const val GOOGLE_PARAMETER_SCOPE: String = "scope"
-        private const val GOOGLE_PARAMETER_SCOPE_VALUE: String =
+        private const val TOKEN_URL: String = "https://oauth2.googleapis.com/token"
+        private const val TOKEN_SCOPE: String = "scope"
+        private const val TOKEN_SCOPE_VALUE: String =
             "https://www.googleapis.com/auth/spreadsheets"
+        private const val SHEET_API_URL: String =
+            "https://sheets.googleapis.com/v4/spreadsheets/"
+        private const val SHEET_API_PARAMETER_INPUT: String = "valueInputOption"
+        private const val SHEET_API_PARAMETER_INPUT_VALUE: String = "USER_ENTERED"
+        private const val DOCS_API_URL: String =
+            "https://docs.google.com/a/google.com/spreadsheets/d/"
+        private const val DOCS_API_URL_SUFFIX: String = "/gviz/tq"
+        private val DOCS_API_URL_LOGIN: String =
+            DOCS_API_URL + Secret.getSpreadsheetIdLogin() + DOCS_API_URL_SUFFIX
+        private val DOCS_API_URL_CATALYST: String =
+            DOCS_API_URL + Secret.getSpreadsheetIdCatalyst() + DOCS_API_URL_SUFFIX
+        private const val DOCS_API_PARAMETER_JSON: String = "tqx"
+        private const val DOCS_API_PARAMETER_JSON_VALUE: String = "out:json"
+        private const val DOCS_API_PARAMETER_WHERE: String = "tq"
 
+        private fun generateNewAccessToken() {
+            val privateKey: RSAPrivateKey = KeyFactory.getInstance("RSA").generatePrivate(
+                PKCS8EncodedKeySpec(
+                    Base64.decode(
+                        Secret.getPrivateKey(), Base64.DEFAULT
+                    )
+                )
+            ) as RSAPrivateKey
+            val timestamp: Long = Date().time
+            val signedJwt = Jwts.builder()
+                .setClaims(
+                    mapOf(
+                        TOKEN_SCOPE to TOKEN_SCOPE_VALUE,
+                        Claims.ISSUER to Secret.getEmail(),
+                        Claims.AUDIENCE to TOKEN_URL,
+                        Claims.ISSUED_AT to Date(timestamp),
+                        Claims.EXPIRATION to Date(timestamp + MyConfiguration.ONE_HOUR_IN_MILLISECONDS)
+                    )
+                )
+                .signWith(privateKey, SignatureAlgorithm.RS256)
+                .compact()
+            val bodyJson =
+                """{"grant_type":"urn:ietf:params:oauth:grant-type:jwt-bearer","assertion" : "$signedJwt"}"""
+            val (_, response, result) = Fuel.post(TOKEN_URL).body(bodyJson).responseString()
+            if (response.statusCode != 200) throw UnknownHostException()
+            val accessToken = JSONObject(result.get()).getString("access_token")
+            SharedPreference.setKeyToFile(SharedPreference.ACCESS_TOKEN, accessToken)
+            SharedPreference.setKeyToFile(
+                SharedPreference.ACCESS_TOKEN_TIMESTAMP,
+                timestamp.toString()
+            )
+        }
+
+        private fun getAccessToken(): String {
+            val accessTokenTimestamp: String =
+                SharedPreference.getKeyFromFile(SharedPreference.ACCESS_TOKEN_TIMESTAMP)
+            val generateNewAccessToken: Boolean =
+                (Date().time - (if (accessTokenTimestamp.isEmpty()) (0).toLong() else accessTokenTimestamp.toLong())) > MyConfiguration.ONE_HOUR_IN_MILLISECONDS
+            if (generateNewAccessToken) {
+                generateNewAccessToken()
+            }
+            return SharedPreference.getKeyFromFile(SharedPreference.ACCESS_TOKEN)
+        }
 
         fun getValueStringFromDocsApi(jsonArray: JSONArray, index: Int): String {
             if (jsonArray.isNull(index)) return ""
@@ -41,62 +98,15 @@ class MySpreadsheet {
             return stringField
         }
 
-        //generate new access token
-        private fun generateNewAccessToken() {
-            val privateKey: RSAPrivateKey = KeyFactory.getInstance("RSA").generatePrivate(
-                PKCS8EncodedKeySpec(
-                    Base64.decode(
-                        Secret.getPrivateKey(), Base64.DEFAULT
-                    )
-                )
-            ) as RSAPrivateKey
-            val timestamp: Long = Date().time
-            val signedJwt = Jwts.builder()
-                .setClaims(
-                    mapOf(
-                        GOOGLE_PARAMETER_SCOPE to GOOGLE_PARAMETER_SCOPE_VALUE,
-                        Claims.ISSUER to Secret.getEmail(),
-                        Claims.AUDIENCE to GOOGLE_TOKEN_URL,
-                        Claims.ISSUED_AT to Date(timestamp),
-                        Claims.EXPIRATION to Date(timestamp + MyConfiguration.ONE_HOUR_IN_MILLISECONDS)
-                    )
-                )
-                .signWith(privateKey, SignatureAlgorithm.RS256)
-                .compact()
-            val bodyJson =
-                """{"grant_type":"urn:ietf:params:oauth:grant-type:jwt-bearer","assertion" : "$signedJwt"}"""
-            val (_, response, result) = Fuel.post(GOOGLE_TOKEN_URL).body(bodyJson).responseString()
-            if (response.statusCode != 200) throw UnknownHostException()
-            val accessToken = JSONObject(result.get()).getString("access_token")
-            SharedPreferences.setKeyToFile(SharedPreferences.ACCESS_TOKEN, accessToken)
-            SharedPreferences.setKeyToFile(
-                SharedPreferences.ACCESS_TOKEN_TIMESTAMP,
-                timestamp.toString()
-            )
-        }
-
-        //get access token
-        fun getAccessToken(): String {
-            val accessTokenTimestamp: String =
-                SharedPreferences.getKeyFromFile(SharedPreferences.ACCESS_TOKEN_TIMESTAMP)
-            val generateNewAccessToken: Boolean =
-                (Date().time - (if (accessTokenTimestamp.isEmpty()) (0).toLong() else accessTokenTimestamp.toLong())) > MyConfiguration.ONE_HOUR_IN_MILLISECONDS
-            if (generateNewAccessToken) {
-                generateNewAccessToken()
-            }
-            return SharedPreferences.getKeyFromFile(SharedPreferences.ACCESS_TOKEN)
-        }
-        /* sheet api v4 */
-        //save serial id in database login
         fun saveSerialId(userId: Int, serialId: String) {
             val sheetCell: String =
                 "użytkownicy!" + MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_UUID + ((userId + 1).toString())
             val bodyJson =
                 """{"range": "$sheetCell", "majorDimension": "ROWS", "values": [["$serialId"]]}"""
             val (_, response, result) = Fuel.put(
-                MyConfiguration.MY_SPREADSHEET_URL_PREFIX_SHEETS_API + Secret.getSpreadsheetIdLogin() + "/values/$sheetCell",
+                SHEET_API_URL + Secret.getSpreadsheetIdLogin() + "/values/$sheetCell",
                 listOf(
-                    MyConfiguration.MY_SPREADSHEET_PARAMETER_INPUT to MyConfiguration.MY_SPREADSHEET_PARAMETER_INPUT_VALUE
+                    SHEET_API_PARAMETER_INPUT to SHEET_API_PARAMETER_INPUT_VALUE
                 )
             )
                 .body(bodyJson)
@@ -109,14 +119,12 @@ class MySpreadsheet {
             ) throw Exception()
         }
 
-        /* docs api */
-        //get login from database login
         fun getDataLogin(login: String): JSONArray? {
             val (_, response, result) = Fuel.get(
-                MyConfiguration.MY_SPREADSHEET_LOGIN_URL_DOCS_API,
+                DOCS_API_URL_LOGIN,
                 listOf(
-                    MyConfiguration.MY_SPREADSHEET_PARAMETER_JSON to MyConfiguration.MY_SPREADSHEET_PARAMETER_JSON_VALUE,
-                    MyConfiguration.MY_SPREADSHEET_PARAMETER_WHERE to "select * where ${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_LOGIN}='$login' AND " +
+                    DOCS_API_PARAMETER_JSON to DOCS_API_PARAMETER_JSON_VALUE,
+                    DOCS_API_PARAMETER_WHERE to "select * where ${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_LOGIN}='$login' AND " +
                             "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_ID} IS NOT NULL AND " +
                             "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_LOGIN} IS NOT NULL AND " +
                             "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_LICENCE} IS NOT NULL AND " +
@@ -192,13 +200,26 @@ class MySpreadsheet {
             return user
         }
 
-        //get count catalyst from database catalyst
+        fun getDataCatalyst(fromRow: Int): JSONArray {
+            val (_, response, result) = Fuel.get(
+                DOCS_API_URL_CATALYST,
+                listOf(
+                    DOCS_API_PARAMETER_JSON to DOCS_API_PARAMETER_JSON_VALUE,
+                    DOCS_API_PARAMETER_WHERE to "select * where ${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_ID}>$fromRow"
+                )
+            )
+                .authentication().bearer(getAccessToken()).responseString()
+            if (response.statusCode != 200) throw UnknownHostException()
+            return Parser.parseToJsonFromResultDocsApi(result.get()).getJSONObject("table")
+                .getJSONArray("rows")
+        }
+
         fun getCountCatalyst(): Int {
             val (_, response, result) = Fuel.get(
-                MyConfiguration.MY_SPREADSHEET_CATALYST_URL_DOCS_API,
+                DOCS_API_URL_CATALYST,
                 listOf(
-                    MyConfiguration.MY_SPREADSHEET_PARAMETER_JSON to MyConfiguration.MY_SPREADSHEET_PARAMETER_JSON_VALUE,
-                    MyConfiguration.MY_SPREADSHEET_PARAMETER_WHERE to "select count(${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_ID}) where " +
+                    DOCS_API_PARAMETER_JSON to DOCS_API_PARAMETER_JSON_VALUE,
+                    DOCS_API_PARAMETER_WHERE to "select count(${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_ID}) where " +
                             "${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_ID} IS NOT NULL"
                 )
             )
@@ -209,21 +230,6 @@ class MySpreadsheet {
                     .getJSONArray("rows")
             if (rows.length() != 1) throw Exception()
             return rows.getJSONObject(0).getJSONArray("c").getJSONObject(0).getInt("v")
-        }
-
-        //get catalysts from database catalyst
-        fun getDataCatalyst(fromRow: Int): JSONArray {
-            val (_, response, result) = Fuel.get(
-                MyConfiguration.MY_SPREADSHEET_CATALYST_URL_DOCS_API,
-                listOf(
-                    MyConfiguration.MY_SPREADSHEET_PARAMETER_JSON to MyConfiguration.MY_SPREADSHEET_PARAMETER_JSON_VALUE,
-                    MyConfiguration.MY_SPREADSHEET_PARAMETER_WHERE to "select * where ${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_ID}>$fromRow"
-                )
-            )
-                .authentication().bearer(getAccessToken()).responseString()
-            if (response.statusCode != 200) throw UnknownHostException()
-            return Parser.parseToJsonFromResultDocsApi(result.get()).getJSONObject("table")
-                .getJSONArray("rows")
         }
     }
 }

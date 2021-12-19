@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 
-class SharedPreferences {
+class SharedPreference {
     companion object {
         private const val PREFERENCES_NAME: String = "MyKatSharedPreferences"
         private const val PREFERENCES_MODE = Context.MODE_PRIVATE

@@ -7,7 +7,7 @@ import pl.autokat.models.ModelCourse
 import java.net.UnknownHostException
 import java.util.*
 
-class MyCoursesValues {
+class Course {
     companion object {
         private const val MY_CATALYST_VALUES_URL_USD_PLN =
             "https://api.nbp.pl/api/exchangerates/rates/a/usd?format=json"
@@ -21,71 +21,6 @@ class MyCoursesValues {
             "https://proxy.kitco.com/getPM?symbol=RH&unit=gram&currency=USD"
         private const val MY_CATALYST_VALUES_HEADER_ORIGIN = "https://www.kitco.com"
 
-        //get status of selected courses
-        fun isCoursesSelected(): Boolean {
-            val actualCoursesChoice =
-                SharedPreferences.getKeyFromFile(SharedPreferences.ACTUAL_COURSES_CHOICE)
-            val actualCoursesDate =
-                SharedPreferences.getKeyFromFile(SharedPreferences.ACTUAL_COURSES_DATE)
-            return actualCoursesChoice.equals("0") && actualCoursesDate.isNotEmpty()
-        }
-
-        //save courses
-        fun saveSelectedCourses(modelCourse: ModelCourse) {
-            val date = MyConfiguration.convertStringDateToLocalDate(modelCourse.date)
-            //saving about choice date
-            SharedPreferences.setKeyToFile(
-                SharedPreferences.ACTUAL_COURSES_DATE,
-                date.toString()
-            )
-            //usd
-            SharedPreferences.setKeyToFile(
-                SharedPreferences.USD_PLN,
-                modelCourse.usdPln
-            )
-            SharedPreferences.setKeyToFile(
-                SharedPreferences.USD_PLN_DATE,
-                date.toString()
-            )
-            //eur
-            SharedPreferences.setKeyToFile(
-                SharedPreferences.EUR_PLN,
-                modelCourse.eurPln
-            )
-            SharedPreferences.setKeyToFile(
-                SharedPreferences.EUR_PLN_DATE,
-                date.toString()
-            )
-            //platinum
-            SharedPreferences.setKeyToFile(
-                SharedPreferences.PLATIUNUM,
-                modelCourse.platinum
-            )
-            SharedPreferences.setKeyToFile(
-                SharedPreferences.PLATIUNUM_DATE,
-                date.toString()
-            )
-            //palladium
-            SharedPreferences.setKeyToFile(
-                SharedPreferences.PALLADIUM,
-                modelCourse.palladium
-            )
-            SharedPreferences.setKeyToFile(
-                SharedPreferences.PALLADIUM_DATE,
-                date.toString()
-            )
-            //rhodium
-            SharedPreferences.setKeyToFile(
-                SharedPreferences.RHODIUM,
-                modelCourse.rhodium
-            )
-            SharedPreferences.setKeyToFile(
-                SharedPreferences.RHODIUM_DATE,
-                date.toString()
-            )
-        }
-
-        //get course usd -> pln
         private fun getCourseUsdPln(savingToSharedPreferences: Boolean): Pair<String, String> {
             val (_, response, result) = Fuel.get(MY_CATALYST_VALUES_URL_USD_PLN)
                 .responseString()
@@ -94,19 +29,18 @@ class MyCoursesValues {
             val value = rate.getString("mid").replace(',', '.')
             val valueDate = rate.getString("effectiveDate")
             if (savingToSharedPreferences) {
-                SharedPreferences.setKeyToFile(
-                    SharedPreferences.USD_PLN,
+                SharedPreference.setKeyToFile(
+                    SharedPreference.USD_PLN,
                     value
                 )
-                SharedPreferences.setKeyToFile(
-                    SharedPreferences.USD_PLN_DATE,
+                SharedPreference.setKeyToFile(
+                    SharedPreference.USD_PLN_DATE,
                     valueDate
                 )
             }
             return Pair(value, valueDate)
         }
 
-        //get course eur -> pln
         private fun getCourseEurPln(savingToSharedPreferences: Boolean): Pair<String, String> {
             val (_, response, result) = Fuel.get(MY_CATALYST_VALUES_URL_EUR_PLN)
                 .responseString()
@@ -115,19 +49,18 @@ class MyCoursesValues {
             val value = rate.getString("mid").replace(',', '.')
             val valueDate = rate.getString("effectiveDate")
             if (savingToSharedPreferences) {
-                SharedPreferences.setKeyToFile(
-                    SharedPreferences.EUR_PLN,
+                SharedPreference.setKeyToFile(
+                    SharedPreference.EUR_PLN,
                     value
                 )
-                SharedPreferences.setKeyToFile(
-                    SharedPreferences.EUR_PLN_DATE,
+                SharedPreference.setKeyToFile(
+                    SharedPreference.EUR_PLN_DATE,
                     valueDate
                 )
             }
             return Pair(value, valueDate)
         }
 
-        //get course platinum
         private fun getCoursePlatinum(savingToSharedPreferences: Boolean): Pair<String, String> {
             val (_, response, result) = Fuel.get(MY_CATALYST_VALUES_URL_CATALYST_PLATINUM)
                 .header(mapOf("Origin" to MY_CATALYST_VALUES_HEADER_ORIGIN))
@@ -137,19 +70,18 @@ class MyCoursesValues {
             val value = content[4].replace(',', '.')
             val valueDate = content[3].split(' ')[0]
             if (savingToSharedPreferences) {
-                SharedPreferences.setKeyToFile(
-                    SharedPreferences.PLATIUNUM,
+                SharedPreference.setKeyToFile(
+                    SharedPreference.PLATIUNUM,
                     value
                 )
-                SharedPreferences.setKeyToFile(
-                    SharedPreferences.PLATIUNUM_DATE,
+                SharedPreference.setKeyToFile(
+                    SharedPreference.PLATIUNUM_DATE,
                     valueDate
                 )
             }
             return Pair(value, valueDate)
         }
 
-        //get course palladium
         private fun getCoursePalladium(savingToSharedPreferences: Boolean): Pair<String, String> {
             val (_, response, result) = Fuel.get(MY_CATALYST_VALUES_URL_CATALYST_PALLADIUM)
                 .header(mapOf("Origin" to MY_CATALYST_VALUES_HEADER_ORIGIN))
@@ -159,19 +91,18 @@ class MyCoursesValues {
             val value = content[4].replace(',', '.')
             val valueDate = content[3].split(' ')[0]
             if (savingToSharedPreferences) {
-                SharedPreferences.setKeyToFile(
-                    SharedPreferences.PALLADIUM,
+                SharedPreference.setKeyToFile(
+                    SharedPreference.PALLADIUM,
                     value
                 )
-                SharedPreferences.setKeyToFile(
-                    SharedPreferences.PALLADIUM_DATE,
+                SharedPreference.setKeyToFile(
+                    SharedPreference.PALLADIUM_DATE,
                     valueDate
                 )
             }
             return Pair(value, valueDate)
         }
 
-        //get course rhodium
         private fun getCourseRhodium(savingToSharedPreferences: Boolean): Pair<String, String> {
             val (_, response, result) = Fuel.get(MY_CATALYST_VALUES_URL_CATALYST_RHODIUM)
                 .header(mapOf("Origin" to MY_CATALYST_VALUES_HEADER_ORIGIN))
@@ -181,39 +112,32 @@ class MyCoursesValues {
             val value = content[4].replace(',', '.')
             val valueDate = content[3].split(' ')[0]
             if (savingToSharedPreferences) {
-                SharedPreferences.setKeyToFile(
-                    SharedPreferences.RHODIUM,
+                SharedPreference.setKeyToFile(
+                    SharedPreference.RHODIUM,
                     value
                 )
-                SharedPreferences.setKeyToFile(
-                    SharedPreferences.RHODIUM_DATE,
+                SharedPreference.setKeyToFile(
+                    SharedPreference.RHODIUM_DATE,
                     valueDate
                 )
             }
             return Pair(value, valueDate)
         }
 
-        //get all course
         @Suppress("ReplaceCallWithBinaryOperator")
         fun getValues(database: MyDatabase) {
             val savingToSharedPreferences: Boolean = isCoursesSelected() == false
-            //course of usd -> pln
             val (usdPln, usdDate) = getCourseUsdPln(savingToSharedPreferences)
-            //course of eur -> pln
             val (eurPln, eurDate) = getCourseEurPln(savingToSharedPreferences)
-            //course of platinum
             val (platinum, platinumDate) = getCoursePlatinum(savingToSharedPreferences)
-            //course of palladium
             val (palladium, palladiumDate) = getCoursePalladium(savingToSharedPreferences)
-            //course of rhodium
             val (rhodium, rhodiumDate) = getCourseRhodium(savingToSharedPreferences)
-            //always saving to database if dates are equal
             if (usdDate.equals(eurDate) && eurDate.equals(platinumDate) && platinumDate.equals(
                     palladiumDate
                 ) && palladiumDate.equals(rhodiumDate)
             ) {
                 val commonDate = Formatter.formatStringDate(eurDate)
-                val localDate = MyConfiguration.convertStringDateToLocalDate(commonDate)
+                val localDate = Parser.parseStringDateToLocalDate(commonDate)
                 try {
                     database.insertCourses(
                         ModelCourse(
@@ -227,14 +151,74 @@ class MyCoursesValues {
                         )
                     )
                 } catch (_: Exception) {
-                    //nothing
+                    //
                 }
             }
-            //save timestamp of update
-            SharedPreferences.setKeyToFile(
-                SharedPreferences.UPDATE_COURSE_TIMESTAMP,
+            SharedPreference.setKeyToFile(
+                SharedPreference.UPDATE_COURSE_TIMESTAMP,
                 Date().time.toString()
             )
+        }
+
+        fun saveSelectedCourses(modelCourse: ModelCourse) {
+            val date = Parser.parseStringDateToLocalDate(modelCourse.date)
+            SharedPreference.setKeyToFile(
+                SharedPreference.ACTUAL_COURSES_DATE,
+                date.toString()
+            )
+            SharedPreference.setKeyToFile(
+                SharedPreference.USD_PLN,
+                modelCourse.usdPln
+            )
+            SharedPreference.setKeyToFile(
+                SharedPreference.USD_PLN_DATE,
+                date.toString()
+            )
+            SharedPreference.setKeyToFile(
+                SharedPreference.EUR_PLN,
+                modelCourse.eurPln
+            )
+            SharedPreference.setKeyToFile(
+                SharedPreference.EUR_PLN_DATE,
+                date.toString()
+            )
+            SharedPreference.setKeyToFile(
+                SharedPreference.PLATIUNUM,
+                modelCourse.platinum
+            )
+            SharedPreference.setKeyToFile(
+                SharedPreference.PLATIUNUM_DATE,
+                date.toString()
+            )
+            SharedPreference.setKeyToFile(
+                SharedPreference.PALLADIUM,
+                modelCourse.palladium
+            )
+            SharedPreference.setKeyToFile(
+                SharedPreference.PALLADIUM_DATE,
+                date.toString()
+            )
+            SharedPreference.setKeyToFile(
+                SharedPreference.RHODIUM,
+                modelCourse.rhodium
+            )
+            SharedPreference.setKeyToFile(
+                SharedPreference.RHODIUM_DATE,
+                date.toString()
+            )
+        }
+
+        fun isCoursesSelected(): Boolean {
+            val actualCoursesChoice =
+                SharedPreference.getKeyFromFile(SharedPreference.ACTUAL_COURSES_CHOICE)
+            val actualCoursesDate =
+                SharedPreference.getKeyFromFile(SharedPreference.ACTUAL_COURSES_DATE)
+            return actualCoursesChoice == "0" && actualCoursesDate.isNotEmpty()
+        }
+
+        fun calculateCoursesToPln(courseInDollar: String, dollarCourse: String): String {
+            if (courseInDollar.isEmpty()) return (0.00).toString()
+            return (courseInDollar.toFloat() * (if (dollarCourse.isEmpty()) (0.0F) else dollarCourse.toFloat())).toString()
         }
     }
 }

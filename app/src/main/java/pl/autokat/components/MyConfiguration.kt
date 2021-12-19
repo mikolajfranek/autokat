@@ -2,13 +2,10 @@ package pl.autokat.components
 
 import android.annotation.SuppressLint
 import android.graphics.Color
-import org.json.JSONArray
 import org.json.JSONObject
 import pl.autokat.enums.TimeChecking
 import java.net.URL
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 class MyConfiguration {
@@ -51,38 +48,6 @@ class MyConfiguration {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        const val ONE_HOUR_IN_MILLISECONDS: Long = 3600000L
-
-        //
-
-
-        /* licence and time */
-        private const val URL_TIMESTAMP: String =
-            "https://worldtimeapi.org/api/timezone/Europe/Warsaw"
-        const val ONE_DAY_IN_MILLISECONDS: Long = 86400000
-
-        //shared preferences
 
         /* spreadsheet */
         //users column number
@@ -130,25 +95,6 @@ class MyConfiguration {
         const val MY_SPREADSHEET_CATALYST_COLUMN_TYPE: String = "H"
         const val MY_SPREADSHEET_CATALYST_COLUMN_ID_PICTURE: String = "I"
         const val MY_SPREADSHEET_CATALYST_COLUMN_URL_PICTURE: String = "J"
-
-        /* spreadsheet sheet api v4 */
-        const val MY_SPREADSHEET_URL_PREFIX_SHEETS_API: String =
-            "https://sheets.googleapis.com/v4/spreadsheets/"
-        const val MY_SPREADSHEET_PARAMETER_INPUT: String = "valueInputOption"
-        const val MY_SPREADSHEET_PARAMETER_INPUT_VALUE: String = "USER_ENTERED"
-
-        /* spreadsheet docs api */
-        private const val MY_SPREADSHEET_URL_PREFIX_DOCS_API: String =
-            "https://docs.google.com/a/google.com/spreadsheets/d/"
-        private const val MY_SPREADSHEET_URL_SUFIX_DOCS_API: String = "/gviz/tq"
-        val MY_SPREADSHEET_LOGIN_URL_DOCS_API: String =
-            MY_SPREADSHEET_URL_PREFIX_DOCS_API + Secret.getSpreadsheetIdLogin() + MY_SPREADSHEET_URL_SUFIX_DOCS_API
-        val MY_SPREADSHEET_CATALYST_URL_DOCS_API: String =
-            MY_SPREADSHEET_URL_PREFIX_DOCS_API + Secret.getSpreadsheetIdCatalyst() + MY_SPREADSHEET_URL_SUFIX_DOCS_API
-        const val MY_SPREADSHEET_PARAMETER_JSON: String = "tqx"
-        const val MY_SPREADSHEET_PARAMETER_JSON_VALUE: String = "out:json"
-        const val MY_SPREADSHEET_PARAMETER_WHERE: String = "tq"
-
 
 
 
@@ -201,13 +147,6 @@ class MyConfiguration {
         const val DATABASE_ELEMENT_SQLITE_SEQUENCE_NAME = "name"
 
 
-
-
-
-
-
-
-
         /* others */
         const val REQUEST_CODE_READ_PHONE_STATE: Int = 0
         var IS_AVAILABLE_UPDATE: Boolean = false
@@ -223,19 +162,12 @@ class MyConfiguration {
 
 
 
+        /* time */
+        private const val URL_TIMESTAMP: String =
+            "https://worldtimeapi.org/api/timezone/Europe/Warsaw"
+        const val ONE_DAY_IN_MILLISECONDS: Long = 86400000
+        const val ONE_HOUR_IN_MILLISECONDS: Long = 3600000L
 
-
-
-
-        /* methods */
-
-
-
-
-
-
-
-        //check time depends from parameter
         @SuppressLint("SimpleDateFormat")
         fun checkTimeOnPhone(dateInput: String, timeChecking: TimeChecking): Boolean {
             when (timeChecking) {
@@ -246,8 +178,8 @@ class MyConfiguration {
                         (json.getLong("unixtime") * 1000L) - ONE_HOUR_IN_MILLISECONDS
                     val timestampPhone: Long = Date().time
                     if (timestampPhone > timestampWeb) {
-                        SharedPreferences.setKeyToFile(
-                            SharedPreferences.CURRENT_TIMESTAMP,
+                        SharedPreference.setKeyToFile(
+                            SharedPreference.CURRENT_TIMESTAMP,
                             timestampPhone.toString()
                         )
                         return true
@@ -263,16 +195,16 @@ class MyConfiguration {
                 TimeChecking.CHECKING_LICENCE -> {
                     val timestamp: Long = Date().time
                     val timestampLicence: Long = (SimpleDateFormat("yyyy-MM-dd").parse(
-                        SharedPreferences.getKeyFromFile(
-                            SharedPreferences.LICENCE_DATE_OF_END
+                        SharedPreference.getKeyFromFile(
+                            SharedPreference.LICENCE_DATE_OF_END
                         )
                     )!!.time) + ONE_DAY_IN_MILLISECONDS
-                    val timestampFromConfiguration: Long = SharedPreferences.getKeyFromFile(
-                        SharedPreferences.CURRENT_TIMESTAMP
+                    val timestampFromConfiguration: Long = SharedPreference.getKeyFromFile(
+                        SharedPreference.CURRENT_TIMESTAMP
                     ).toLong()
                     if ((timestamp > timestampFromConfiguration) && (timestampLicence > timestamp)) {
-                        SharedPreferences.setKeyToFile(
-                            SharedPreferences.CURRENT_TIMESTAMP,
+                        SharedPreference.setKeyToFile(
+                            SharedPreference.CURRENT_TIMESTAMP,
                             timestamp.toString()
                         )
                         return true
@@ -281,64 +213,5 @@ class MyConfiguration {
                 }
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        fun convertStringDateToLocalDate(date: String): LocalDate {
-            val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-            return LocalDate.parse(date, formatter)
-        }
-
-        //get pln from dolar string
-        fun getPlnFromDolar(dolar: String, dolarCourses: String): String {
-            if (dolar.isEmpty()) return (0.00).toString()
-            return (dolar.toFloat() * (if (dolarCourses.isEmpty()) (0.0F) else dolarCourses.toFloat())).toString()
-        }
-
-
-
-
-
-        //decorator
-
-
-        //get url to google
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }

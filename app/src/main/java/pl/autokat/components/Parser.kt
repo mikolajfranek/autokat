@@ -1,12 +1,19 @@
 package pl.autokat.components
 
 import org.json.JSONObject
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class Parser {
     companion object {
         @Suppress("RegExpRedundantEscape")
         fun parseToJsonFromResultDocsApi(text: String): JSONObject {
             return JSONObject("\\{.*\\}".toRegex().find(text)!!.value)
+        }
+
+        fun parseStringDateToLocalDate(date: String): LocalDate {
+            val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+            return LocalDate.parse(date, formatter)
         }
 
         fun parseUrlOfPicture(urlShared: String, width: Int, height: Int): String {

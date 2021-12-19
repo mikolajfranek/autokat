@@ -5,7 +5,7 @@ import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
 import pl.autokat.components.Formatter
 import pl.autokat.components.MyConfiguration
-import pl.autokat.components.SharedPreferences
+import pl.autokat.components.SharedPreference
 import pl.autokat.databinding.ActivityAboutBinding
 
 class AboutActivity : AppCompatActivity() {
@@ -23,10 +23,10 @@ class AboutActivity : AppCompatActivity() {
         //navigate up
         this.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         //init shared preferences
-        SharedPreferences.init(this)
+        SharedPreference.init(this)
         //change visibility about licence if licence exists
         val licenceDateOfEnd: String =
-            SharedPreferences.getKeyFromFile(SharedPreferences.LICENCE_DATE_OF_END)
+            SharedPreference.getKeyFromFile(SharedPreference.LICENCE_DATE_OF_END)
         if (licenceDateOfEnd.isEmpty() == false) {
             this.bindingActivityAbout.licence.visibility = VISIBLE
             val licenceText = "Licencja ważna do: " + Formatter.formatStringDate(licenceDateOfEnd)

@@ -26,7 +26,7 @@ class UpdateActivity : AppCompatActivity() {
         //navigate up
         this.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         //init shared preferences
-        SharedPreferences.init(this)
+        SharedPreference.init(this)
         //init database object
         this.myDatabase = MyDatabase(this.applicationContext)
         //listeneres
@@ -86,7 +86,7 @@ class UpdateActivity : AppCompatActivity() {
 
     //checking if row from spreadsheet is available
     fun checkIfRowIsAvailable(row: JSONArray): Boolean {
-        return MySpreadsheet.getValueStringFromDocsApi(
+        return Spreadsheet.getValueStringFromDocsApi(
             row,
             MyConfiguration.MY_SPREADSHEET_CATALYST_ID
         ).isEmpty() == false
@@ -160,7 +160,7 @@ class UpdateActivity : AppCompatActivity() {
             var processStep: ProcessStep = ProcessStep.NONE
             try {
                 var countDatabase = 0
-                val countSpreadsheet: Int = MySpreadsheet.getCountCatalyst()
+                val countSpreadsheet: Int = Spreadsheet.getCountCatalyst()
                 //check if user click sync database
                 if (this.fullUpdate) {
                     //truncate tables
@@ -178,7 +178,7 @@ class UpdateActivity : AppCompatActivity() {
                     //profess step equals currenly state of process update
                     var progressStep: Float
                     //get data catalyst from spreadsheet which missed
-                    val dataCatalysts: JSONArray = MySpreadsheet.getDataCatalyst(countDatabase)
+                    val dataCatalysts: JSONArray = Spreadsheet.getDataCatalyst(countDatabase)
                     //create batch json array which will contain parts of data
                     val batchJsonArray = JSONArray()
                     val batchSize = 100

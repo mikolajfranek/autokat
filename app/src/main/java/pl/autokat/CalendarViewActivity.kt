@@ -61,7 +61,7 @@ class CalendarViewActivity : AppCompatActivity() {
         //navigate up
         this.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         //init shared preferences
-        SharedPreferences.init(this)
+        SharedPreference.init(this)
         //init database object
         this.myDatabase = MyDatabase(this.applicationContext)
         //calendar day binder
@@ -117,12 +117,12 @@ class CalendarViewActivity : AppCompatActivity() {
             DayOfWeek.MONDAY
         )
         val actualCoursesDate =
-            SharedPreferences.getKeyFromFile(SharedPreferences.ACTUAL_COURSES_DATE)
+            SharedPreference.getKeyFromFile(SharedPreference.ACTUAL_COURSES_DATE)
         if (actualCoursesDate.isEmpty()) {
             bindingActivityCalendarView.calendarView.scrollToDate(today)
         } else {
             val date = Formatter.formatStringDate(actualCoursesDate)
-            val localDate = MyConfiguration.convertStringDateToLocalDate(date)
+            val localDate = Parser.parseStringDateToLocalDate(date)
             bindingActivityCalendarView.calendarView.scrollToDate(localDate)
         }
         //calendar listeners
@@ -141,7 +141,7 @@ class CalendarViewActivity : AppCompatActivity() {
             mapDaysCoursesOfYearMonth = this.myDatabase.getCoursesOfYearMonths(setOfYearMonth)
             for ((_, hashMap) in mapDaysCoursesOfYearMonth) {
                 for ((keyDate, _) in hashMap) {
-                    val localDate = MyConfiguration.convertStringDateToLocalDate(keyDate)
+                    val localDate = Parser.parseStringDateToLocalDate(keyDate)
                     bindingActivityCalendarView.calendarView.notifyDateChanged(localDate)
                 }
             }
@@ -165,7 +165,7 @@ class CalendarViewActivity : AppCompatActivity() {
                 val courses = mapDaysCoursesOfYearMonth[keyYearMonth]!![keyDate]
                 if (courses != null) {
                     //saving courses values
-                    MyCoursesValues.saveSelectedCourses(courses)
+                    Course.saveSelectedCourses(courses)
                     Toast.makeText(
                         this@CalendarViewActivity.applicationContext,
                         "Wybrano $keyDate",
@@ -232,7 +232,7 @@ class CalendarViewActivity : AppCompatActivity() {
                                 val text =
                                     "Z dnia ${Formatter.formatStringDate(day.date.toString())}"
                                 bindingActivityCalendarView.calendarViewActualDate.text = text
-                                val platinum = MyConfiguration.getPlnFromDolar(
+                                val platinum = Course.calculateCoursesToPln(
                                     courses.platinum,
                                     courses.usdPln
                                 )
@@ -240,7 +240,7 @@ class CalendarViewActivity : AppCompatActivity() {
                                     (Formatter.formatStringFloat(platinum, 2) + " zł/g")
                                 bindingActivityCalendarView.calendarViewActualPlatinum.text =
                                     platinumText
-                                val palladium = MyConfiguration.getPlnFromDolar(
+                                val palladium = Course.calculateCoursesToPln(
                                     courses.palladium,
                                     courses.usdPln
                                 )
@@ -249,7 +249,7 @@ class CalendarViewActivity : AppCompatActivity() {
                                 bindingActivityCalendarView.calendarViewActualPalladium.text =
                                     palladiumText
                                 val rhodium =
-                                    MyConfiguration.getPlnFromDolar(courses.rhodium, courses.usdPln)
+                                    Course.calculateCoursesToPln(courses.rhodium, courses.usdPln)
                                 val rhodiumText =
                                     (Formatter.formatStringFloat(rhodium, 2) + " zł/g")
                                 bindingActivityCalendarView.calendarViewActualRhodium.text =
