@@ -16,15 +16,30 @@ import java.util.*
 
 class MySpreadsheet {
     companion object {
-        @Suppress("RegExpRedundantEscape")
-        fun parseToJsonFromResultDocsApi(text: String): JSONObject {
-            return JSONObject("\\{.*\\}".toRegex().find(text)!!.value)
-        }
 
         private const val GOOGLE_TOKEN_URL: String = "https://oauth2.googleapis.com/token"
         private const val GOOGLE_PARAMETER_SCOPE: String = "scope"
         private const val GOOGLE_PARAMETER_SCOPE_VALUE: String =
             "https://www.googleapis.com/auth/spreadsheets"
+
+
+        fun getValueStringFromDocsApi(jsonArray: JSONArray, index: Int): String {
+            if (jsonArray.isNull(index)) return ""
+            val jsonObject: JSONObject = jsonArray.getJSONObject(index)
+            if (jsonObject.isNull("f") == false) {
+                return jsonObject.getString("f").replace(',', '.')
+            }
+            if (jsonObject.isNull("v")) return ""
+            return jsonObject.getString("v").trim()
+        }
+
+        fun getValueFloatStringFromDocsApi(jsonArray: JSONArray, index: Int): String {
+            var stringField = getValueStringFromDocsApi(jsonArray, index)
+            stringField = ("\\s+").toRegex().replace(stringField, "")
+            stringField.replace(',', '.')
+            if (stringField.isEmpty()) return "0.0"
+            return stringField
+        }
 
         //generate new access token
         private fun generateNewAccessToken() {
@@ -115,61 +130,61 @@ class MySpreadsheet {
                 .authentication().bearer(getAccessToken()).responseString()
             if (response.statusCode != 200) throw UnknownHostException()
             val rows: JSONArray =
-                parseToJsonFromResultDocsApi(result.get()).getJSONObject("table")
+                Parser.parseToJsonFromResultDocsApi(result.get()).getJSONObject("table")
                     .getJSONArray("rows")
             if (rows.length() != 1) return null
             val user = JSONArray()
             val element: JSONArray = rows.getJSONObject(0).getJSONArray("c")
             user.put(
-                MyConfiguration.getValueStringFromDocsApi(
+                getValueStringFromDocsApi(
                     element,
                     MyConfiguration.MY_SPREADSHEET_USERS_ID
                 )
             )
             user.put(
-                MyConfiguration.getValueStringFromDocsApi(
+                getValueStringFromDocsApi(
                     element,
                     MyConfiguration.MY_SPREADSHEET_USERS_LOGIN
                 )
             )
             user.put(
-                MyConfiguration.getValueStringFromDocsApi(
+                getValueStringFromDocsApi(
                     element,
                     MyConfiguration.MY_SPREADSHEET_USERS_UUID
                 )
             )
             user.put(
-                MyConfiguration.getValueStringFromDocsApi(
+                getValueStringFromDocsApi(
                     element,
                     MyConfiguration.MY_SPREADSHEET_USERS_LICENCE
                 )
             )
             user.put(
-                MyConfiguration.getValueStringFromDocsApi(
+                getValueStringFromDocsApi(
                     element,
                     MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT
                 )
             )
             user.put(
-                MyConfiguration.getValueStringFromDocsApi(
+                getValueStringFromDocsApi(
                     element,
                     MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY
                 )
             )
             user.put(
-                MyConfiguration.getValueFloatStringFromDocsApi(
+                getValueFloatStringFromDocsApi(
                     element,
                     MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PLATINIUM
                 )
             )
             user.put(
-                MyConfiguration.getValueFloatStringFromDocsApi(
+                getValueFloatStringFromDocsApi(
                     element,
                     MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PALLADIUM
                 )
             )
             user.put(
-                MyConfiguration.getValueFloatStringFromDocsApi(
+                getValueFloatStringFromDocsApi(
                     element,
                     MyConfiguration.MY_SPREADSHEET_USERS_MINUS_RHODIUM
                 )
@@ -190,7 +205,7 @@ class MySpreadsheet {
                 .authentication().bearer(getAccessToken()).responseString()
             if (response.statusCode != 200) throw UnknownHostException()
             val rows: JSONArray =
-                parseToJsonFromResultDocsApi(result.get()).getJSONObject("table")
+                Parser.parseToJsonFromResultDocsApi(result.get()).getJSONObject("table")
                     .getJSONArray("rows")
             if (rows.length() != 1) throw Exception()
             return rows.getJSONObject(0).getJSONArray("c").getJSONObject(0).getInt("v")
@@ -207,7 +222,7 @@ class MySpreadsheet {
             )
                 .authentication().bearer(getAccessToken()).responseString()
             if (response.statusCode != 200) throw UnknownHostException()
-            return parseToJsonFromResultDocsApi(result.get()).getJSONObject("table")
+            return Parser.parseToJsonFromResultDocsApi(result.get()).getJSONObject("table")
                 .getJSONArray("rows")
         }
     }

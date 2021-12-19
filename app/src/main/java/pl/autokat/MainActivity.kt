@@ -288,7 +288,7 @@ class MainActivity : AppCompatActivity() {
                                         //save discount
                                         SharedPreferences.setKeyToFile(
                                             SharedPreferences.DISCOUNT,
-                                            MyConfiguration.getIntFromString(
+                                            Parser.parseStringToInt(
                                                 user.getString(
                                                     MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT
                                                 )
@@ -297,7 +297,7 @@ class MainActivity : AppCompatActivity() {
                                         //save visibility
                                         SharedPreferences.setKeyToFile(
                                             SharedPreferences.VISIBILITY,
-                                            MyConfiguration.getIntFromEnumBoolean(
+                                            Parser.parseStringBooleanToInt(
                                                 user.getString(
                                                     MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY
                                                 )
@@ -306,7 +306,7 @@ class MainActivity : AppCompatActivity() {
                                         //save minus elements
                                         SharedPreferences.setKeyToFile(
                                             SharedPreferences.MINUS_PLATINIUM,
-                                            MyConfiguration.getIntFromString(
+                                            Parser.parseStringToInt(
                                                 user.getString(
                                                     MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PLATINIUM
                                                 )
@@ -314,7 +314,7 @@ class MainActivity : AppCompatActivity() {
                                         )
                                         SharedPreferences.setKeyToFile(
                                             SharedPreferences.MINUS_PALLADIUM,
-                                            MyConfiguration.getIntFromString(
+                                            Parser.parseStringToInt(
                                                 user.getString(
                                                     MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PALLADIUM
                                                 )
@@ -322,7 +322,7 @@ class MainActivity : AppCompatActivity() {
                                         )
                                         SharedPreferences.setKeyToFile(
                                             SharedPreferences.MINUS_RHODIUM,
-                                            MyConfiguration.getIntFromString(
+                                            Parser.parseStringToInt(
                                                 user.getString(
                                                     MyConfiguration.MY_SPREADSHEET_USERS_MINUS_RHODIUM
                                                 )

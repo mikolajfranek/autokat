@@ -86,7 +86,7 @@ class UpdateActivity : AppCompatActivity() {
 
     //checking if row from spreadsheet is available
     fun checkIfRowIsAvailable(row: JSONArray): Boolean {
-        return MyConfiguration.getValueStringFromDocsApi(
+        return MySpreadsheet.getValueStringFromDocsApi(
             row,
             MyConfiguration.MY_SPREADSHEET_CATALYST_ID
         ).isEmpty() == false

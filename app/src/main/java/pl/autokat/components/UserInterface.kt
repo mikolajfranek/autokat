@@ -17,7 +17,7 @@ class UserInterface {
 
         fun colorText(input: String, search: String): SpannableString {
             val spannable = SpannableString(input)
-            for (item in MyConfiguration.getSearchingString(search)) {
+            for (item in Parser.parseSearchingString(search)) {
                 val regex = item.replace("*", ".*")
                 var startIndex = 0
                 regex.toRegex(

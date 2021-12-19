@@ -484,7 +484,7 @@ class ResultActivity : AppCompatActivity() {
                 //save discount
                 SharedPreferences.setKeyToFile(
                     SharedPreferences.DISCOUNT,
-                    MyConfiguration.getIntFromString(
+                    Parser.parseStringToInt(
                         user.getString(
                             MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT
                         )
@@ -493,7 +493,7 @@ class ResultActivity : AppCompatActivity() {
                 //save visibility
                 SharedPreferences.setKeyToFile(
                     SharedPreferences.VISIBILITY,
-                    MyConfiguration.getIntFromEnumBoolean(
+                    Parser.parseStringBooleanToInt(
                         user.getString(
                             MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY
                         )
@@ -502,7 +502,7 @@ class ResultActivity : AppCompatActivity() {
                 //save minus elements
                 SharedPreferences.setKeyToFile(
                     SharedPreferences.MINUS_PLATINIUM,
-                    MyConfiguration.getIntFromString(
+                    Parser.parseStringToInt(
                         user.getString(
                             MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PLATINIUM
                         )
@@ -510,7 +510,7 @@ class ResultActivity : AppCompatActivity() {
                 )
                 SharedPreferences.setKeyToFile(
                     SharedPreferences.MINUS_PALLADIUM,
-                    MyConfiguration.getIntFromString(
+                    Parser.parseStringToInt(
                         user.getString(
                             MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PALLADIUM
                         )
@@ -518,7 +518,7 @@ class ResultActivity : AppCompatActivity() {
                 )
                 SharedPreferences.setKeyToFile(
                     SharedPreferences.MINUS_RHODIUM,
-                    MyConfiguration.getIntFromString(
+                    Parser.parseStringToInt(
                         user.getString(
                             MyConfiguration.MY_SPREADSHEET_USERS_MINUS_RHODIUM
                         )

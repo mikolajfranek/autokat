@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import pl.autokat.components.MyConfiguration
+import pl.autokat.components.Parser
 import pl.autokat.enums.ProcessStep
 import pl.autokat.components.UserInterface
 import pl.autokat.databinding.ActivityPictureBinding
@@ -52,10 +53,10 @@ class PictureActivity : AppCompatActivity() {
             //--- doInBackground
             var processStep: ProcessStep = ProcessStep.SUCCESS
             try {
-                val urlThumbnail =
-                    MyConfiguration.getPictureUrlFromGoogle(this.urlPicture, 1920, 1080)
+                val parsedUrlPicture =
+                    Parser.parseUrlOfPicture(this.urlPicture, 1920, 1080)
                 this.bitmap =
-                    BitmapFactory.decodeStream(URL(urlThumbnail).openConnection().getInputStream())
+                    BitmapFactory.decodeStream(URL(parsedUrlPicture).openConnection().getInputStream())
             } catch (e: UnknownHostException) {
                 processStep = ProcessStep.NETWORK_FAILED
             } catch (e: Exception) {

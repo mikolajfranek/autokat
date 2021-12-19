@@ -290,23 +290,6 @@ class MyConfiguration {
 
 
 
-        fun getValueStringFromDocsApi(jsonArray: JSONArray, index: Int): String {
-            if (jsonArray.isNull(index)) return ""
-            val jsonObject: JSONObject = jsonArray.getJSONObject(index)
-            if (jsonObject.isNull("f") == false) {
-                return jsonObject.getString("f").replace(',', '.')
-            }
-            if (jsonObject.isNull("v")) return ""
-            return jsonObject.getString("v").trim()
-        }
-
-        fun getValueFloatStringFromDocsApi(jsonArray: JSONArray, index: Int): String {
-            var stringField = getValueStringFromDocsApi(jsonArray, index)
-            stringField = ("\\s+").toRegex().replace(stringField, "")
-            stringField.replace(',', '.')
-            if (stringField.isEmpty()) return "0.0"
-            return stringField
-        }
 
 
 
@@ -317,58 +300,41 @@ class MyConfiguration {
 
 
 
-        fun getIntFromString(input: String): Int {
-            var result = ("\\s+").toRegex().replace(input, "")
-            result = result.replace(',', '.')
-            result =
-                if (result.indexOf(",") != -1) result.substring(0, result.indexOf(",")) else result
-            var resultInt = 0
-            try {
-                resultInt = result.toInt()
-            } catch (e: Exception) {
-                //noting
-            }
-            resultInt = if (resultInt < 0) 0 else resultInt
-            return resultInt
-        }
 
-        @Suppress("ReplaceCallWithBinaryOperator")
-        fun getIntFromEnumBoolean(input: String): Int {
-            val result = ("[^a-zA-Z]").toRegex().replace(input, "")
-            if (result.equals("tak")) return 1
-            return 0
-        }
+
+
+
+
+
+
+
 
         fun convertStringDateToLocalDate(date: String): LocalDate {
             val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
             return LocalDate.parse(date, formatter)
         }
 
-
-
-
-
-
         //get pln from dolar string
         fun getPlnFromDolar(dolar: String, dolarCourses: String): String {
             if (dolar.isEmpty()) return (0.00).toString()
             return (dolar.toFloat() * (if (dolarCourses.isEmpty()) (0.0F) else dolarCourses.toFloat())).toString()
         }
-        //get url to google
-        fun getPictureUrlFromGoogle(urlShared: String, width: Int, height: Int): String {
-            var url = urlShared
-            val resultRegex = ".*/d/".toRegex().find(url)!!.value
-            url = url.substring(resultRegex.length)
-            val pictureIdFromGoogle = url.substring(0, url.indexOf('/'))
-            return "https://lh3.googleusercontent.com/u/0/d/$pictureIdFromGoogle=w$width-h$height"
-        }
 
-        //get list from string searching
-        fun getSearchingString(input: String): List<String> {
-            var searchString = ("\\*{2,}").toRegex().replace(input.trim(), "*")
-            searchString = ("\\s{2,}").toRegex().replace(searchString, " ")
-            return if (searchString.isEmpty()) mutableListOf() else searchString.split(" ")
-        }
+
+
+
+
+        //decorator
+
+
+        //get url to google
+
+
+
+
+
+
+
 
 
 

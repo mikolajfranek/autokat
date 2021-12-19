@@ -7,6 +7,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import pl.autokat.components.MyConfiguration
 import pl.autokat.components.MyDatabase
+import pl.autokat.components.Parser
 import java.net.URL
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -33,8 +34,8 @@ class WorkerUpload(appContext: Context, workerParams: WorkerParameters) :
                 val urlSharedPicture: String =
                     (items[i] as JSONObject).getString(MyConfiguration.DATABASE_ELEMENT_CATALYST_URL_PICTURE)
                 if (urlSharedPicture.isEmpty()) continue
-                val urlPicture = MyConfiguration.getPictureUrlFromGoogle(urlSharedPicture, 128, 128)
-                database.updateCatalyst(id, URL(urlPicture).readBytes())
+                val urlThumbnail = Parser.parseUrlOfPicture(urlSharedPicture, 128, 128)
+                database.updateCatalyst(id, URL(urlThumbnail).readBytes())
             }
         } catch (e: Exception) {
             //
