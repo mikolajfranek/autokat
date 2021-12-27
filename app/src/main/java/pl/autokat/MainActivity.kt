@@ -305,7 +305,7 @@ class MainActivity : AppCompatActivity() {
                                         )
                                         //save minus elements
                                         SharedPreference.setKeyToFile(
-                                            SharedPreference.MINUS_PLATINIUM,
+                                            SharedPreference.MINUS_PLATINUM,
                                             Parser.parseStringToInt(
                                                 user.getString(
                                                     MyConfiguration.SPREADSHEET_USERS_MINUS_PLATINUM

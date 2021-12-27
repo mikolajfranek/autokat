@@ -90,11 +90,11 @@ class ConfigurationValuesActivity : AppCompatActivity() {
     private fun setValuesInView() {
         //platinum
         val platinum: String = Course.calculateCoursesToPln(
-            SharedPreference.getKeyFromFile(SharedPreference.PLATIUNUM),
+            SharedPreference.getKeyFromFile(SharedPreference.PLATINUM),
             SharedPreference.getKeyFromFile(SharedPreference.USD_PLN)
         )
         val platinumDate: String =
-            SharedPreference.getKeyFromFile(SharedPreference.PLATIUNUM_DATE)
+            SharedPreference.getKeyFromFile(SharedPreference.PLATINUM_DATE)
         val platiniumText = (Formatter.formatStringFloat(platinum, 2) + " zł/g")
         this.bindingActivityConfigurationValues.platinum.text = platiniumText
         this.bindingActivityConfigurationValues.platinumDate.text =

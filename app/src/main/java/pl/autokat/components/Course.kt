@@ -71,11 +71,11 @@ class Course {
             val valueDate = content[3].split(' ')[0]
             if (savingToSharedPreferences) {
                 SharedPreference.setKeyToFile(
-                    SharedPreference.PLATIUNUM,
+                    SharedPreference.PLATINUM,
                     value
                 )
                 SharedPreference.setKeyToFile(
-                    SharedPreference.PLATIUNUM_DATE,
+                    SharedPreference.PLATINUM_DATE,
                     valueDate
                 )
             }
@@ -183,11 +183,11 @@ class Course {
                 date.toString()
             )
             SharedPreference.setKeyToFile(
-                SharedPreference.PLATIUNUM,
+                SharedPreference.PLATINUM,
                 modelCourse.platinum
             )
             SharedPreference.setKeyToFile(
-                SharedPreference.PLATIUNUM_DATE,
+                SharedPreference.PLATINUM_DATE,
                 date.toString()
             )
             SharedPreference.setKeyToFile(

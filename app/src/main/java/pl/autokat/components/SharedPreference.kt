@@ -40,14 +40,14 @@ class SharedPreference {
         const val VISIBILITY: String = "Visibility"
         const val UPDATE_COURSE_TIMESTAMP: String =
             "UpdateCourseTimestamp"
-        const val MINUS_PLATINIUM: String = "MinusPlatinium"
+        const val MINUS_PLATINUM: String = "MinusPlatinum"
         const val MINUS_PALLADIUM: String = "MinusPalladium"
         const val MINUS_RHODIUM: String = "MinusRhodium"
         const val LAST_SEARCHED_TEXT: String = "LastSearchedText"
 
         /* courses elements */
-        const val PLATIUNUM: String = "Platinum"
-        const val PLATIUNUM_DATE: String = "PlatinumDate"
+        const val PLATINUM: String = "Platinum"
+        const val PLATINUM_DATE: String = "PlatinumDate"
         const val PALLADIUM: String = "Palladium"
         const val PALLADIUM_DATE: String = "PalladiumDate"
         const val RHODIUM: String = "Rhodium"

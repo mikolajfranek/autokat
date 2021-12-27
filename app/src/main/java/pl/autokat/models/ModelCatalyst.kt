@@ -23,8 +23,8 @@ class ModelCatalyst(
             if (courseUsdPlnFromConfiguration.isEmpty()) 0.0F else courseUsdPlnFromConfiguration.toFloat()
         val pricePlatinum: Float = this.countPriceElement(
             this.platinum, this.weight, courseUsdPln,
-            SharedPreference.getKeyFromFile(SharedPreference.PLATIUNUM),
-            SharedPreference.getKeyFromFile(SharedPreference.MINUS_PLATINIUM)
+            SharedPreference.getKeyFromFile(SharedPreference.PLATINUM),
+            SharedPreference.getKeyFromFile(SharedPreference.MINUS_PLATINUM)
         )
         val pricePalladium: Float = this.countPriceElement(
             this.palladium, this.weight, courseUsdPln,

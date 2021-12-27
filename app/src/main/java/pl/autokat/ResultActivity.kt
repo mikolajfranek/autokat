@@ -501,7 +501,7 @@ class ResultActivity : AppCompatActivity() {
                 )
                 //save minus elements
                 SharedPreference.setKeyToFile(
-                    SharedPreference.MINUS_PLATINIUM,
+                    SharedPreference.MINUS_PLATINUM,
                     Parser.parseStringToInt(
                         user.getString(
                             MyConfiguration.SPREADSHEET_USERS_MINUS_PLATINUM
@@ -594,7 +594,7 @@ class ResultActivity : AppCompatActivity() {
                         val eurDate =
                             SharedPreference.getKeyFromFile(SharedPreference.EUR_PLN_DATE)
                         val platinumDate =
-                            SharedPreference.getKeyFromFile(SharedPreference.PLATIUNUM_DATE)
+                            SharedPreference.getKeyFromFile(SharedPreference.PLATINUM_DATE)
                         val palladiumDate =
                             SharedPreference.getKeyFromFile(SharedPreference.PALLADIUM_DATE)
                         val rhodiumDate =
