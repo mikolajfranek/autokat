@@ -51,7 +51,7 @@ class ConfigurationValuesActivity : AppCompatActivity() {
                 if (lastCoursesDate.isNotEmpty()) {
                     Toast.makeText(
                         this@ConfigurationValuesActivity.applicationContext,
-                        MyConfiguration.INFO_MESSAGE_REFRESH_COURSES,
+                        MyConfiguration.COURSES_REFRESH,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -176,7 +176,7 @@ class ConfigurationValuesActivity : AppCompatActivity() {
                 )
                 Toast.makeText(
                     this@ConfigurationValuesActivity.applicationContext,
-                    MyConfiguration.INFO_MESSAGE_WAIT_UPDATE,
+                    MyConfiguration.UPDATE_WAIT,
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -195,21 +195,21 @@ class ConfigurationValuesActivity : AppCompatActivity() {
                     ProcessStep.NETWORK_FAILED -> {
                         Toast.makeText(
                             this@ConfigurationValuesActivity.applicationContext,
-                            MyConfiguration.INFO_MESSAGE_NETWORK_FAILED,
+                            MyConfiguration.NETWORK_FAILED,
                             Toast.LENGTH_SHORT
                         ).show()
                     }
                     ProcessStep.UNHANDLED_EXCEPTION -> {
                         Toast.makeText(
                             this@ConfigurationValuesActivity.applicationContext,
-                            MyConfiguration.INFO_UPDATE_FAILED,
+                            MyConfiguration.UPDATE_FAILED,
                             Toast.LENGTH_SHORT
                         ).show()
                     }
                     ProcessStep.SUCCESS -> {
                         Toast.makeText(
                             this@ConfigurationValuesActivity.applicationContext,
-                            MyConfiguration.INFO_UPDATE_SUCCESS,
+                            MyConfiguration.UPDATE_SUCCESS,
                             Toast.LENGTH_SHORT
                         ).show()
                         this@ConfigurationValuesActivity.setValuesInView()
@@ -217,7 +217,7 @@ class ConfigurationValuesActivity : AppCompatActivity() {
                     else -> {
                         Toast.makeText(
                             this@ConfigurationValuesActivity.applicationContext,
-                            MyConfiguration.INFO_UPDATE_FAILED,
+                            MyConfiguration.UPDATE_FAILED,
                             Toast.LENGTH_SHORT
                         ).show()
                     }

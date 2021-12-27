@@ -100,7 +100,7 @@ class Spreadsheet {
 
         fun saveSerialId(userId: Int, serialId: String) {
             val sheetCell: String =
-                "użytkownicy!" + MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_UUID + ((userId + 1).toString())
+                "użytkownicy!" + MyConfiguration.SPREADSHEET_USERS_COLUMN_UUID + ((userId + 1).toString())
             val bodyJson =
                 """{"range": "$sheetCell", "majorDimension": "ROWS", "values": [["$serialId"]]}"""
             val (_, response, result) = Fuel.put(
@@ -124,15 +124,15 @@ class Spreadsheet {
                 DOCS_API_URL_LOGIN,
                 listOf(
                     DOCS_API_PARAMETER_JSON to DOCS_API_PARAMETER_JSON_VALUE,
-                    DOCS_API_PARAMETER_WHERE to "select * where ${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_LOGIN}='$login' AND " +
-                            "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_ID} IS NOT NULL AND " +
-                            "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_LOGIN} IS NOT NULL AND " +
-                            "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_LICENCE} IS NOT NULL AND " +
-                            "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_DISCOUNT} IS NOT NULL AND " +
-                            "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_VISIBILITY} IS NOT NULL AND " +
-                            "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_MINUS_PLATINIUM} IS NOT NULL AND " +
-                            "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_MINUS_PALLADIUM} IS NOT NULL AND " +
-                            "${MyConfiguration.MY_SPREADSHEET_USERS_COLUMN_MINUS_RHODIUM} IS NOT NULL"
+                    DOCS_API_PARAMETER_WHERE to "select * where ${MyConfiguration.SPREADSHEET_USERS_COLUMN_LOGIN}='$login' AND " +
+                            "${MyConfiguration.SPREADSHEET_USERS_COLUMN_ID} IS NOT NULL AND " +
+                            "${MyConfiguration.SPREADSHEET_USERS_COLUMN_LOGIN} IS NOT NULL AND " +
+                            "${MyConfiguration.SPREADSHEET_USERS_COLUMN_LICENCE} IS NOT NULL AND " +
+                            "${MyConfiguration.SPREADSHEET_USERS_COLUMN_DISCOUNT} IS NOT NULL AND " +
+                            "${MyConfiguration.SPREADSHEET_USERS_COLUMN_VISIBILITY} IS NOT NULL AND " +
+                            "${MyConfiguration.SPREADSHEET_USERS_COLUMN_MINUS_PLATINUM} IS NOT NULL AND " +
+                            "${MyConfiguration.SPREADSHEET_USERS_COLUMN_MINUS_PALLADIUM} IS NOT NULL AND " +
+                            "${MyConfiguration.SPREADSHEET_USERS_COLUMN_MINUS_RHODIUM} IS NOT NULL"
                 )
             )
                 .authentication().bearer(getAccessToken()).responseString()
@@ -205,7 +205,7 @@ class Spreadsheet {
                 DOCS_API_URL_CATALYST,
                 listOf(
                     DOCS_API_PARAMETER_JSON to DOCS_API_PARAMETER_JSON_VALUE,
-                    DOCS_API_PARAMETER_WHERE to "select * where ${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_ID}>$fromRow"
+                    DOCS_API_PARAMETER_WHERE to "select * where ${MyConfiguration.SPREADSHEET_CATALYST_COLUMN_ID}>$fromRow"
                 )
             )
                 .authentication().bearer(getAccessToken()).responseString()
@@ -219,8 +219,8 @@ class Spreadsheet {
                 DOCS_API_URL_CATALYST,
                 listOf(
                     DOCS_API_PARAMETER_JSON to DOCS_API_PARAMETER_JSON_VALUE,
-                    DOCS_API_PARAMETER_WHERE to "select count(${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_ID}) where " +
-                            "${MyConfiguration.MY_SPREADSHEET_CATALYST_COLUMN_ID} IS NOT NULL"
+                    DOCS_API_PARAMETER_WHERE to "select count(${MyConfiguration.SPREADSHEET_CATALYST_COLUMN_ID}) where " +
+                            "${MyConfiguration.SPREADSHEET_CATALYST_COLUMN_ID} IS NOT NULL"
                 )
             )
                 .authentication().bearer(getAccessToken()).responseString()

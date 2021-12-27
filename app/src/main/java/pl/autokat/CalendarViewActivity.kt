@@ -174,7 +174,7 @@ class CalendarViewActivity : AppCompatActivity() {
                 } else {
                     Toast.makeText(
                         this@CalendarViewActivity.applicationContext,
-                        MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION,
+                        MyConfiguration.UNHANDLED_EXCEPTION,
                         Toast.LENGTH_SHORT
                     ).show()
                 }

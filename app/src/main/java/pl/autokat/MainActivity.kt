@@ -23,6 +23,7 @@ import java.net.UnknownHostException
 class MainActivity : AppCompatActivity() {
 
     private lateinit var bindingActivityMain: ActivityMainBinding
+    private val REQUEST_CODE_READ_PHONE_STATE: Int = 0
 
     //oncreate
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +56,7 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(android.Manifest.permission.READ_PHONE_STATE),
-                MyConfiguration.REQUEST_CODE_READ_PHONE_STATE
+                REQUEST_CODE_READ_PHONE_STATE
             )
         } else {
             //has permission and try login
@@ -74,7 +75,7 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            MyConfiguration.REQUEST_CODE_READ_PHONE_STATE -> {
+            REQUEST_CODE_READ_PHONE_STATE -> {
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     // permission was granted
                     this.tryLogin(
@@ -210,7 +211,7 @@ class MainActivity : AppCompatActivity() {
                 //set info message
                 this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.COLOR_SUCCESS)
                 this@MainActivity.bindingActivityMain.textView.text =
-                    MyConfiguration.INFO_MESSAGE_WAIT_AUTHENTICATE
+                    MyConfiguration.USER_WAIT_AUTHENTICATING
             }
             //--- doInBackground
             var processStep: ProcessStep = ProcessStep.NONE
@@ -353,12 +354,12 @@ class MainActivity : AppCompatActivity() {
                     ProcessStep.USER_NEVER_LOGGED -> {
                         this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.COLOR_SUCCESS)
                         this@MainActivity.bindingActivityMain.textView.text =
-                            MyConfiguration.INFO_MESSAGE_USER_NEVER_LOGGED
+                            MyConfiguration.USER_NEVER_LOGGED
                     }
                     ProcessStep.USER_ELAPSED_DATE_LICENCE -> {
                         this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.COLOR_FAILED)
                         this@MainActivity.bindingActivityMain.textView.text =
-                            MyConfiguration.INFO_MESSAGE_USER_FAILED_LICENCE
+                            MyConfiguration.USER_FAILED_LICENCE
                         /* set licence as empty */
                         SharedPreference.setKeyToFile(
                             SharedPreference.LICENCE_DATE_OF_END,
@@ -368,22 +369,22 @@ class MainActivity : AppCompatActivity() {
                     ProcessStep.USER_FAILED_LOGIN -> {
                         this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.COLOR_FAILED)
                         this@MainActivity.bindingActivityMain.textView.text =
-                            MyConfiguration.INFO_MESSAGE_USER_FAILED_LOGIN
+                            MyConfiguration.USER_FAILED_LOGIN
                     }
                     ProcessStep.USER_FAILED_SERIAL -> {
                         this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.COLOR_FAILED)
                         this@MainActivity.bindingActivityMain.textView.text =
-                            MyConfiguration.INFO_MESSAGE_USER_FAILED_SERIAL
+                            MyConfiguration.USER_FAILED_UUID
                     }
                     ProcessStep.NETWORK_FAILED -> {
                         this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.COLOR_FAILED)
                         this@MainActivity.bindingActivityMain.textView.text =
-                            MyConfiguration.INFO_MESSAGE_NETWORK_FAILED
+                            MyConfiguration.NETWORK_FAILED
                     }
                     ProcessStep.UNHANDLED_EXCEPTION -> {
                         this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.COLOR_FAILED)
                         this@MainActivity.bindingActivityMain.textView.text =
-                            MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION
+                            MyConfiguration.UNHANDLED_EXCEPTION
                     }
                     ProcessStep.SUCCESS -> {
                         this@MainActivity.openResultActivity()

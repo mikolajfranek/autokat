@@ -665,21 +665,21 @@ class ResultActivity : AppCompatActivity() {
                     ProcessStep.NONE -> {
                         Toast.makeText(
                             this@ResultActivity.applicationContext,
-                            MyConfiguration.INFO_MESSAGE_SAVE_EMPTY_VALUE,
+                            MyConfiguration.HISTORY_FILTER_CANNOT_SAVE_EMPTY,
                             Toast.LENGTH_LONG
                         ).show()
                     }
                     ProcessStep.UNHANDLED_EXCEPTION -> {
                         Toast.makeText(
                             this@ResultActivity.applicationContext,
-                            MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION,
+                            MyConfiguration.UNHANDLED_EXCEPTION,
                             Toast.LENGTH_LONG
                         ).show()
                     }
                     ProcessStep.SUCCESS -> {
                         Toast.makeText(
                             this@ResultActivity.applicationContext,
-                            MyConfiguration.INFO_MESSAGE_ADDED_HISTORY_FILTER,
+                            MyConfiguration.HISTORY_FILTER_ADDED,
                             Toast.LENGTH_LONG
                         ).show()
                     }
@@ -726,14 +726,14 @@ class ResultActivity : AppCompatActivity() {
                     ProcessStep.UNHANDLED_EXCEPTION -> {
                         Toast.makeText(
                             this@ResultActivity.applicationContext,
-                            MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION,
+                            MyConfiguration.UNHANDLED_EXCEPTION,
                             Toast.LENGTH_LONG
                         ).show()
                     }
                     ProcessStep.SUCCESS -> {
                         Toast.makeText(
                             this@ResultActivity.applicationContext,
-                            MyConfiguration.INFO_MESSAGE_DELETED_HISTORY_FILTER,
+                            MyConfiguration.HISTORY_FILTER_DELETED,
                             Toast.LENGTH_LONG
                         ).show()
                     }

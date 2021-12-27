@@ -46,7 +46,7 @@ class PictureActivity : AppCompatActivity() {
                 )
                 Toast.makeText(
                     this@PictureActivity.applicationContext,
-                    MyConfiguration.INFO_DOWNLOAD_BITMAP_WAIT,
+                    MyConfiguration.BITMAP_WAIT,
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -68,7 +68,7 @@ class PictureActivity : AppCompatActivity() {
                     ProcessStep.NETWORK_FAILED -> {
                         Toast.makeText(
                             this@PictureActivity.applicationContext,
-                            MyConfiguration.INFO_MESSAGE_NETWORK_FAILED,
+                            MyConfiguration.NETWORK_FAILED,
                             Toast.LENGTH_SHORT
                         ).show()
                         this@PictureActivity.finish()
@@ -76,7 +76,7 @@ class PictureActivity : AppCompatActivity() {
                     ProcessStep.UNHANDLED_EXCEPTION -> {
                         Toast.makeText(
                             this@PictureActivity.applicationContext,
-                            MyConfiguration.INFO_DOWNLOAD_BITMAP_FAILED,
+                            MyConfiguration.BITMAP_FAILED,
                             Toast.LENGTH_SHORT
                         ).show()
                         this@PictureActivity.finish()

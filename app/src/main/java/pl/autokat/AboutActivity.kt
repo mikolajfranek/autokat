@@ -32,7 +32,7 @@ class AboutActivity : AppCompatActivity() {
             val licenceText = "Licencja ważna do: " + Formatter.formatStringDate(licenceDateOfEnd)
             this.bindingActivityAbout.licence.text = licenceText
         }
-        val versionText = "Wersja aplikacji: " + MyConfiguration.VERSION_APP
+        val versionText = "Wersja aplikacji: " + MyConfiguration.VERSION_APK
         this.bindingActivityAbout.version.text = versionText
     }
 

@@ -64,22 +64,22 @@ class UpdateActivity : AppCompatActivity() {
         if (itemsFromDatabase != 0) {
             if (MyConfiguration.IS_AVAILABLE_UPDATE) {
                 this.bindingActivityUpdate.progessBar.progress = 0
-                this.bindingActivityUpdate.textView.text = MyConfiguration.INFO_DATABASE_EXPIRE
+                this.bindingActivityUpdate.textView.text = MyConfiguration.DATABASE_EXPIRED
             } else {
                 if (itemsWithThumbnail / itemsFromDatabase != 1) {
                     val textView =
-                        MyConfiguration.INFO_DOWNLOAD_BITMAP_STATUS + " (" + itemsWithThumbnail + "/" + itemsWithUrlThumbnail + "/" + itemsFromDatabase + ")"
+                        MyConfiguration.BITMAP_STATUS + " (" + itemsWithThumbnail + "/" + itemsWithUrlThumbnail + "/" + itemsFromDatabase + ")"
                     this.bindingActivityUpdate.textView.text = textView
                     //make async task and execute - refresh state of downloading
                     this.refreshingDatabase = true
                     Thread(this.TaskUpdateProgressOfUpdateThumbnail()).start()
                 } else {
                     this.bindingActivityUpdate.textView.text =
-                        MyConfiguration.INFO_DOWNLOAD_BITMAP_SUCCESS
+                        MyConfiguration.DATABASE_ACTUAL
                 }
             }
         } else {
-            this.bindingActivityUpdate.textView.text = MyConfiguration.INFO_EMPTY_DATABASE
+            this.bindingActivityUpdate.textView.text = MyConfiguration.DATABASE_EMPTY
         }
     }
 
@@ -88,7 +88,7 @@ class UpdateActivity : AppCompatActivity() {
     fun checkIfRowIsAvailable(row: JSONArray): Boolean {
         return Spreadsheet.getValueStringFromDocsApi(
             row,
-            MyConfiguration.MY_SPREADSHEET_CATALYST_ID
+            MyConfiguration.SPREADSHEET_CATALYST_ID
         ).isEmpty() == false
     }
 
@@ -116,7 +116,7 @@ class UpdateActivity : AppCompatActivity() {
                         //--- onProgressUpdate
                         this@UpdateActivity.runOnUiThread {
                             val textView =
-                                MyConfiguration.INFO_DOWNLOAD_BITMAP_STATUS + " (" + itemsWithThumbnail.toString() + "/" + itemsWithUrlThumbnail.toString() + "/" + itemsFromDatabase.toString() + ")"
+                                MyConfiguration.BITMAP_STATUS + " (" + itemsWithThumbnail.toString() + "/" + itemsWithUrlThumbnail.toString() + "/" + itemsFromDatabase.toString() + ")"
                             this@UpdateActivity.bindingActivityUpdate.textView.text = textView
                             this@UpdateActivity.bindingActivityUpdate.progessBar.progress =
                                 ((itemsWithThumbnail.toFloat() / itemsWithUrlThumbnail.toFloat()) * 100.toFloat()).toInt()
@@ -154,7 +154,7 @@ class UpdateActivity : AppCompatActivity() {
                 //set info section
                 this@UpdateActivity.bindingActivityUpdate.textView.setTextColor(MyConfiguration.COLOR_SUCCESS)
                 this@UpdateActivity.bindingActivityUpdate.textView.text =
-                    MyConfiguration.INFO_MESSAGE_WAIT_UPDATE
+                    MyConfiguration.UPDATE_WAIT
             }
             //--- doInBackground
             var processStep: ProcessStep = ProcessStep.NONE
@@ -210,7 +210,7 @@ class UpdateActivity : AppCompatActivity() {
                                 MyConfiguration.COLOR_SUCCESS
                             )
                             this@UpdateActivity.bindingActivityUpdate.textView.text =
-                                MyConfiguration.INFO_MESSAGE_WAIT_UPDATE
+                                MyConfiguration.UPDATE_WAIT
                         }
                     }
                     processStep = ProcessStep.SUCCESS
@@ -229,14 +229,14 @@ class UpdateActivity : AppCompatActivity() {
                             MyConfiguration.COLOR_FAILED
                         )
                         this@UpdateActivity.bindingActivityUpdate.textView.text =
-                            MyConfiguration.INFO_MESSAGE_NETWORK_FAILED
+                            MyConfiguration.NETWORK_FAILED
                     }
                     ProcessStep.UNHANDLED_EXCEPTION -> {
                         this@UpdateActivity.bindingActivityUpdate.textView.setTextColor(
                             MyConfiguration.COLOR_FAILED
                         )
                         this@UpdateActivity.bindingActivityUpdate.textView.text =
-                            MyConfiguration.INFO_UPDATE_FAILED
+                            MyConfiguration.UPDATE_FAILED
                     }
                     ProcessStep.SUCCESS -> {
                         MyConfiguration.IS_AVAILABLE_UPDATE = false
@@ -245,7 +245,7 @@ class UpdateActivity : AppCompatActivity() {
                             MyConfiguration.COLOR_SUCCESS
                         )
                         this@UpdateActivity.bindingActivityUpdate.textView.text =
-                            MyConfiguration.INFO_UPDATE_SUCCESS
+                            MyConfiguration.UPDATE_SUCCESS
                     }
                     else -> {
                         //nothing
