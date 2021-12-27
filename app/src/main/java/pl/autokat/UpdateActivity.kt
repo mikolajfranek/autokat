@@ -11,7 +11,7 @@ import java.net.UnknownHostException
 class UpdateActivity : AppCompatActivity() {
 
     private lateinit var bindingActivityUpdate: ActivityUpdateBinding
-    private lateinit var myDatabase: MyDatabase
+    private lateinit var database: Database
     private var refreshingDatabase: Boolean = false
     private var refreshingWork: Boolean = false
 
@@ -28,7 +28,7 @@ class UpdateActivity : AppCompatActivity() {
         //init shared preferences
         SharedPreference.init(this)
         //init database object
-        this.myDatabase = MyDatabase(this.applicationContext)
+        this.database = Database(this.applicationContext)
         //listeneres
         this.bindingActivityUpdate.updateNewButton.setOnClickListener {
             this.refreshingDatabase = false
@@ -54,13 +54,13 @@ class UpdateActivity : AppCompatActivity() {
     //onresume
     override fun onResume() {
         super.onResume()
-        val itemsWithThumbnail: Int = this.myDatabase.getCountCatalystWithThumbnail()
-        val itemsWithUrlThumbnail: Int = this.myDatabase.getCountCatalystWithUrlOfThumbnail()
-        val itemsFromDatabase: Int = this.myDatabase.getCountCatalyst()
+        val itemsWithThumbnail: Int = this.database.getCountCatalystWithThumbnail()
+        val itemsWithUrlThumbnail: Int = this.database.getCountCatalystWithUrlOfThumbnail()
+        val itemsFromDatabase: Int = this.database.getCountCatalyst()
         this.bindingActivityUpdate.progessBar.progress =
             ((itemsWithThumbnail.toFloat() / itemsWithUrlThumbnail.toFloat()) * 100.toFloat()).toInt()
         //set info section
-        this.bindingActivityUpdate.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
+        this.bindingActivityUpdate.textView.setTextColor(MyConfiguration.COLOR_SUCCESS)
         if (itemsFromDatabase != 0) {
             if (MyConfiguration.IS_AVAILABLE_UPDATE) {
                 this.bindingActivityUpdate.progessBar.progress = 0
@@ -108,11 +108,11 @@ class UpdateActivity : AppCompatActivity() {
                     while (this@UpdateActivity.refreshingDatabase) {
                         Thread.sleep(1000)
                         val itemsWithThumbnail: Int =
-                            this@UpdateActivity.myDatabase.getCountCatalystWithThumbnail()
+                            this@UpdateActivity.database.getCountCatalystWithThumbnail()
                         val itemsWithUrlThumbnail: Int =
-                            this@UpdateActivity.myDatabase.getCountCatalystWithUrlOfThumbnail()
+                            this@UpdateActivity.database.getCountCatalystWithUrlOfThumbnail()
                         val itemsFromDatabase: Int =
-                            this@UpdateActivity.myDatabase.getCountCatalyst()
+                            this@UpdateActivity.database.getCountCatalyst()
                         //--- onProgressUpdate
                         this@UpdateActivity.runOnUiThread {
                             val textView =
@@ -152,7 +152,7 @@ class UpdateActivity : AppCompatActivity() {
                 //set process bar
                 this@UpdateActivity.bindingActivityUpdate.progessBar.progress = 0
                 //set info section
-                this@UpdateActivity.bindingActivityUpdate.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
+                this@UpdateActivity.bindingActivityUpdate.textView.setTextColor(MyConfiguration.COLOR_SUCCESS)
                 this@UpdateActivity.bindingActivityUpdate.textView.text =
                     MyConfiguration.INFO_MESSAGE_WAIT_UPDATE
             }
@@ -164,10 +164,10 @@ class UpdateActivity : AppCompatActivity() {
                 //check if user click sync database
                 if (this.fullUpdate) {
                     //truncate tables
-                    this@UpdateActivity.myDatabase.resetDatabase()
+                    this@UpdateActivity.database.resetDatabase()
                 } else {
                     //calculate count of catalyst
-                    countDatabase = this@UpdateActivity.myDatabase.getCountCatalyst()
+                    countDatabase = this@UpdateActivity.database.getCountCatalyst()
                     if (countDatabase == countSpreadsheet) {
                         processStep = ProcessStep.SUCCESS
                     }
@@ -197,7 +197,7 @@ class UpdateActivity : AppCompatActivity() {
                     }
                     //iterate over batch array
                     for (i in 0 until (batchJsonArray.length())) {
-                        this@UpdateActivity.myDatabase.insertCatalysts(batchJsonArray[i] as JSONArray)
+                        this@UpdateActivity.database.insertCatalysts(batchJsonArray[i] as JSONArray)
                         //update and publish state of process update
                         progressStep =
                             ((i * batchSize).toFloat() / progressAll.toFloat()) * (100).toFloat()
@@ -207,7 +207,7 @@ class UpdateActivity : AppCompatActivity() {
                                 progressStep.toInt()
                             //set info section
                             this@UpdateActivity.bindingActivityUpdate.textView.setTextColor(
-                                MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS
+                                MyConfiguration.COLOR_SUCCESS
                             )
                             this@UpdateActivity.bindingActivityUpdate.textView.text =
                                 MyConfiguration.INFO_MESSAGE_WAIT_UPDATE
@@ -226,14 +226,14 @@ class UpdateActivity : AppCompatActivity() {
                 when (processStep) {
                     ProcessStep.NETWORK_FAILED -> {
                         this@UpdateActivity.bindingActivityUpdate.textView.setTextColor(
-                            MyConfiguration.INFO_MESSAGE_COLOR_FAILED
+                            MyConfiguration.COLOR_FAILED
                         )
                         this@UpdateActivity.bindingActivityUpdate.textView.text =
                             MyConfiguration.INFO_MESSAGE_NETWORK_FAILED
                     }
                     ProcessStep.UNHANDLED_EXCEPTION -> {
                         this@UpdateActivity.bindingActivityUpdate.textView.setTextColor(
-                            MyConfiguration.INFO_MESSAGE_COLOR_FAILED
+                            MyConfiguration.COLOR_FAILED
                         )
                         this@UpdateActivity.bindingActivityUpdate.textView.text =
                             MyConfiguration.INFO_UPDATE_FAILED
@@ -242,7 +242,7 @@ class UpdateActivity : AppCompatActivity() {
                         MyConfiguration.IS_AVAILABLE_UPDATE = false
                         this@UpdateActivity.bindingActivityUpdate.progessBar.progress = 100
                         this@UpdateActivity.bindingActivityUpdate.textView.setTextColor(
-                            MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS
+                            MyConfiguration.COLOR_SUCCESS
                         )
                         this@UpdateActivity.bindingActivityUpdate.textView.text =
                             MyConfiguration.INFO_UPDATE_SUCCESS

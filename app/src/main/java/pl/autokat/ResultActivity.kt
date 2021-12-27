@@ -37,7 +37,7 @@ class ResultActivity : AppCompatActivity() {
     private lateinit var bindingActivityResult: ActivityResultBinding
     private lateinit var bindingMyItemCatalyst: MyItemCatalystBinding
     private lateinit var bindingMyItemHistoryFilter: MyItemHistoryFilterBinding
-    private lateinit var database: MyDatabase
+    private lateinit var database: Database
     private lateinit var databaseAdapterCatalysts: ArrayAdapter<ModelCatalyst>
     private var scrollPreLastCatalyst: Int = 0
     private var scrollLimitCatalyst: Int = MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST
@@ -61,7 +61,7 @@ class ResultActivity : AppCompatActivity() {
         //init shared preferences
         SharedPreference.init(this)
         //init database object
-        this.database = MyDatabase(this.applicationContext)
+        this.database = Database(this.applicationContext)
         //text listener on change text
         this.bindingActivityResult.editText.setText(
             SharedPreference.getKeyFromFile(
@@ -466,7 +466,7 @@ class ResultActivity : AppCompatActivity() {
                 }
                 /* checking time */
                 if (MyConfiguration.checkTimeOnPhone(
-                        user.getString(MyConfiguration.MY_SPREADSHEET_USERS_LICENCE),
+                        user.getString(MyConfiguration.SPREADSHEET_USERS_LICENCE),
                         TimeChecking.PARAMETER_IS_GREATER_THAN_NOW
                     ) == false
                 ) {
@@ -478,7 +478,7 @@ class ResultActivity : AppCompatActivity() {
                 SharedPreference.setKeyToFile(
                     SharedPreference.LICENCE_DATE_OF_END,
                     user.getString(
-                        MyConfiguration.MY_SPREADSHEET_USERS_LICENCE
+                        MyConfiguration.SPREADSHEET_USERS_LICENCE
                     )
                 )
                 //save discount
@@ -486,7 +486,7 @@ class ResultActivity : AppCompatActivity() {
                     SharedPreference.DISCOUNT,
                     Parser.parseStringToInt(
                         user.getString(
-                            MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT
+                            MyConfiguration.SPREADSHEET_USERS_DISCOUNT
                         )
                     ).toString()
                 )
@@ -495,7 +495,7 @@ class ResultActivity : AppCompatActivity() {
                     SharedPreference.VISIBILITY,
                     Parser.parseStringBooleanToInt(
                         user.getString(
-                            MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY
+                            MyConfiguration.SPREADSHEET_USERS_VISIBILITY
                         )
                     ).toString()
                 )
@@ -504,7 +504,7 @@ class ResultActivity : AppCompatActivity() {
                     SharedPreference.MINUS_PLATINIUM,
                     Parser.parseStringToInt(
                         user.getString(
-                            MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PLATINIUM
+                            MyConfiguration.SPREADSHEET_USERS_MINUS_PLATINUM
                         )
                     ).toString()
                 )
@@ -512,7 +512,7 @@ class ResultActivity : AppCompatActivity() {
                     SharedPreference.MINUS_PALLADIUM,
                     Parser.parseStringToInt(
                         user.getString(
-                            MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PALLADIUM
+                            MyConfiguration.SPREADSHEET_USERS_MINUS_PALLADIUM
                         )
                     ).toString()
                 )
@@ -520,7 +520,7 @@ class ResultActivity : AppCompatActivity() {
                     SharedPreference.MINUS_RHODIUM,
                     Parser.parseStringToInt(
                         user.getString(
-                            MyConfiguration.MY_SPREADSHEET_USERS_MINUS_RHODIUM
+                            MyConfiguration.SPREADSHEET_USERS_MINUS_RHODIUM
                         )
                     ).toString()
                 )

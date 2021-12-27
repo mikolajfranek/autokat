@@ -125,7 +125,7 @@ class Course {
         }
 
         @Suppress("ReplaceCallWithBinaryOperator")
-        fun getValues(database: MyDatabase) {
+        fun getValues(database: Database) {
             val savingToSharedPreferences: Boolean = isCoursesSelected() == false
             val (usdPln, usdDate) = getCourseUsdPln(savingToSharedPreferences)
             val (eurPln, eurDate) = getCourseEurPln(savingToSharedPreferences)

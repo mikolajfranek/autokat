@@ -208,7 +208,7 @@ class MainActivity : AppCompatActivity() {
                     this@MainActivity.bindingActivityMain.editText.setText(this.login)
                 }
                 //set info message
-                this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
+                this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.COLOR_SUCCESS)
                 this@MainActivity.bindingActivityMain.textView.text =
                     MyConfiguration.INFO_MESSAGE_WAIT_AUTHENTICATE
             }
@@ -249,11 +249,11 @@ class MainActivity : AppCompatActivity() {
                                 processStep = ProcessStep.USER_FAILED_LOGIN
                             } else {
                                 /* checking time */
-                                if (user.getString(MyConfiguration.MY_SPREADSHEET_USERS_LICENCE)
+                                if (user.getString(MyConfiguration.SPREADSHEET_USERS_LICENCE)
                                         .isEmpty()
                                     || MyConfiguration.checkTimeOnPhone(
                                         user.getString(
-                                            MyConfiguration.MY_SPREADSHEET_USERS_LICENCE
+                                            MyConfiguration.SPREADSHEET_USERS_LICENCE
                                         ), TimeChecking.PARAMETER_IS_GREATER_THAN_NOW
                                     ) == false
                                 ) {
@@ -262,17 +262,17 @@ class MainActivity : AppCompatActivity() {
                                     //read serial id from phone
                                     val serialId: String = decoratorIdentificatorOfUser(this@MainActivity.applicationContext)
                                     //check if serial id is correct or save serial id to database
-                                    if (user.getString(MyConfiguration.MY_SPREADSHEET_USERS_UUID)
+                                    if (user.getString(MyConfiguration.SPREADSHEET_USERS_UUID)
                                             .isEmpty()
                                     ) {
                                         //save serial id
                                         Spreadsheet.saveSerialId(
-                                            user.getInt(MyConfiguration.MY_SPREADSHEET_USERS_ID),
+                                            user.getInt(MyConfiguration.SPREADSHEET_USERS_ID),
                                             serialId
                                         )
                                     } else {
                                         //check if current serial id is the same as in database
-                                        if (serialId.equals(user.getString(MyConfiguration.MY_SPREADSHEET_USERS_UUID)) == false) {
+                                        if (serialId.equals(user.getString(MyConfiguration.SPREADSHEET_USERS_UUID)) == false) {
                                             processStep = ProcessStep.USER_FAILED_SERIAL
                                         }
                                     }
@@ -282,7 +282,7 @@ class MainActivity : AppCompatActivity() {
                                         SharedPreference.setKeyToFile(
                                             SharedPreference.LICENCE_DATE_OF_END,
                                             user.getString(
-                                                MyConfiguration.MY_SPREADSHEET_USERS_LICENCE
+                                                MyConfiguration.SPREADSHEET_USERS_LICENCE
                                             )
                                         )
                                         //save discount
@@ -290,7 +290,7 @@ class MainActivity : AppCompatActivity() {
                                             SharedPreference.DISCOUNT,
                                             Parser.parseStringToInt(
                                                 user.getString(
-                                                    MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT
+                                                    MyConfiguration.SPREADSHEET_USERS_DISCOUNT
                                                 )
                                             ).toString()
                                         )
@@ -299,7 +299,7 @@ class MainActivity : AppCompatActivity() {
                                             SharedPreference.VISIBILITY,
                                             Parser.parseStringBooleanToInt(
                                                 user.getString(
-                                                    MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY
+                                                    MyConfiguration.SPREADSHEET_USERS_VISIBILITY
                                                 )
                                             ).toString()
                                         )
@@ -308,7 +308,7 @@ class MainActivity : AppCompatActivity() {
                                             SharedPreference.MINUS_PLATINIUM,
                                             Parser.parseStringToInt(
                                                 user.getString(
-                                                    MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PLATINIUM
+                                                    MyConfiguration.SPREADSHEET_USERS_MINUS_PLATINUM
                                                 )
                                             ).toString()
                                         )
@@ -316,7 +316,7 @@ class MainActivity : AppCompatActivity() {
                                             SharedPreference.MINUS_PALLADIUM,
                                             Parser.parseStringToInt(
                                                 user.getString(
-                                                    MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PALLADIUM
+                                                    MyConfiguration.SPREADSHEET_USERS_MINUS_PALLADIUM
                                                 )
                                             ).toString()
                                         )
@@ -324,7 +324,7 @@ class MainActivity : AppCompatActivity() {
                                             SharedPreference.MINUS_RHODIUM,
                                             Parser.parseStringToInt(
                                                 user.getString(
-                                                    MyConfiguration.MY_SPREADSHEET_USERS_MINUS_RHODIUM
+                                                    MyConfiguration.SPREADSHEET_USERS_MINUS_RHODIUM
                                                 )
                                             ).toString()
                                         )
@@ -351,12 +351,12 @@ class MainActivity : AppCompatActivity() {
                 //do job depends on situation
                 when (processStep) {
                     ProcessStep.USER_NEVER_LOGGED -> {
-                        this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
+                        this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.COLOR_SUCCESS)
                         this@MainActivity.bindingActivityMain.textView.text =
                             MyConfiguration.INFO_MESSAGE_USER_NEVER_LOGGED
                     }
                     ProcessStep.USER_ELAPSED_DATE_LICENCE -> {
-                        this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
+                        this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.COLOR_FAILED)
                         this@MainActivity.bindingActivityMain.textView.text =
                             MyConfiguration.INFO_MESSAGE_USER_FAILED_LICENCE
                         /* set licence as empty */
@@ -366,22 +366,22 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
                     ProcessStep.USER_FAILED_LOGIN -> {
-                        this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
+                        this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.COLOR_FAILED)
                         this@MainActivity.bindingActivityMain.textView.text =
                             MyConfiguration.INFO_MESSAGE_USER_FAILED_LOGIN
                     }
                     ProcessStep.USER_FAILED_SERIAL -> {
-                        this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
+                        this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.COLOR_FAILED)
                         this@MainActivity.bindingActivityMain.textView.text =
                             MyConfiguration.INFO_MESSAGE_USER_FAILED_SERIAL
                     }
                     ProcessStep.NETWORK_FAILED -> {
-                        this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
+                        this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.COLOR_FAILED)
                         this@MainActivity.bindingActivityMain.textView.text =
                             MyConfiguration.INFO_MESSAGE_NETWORK_FAILED
                     }
                     ProcessStep.UNHANDLED_EXCEPTION -> {
-                        this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
+                        this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.COLOR_FAILED)
                         this@MainActivity.bindingActivityMain.textView.text =
                             MyConfiguration.INFO_MESSAGE_UNHANDLED_EXCEPTION
                     }

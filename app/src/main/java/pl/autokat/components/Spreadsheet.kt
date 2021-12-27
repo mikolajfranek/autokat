@@ -146,55 +146,55 @@ class Spreadsheet {
             user.put(
                 getValueStringFromDocsApi(
                     element,
-                    MyConfiguration.MY_SPREADSHEET_USERS_ID
+                    MyConfiguration.SPREADSHEET_USERS_ID
                 )
             )
             user.put(
                 getValueStringFromDocsApi(
                     element,
-                    MyConfiguration.MY_SPREADSHEET_USERS_LOGIN
+                    MyConfiguration.SPREADSHEET_USERS_LOGIN
                 )
             )
             user.put(
                 getValueStringFromDocsApi(
                     element,
-                    MyConfiguration.MY_SPREADSHEET_USERS_UUID
+                    MyConfiguration.SPREADSHEET_USERS_UUID
                 )
             )
             user.put(
                 getValueStringFromDocsApi(
                     element,
-                    MyConfiguration.MY_SPREADSHEET_USERS_LICENCE
+                    MyConfiguration.SPREADSHEET_USERS_LICENCE
                 )
             )
             user.put(
                 getValueStringFromDocsApi(
                     element,
-                    MyConfiguration.MY_SPREADSHEET_USERS_DISCOUNT
+                    MyConfiguration.SPREADSHEET_USERS_DISCOUNT
                 )
             )
             user.put(
                 getValueStringFromDocsApi(
                     element,
-                    MyConfiguration.MY_SPREADSHEET_USERS_VISIBILITY
+                    MyConfiguration.SPREADSHEET_USERS_VISIBILITY
                 )
             )
             user.put(
                 getValueFloatStringFromDocsApi(
                     element,
-                    MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PLATINIUM
+                    MyConfiguration.SPREADSHEET_USERS_MINUS_PLATINUM
                 )
             )
             user.put(
                 getValueFloatStringFromDocsApi(
                     element,
-                    MyConfiguration.MY_SPREADSHEET_USERS_MINUS_PALLADIUM
+                    MyConfiguration.SPREADSHEET_USERS_MINUS_PALLADIUM
                 )
             )
             user.put(
                 getValueFloatStringFromDocsApi(
                     element,
-                    MyConfiguration.MY_SPREADSHEET_USERS_MINUS_RHODIUM
+                    MyConfiguration.SPREADSHEET_USERS_MINUS_RHODIUM
                 )
             )
             return user

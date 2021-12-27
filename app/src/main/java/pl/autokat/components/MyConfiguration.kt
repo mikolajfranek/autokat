@@ -18,9 +18,25 @@ class MyConfiguration {
         const val DATABASE_FILE_PATH_ASSETS: String = "databases/$DATABASE_NAME_OF_FILE"
 
         /* color */
-        val INFO_MESSAGE_COLOR_WHITE: Int = Color.parseColor("#FFFFFF")
-        val INFO_MESSAGE_COLOR_FAILED: Int = Color.parseColor("#EF4836")
-        val INFO_MESSAGE_COLOR_SUCCESS: Int = Color.parseColor("#363636")
+        val COLOR_WHITE: Int = Color.parseColor("#FFFFFF")
+        val COLOR_FAILED: Int = Color.parseColor("#EF4836")
+        val COLOR_SUCCESS: Int = Color.parseColor("#363636")
+
+
+
+
+
+
+
+
+
+
+        //TODO
+
+
+
+
+
 
         /* info */
         const val INFO_MESSAGE_USER_NEVER_LOGGED: String = "Wprowadź nazwę użytkownika"
@@ -48,18 +64,23 @@ class MyConfiguration {
 
 
 
+        //region spreadsheet
+
+        //endregion
+
+
 
         /* spreadsheet */
         //users column number
-        const val MY_SPREADSHEET_USERS_ID: Int = 0
-        const val MY_SPREADSHEET_USERS_LOGIN: Int = 1
-        const val MY_SPREADSHEET_USERS_UUID: Int = 2
-        const val MY_SPREADSHEET_USERS_LICENCE: Int = 3
-        const val MY_SPREADSHEET_USERS_DISCOUNT: Int = 4
-        const val MY_SPREADSHEET_USERS_VISIBILITY: Int = 5
-        const val MY_SPREADSHEET_USERS_MINUS_PLATINIUM: Int = 6
-        const val MY_SPREADSHEET_USERS_MINUS_PALLADIUM: Int = 7
-        const val MY_SPREADSHEET_USERS_MINUS_RHODIUM: Int = 8
+        const val SPREADSHEET_USERS_ID: Int = 0
+        const val SPREADSHEET_USERS_LOGIN: Int = 1
+        const val SPREADSHEET_USERS_UUID: Int = 2
+        const val SPREADSHEET_USERS_LICENCE: Int = 3
+        const val SPREADSHEET_USERS_DISCOUNT: Int = 4
+        const val SPREADSHEET_USERS_VISIBILITY: Int = 5
+        const val SPREADSHEET_USERS_MINUS_PLATINUM: Int = 6
+        const val SPREADSHEET_USERS_MINUS_PALLADIUM: Int = 7
+        const val SPREADSHEET_USERS_MINUS_RHODIUM: Int = 8
 
         //users column letter
         const val MY_SPREADSHEET_USERS_COLUMN_ID: String = "A"

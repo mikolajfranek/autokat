@@ -6,7 +6,7 @@ import androidx.work.WorkerParameters
 import org.json.JSONArray
 import org.json.JSONObject
 import pl.autokat.components.MyConfiguration
-import pl.autokat.components.MyDatabase
+import pl.autokat.components.Database
 import pl.autokat.components.Parser
 import java.net.URL
 import java.util.concurrent.atomic.AtomicBoolean
@@ -26,7 +26,7 @@ class WorkerUpload(appContext: Context, workerParams: WorkerParameters) :
 
     private fun uploadImages() {
         try {
-            val database = MyDatabase(applicationContext)
+            val database = Database(applicationContext)
             val items: JSONArray = database.getCatalystWithoutThumbnail()
             for (i in 0 until items.length()) {
                 val id: Int =

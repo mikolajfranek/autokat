@@ -48,7 +48,7 @@ class CalendarViewActivity : AppCompatActivity() {
     private val featureStart =
         LocalDate.parse("01-10-2021", DateTimeFormatter.ofPattern("dd-MM-yyyy"))
     private var mapDaysCoursesOfYearMonth = HashMap<String, HashMap<String, ModelCourse>>()
-    private lateinit var myDatabase: MyDatabase
+    private lateinit var database: Database
 
     //oncreate
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,7 +63,7 @@ class CalendarViewActivity : AppCompatActivity() {
         //init shared preferences
         SharedPreference.init(this)
         //init database object
-        this.myDatabase = MyDatabase(this.applicationContext)
+        this.database = Database(this.applicationContext)
         //calendar day binder
         bindingActivityCalendarView.calendarView.dayBinder = object : DayBinder<DayViewContainer> {
             override fun create(view: View) = DayViewContainer(view)
@@ -75,11 +75,11 @@ class CalendarViewActivity : AppCompatActivity() {
                     textView.visibility = View.VISIBLE
                     when (day.date) {
                         selectedDate -> {
-                            textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_WHITE)
+                            textView.setTextColor(MyConfiguration.COLOR_WHITE)
                             textView.setBackgroundResource(R.drawable.drawable_selectday_background)
                         }
                         else -> {
-                            textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_SUCCESS)
+                            textView.setTextColor(MyConfiguration.COLOR_SUCCESS)
                             val keyYearMonth = day.date.yearMonth.toString()
                             if (mapDaysCoursesOfYearMonth.contains(keyYearMonth)) {
                                 val keyDate = Formatter.formatStringDate(day.date.toString())
@@ -92,7 +92,7 @@ class CalendarViewActivity : AppCompatActivity() {
                                 textView.background = null
                             }
                             if (day.date == today) {
-                                textView.setTextColor(MyConfiguration.INFO_MESSAGE_COLOR_FAILED)
+                                textView.setTextColor(MyConfiguration.COLOR_FAILED)
                             }
                         }
                     }
@@ -138,7 +138,7 @@ class CalendarViewActivity : AppCompatActivity() {
             if (lastMonth != null) {
                 setOfYearMonth.add(lastMonth.yearMonth.toString())
             }
-            mapDaysCoursesOfYearMonth = this.myDatabase.getCoursesOfYearMonths(setOfYearMonth)
+            mapDaysCoursesOfYearMonth = this.database.getCoursesOfYearMonths(setOfYearMonth)
             for ((_, hashMap) in mapDaysCoursesOfYearMonth) {
                 for ((keyDate, _) in hashMap) {
                     val localDate = Parser.parseStringDateToLocalDate(keyDate)

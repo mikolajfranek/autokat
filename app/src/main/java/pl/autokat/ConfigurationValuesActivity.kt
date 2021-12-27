@@ -16,7 +16,7 @@ import java.net.UnknownHostException
 class ConfigurationValuesActivity : AppCompatActivity() {
 
     private lateinit var bindingActivityConfigurationValues: ActivityConfigurationValuesBinding
-    private lateinit var database: MyDatabase
+    private lateinit var database: Database
 
     //oncreate
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +32,7 @@ class ConfigurationValuesActivity : AppCompatActivity() {
         //init shared preferences
         SharedPreference.init(this)
         //init database object
-        this.database = MyDatabase(this.applicationContext)
+        this.database = Database(this.applicationContext)
         //switch listener
         this.bindingActivityConfigurationValues.switchCourses.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
