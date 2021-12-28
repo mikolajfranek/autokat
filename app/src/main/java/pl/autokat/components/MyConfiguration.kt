@@ -23,6 +23,9 @@ class MyConfiguration {
         val COLOR_FAILED: Int = Color.parseColor("#EF4836")
         val COLOR_SUCCESS: Int = Color.parseColor("#363636")
 
+        const val ONE_DAY_IN_MILLISECONDS: Long = 86400000
+        const val ONE_HOUR_IN_MILLISECONDS: Long = 3600000L
+
         const val UNHANDLED_EXCEPTION: String = "Wystąpił błąd"
         const val NETWORK_FAILED: String = "Brak połączenia"
         const val USER_NEVER_LOGGED: String = "Wprowadź nazwę użytkownika"
@@ -38,7 +41,7 @@ class MyConfiguration {
         const val BITMAP_STATUS: String = "Status pobieranych miniatur"
         const val DATABASE_ACTUAL: String = "Baza danych jest aktualna"
         const val DATABASE_EMPTY: String = "Baza danych jest pusta"
-        const val DATABASE_EXPIRED: String = "Baza danych nie jest aktualna"
+        const val DATABASE_NOT_ACTUAL: String = "Baza danych nie jest aktualna"
         const val HISTORY_FILTER_ADDED: String =
             "Pomyślnie zapisano nazwę do filtrowania"
         const val HISTORY_FILTER_DELETED: String =
@@ -131,72 +134,5 @@ class MyConfiguration {
         const val DATABASE_SQLITE_SEQUENCE_SEQ = "seq"
         const val DATABASE_SQLITE_SEQUENCE_NAME = "name"
         //endregion
-
-
-
-
-
-
-
-
-
-
-        //TODO
-
-        /* others */
-        var IS_AVAILABLE_UPDATE: Boolean = false
-
-
-        /* time */
-        private const val URL_TIMESTAMP: String =
-            "https://worldtimeapi.org/api/timezone/Europe/Warsaw"
-        const val ONE_DAY_IN_MILLISECONDS: Long = 86400000
-        const val ONE_HOUR_IN_MILLISECONDS: Long = 3600000L
-
-        @SuppressLint("SimpleDateFormat")
-        fun checkTimeOnPhone(dateInput: String, timeChecking: TimeChecking): Boolean {
-            when (timeChecking) {
-                TimeChecking.NOW_GREATER_THAN_TIME_FROM_INTERNET -> {
-                    //time from web minus 1 hour must by greater than time now
-                    val json = JSONObject(URL(URL_TIMESTAMP).readText())
-                    val timestampWeb: Long =
-                        (json.getLong("unixtime") * 1000L) - ONE_HOUR_IN_MILLISECONDS
-                    val timestampPhone: Long = Date().time
-                    if (timestampPhone > timestampWeb) {
-                        SharedPreference.setKeyToFile(
-                            SharedPreference.CURRENT_TIMESTAMP,
-                            timestampPhone.toString()
-                        )
-                        return true
-                    }
-                    return false
-                }
-                TimeChecking.PARAMETER_IS_GREATER_THAN_NOW -> {
-                    val timestamp: Long = Date().time
-                    val timestampInput: Long =
-                        (SimpleDateFormat("yyyy-MM-dd").parse(dateInput)!!.time) + ONE_DAY_IN_MILLISECONDS
-                    return timestampInput > timestamp
-                }
-                TimeChecking.CHECKING_LICENCE -> {
-                    val timestamp: Long = Date().time
-                    val timestampLicence: Long = (SimpleDateFormat("yyyy-MM-dd").parse(
-                        SharedPreference.getKeyFromFile(
-                            SharedPreference.LICENCE_DATE_OF_END
-                        )
-                    )!!.time) + ONE_DAY_IN_MILLISECONDS
-                    val timestampFromConfiguration: Long = SharedPreference.getKeyFromFile(
-                        SharedPreference.CURRENT_TIMESTAMP
-                    ).toLong()
-                    if ((timestamp > timestampFromConfiguration) && (timestampLicence > timestamp)) {
-                        SharedPreference.setKeyToFile(
-                            SharedPreference.CURRENT_TIMESTAMP,
-                            timestamp.toString()
-                        )
-                        return true
-                    }
-                    return false
-                }
-            }
-        }
     }
 }

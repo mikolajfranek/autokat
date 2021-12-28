@@ -273,7 +273,7 @@ class ResultActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         /* checking time */
-        if (MyConfiguration.checkTimeOnPhone(
+        if (Checker.checkTimeOnPhone(
                 "",
                 TimeChecking.CHECKING_LICENCE
             ) == false
@@ -465,7 +465,7 @@ class ResultActivity : AppCompatActivity() {
                     throw Exception()
                 }
                 /* checking time */
-                if (MyConfiguration.checkTimeOnPhone(
+                if (Checker.checkTimeOnPhone(
                         user.getString(MyConfiguration.SPREADSHEET_USERS_LICENCE),
                         TimeChecking.PARAMETER_IS_GREATER_THAN_NOW
                     ) == false
@@ -562,7 +562,7 @@ class ResultActivity : AppCompatActivity() {
                 if (this@ResultActivity.menu != null) {
                     //set visibility of ability update catalyst
                     if (this.updateCatalyst) {
-                        MyConfiguration.IS_AVAILABLE_UPDATE = true
+                        Dynamic.IS_AVAILABLE_UPDATE = true
                         this@ResultActivity.menu!!.getItem(1).icon = ContextCompat.getDrawable(
                             this@ResultActivity.applicationContext,
                             R.mipmap.ic_action_update_catalyst_color

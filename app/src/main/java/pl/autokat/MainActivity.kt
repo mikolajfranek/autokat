@@ -225,7 +225,7 @@ class MainActivity : AppCompatActivity() {
                             .isEmpty() == false
                     ) {
                         /* checking time */
-                        processStep = if (MyConfiguration.checkTimeOnPhone(
+                        processStep = if (Checker.checkTimeOnPhone(
                                 "",
                                 TimeChecking.CHECKING_LICENCE
                             ) == false
@@ -236,7 +236,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     } else {
                         /* checking time */
-                        if (MyConfiguration.checkTimeOnPhone(
+                        if (Checker.checkTimeOnPhone(
                                 "",
                                 TimeChecking.NOW_GREATER_THAN_TIME_FROM_INTERNET
                             ) == false
@@ -252,7 +252,7 @@ class MainActivity : AppCompatActivity() {
                                 /* checking time */
                                 if (user.getString(MyConfiguration.SPREADSHEET_USERS_LICENCE)
                                         .isEmpty()
-                                    || MyConfiguration.checkTimeOnPhone(
+                                    || Checker.checkTimeOnPhone(
                                         user.getString(
                                             MyConfiguration.SPREADSHEET_USERS_LICENCE
                                         ), TimeChecking.PARAMETER_IS_GREATER_THAN_NOW

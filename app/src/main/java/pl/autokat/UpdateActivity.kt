@@ -62,9 +62,9 @@ class UpdateActivity : AppCompatActivity() {
         //set info section
         this.bindingActivityUpdate.textView.setTextColor(MyConfiguration.COLOR_SUCCESS)
         if (itemsFromDatabase != 0) {
-            if (MyConfiguration.IS_AVAILABLE_UPDATE) {
+            if (Dynamic.IS_AVAILABLE_UPDATE) {
                 this.bindingActivityUpdate.progessBar.progress = 0
-                this.bindingActivityUpdate.textView.text = MyConfiguration.DATABASE_EXPIRED
+                this.bindingActivityUpdate.textView.text = MyConfiguration.DATABASE_NOT_ACTUAL
             } else {
                 if (itemsWithThumbnail / itemsFromDatabase != 1) {
                     val textView =
@@ -239,7 +239,7 @@ class UpdateActivity : AppCompatActivity() {
                             MyConfiguration.UPDATE_FAILED
                     }
                     ProcessStep.SUCCESS -> {
-                        MyConfiguration.IS_AVAILABLE_UPDATE = false
+                        Dynamic.IS_AVAILABLE_UPDATE = false
                         this@UpdateActivity.bindingActivityUpdate.progessBar.progress = 100
                         this@UpdateActivity.bindingActivityUpdate.textView.setTextColor(
                             MyConfiguration.COLOR_SUCCESS
