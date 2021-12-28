@@ -22,52 +22,43 @@ import java.net.UnknownHostException
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var bindingActivityMain: ActivityMainBinding
-    private val REQUEST_CODE_READ_PHONE_STATE: Int = 0
+    private lateinit var activityMainBinding: ActivityMainBinding
+    private val requestCodeReadPhoneState: Int = 0
 
-    //oncreate
+    //region override
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        this.bindingActivityMain = ActivityMainBinding.inflate(this.layoutInflater)
-        val view = this.bindingActivityMain.root
-        this.setContentView(view)
-        //set toolbar
-        this.setSupportActionBar(this.bindingActivityMain.toolbar)
-        //navigate up
-        this.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        //init shared preferences
+        activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
+        val view = activityMainBinding.root
+        setContentView(view)
+        setSupportActionBar(activityMainBinding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         SharedPreference.init(this)
-        //listeners
-        bindingActivityMain.loginButton.setOnClickListener {
-            this.tryLogin(this.bindingActivityMain.editText.text.toString(), true)
+        activityMainBinding.loginButton.setOnClickListener {
+            tryLogin(activityMainBinding.editText.text.toString(), true)
         }
     }
 
-    //onresume
     override fun onResume() {
         super.onResume()
-        //check permission about phone state (required for getting serial id)
         if (ContextCompat.checkSelfPermission(
                 this,
                 android.Manifest.permission.READ_PHONE_STATE
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            //ask about permission
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(android.Manifest.permission.READ_PHONE_STATE),
-                REQUEST_CODE_READ_PHONE_STATE
+                requestCodeReadPhoneState
             )
         } else {
-            //has permission and try login
-            this.tryLogin(
+            tryLogin(
                 SharedPreference.getKeyFromFile(SharedPreference.LOGIN),
                 false
             )
         }
     }
 
-    //on request permission
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
@@ -75,73 +66,64 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            REQUEST_CODE_READ_PHONE_STATE -> {
+            requestCodeReadPhoneState -> {
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    // permission was granted
-                    this.tryLogin(
+                    tryLogin(
                         SharedPreference.getKeyFromFile(SharedPreference.LOGIN),
                         false
                     )
                 } else {
-                    this.finish()
+                    finish()
                 }
                 return
             }
             else -> {
-                this.finish()
+                finish()
                 return
             }
         }
     }
 
-    //toolbar option menu
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        this.menuInflater.inflate(R.menu.toolbar_list_main, menu)
+        menuInflater.inflate(R.menu.toolbar_list_main, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
-    //open about activity
-    private fun openAboutActivity() {
-        this.startActivity(Intent(this.applicationContext, AboutActivity::class.java))
-    }
-
-    //option menu selected
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.toolbar_list_about -> {
-                this.openAboutActivity()
+                openAboutActivity()
                 true
             }
             else -> {
-                this.finish()
+                finish()
                 true
             }
         }
     }
+    //endregion
 
-    //open result activity
+    //region open activity
+    private fun openAboutActivity() {
+        startActivity(Intent(applicationContext, AboutActivity::class.java))
+    }
+
     fun openResultActivity() {
-        this.startActivity(Intent(this.applicationContext, ResultActivity::class.java))
-        this.finish()
+        startActivity(Intent(applicationContext, ResultActivity::class.java))
+        finish()
     }
+    //endregion
 
-    //process login
-    private fun tryLogin(login: String, hasClickedButton: Boolean) {
-        //make async task and execute
-        Thread(this.TaskTryLogin(login, hasClickedButton)).start()
-    }
-
-    //decorator for delete others signs
-    fun decoratorIdentificatorOfUser(applicationContext: Context): String {
-        var identificator: String = getIdentificatorOfUser(applicationContext)
+    //region ID of user
+    fun decoratorIDOfUser(applicationContext: Context): String {
+        var identificator: String = getIDOfUser(applicationContext)
         identificator = ("[^A-Za+-z0-9]+").toRegex().replace(identificator, "")
-        //return if is not empty
         if (identificator.isEmpty() == false) return identificator
         throw Exception()
     }
 
     @SuppressLint("MissingPermission", "HardwareIds")
-    fun getIdentificatorOfUser(applicationContext: Context): String {
+    fun getIDOfUser(applicationContext: Context): String {
         var serialId = ""
         try {
             serialId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -151,80 +133,68 @@ class MainActivity : AppCompatActivity() {
                 Build.SERIAL
             }
         } catch (e: Exception) {
-            //nothing
+            //
         }
-        //return if serial id is not empty
         if (serialId.isEmpty() == false) return serialId
-        //phone number section
         try {
             serialId =
                 (applicationContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).line1Number.toString()
         } catch (e: Exception) {
-            //nothing
+            //
         }
-        //return if phone number is not empty
         if (serialId.isEmpty() == false) return serialId
-        //phone number section
         try {
             serialId =
                 (applicationContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
         } catch (e: Exception) {
-            //nothing
+            //
         }
-        //return if sim id is not empty
         if (serialId.isEmpty() == false) return serialId
-        //android id for android > 10
         try {
             serialId = Settings.Secure.getString(
                 applicationContext.contentResolver,
                 Settings.Secure.ANDROID_ID
             )
         } catch (e: Exception) {
-            //nothing
+            //
         }
-        //return if is not empty
         if (serialId.isEmpty() == false) return serialId
         throw Exception()
     }
+    //endregion
 
+    private fun tryLogin(login: String, hasClickedButton: Boolean) {
+        Thread(TaskTryLogin(login, hasClickedButton)).start()
+    }
 
-    //async class which make all job - when job is finished then go to next activity in success otherwise set view application with message and unblock user interface
     inner class TaskTryLogin(loginInput: String, hasClickedButtonInput: Boolean) : Runnable {
-        //fields
         private var login: String = loginInput.trim()
         private var hasClickedButton: Boolean = hasClickedButtonInput
 
-        //run
         @Suppress("ReplaceCallWithBinaryOperator")
         override fun run() {
             //--- onPreExecute
-            this@MainActivity.runOnUiThread {
-                //disable user interface on process application
+            runOnUiThread {
                 UserInterface.changeStatusLayout(
-                    this@MainActivity.bindingActivityMain.linearLayout,
+                    activityMainBinding.linearLayout,
                     false
                 )
-                //set edit text (user not click on button, trying auto login)
-                if (this.hasClickedButton == false) {
-                    this@MainActivity.bindingActivityMain.editText.setText(this.login)
+                if (hasClickedButton == false) {
+                    activityMainBinding.editText.setText(login)
                 }
-                //set info message
-                this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.COLOR_SUCCESS)
-                this@MainActivity.bindingActivityMain.textView.text =
-                    MyConfiguration.USER_WAIT_AUTHENTICATING
+                activityMainBinding.textView.setTextColor(Configuration.COLOR_SUCCESS)
+                activityMainBinding.textView.text =
+                    Configuration.USER_WAIT_AUTHENTICATING
             }
             //--- doInBackground
             var processStep: ProcessStep = ProcessStep.NONE
             try {
-                //user never logged (not click on button, trying auto login)
-                if (this.login.isEmpty()) {
+                if (login.isEmpty()) {
                     processStep = ProcessStep.USER_NEVER_LOGGED
                 } else {
-                    //check licence without connection to internet
                     if (SharedPreference.getKeyFromFile(SharedPreference.LICENCE_DATE_OF_END)
                             .isEmpty() == false
                     ) {
-                        /* checking time */
                         processStep = if (Checker.checkTimeOnPhone(
                                 "",
                                 TimeChecking.CHECKING_LICENCE
@@ -235,7 +205,6 @@ class MainActivity : AppCompatActivity() {
                             ProcessStep.SUCCESS
                         }
                     } else {
-                        /* checking time */
                         if (Checker.checkTimeOnPhone(
                                 "",
                                 TimeChecking.NOW_GREATER_THAN_TIME_FROM_INTERNET
@@ -243,73 +212,62 @@ class MainActivity : AppCompatActivity() {
                         ) {
                             processStep = ProcessStep.USER_ELAPSED_DATE_LICENCE
                         } else {
-                            /* authentication */
-                            //get user from database
-                            val user: JSONArray? = Spreadsheet.getDataLogin(this.login)
+                            val user: JSONArray? = Spreadsheet.getDataLogin(login)
                             if (user == null) {
                                 processStep = ProcessStep.USER_FAILED_LOGIN
                             } else {
-                                /* checking time */
-                                if (user.getString(MyConfiguration.SPREADSHEET_USERS_LICENCE)
+                                if (user.getString(Configuration.SPREADSHEET_USERS_LICENCE)
                                         .isEmpty()
                                     || Checker.checkTimeOnPhone(
                                         user.getString(
-                                            MyConfiguration.SPREADSHEET_USERS_LICENCE
+                                            Configuration.SPREADSHEET_USERS_LICENCE
                                         ), TimeChecking.PARAMETER_IS_GREATER_THAN_NOW
                                     ) == false
                                 ) {
                                     processStep = ProcessStep.USER_ELAPSED_DATE_LICENCE
                                 } else {
-                                    //read serial id from phone
-                                    val serialId: String = decoratorIdentificatorOfUser(this@MainActivity.applicationContext)
-                                    //check if serial id is correct or save serial id to database
-                                    if (user.getString(MyConfiguration.SPREADSHEET_USERS_UUID)
+                                    val serialId: String =
+                                        decoratorIDOfUser(this@MainActivity.applicationContext)
+                                    if (user.getString(Configuration.SPREADSHEET_USERS_UUID)
                                             .isEmpty()
                                     ) {
-                                        //save serial id
                                         Spreadsheet.saveSerialId(
-                                            user.getInt(MyConfiguration.SPREADSHEET_USERS_ID),
+                                            user.getInt(Configuration.SPREADSHEET_USERS_ID),
                                             serialId
                                         )
                                     } else {
-                                        //check if current serial id is the same as in database
-                                        if (serialId.equals(user.getString(MyConfiguration.SPREADSHEET_USERS_UUID)) == false) {
+                                        if (serialId.equals(user.getString(Configuration.SPREADSHEET_USERS_UUID)) == false) {
                                             processStep = ProcessStep.USER_FAILED_SERIAL
                                         }
                                     }
                                     if (processStep == ProcessStep.NONE) {
-                                        /* save configuration */
-                                        //save licence date
                                         SharedPreference.setKeyToFile(
                                             SharedPreference.LICENCE_DATE_OF_END,
                                             user.getString(
-                                                MyConfiguration.SPREADSHEET_USERS_LICENCE
+                                                Configuration.SPREADSHEET_USERS_LICENCE
                                             )
                                         )
-                                        //save discount
                                         SharedPreference.setKeyToFile(
                                             SharedPreference.DISCOUNT,
                                             Parser.parseStringToInt(
                                                 user.getString(
-                                                    MyConfiguration.SPREADSHEET_USERS_DISCOUNT
+                                                    Configuration.SPREADSHEET_USERS_DISCOUNT
                                                 )
                                             ).toString()
                                         )
-                                        //save visibility
                                         SharedPreference.setKeyToFile(
                                             SharedPreference.VISIBILITY,
                                             Parser.parseStringBooleanToInt(
                                                 user.getString(
-                                                    MyConfiguration.SPREADSHEET_USERS_VISIBILITY
+                                                    Configuration.SPREADSHEET_USERS_VISIBILITY
                                                 )
                                             ).toString()
                                         )
-                                        //save minus elements
                                         SharedPreference.setKeyToFile(
                                             SharedPreference.MINUS_PLATINUM,
                                             Parser.parseStringToInt(
                                                 user.getString(
-                                                    MyConfiguration.SPREADSHEET_USERS_MINUS_PLATINUM
+                                                    Configuration.SPREADSHEET_USERS_MINUS_PLATINUM
                                                 )
                                             ).toString()
                                         )
@@ -317,7 +275,7 @@ class MainActivity : AppCompatActivity() {
                                             SharedPreference.MINUS_PALLADIUM,
                                             Parser.parseStringToInt(
                                                 user.getString(
-                                                    MyConfiguration.SPREADSHEET_USERS_MINUS_PALLADIUM
+                                                    Configuration.SPREADSHEET_USERS_MINUS_PALLADIUM
                                                 )
                                             ).toString()
                                         )
@@ -325,16 +283,14 @@ class MainActivity : AppCompatActivity() {
                                             SharedPreference.MINUS_RHODIUM,
                                             Parser.parseStringToInt(
                                                 user.getString(
-                                                    MyConfiguration.SPREADSHEET_USERS_MINUS_RHODIUM
+                                                    Configuration.SPREADSHEET_USERS_MINUS_RHODIUM
                                                 )
                                             ).toString()
                                         )
-                                        //save login
                                         SharedPreference.setKeyToFile(
                                             SharedPreference.LOGIN,
-                                            this.login
+                                            login
                                         )
-                                        //success
                                         processStep = ProcessStep.SUCCESS
                                     }
                                 }
@@ -348,54 +304,51 @@ class MainActivity : AppCompatActivity() {
                 processStep = ProcessStep.UNHANDLED_EXCEPTION
             }
             //--- onPostExecute
-            this@MainActivity.runOnUiThread {
-                //do job depends on situation
+            runOnUiThread {
                 when (processStep) {
                     ProcessStep.USER_NEVER_LOGGED -> {
-                        this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.COLOR_SUCCESS)
-                        this@MainActivity.bindingActivityMain.textView.text =
-                            MyConfiguration.USER_NEVER_LOGGED
+                        activityMainBinding.textView.setTextColor(Configuration.COLOR_SUCCESS)
+                        activityMainBinding.textView.text =
+                            Configuration.USER_NEVER_LOGGED
                     }
                     ProcessStep.USER_ELAPSED_DATE_LICENCE -> {
-                        this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.COLOR_FAILED)
-                        this@MainActivity.bindingActivityMain.textView.text =
-                            MyConfiguration.USER_FAILED_LICENCE
-                        /* set licence as empty */
+                        activityMainBinding.textView.setTextColor(Configuration.COLOR_FAILED)
+                        activityMainBinding.textView.text =
+                            Configuration.USER_FAILED_LICENCE
                         SharedPreference.setKeyToFile(
                             SharedPreference.LICENCE_DATE_OF_END,
                             ""
                         )
                     }
                     ProcessStep.USER_FAILED_LOGIN -> {
-                        this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.COLOR_FAILED)
-                        this@MainActivity.bindingActivityMain.textView.text =
-                            MyConfiguration.USER_FAILED_LOGIN
+                        activityMainBinding.textView.setTextColor(Configuration.COLOR_FAILED)
+                        activityMainBinding.textView.text =
+                            Configuration.USER_FAILED_LOGIN
                     }
                     ProcessStep.USER_FAILED_SERIAL -> {
-                        this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.COLOR_FAILED)
-                        this@MainActivity.bindingActivityMain.textView.text =
-                            MyConfiguration.USER_FAILED_UUID
+                        activityMainBinding.textView.setTextColor(Configuration.COLOR_FAILED)
+                        activityMainBinding.textView.text =
+                            Configuration.USER_FAILED_UUID
                     }
                     ProcessStep.NETWORK_FAILED -> {
-                        this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.COLOR_FAILED)
-                        this@MainActivity.bindingActivityMain.textView.text =
-                            MyConfiguration.NETWORK_FAILED
+                        activityMainBinding.textView.setTextColor(Configuration.COLOR_FAILED)
+                        activityMainBinding.textView.text =
+                            Configuration.NETWORK_FAILED
                     }
                     ProcessStep.UNHANDLED_EXCEPTION -> {
-                        this@MainActivity.bindingActivityMain.textView.setTextColor(MyConfiguration.COLOR_FAILED)
-                        this@MainActivity.bindingActivityMain.textView.text =
-                            MyConfiguration.UNHANDLED_EXCEPTION
+                        activityMainBinding.textView.setTextColor(Configuration.COLOR_FAILED)
+                        activityMainBinding.textView.text =
+                            Configuration.UNHANDLED_EXCEPTION
                     }
                     ProcessStep.SUCCESS -> {
-                        this@MainActivity.openResultActivity()
+                        openResultActivity()
                     }
                     else -> {
-                        //nothing
+                        //
                     }
                 }
-                //enable user interface on process application
                 UserInterface.changeStatusLayout(
-                    this@MainActivity.bindingActivityMain.linearLayout,
+                    activityMainBinding.linearLayout,
                     true
                 )
             }

@@ -31,7 +31,7 @@
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".ConfigurationValuesActivity"
+            android:name=".CoursesActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
@@ -49,7 +49,7 @@
             android:theme="@style/FullscreenTheme"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".CalendarViewActivity"
+            android:name=".CalendarActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 

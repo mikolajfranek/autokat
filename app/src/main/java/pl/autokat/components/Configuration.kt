@@ -1,14 +1,8 @@
 package pl.autokat.components
 
-import android.annotation.SuppressLint
 import android.graphics.Color
-import org.json.JSONObject
-import pl.autokat.enums.TimeChecking
-import java.net.URL
-import java.text.SimpleDateFormat
-import java.util.*
 
-class MyConfiguration {
+class Configuration {
     companion object {
         const val PRODUCTION: Boolean = false
         const val VERSION_APK: String = "1.0.7"

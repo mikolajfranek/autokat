@@ -5,7 +5,7 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import pl.autokat.components.MyConfiguration
+import pl.autokat.components.Configuration
 import pl.autokat.components.Parser
 import pl.autokat.enums.ProcessStep
 import pl.autokat.components.UserInterface
@@ -15,38 +15,33 @@ import java.net.UnknownHostException
 
 class PictureActivity : AppCompatActivity() {
 
-    private lateinit var bindingActivityPicture: ActivityPictureBinding
+    private lateinit var activityPictureBinding: ActivityPictureBinding
 
-    //oncreate
+    //region override
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        this.bindingActivityPicture = ActivityPictureBinding.inflate(this.layoutInflater)
-        val view = this.bindingActivityPicture.root
-        this.setContentView(view)
-        //get data which sent
-        val urlPicture: String = this.intent.getStringExtra("urlPicture")!!.toString()
-        //make async task and execute
-        Thread(this.TaskDownloadFullPicture(urlPicture)).start()
+        activityPictureBinding = ActivityPictureBinding.inflate(layoutInflater)
+        val view = activityPictureBinding.root
+        setContentView(view)
+        val urlPicture: String = intent.getStringExtra("urlPicture")!!.toString()
+        Thread(TaskDownloadFullPicture(urlPicture)).start()
     }
+    //endregion
 
-    //async class which download and set oryginal picture in full size
     inner class TaskDownloadFullPicture(urlPictureInput: String) : Runnable {
-        //fields
         private var bitmap: Bitmap? = null
         private var urlPicture: String = urlPictureInput
 
-        //run
         override fun run() {
             //--- onPreExecute
-            this@PictureActivity.runOnUiThread {
-                //disable user interface on process application
+            runOnUiThread {
                 UserInterface.changeStatusLayout(
-                    this@PictureActivity.bindingActivityPicture.linearLayout,
+                    activityPictureBinding.linearLayout,
                     false
                 )
                 Toast.makeText(
                     this@PictureActivity.applicationContext,
-                    MyConfiguration.BITMAP_WAIT,
+                    Configuration.BITMAP_WAIT,
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -54,8 +49,8 @@ class PictureActivity : AppCompatActivity() {
             var processStep: ProcessStep = ProcessStep.SUCCESS
             try {
                 val parsedUrlPicture =
-                    Parser.parseUrlOfPicture(this.urlPicture, 1920, 1080)
-                this.bitmap =
+                    Parser.parseUrlOfPicture(urlPicture, 1920, 1080)
+                bitmap =
                     BitmapFactory.decodeStream(URL(parsedUrlPicture).openConnection().getInputStream())
             } catch (e: UnknownHostException) {
                 processStep = ProcessStep.NETWORK_FAILED
@@ -63,34 +58,33 @@ class PictureActivity : AppCompatActivity() {
                 processStep = ProcessStep.UNHANDLED_EXCEPTION
             }
             //--- onPostExecute
-            this@PictureActivity.runOnUiThread {
+            runOnUiThread {
                 when (processStep) {
                     ProcessStep.NETWORK_FAILED -> {
                         Toast.makeText(
                             this@PictureActivity.applicationContext,
-                            MyConfiguration.NETWORK_FAILED,
+                            Configuration.NETWORK_FAILED,
                             Toast.LENGTH_SHORT
                         ).show()
-                        this@PictureActivity.finish()
+                        finish()
                     }
                     ProcessStep.UNHANDLED_EXCEPTION -> {
                         Toast.makeText(
                             this@PictureActivity.applicationContext,
-                            MyConfiguration.BITMAP_FAILED,
+                            Configuration.BITMAP_FAILED,
                             Toast.LENGTH_SHORT
                         ).show()
-                        this@PictureActivity.finish()
+                        finish()
                     }
                     ProcessStep.SUCCESS -> {
-                        this@PictureActivity.bindingActivityPicture.photoView.setImageBitmap(this.bitmap)
+                        activityPictureBinding.photoView.setImageBitmap(bitmap)
                     }
                     else -> {
-                        //nothing
+                        //
                     }
                 }
-                //enable user interface on process application
                 UserInterface.changeStatusLayout(
-                    this@PictureActivity.bindingActivityPicture.linearLayout,
+                    activityPictureBinding.linearLayout,
                     true
                 )
             }

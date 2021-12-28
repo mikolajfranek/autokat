@@ -10,183 +10,156 @@ import java.net.UnknownHostException
 
 class UpdateActivity : AppCompatActivity() {
 
-    private lateinit var bindingActivityUpdate: ActivityUpdateBinding
+    private lateinit var activityUpdateBinding: ActivityUpdateBinding
     private lateinit var database: Database
     private var refreshingDatabase: Boolean = false
     private var refreshingWork: Boolean = false
 
-    //oncreate
+    //region override
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        this.bindingActivityUpdate = ActivityUpdateBinding.inflate(this.layoutInflater)
-        val view = this.bindingActivityUpdate.root
-        this.setContentView(view)
-        //set toolbar
-        this.setSupportActionBar(this.bindingActivityUpdate.toolbar)
-        //navigate up
-        this.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        //init shared preferences
+        activityUpdateBinding = ActivityUpdateBinding.inflate(layoutInflater)
+        val view = activityUpdateBinding.root
+        setContentView(view)
+        setSupportActionBar(activityUpdateBinding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         SharedPreference.init(this)
-        //init database object
-        this.database = Database(this.applicationContext)
-        //listeneres
-        this.bindingActivityUpdate.updateNewButton.setOnClickListener {
-            this.refreshingDatabase = false
-            Thread(this.TaskUpdateCatalyst(false)).start()
+        database = Database(applicationContext)
+        activityUpdateBinding.updateNewButton.setOnClickListener {
+            refreshingDatabase = false
+            Thread(TaskUpdateCatalyst(false)).start()
         }
-        this.bindingActivityUpdate.updateFullButton.setOnClickListener {
-            this.refreshingDatabase = false
-            Thread(this.TaskUpdateCatalyst(true)).start()
+        activityUpdateBinding.updateFullButton.setOnClickListener {
+            refreshingDatabase = false
+            Thread(TaskUpdateCatalyst(true)).start()
         }
     }
 
-    //navigate up
     override fun onSupportNavigateUp(): Boolean {
-        this.finish()
+        finish()
         return true
     }
 
     override fun onPause() {
         super.onPause()
-        this.refreshingDatabase = false
+        refreshingDatabase = false
     }
 
-    //onresume
     override fun onResume() {
         super.onResume()
-        val itemsWithThumbnail: Int = this.database.getCountCatalystWithThumbnail()
-        val itemsWithUrlThumbnail: Int = this.database.getCountCatalystWithUrlOfThumbnail()
-        val itemsFromDatabase: Int = this.database.getCountCatalyst()
-        this.bindingActivityUpdate.progessBar.progress =
+        val itemsWithThumbnail: Int = database.getCountCatalystWithThumbnail()
+        val itemsWithUrlThumbnail: Int = database.getCountCatalystWithUrlOfThumbnail()
+        val itemsFromDatabase: Int = database.getCountCatalyst()
+        activityUpdateBinding.progessBar.progress =
             ((itemsWithThumbnail.toFloat() / itemsWithUrlThumbnail.toFloat()) * 100.toFloat()).toInt()
-        //set info section
-        this.bindingActivityUpdate.textView.setTextColor(MyConfiguration.COLOR_SUCCESS)
+        activityUpdateBinding.textView.setTextColor(Configuration.COLOR_SUCCESS)
         if (itemsFromDatabase != 0) {
             if (Dynamic.IS_AVAILABLE_UPDATE) {
-                this.bindingActivityUpdate.progessBar.progress = 0
-                this.bindingActivityUpdate.textView.text = MyConfiguration.DATABASE_NOT_ACTUAL
+                activityUpdateBinding.progessBar.progress = 0
+                activityUpdateBinding.textView.text = Configuration.DATABASE_NOT_ACTUAL
             } else {
                 if (itemsWithThumbnail / itemsFromDatabase != 1) {
                     val textView =
-                        MyConfiguration.BITMAP_STATUS + " (" + itemsWithThumbnail + "/" + itemsWithUrlThumbnail + "/" + itemsFromDatabase + ")"
-                    this.bindingActivityUpdate.textView.text = textView
-                    //make async task and execute - refresh state of downloading
-                    this.refreshingDatabase = true
-                    Thread(this.TaskUpdateProgressOfUpdateThumbnail()).start()
+                        Configuration.BITMAP_STATUS + " (" + itemsWithThumbnail + "/" + itemsWithUrlThumbnail + "/" + itemsFromDatabase + ")"
+                    activityUpdateBinding.textView.text = textView
+                    refreshingDatabase = true
+                    Thread(TaskUpdateProgressOfUpdateThumbnail()).start()
                 } else {
-                    this.bindingActivityUpdate.textView.text =
-                        MyConfiguration.DATABASE_ACTUAL
+                    activityUpdateBinding.textView.text =
+                        Configuration.DATABASE_ACTUAL
                 }
             }
         } else {
-            this.bindingActivityUpdate.textView.text = MyConfiguration.DATABASE_EMPTY
+            activityUpdateBinding.textView.text = Configuration.DATABASE_EMPTY
         }
     }
+    //endregion
 
-
-    //checking if row from spreadsheet is available
     fun checkIfRowIsAvailable(row: JSONArray): Boolean {
         return Spreadsheet.getValueStringFromDocsApi(
             row,
-            MyConfiguration.SPREADSHEET_CATALYST_ID
+            Configuration.SPREADSHEET_CATALYST_ID
         ).isEmpty() == false
     }
 
-    //update progress of update
     inner class TaskUpdateProgressOfUpdateThumbnail : Runnable {
-        //fields
-        //run
         override fun run() {
             //--- onPreExecute
             //--- doInBackground
             try {
-                //very very primitive and not atomic
                 val state: Boolean =
-                    this@UpdateActivity.refreshingDatabase && this@UpdateActivity.refreshingWork == false
+                    refreshingDatabase && refreshingWork == false
                 if (state == true) {
-                    this@UpdateActivity.refreshingWork = true
-                    while (this@UpdateActivity.refreshingDatabase) {
+                    refreshingWork = true
+                    while (refreshingDatabase) {
                         Thread.sleep(1000)
                         val itemsWithThumbnail: Int =
-                            this@UpdateActivity.database.getCountCatalystWithThumbnail()
+                            database.getCountCatalystWithThumbnail()
                         val itemsWithUrlThumbnail: Int =
-                            this@UpdateActivity.database.getCountCatalystWithUrlOfThumbnail()
+                            database.getCountCatalystWithUrlOfThumbnail()
                         val itemsFromDatabase: Int =
-                            this@UpdateActivity.database.getCountCatalyst()
+                            database.getCountCatalyst()
                         //--- onProgressUpdate
-                        this@UpdateActivity.runOnUiThread {
+                        runOnUiThread {
                             val textView =
-                                MyConfiguration.BITMAP_STATUS + " (" + itemsWithThumbnail.toString() + "/" + itemsWithUrlThumbnail.toString() + "/" + itemsFromDatabase.toString() + ")"
-                            this@UpdateActivity.bindingActivityUpdate.textView.text = textView
-                            this@UpdateActivity.bindingActivityUpdate.progessBar.progress =
+                                Configuration.BITMAP_STATUS + " (" + itemsWithThumbnail.toString() + "/" + itemsWithUrlThumbnail.toString() + "/" + itemsFromDatabase.toString() + ")"
+                            activityUpdateBinding.textView.text = textView
+                            activityUpdateBinding.progessBar.progress =
                                 ((itemsWithThumbnail.toFloat() / itemsWithUrlThumbnail.toFloat()) * 100.toFloat()).toInt()
                         }
                     }
-                    this@UpdateActivity.refreshingWork = false
+                    refreshingWork = false
                 }
             } catch (e: Exception) {
-                //nothing
+                //
             }
             //--- onPostExecute
         }
     }
 
-    //update catalyst
     inner class TaskUpdateCatalyst(fullUpdateInput: Boolean) : Runnable {
-        //fields
         private var fullUpdate: Boolean = fullUpdateInput
 
-        //run
         override fun run() {
             //--- onPreExecute
-            this@UpdateActivity.runOnUiThread {
-                //disable user interface on process application
+            runOnUiThread {
                 UserInterface.changeStatusLayout(
-                    this@UpdateActivity.bindingActivityUpdate.linearLayout,
+                    activityUpdateBinding.linearLayout,
                     false
                 )
-                this@UpdateActivity.refreshingDatabase = false
-                while (this@UpdateActivity.refreshingWork) {
+                refreshingDatabase = false
+                while (refreshingWork) {
                     Thread.sleep(100)
                 }
-                //set process bar
-                this@UpdateActivity.bindingActivityUpdate.progessBar.progress = 0
-                //set info section
-                this@UpdateActivity.bindingActivityUpdate.textView.setTextColor(MyConfiguration.COLOR_SUCCESS)
-                this@UpdateActivity.bindingActivityUpdate.textView.text =
-                    MyConfiguration.UPDATE_WAIT
+                activityUpdateBinding.progessBar.progress = 0
+                activityUpdateBinding.textView.setTextColor(Configuration.COLOR_SUCCESS)
+                activityUpdateBinding.textView.text =
+                    Configuration.UPDATE_WAIT
             }
             //--- doInBackground
             var processStep: ProcessStep = ProcessStep.NONE
             try {
                 var countDatabase = 0
                 val countSpreadsheet: Int = Spreadsheet.getCountCatalyst()
-                //check if user click sync database
-                if (this.fullUpdate) {
-                    //truncate tables
-                    this@UpdateActivity.database.resetDatabase()
+                if (fullUpdate) {
+                    database.resetDatabase()
                 } else {
-                    //calculate count of catalyst
-                    countDatabase = this@UpdateActivity.database.getCountCatalyst()
+                    countDatabase = database.getCountCatalyst()
                     if (countDatabase == countSpreadsheet) {
                         processStep = ProcessStep.SUCCESS
                     }
                 }
                 if (processStep != ProcessStep.SUCCESS) {
-                    //difference between database local and database in spreadsheet
                     val progressAll: Int = (countSpreadsheet - countDatabase)
-                    //profess step equals currenly state of process update
                     var progressStep: Float
-                    //get data catalyst from spreadsheet which missed
                     val dataCatalysts: JSONArray = Spreadsheet.getDataCatalyst(countDatabase)
-                    //create batch json array which will contain parts of data
                     val batchJsonArray = JSONArray()
                     val batchSize = 100
                     for (i in 0 until (dataCatalysts.length()) step batchSize) {
                         if (batchJsonArray.isNull(i)) batchJsonArray.put(JSONArray())
                         for (j in i until i + batchSize) {
                             if (dataCatalysts.isNull(j)) break
-                            if (this@UpdateActivity.checkIfRowIsAvailable(
+                            if (checkIfRowIsAvailable(
                                     dataCatalysts.getJSONObject(
                                         j
                                     ).getJSONArray("c")
@@ -195,22 +168,19 @@ class UpdateActivity : AppCompatActivity() {
                             (batchJsonArray[i / batchSize] as JSONArray).put(dataCatalysts[j])
                         }
                     }
-                    //iterate over batch array
                     for (i in 0 until (batchJsonArray.length())) {
-                        this@UpdateActivity.database.insertCatalysts(batchJsonArray[i] as JSONArray)
-                        //update and publish state of process update
+                        database.insertCatalysts(batchJsonArray[i] as JSONArray)
                         progressStep =
                             ((i * batchSize).toFloat() / progressAll.toFloat()) * (100).toFloat()
                         //--- onProgressUpdate
-                        this@UpdateActivity.runOnUiThread {
-                            this@UpdateActivity.bindingActivityUpdate.progessBar.progress =
+                        runOnUiThread {
+                            activityUpdateBinding.progessBar.progress =
                                 progressStep.toInt()
-                            //set info section
-                            this@UpdateActivity.bindingActivityUpdate.textView.setTextColor(
-                                MyConfiguration.COLOR_SUCCESS
+                            activityUpdateBinding.textView.setTextColor(
+                                Configuration.COLOR_SUCCESS
                             )
-                            this@UpdateActivity.bindingActivityUpdate.textView.text =
-                                MyConfiguration.UPDATE_WAIT
+                            activityUpdateBinding.textView.text =
+                                Configuration.UPDATE_WAIT
                         }
                     }
                     processStep = ProcessStep.SUCCESS
@@ -221,39 +191,37 @@ class UpdateActivity : AppCompatActivity() {
                 processStep = ProcessStep.UNHANDLED_EXCEPTION
             }
             //--- onPostExecute
-            this@UpdateActivity.runOnUiThread {
-                //do job depends on situation
+            runOnUiThread {
                 when (processStep) {
                     ProcessStep.NETWORK_FAILED -> {
-                        this@UpdateActivity.bindingActivityUpdate.textView.setTextColor(
-                            MyConfiguration.COLOR_FAILED
+                        activityUpdateBinding.textView.setTextColor(
+                            Configuration.COLOR_FAILED
                         )
-                        this@UpdateActivity.bindingActivityUpdate.textView.text =
-                            MyConfiguration.NETWORK_FAILED
+                        activityUpdateBinding.textView.text =
+                            Configuration.NETWORK_FAILED
                     }
                     ProcessStep.UNHANDLED_EXCEPTION -> {
-                        this@UpdateActivity.bindingActivityUpdate.textView.setTextColor(
-                            MyConfiguration.COLOR_FAILED
+                        activityUpdateBinding.textView.setTextColor(
+                            Configuration.COLOR_FAILED
                         )
-                        this@UpdateActivity.bindingActivityUpdate.textView.text =
-                            MyConfiguration.UPDATE_FAILED
+                        activityUpdateBinding.textView.text =
+                            Configuration.UPDATE_FAILED
                     }
                     ProcessStep.SUCCESS -> {
                         Dynamic.IS_AVAILABLE_UPDATE = false
-                        this@UpdateActivity.bindingActivityUpdate.progessBar.progress = 100
-                        this@UpdateActivity.bindingActivityUpdate.textView.setTextColor(
-                            MyConfiguration.COLOR_SUCCESS
+                        activityUpdateBinding.progessBar.progress = 100
+                        activityUpdateBinding.textView.setTextColor(
+                            Configuration.COLOR_SUCCESS
                         )
-                        this@UpdateActivity.bindingActivityUpdate.textView.text =
-                            MyConfiguration.UPDATE_SUCCESS
+                        activityUpdateBinding.textView.text =
+                            Configuration.UPDATE_SUCCESS
                     }
                     else -> {
-                        //nothing
+                        //
                     }
                 }
-                //enable user interface on process application
                 UserInterface.changeStatusLayout(
-                    this@UpdateActivity.bindingActivityUpdate.linearLayout,
+                    activityUpdateBinding.linearLayout,
                     true
                 )
             }

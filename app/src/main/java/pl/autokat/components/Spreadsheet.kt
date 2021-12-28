@@ -52,7 +52,7 @@ class Spreadsheet {
                         Claims.ISSUER to Secret.getEmail(),
                         Claims.AUDIENCE to TOKEN_URL,
                         Claims.ISSUED_AT to Date(timestamp),
-                        Claims.EXPIRATION to Date(timestamp + MyConfiguration.ONE_HOUR_IN_MILLISECONDS)
+                        Claims.EXPIRATION to Date(timestamp + Configuration.ONE_HOUR_IN_MILLISECONDS)
                     )
                 )
                 .signWith(privateKey, SignatureAlgorithm.RS256)
@@ -73,7 +73,7 @@ class Spreadsheet {
             val accessTokenTimestamp: String =
                 SharedPreference.getKeyFromFile(SharedPreference.ACCESS_TOKEN_TIMESTAMP)
             val generateNewAccessToken: Boolean =
-                (Date().time - (if (accessTokenTimestamp.isEmpty()) (0).toLong() else accessTokenTimestamp.toLong())) > MyConfiguration.ONE_HOUR_IN_MILLISECONDS
+                (Date().time - (if (accessTokenTimestamp.isEmpty()) (0).toLong() else accessTokenTimestamp.toLong())) > Configuration.ONE_HOUR_IN_MILLISECONDS
             if (generateNewAccessToken) {
                 generateNewAccessToken()
             }
@@ -100,7 +100,7 @@ class Spreadsheet {
 
         fun saveSerialId(userId: Int, serialId: String) {
             val sheetCell: String =
-                "użytkownicy!" + MyConfiguration.SPREADSHEET_USERS_COLUMN_UUID + ((userId + 1).toString())
+                "użytkownicy!" + Configuration.SPREADSHEET_USERS_COLUMN_UUID + ((userId + 1).toString())
             val bodyJson =
                 """{"range": "$sheetCell", "majorDimension": "ROWS", "values": [["$serialId"]]}"""
             val (_, response, result) = Fuel.put(
@@ -124,15 +124,15 @@ class Spreadsheet {
                 DOCS_API_URL_LOGIN,
                 listOf(
                     DOCS_API_PARAMETER_JSON to DOCS_API_PARAMETER_JSON_VALUE,
-                    DOCS_API_PARAMETER_WHERE to "select * where ${MyConfiguration.SPREADSHEET_USERS_COLUMN_LOGIN}='$login' AND " +
-                            "${MyConfiguration.SPREADSHEET_USERS_COLUMN_ID} IS NOT NULL AND " +
-                            "${MyConfiguration.SPREADSHEET_USERS_COLUMN_LOGIN} IS NOT NULL AND " +
-                            "${MyConfiguration.SPREADSHEET_USERS_COLUMN_LICENCE} IS NOT NULL AND " +
-                            "${MyConfiguration.SPREADSHEET_USERS_COLUMN_DISCOUNT} IS NOT NULL AND " +
-                            "${MyConfiguration.SPREADSHEET_USERS_COLUMN_VISIBILITY} IS NOT NULL AND " +
-                            "${MyConfiguration.SPREADSHEET_USERS_COLUMN_MINUS_PLATINUM} IS NOT NULL AND " +
-                            "${MyConfiguration.SPREADSHEET_USERS_COLUMN_MINUS_PALLADIUM} IS NOT NULL AND " +
-                            "${MyConfiguration.SPREADSHEET_USERS_COLUMN_MINUS_RHODIUM} IS NOT NULL"
+                    DOCS_API_PARAMETER_WHERE to "select * where ${Configuration.SPREADSHEET_USERS_COLUMN_LOGIN}='$login' AND " +
+                            "${Configuration.SPREADSHEET_USERS_COLUMN_ID} IS NOT NULL AND " +
+                            "${Configuration.SPREADSHEET_USERS_COLUMN_LOGIN} IS NOT NULL AND " +
+                            "${Configuration.SPREADSHEET_USERS_COLUMN_LICENCE} IS NOT NULL AND " +
+                            "${Configuration.SPREADSHEET_USERS_COLUMN_DISCOUNT} IS NOT NULL AND " +
+                            "${Configuration.SPREADSHEET_USERS_COLUMN_VISIBILITY} IS NOT NULL AND " +
+                            "${Configuration.SPREADSHEET_USERS_COLUMN_MINUS_PLATINUM} IS NOT NULL AND " +
+                            "${Configuration.SPREADSHEET_USERS_COLUMN_MINUS_PALLADIUM} IS NOT NULL AND " +
+                            "${Configuration.SPREADSHEET_USERS_COLUMN_MINUS_RHODIUM} IS NOT NULL"
                 )
             )
                 .authentication().bearer(getAccessToken()).responseString()
@@ -146,55 +146,55 @@ class Spreadsheet {
             user.put(
                 getValueStringFromDocsApi(
                     element,
-                    MyConfiguration.SPREADSHEET_USERS_ID
+                    Configuration.SPREADSHEET_USERS_ID
                 )
             )
             user.put(
                 getValueStringFromDocsApi(
                     element,
-                    MyConfiguration.SPREADSHEET_USERS_LOGIN
+                    Configuration.SPREADSHEET_USERS_LOGIN
                 )
             )
             user.put(
                 getValueStringFromDocsApi(
                     element,
-                    MyConfiguration.SPREADSHEET_USERS_UUID
+                    Configuration.SPREADSHEET_USERS_UUID
                 )
             )
             user.put(
                 getValueStringFromDocsApi(
                     element,
-                    MyConfiguration.SPREADSHEET_USERS_LICENCE
+                    Configuration.SPREADSHEET_USERS_LICENCE
                 )
             )
             user.put(
                 getValueStringFromDocsApi(
                     element,
-                    MyConfiguration.SPREADSHEET_USERS_DISCOUNT
+                    Configuration.SPREADSHEET_USERS_DISCOUNT
                 )
             )
             user.put(
                 getValueStringFromDocsApi(
                     element,
-                    MyConfiguration.SPREADSHEET_USERS_VISIBILITY
+                    Configuration.SPREADSHEET_USERS_VISIBILITY
                 )
             )
             user.put(
                 getValueFloatStringFromDocsApi(
                     element,
-                    MyConfiguration.SPREADSHEET_USERS_MINUS_PLATINUM
+                    Configuration.SPREADSHEET_USERS_MINUS_PLATINUM
                 )
             )
             user.put(
                 getValueFloatStringFromDocsApi(
                     element,
-                    MyConfiguration.SPREADSHEET_USERS_MINUS_PALLADIUM
+                    Configuration.SPREADSHEET_USERS_MINUS_PALLADIUM
                 )
             )
             user.put(
                 getValueFloatStringFromDocsApi(
                     element,
-                    MyConfiguration.SPREADSHEET_USERS_MINUS_RHODIUM
+                    Configuration.SPREADSHEET_USERS_MINUS_RHODIUM
                 )
             )
             return user
@@ -205,7 +205,7 @@ class Spreadsheet {
                 DOCS_API_URL_CATALYST,
                 listOf(
                     DOCS_API_PARAMETER_JSON to DOCS_API_PARAMETER_JSON_VALUE,
-                    DOCS_API_PARAMETER_WHERE to "select * where ${MyConfiguration.SPREADSHEET_CATALYST_COLUMN_ID}>$fromRow"
+                    DOCS_API_PARAMETER_WHERE to "select * where ${Configuration.SPREADSHEET_CATALYST_COLUMN_ID}>$fromRow"
                 )
             )
                 .authentication().bearer(getAccessToken()).responseString()
@@ -219,8 +219,8 @@ class Spreadsheet {
                 DOCS_API_URL_CATALYST,
                 listOf(
                     DOCS_API_PARAMETER_JSON to DOCS_API_PARAMETER_JSON_VALUE,
-                    DOCS_API_PARAMETER_WHERE to "select count(${MyConfiguration.SPREADSHEET_CATALYST_COLUMN_ID}) where " +
-                            "${MyConfiguration.SPREADSHEET_CATALYST_COLUMN_ID} IS NOT NULL"
+                    DOCS_API_PARAMETER_WHERE to "select count(${Configuration.SPREADSHEET_CATALYST_COLUMN_ID}) where " +
+                            "${Configuration.SPREADSHEET_CATALYST_COLUMN_ID} IS NOT NULL"
                 )
             )
                 .authentication().bearer(getAccessToken()).responseString()

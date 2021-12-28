@@ -8,37 +8,31 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import pl.autokat.components.*
-import pl.autokat.databinding.ActivityConfigurationValuesBinding
+import pl.autokat.databinding.ActivityCoursesBinding
 import pl.autokat.enums.ProcessStep
 import java.net.UnknownHostException
 
+class CoursesActivity : AppCompatActivity() {
 
-class ConfigurationValuesActivity : AppCompatActivity() {
-
-    private lateinit var bindingActivityConfigurationValues: ActivityConfigurationValuesBinding
+    private lateinit var activityCoursesBinding: ActivityCoursesBinding
     private lateinit var database: Database
 
-    //oncreate
+    //region override
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        this.bindingActivityConfigurationValues =
-            ActivityConfigurationValuesBinding.inflate(this.layoutInflater)
-        val view = this.bindingActivityConfigurationValues.root
-        this.setContentView(view)
-        //set toolbar
-        this.setSupportActionBar(this.bindingActivityConfigurationValues.toolbar)
-        //navigate up
-        this.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        //init shared preferences
+        activityCoursesBinding =
+            ActivityCoursesBinding.inflate(layoutInflater)
+        val view = activityCoursesBinding.root
+        setContentView(view)
+        setSupportActionBar(activityCoursesBinding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         SharedPreference.init(this)
-        //init database object
-        this.database = Database(this.applicationContext)
-        //switch listener
-        this.bindingActivityConfigurationValues.switchCourses.setOnCheckedChangeListener { _, isChecked ->
+        database = Database(applicationContext)
+        activityCoursesBinding.switchCourses.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 val lastCoursesDate =
                     SharedPreference.getKeyFromFile(SharedPreference.ACTUAL_COURSES_DATE)
-                this.bindingActivityConfigurationValues.actualDateCoursesButton.visibility =
+                activityCoursesBinding.actualDateCoursesButton.visibility =
                     View.GONE
                 SharedPreference.setKeyToFile(
                     SharedPreference.ACTUAL_COURSES_DATE,
@@ -50,13 +44,13 @@ class ConfigurationValuesActivity : AppCompatActivity() {
                 )
                 if (lastCoursesDate.isNotEmpty()) {
                     Toast.makeText(
-                        this@ConfigurationValuesActivity.applicationContext,
-                        MyConfiguration.COURSES_REFRESH,
+                        this@CoursesActivity.applicationContext,
+                        Configuration.COURSES_REFRESH,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
             } else {
-                this.bindingActivityConfigurationValues.actualDateCoursesButton.visibility =
+                activityCoursesBinding.actualDateCoursesButton.visibility =
                     View.VISIBLE
                 SharedPreference.setKeyToFile(
                     SharedPreference.ACTUAL_COURSES_CHOICE,
@@ -64,53 +58,65 @@ class ConfigurationValuesActivity : AppCompatActivity() {
                 )
             }
         }
-        //listener
-        this.bindingActivityConfigurationValues.actualDateCoursesButton.setOnClickListener {
-            this.startActivity(Intent(this.applicationContext, CalendarViewActivity::class.java))
+        activityCoursesBinding.actualDateCoursesButton.setOnClickListener {
+            startActivity(Intent(applicationContext, CalendarActivity::class.java))
         }
     }
 
-    //onresume
     @Suppress("ReplaceCallWithBinaryOperator")
     override fun onResume() {
         super.onResume()
         if (Course.isCoursesSelected()) {
-            this.bindingActivityConfigurationValues.switchCourses.isChecked = false
-            this.bindingActivityConfigurationValues.actualDateCoursesButton.visibility =
+            activityCoursesBinding.switchCourses.isChecked = false
+            activityCoursesBinding.actualDateCoursesButton.visibility =
                 View.VISIBLE
         } else {
-            this.bindingActivityConfigurationValues.switchCourses.isChecked = true
-            this.bindingActivityConfigurationValues.actualDateCoursesButton.visibility = View.GONE
+            activityCoursesBinding.switchCourses.isChecked = true
+            activityCoursesBinding.actualDateCoursesButton.visibility = View.GONE
         }
-        //set values in view
-        this.setValuesInView()
+        setValuesInView()
     }
 
-    //set all values in view
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.toolbar_list_configurationvalues, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.toolbar_list_refresh_courses -> {
+                Thread(TaskUpdateCourses()).start()
+                true
+            }
+            else -> {
+                finish()
+                true
+            }
+        }
+    }
+    //endregion
+
     private fun setValuesInView() {
-        //platinum
         val platinum: String = Course.calculateCoursesToPln(
             SharedPreference.getKeyFromFile(SharedPreference.PLATINUM),
             SharedPreference.getKeyFromFile(SharedPreference.USD_PLN)
         )
         val platinumDate: String =
             SharedPreference.getKeyFromFile(SharedPreference.PLATINUM_DATE)
-        val platiniumText = (Formatter.formatStringFloat(platinum, 2) + " zł/g")
-        this.bindingActivityConfigurationValues.platinum.text = platiniumText
-        this.bindingActivityConfigurationValues.platinumDate.text =
+        val platinumText = (Formatter.formatStringFloat(platinum, 2) + " zł/g")
+        activityCoursesBinding.platinum.text = platinumText
+        activityCoursesBinding.platinumDate.text =
             Formatter.formatStringDate(platinumDate)
-        //pallad
-        val pallad: String = Course.calculateCoursesToPln(
+        val palladium: String = Course.calculateCoursesToPln(
             SharedPreference.getKeyFromFile(SharedPreference.PALLADIUM),
             SharedPreference.getKeyFromFile(SharedPreference.USD_PLN)
         )
         val palladDate: String =
             SharedPreference.getKeyFromFile(SharedPreference.PALLADIUM_DATE)
-        val palladiumText = (Formatter.formatStringFloat(pallad, 2) + " zł/g")
-        this.bindingActivityConfigurationValues.palladium.text = palladiumText
-        this.bindingActivityConfigurationValues.palladiumDate.text =
+        val palladiumText = (Formatter.formatStringFloat(palladium, 2) + " zł/g")
+        activityCoursesBinding.palladium.text = palladiumText
+        activityCoursesBinding.palladiumDate.text =
             Formatter.formatStringDate(palladDate)
-        //rhodium
         val rhodium: String = Course.calculateCoursesToPln(
             SharedPreference.getKeyFromFile(SharedPreference.RHODIUM),
             SharedPreference.getKeyFromFile(SharedPreference.USD_PLN)
@@ -118,65 +124,38 @@ class ConfigurationValuesActivity : AppCompatActivity() {
         val rhodiumDate: String =
             SharedPreference.getKeyFromFile(SharedPreference.RHODIUM_DATE)
         val rhodiumText = (Formatter.formatStringFloat(rhodium, 2) + " zł/g")
-        this.bindingActivityConfigurationValues.rhodium.text = rhodiumText
-        this.bindingActivityConfigurationValues.rhodiumDate.text =
+        activityCoursesBinding.rhodium.text = rhodiumText
+        activityCoursesBinding.rhodiumDate.text =
             Formatter.formatStringDate(rhodiumDate)
-        //euro
         val courseEurPln: String =
             SharedPreference.getKeyFromFile(SharedPreference.EUR_PLN)
         val courseEurPlnDate: String =
             SharedPreference.getKeyFromFile(SharedPreference.EUR_PLN_DATE)
         val eurPlnText = (Formatter.formatStringFloat(courseEurPln, 2) + " zł")
-        this.bindingActivityConfigurationValues.eurPln.text = eurPlnText
-        this.bindingActivityConfigurationValues.eurPlnDate.text =
+        activityCoursesBinding.eurPln.text = eurPlnText
+        activityCoursesBinding.eurPlnDate.text =
             Formatter.formatStringDate(courseEurPlnDate)
-        //dolar
         val courseUsdPln: String =
             SharedPreference.getKeyFromFile(SharedPreference.USD_PLN)
         val courseUsdPlnDate: String =
             SharedPreference.getKeyFromFile(SharedPreference.USD_PLN_DATE)
         val usdPlnText = (Formatter.formatStringFloat(courseUsdPln, 2) + " zł")
-        this.bindingActivityConfigurationValues.usdPln.text = usdPlnText
-        this.bindingActivityConfigurationValues.usdPlnDate.text =
+        activityCoursesBinding.usdPln.text = usdPlnText
+        activityCoursesBinding.usdPlnDate.text =
             Formatter.formatStringDate(courseUsdPlnDate)
     }
 
-    //toolbar option menu
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        this.menuInflater.inflate(R.menu.toolbar_list_configurationvalues, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    //option menu selected
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.toolbar_list_refresh_courses -> {
-                //make async task and execute
-                Thread(this.TaskUpdateCourses()).start()
-                true
-            }
-            else -> {
-                this.finish()
-                true
-            }
-        }
-    }
-
-    //async class which update values of courses
     inner class TaskUpdateCourses : Runnable {
-        //fields
-        //run
         override fun run() {
             //--- onPreExecute
-            this@ConfigurationValuesActivity.runOnUiThread {
-                //disable user interface on process application
+            runOnUiThread {
                 UserInterface.changeStatusLayout(
-                    this@ConfigurationValuesActivity.bindingActivityConfigurationValues.linearLayout,
+                    activityCoursesBinding.linearLayout,
                     false
                 )
                 Toast.makeText(
-                    this@ConfigurationValuesActivity.applicationContext,
-                    MyConfiguration.UPDATE_WAIT,
+                    this@CoursesActivity.applicationContext,
+                    Configuration.UPDATE_WAIT,
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -190,41 +169,40 @@ class ConfigurationValuesActivity : AppCompatActivity() {
                 processStep = ProcessStep.UNHANDLED_EXCEPTION
             }
             //--- onPostExecute
-            this@ConfigurationValuesActivity.runOnUiThread {
+            runOnUiThread {
                 when (processStep) {
                     ProcessStep.NETWORK_FAILED -> {
                         Toast.makeText(
-                            this@ConfigurationValuesActivity.applicationContext,
-                            MyConfiguration.NETWORK_FAILED,
+                            this@CoursesActivity.applicationContext,
+                            Configuration.NETWORK_FAILED,
                             Toast.LENGTH_SHORT
                         ).show()
                     }
                     ProcessStep.UNHANDLED_EXCEPTION -> {
                         Toast.makeText(
-                            this@ConfigurationValuesActivity.applicationContext,
-                            MyConfiguration.UPDATE_FAILED,
+                            this@CoursesActivity.applicationContext,
+                            Configuration.UPDATE_FAILED,
                             Toast.LENGTH_SHORT
                         ).show()
                     }
                     ProcessStep.SUCCESS -> {
                         Toast.makeText(
-                            this@ConfigurationValuesActivity.applicationContext,
-                            MyConfiguration.UPDATE_SUCCESS,
+                            this@CoursesActivity.applicationContext,
+                            Configuration.UPDATE_SUCCESS,
                             Toast.LENGTH_SHORT
                         ).show()
-                        this@ConfigurationValuesActivity.setValuesInView()
+                        setValuesInView()
                     }
                     else -> {
                         Toast.makeText(
-                            this@ConfigurationValuesActivity.applicationContext,
-                            MyConfiguration.UPDATE_FAILED,
+                            this@CoursesActivity.applicationContext,
+                            Configuration.UPDATE_FAILED,
                             Toast.LENGTH_SHORT
                         ).show()
                     }
                 }
-                //enable user interface on process application
                 UserInterface.changeStatusLayout(
-                    this@ConfigurationValuesActivity.bindingActivityConfigurationValues.linearLayout,
+                    activityCoursesBinding.linearLayout,
                     true
                 )
             }

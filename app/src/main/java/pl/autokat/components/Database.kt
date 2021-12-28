@@ -23,8 +23,8 @@ import kotlin.collections.HashMap
 
 class Database(context: Context) : SQLiteAssetHelper(
     context,
-    MyConfiguration.DATABASE_NAME_OF_FILE, null,
-    MyConfiguration.DATABASE_VERSION
+    Configuration.DATABASE_NAME_OF_FILE, null,
+    Configuration.DATABASE_VERSION
 ) {
     private val myContext: Context = context
     private val transformation: String = "BLOWFISH/ECB/PKCS5Padding"
@@ -34,15 +34,15 @@ class Database(context: Context) : SQLiteAssetHelper(
         try {
             db.beginTransaction()
             val queryString =
-                "CREATE TABLE `${MyConfiguration.DATABASE_TABLE_COURSES}` (\n" +
-                        "`${MyConfiguration.DATABASE_COURSES_ID}` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n" +
-                        "`${MyConfiguration.DATABASE_COURSES_DATE}` TEXT NOT NULL UNIQUE,\n" +
-                        "`${MyConfiguration.DATABASE_COURSES_YEARMONTH}` TEXT NOT NULL,\n" +
-                        "`${MyConfiguration.DATABASE_COURSES_PLATINUM}` TEXT NOT NULL,\n" +
-                        "`${MyConfiguration.DATABASE_COURSES_PALLADIUM}` TEXT NOT NULL,\n" +
-                        "`${MyConfiguration.DATABASE_COURSES_RHODIUM}` TEXT NOT NULL,\n" +
-                        "`${MyConfiguration.DATABASE_COURSES_EUR_PLN}` TEXT NOT NULL,\n" +
-                        "`${MyConfiguration.DATABASE_COURSES_USD_PLN}` TEXT NOT NULL\n" +
+                "CREATE TABLE `${Configuration.DATABASE_TABLE_COURSES}` (\n" +
+                        "`${Configuration.DATABASE_COURSES_ID}` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n" +
+                        "`${Configuration.DATABASE_COURSES_DATE}` TEXT NOT NULL UNIQUE,\n" +
+                        "`${Configuration.DATABASE_COURSES_YEARMONTH}` TEXT NOT NULL,\n" +
+                        "`${Configuration.DATABASE_COURSES_PLATINUM}` TEXT NOT NULL,\n" +
+                        "`${Configuration.DATABASE_COURSES_PALLADIUM}` TEXT NOT NULL,\n" +
+                        "`${Configuration.DATABASE_COURSES_RHODIUM}` TEXT NOT NULL,\n" +
+                        "`${Configuration.DATABASE_COURSES_EUR_PLN}` TEXT NOT NULL,\n" +
+                        "`${Configuration.DATABASE_COURSES_USD_PLN}` TEXT NOT NULL\n" +
                         ");"
             db.execSQL(queryString)
             db.setTransactionSuccessful()
@@ -52,8 +52,8 @@ class Database(context: Context) : SQLiteAssetHelper(
         try {
             db.beginTransaction()
             val queryString =
-                "CREATE INDEX `courses_yearmonth` ON `${MyConfiguration.DATABASE_TABLE_COURSES}` (\n" +
-                        "`${MyConfiguration.DATABASE_COURSES_YEARMONTH}` ASC\n" +
+                "CREATE INDEX `courses_yearmonth` ON `${Configuration.DATABASE_TABLE_COURSES}` (\n" +
+                        "`${Configuration.DATABASE_COURSES_YEARMONTH}` ASC\n" +
                         ");"
             db.execSQL(queryString)
             db.setTransactionSuccessful()
@@ -65,17 +65,17 @@ class Database(context: Context) : SQLiteAssetHelper(
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         if (newVersion > oldVersion) {
             when (newVersion) {
-                MyConfiguration.DATABASE_VERSION_1_0_6 -> {
+                Configuration.DATABASE_VERSION_1_0_6 -> {
                     upgrade106(db)
                 }
                 //in other case override database (copy database from assets to directory system where is database of app)
                 else -> {
                     db.endTransaction()
                     val fileDatabaseInAssets =
-                        myContext.assets.open(MyConfiguration.DATABASE_FILE_PATH_ASSETS)
+                        myContext.assets.open(Configuration.DATABASE_FILE_PATH_ASSETS)
                     val fileDatabaseInSystem = FileOutputStream(
                         myContext.getDatabasePath(
-                            MyConfiguration.DATABASE_NAME_OF_FILE
+                            Configuration.DATABASE_NAME_OF_FILE
                         )
                     )
                     fileDatabaseInAssets.copyTo(fileDatabaseInSystem)
@@ -92,10 +92,10 @@ class Database(context: Context) : SQLiteAssetHelper(
         val db = this.writableDatabase
         try {
             db.beginTransaction()
-            db.execSQL("DELETE FROM ${MyConfiguration.DATABASE_TABLE_CATALYST};VACUUM;")
+            db.execSQL("DELETE FROM ${Configuration.DATABASE_TABLE_CATALYST};VACUUM;")
             db.execSQL(
-                "DELETE FROM ${MyConfiguration.DATABASE_TABLE_SQLITE_SEQUENCE}\n" +
-                        "WHERE ${MyConfiguration.DATABASE_SQLITE_SEQUENCE_NAME} LIKE '${MyConfiguration.DATABASE_TABLE_CATALYST}';VACUUM;"
+                "DELETE FROM ${Configuration.DATABASE_TABLE_SQLITE_SEQUENCE}\n" +
+                        "WHERE ${Configuration.DATABASE_SQLITE_SEQUENCE_NAME} LIKE '${Configuration.DATABASE_TABLE_CATALYST}';VACUUM;"
             )
             db.setTransactionSuccessful()
         } finally {
@@ -136,17 +136,17 @@ class Database(context: Context) : SQLiteAssetHelper(
         try {
             val arrayFields = Parser.parseSearchingString(nameCatalystOrBrandCarInput)
             val fields = arrayOf(
-                MyConfiguration.DATABASE_CATALYST_ID,
-                MyConfiguration.DATABASE_CATALYST_ID_PICTURE,
-                MyConfiguration.DATABASE_CATALYST_URL_PICTURE,
-                MyConfiguration.DATABASE_CATALYST_THUMBNAIL,
-                MyConfiguration.DATABASE_CATALYST_NAME,
-                MyConfiguration.DATABASE_CATALYST_BRAND,
-                MyConfiguration.DATABASE_CATALYST_PLATINUM,
-                MyConfiguration.DATABASE_CATALYST_PALLADIUM,
-                MyConfiguration.DATABASE_CATALYST_RHODIUM,
-                MyConfiguration.DATABASE_CATALYST_TYPE,
-                MyConfiguration.DATABASE_CATALYST_WEIGHT
+                Configuration.DATABASE_CATALYST_ID,
+                Configuration.DATABASE_CATALYST_ID_PICTURE,
+                Configuration.DATABASE_CATALYST_URL_PICTURE,
+                Configuration.DATABASE_CATALYST_THUMBNAIL,
+                Configuration.DATABASE_CATALYST_NAME,
+                Configuration.DATABASE_CATALYST_BRAND,
+                Configuration.DATABASE_CATALYST_PLATINUM,
+                Configuration.DATABASE_CATALYST_PALLADIUM,
+                Configuration.DATABASE_CATALYST_RHODIUM,
+                Configuration.DATABASE_CATALYST_TYPE,
+                Configuration.DATABASE_CATALYST_WEIGHT
             )
             val argumentsSelect = mutableListOf<String>()
             val argumentsWhere = mutableListOf<String>()
@@ -159,19 +159,19 @@ class Database(context: Context) : SQLiteAssetHelper(
                     for (subItem in subArrayFields) {
                         argumentsSelect.add(subItem.lowercase(Locale.getDefault()))
                         argumentsSelect.add(subItem.lowercase(Locale.getDefault()))
-                        hitCountQuery += (if (addPlus) " + " else "") + "(instr(LOWER(${MyConfiguration.DATABASE_CATALYST_NAME}), ?) > 0) + (instr(LOWER(${MyConfiguration.DATABASE_CATALYST_BRAND}), ?) > 0)"
+                        hitCountQuery += (if (addPlus) " + " else "") + "(instr(LOWER(${Configuration.DATABASE_CATALYST_NAME}), ?) > 0) + (instr(LOWER(${Configuration.DATABASE_CATALYST_BRAND}), ?) > 0)"
                         addPlus = true
                     }
                     argumentsWhere.add("%${item.replace("*", "%")}%")
                     argumentsWhere.add("%${item.replace("*", "%")}%")
                 }
-                hitCountQuery += ") as ${MyConfiguration.DATABASE_CATALYST_TEMP_HITCOUNT}"
+                hitCountQuery += ") as ${Configuration.DATABASE_CATALYST_TEMP_HITCOUNT}"
                 queryString += ", $hitCountQuery"
-                queryString += " FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}"
-                queryString += " WHERE " + arrayFields.joinToString(separator = " OR ") { "${MyConfiguration.DATABASE_CATALYST_NAME} LIKE ? OR ${MyConfiguration.DATABASE_CATALYST_BRAND} LIKE ?" }
-                queryString += " ORDER BY ${MyConfiguration.DATABASE_CATALYST_TEMP_HITCOUNT} DESC"
+                queryString += " FROM ${Configuration.DATABASE_TABLE_CATALYST}"
+                queryString += " WHERE " + arrayFields.joinToString(separator = " OR ") { "${Configuration.DATABASE_CATALYST_NAME} LIKE ? OR ${Configuration.DATABASE_CATALYST_BRAND} LIKE ?" }
+                queryString += " ORDER BY ${Configuration.DATABASE_CATALYST_TEMP_HITCOUNT} DESC"
             } else {
-                queryString += " FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}"
+                queryString += " FROM ${Configuration.DATABASE_TABLE_CATALYST}"
             }
             queryString += " LIMIT $limitElements"
             cursor = readableDatabase.rawQuery(
@@ -180,30 +180,30 @@ class Database(context: Context) : SQLiteAssetHelper(
             )
             while (cursor.moveToNext()) {
                 val blobImage: ByteArray? =
-                    if (cursor.isNull(cursor.getColumnIndex(MyConfiguration.DATABASE_CATALYST_ID))) null else cursor.getBlob(
+                    if (cursor.isNull(cursor.getColumnIndex(Configuration.DATABASE_CATALYST_ID))) null else cursor.getBlob(
                         cursor.getColumnIndex(
-                            MyConfiguration.DATABASE_CATALYST_THUMBNAIL
+                            Configuration.DATABASE_CATALYST_THUMBNAIL
                         )
                     )
                 val salt: String =
-                    cursor.getInt(cursor.getColumnIndex(MyConfiguration.DATABASE_CATALYST_ID))
+                    cursor.getInt(cursor.getColumnIndex(Configuration.DATABASE_CATALYST_ID))
                         .toString() + Secret.getPrivateKey()
                 val modelCatalyst = ModelCatalyst(
-                    cursor.getInt(cursor.getColumnIndex(MyConfiguration.DATABASE_CATALYST_ID)),
-                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_CATALYST_ID_PICTURE)),
-                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_CATALYST_URL_PICTURE)),
+                    cursor.getInt(cursor.getColumnIndex(Configuration.DATABASE_CATALYST_ID)),
+                    cursor.getString(cursor.getColumnIndex(Configuration.DATABASE_CATALYST_ID_PICTURE)),
+                    cursor.getString(cursor.getColumnIndex(Configuration.DATABASE_CATALYST_URL_PICTURE)),
                     if (blobImage == null) null else BitmapFactory.decodeByteArray(
                         blobImage,
                         0,
                         blobImage.size
                     ),
-                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_CATALYST_NAME)),
-                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_CATALYST_BRAND)),
+                    cursor.getString(cursor.getColumnIndex(Configuration.DATABASE_CATALYST_NAME)),
+                    cursor.getString(cursor.getColumnIndex(Configuration.DATABASE_CATALYST_BRAND)),
                     Formatter.formatStringFloat(
                         decrypt(
                             cursor.getString(
                                 cursor.getColumnIndex(
-                                    MyConfiguration.DATABASE_CATALYST_PLATINUM
+                                    Configuration.DATABASE_CATALYST_PLATINUM
                                 )
                             ), salt
                         ), 3
@@ -212,7 +212,7 @@ class Database(context: Context) : SQLiteAssetHelper(
                         decrypt(
                             cursor.getString(
                                 cursor.getColumnIndex(
-                                    MyConfiguration.DATABASE_CATALYST_PALLADIUM
+                                    Configuration.DATABASE_CATALYST_PALLADIUM
                                 )
                             ), salt
                         ), 3
@@ -221,17 +221,17 @@ class Database(context: Context) : SQLiteAssetHelper(
                         decrypt(
                             cursor.getString(
                                 cursor.getColumnIndex(
-                                    MyConfiguration.DATABASE_CATALYST_RHODIUM
+                                    Configuration.DATABASE_CATALYST_RHODIUM
                                 )
                             ), salt
                         ), 3
                     ).toFloat(),
-                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_CATALYST_TYPE)),
+                    cursor.getString(cursor.getColumnIndex(Configuration.DATABASE_CATALYST_TYPE)),
                     Formatter.formatStringFloat(
                         decrypt(
                             cursor.getString(
                                 cursor.getColumnIndex(
-                                    MyConfiguration.DATABASE_CATALYST_WEIGHT
+                                    Configuration.DATABASE_CATALYST_WEIGHT
                                 )
                             ), salt
                         ), 3
@@ -251,14 +251,14 @@ class Database(context: Context) : SQLiteAssetHelper(
         var cursor: Cursor? = null
         try {
             val fields = arrayOf(
-                MyConfiguration.DATABASE_CATALYST_ID,
-                MyConfiguration.DATABASE_CATALYST_URL_PICTURE
+                Configuration.DATABASE_CATALYST_ID,
+                Configuration.DATABASE_CATALYST_URL_PICTURE
             )
             val queryBuilder = SQLiteQueryBuilder()
-            queryBuilder.tables = MyConfiguration.DATABASE_TABLE_CATALYST
+            queryBuilder.tables = Configuration.DATABASE_TABLE_CATALYST
             cursor = queryBuilder.query(
                 readableDatabase, fields,
-                MyConfiguration.DATABASE_CATALYST_THUMBNAIL + " IS NULL",
+                Configuration.DATABASE_CATALYST_THUMBNAIL + " IS NULL",
                 null,
                 null,
                 null,
@@ -267,16 +267,16 @@ class Database(context: Context) : SQLiteAssetHelper(
             while (cursor.moveToNext()) {
                 val json = JSONObject()
                 json.put(
-                    MyConfiguration.DATABASE_CATALYST_ID, cursor.getInt(
+                    Configuration.DATABASE_CATALYST_ID, cursor.getInt(
                         cursor.getColumnIndex(
-                            MyConfiguration.DATABASE_CATALYST_ID
+                            Configuration.DATABASE_CATALYST_ID
                         )
                     )
                 )
                 json.put(
-                    MyConfiguration.DATABASE_CATALYST_URL_PICTURE, cursor.getString(
+                    Configuration.DATABASE_CATALYST_URL_PICTURE, cursor.getString(
                         cursor.getColumnIndex(
-                            MyConfiguration.DATABASE_CATALYST_URL_PICTURE
+                            Configuration.DATABASE_CATALYST_URL_PICTURE
                         )
                     )
                 )
@@ -296,85 +296,85 @@ class Database(context: Context) : SQLiteAssetHelper(
                 val element = valuesOfBatch.getJSONObject(i).getJSONArray("c")
                 val salt: String = Spreadsheet.getValueStringFromDocsApi(
                     element,
-                    MyConfiguration.SPREADSHEET_CATALYST_ID
+                    Configuration.SPREADSHEET_CATALYST_ID
                 ) + Secret.getPrivateKey()
                 val row = ContentValues()
                 row.put(
-                    MyConfiguration.DATABASE_CATALYST_ID_PICTURE,
+                    Configuration.DATABASE_CATALYST_ID_PICTURE,
                     Spreadsheet.getValueStringFromDocsApi(
                         element,
-                        MyConfiguration.SPREADSHEET_CATALYST_ID_PICTURE
+                        Configuration.SPREADSHEET_CATALYST_ID_PICTURE
                     )
                 )
                 row.put(
-                    MyConfiguration.DATABASE_CATALYST_URL_PICTURE,
+                    Configuration.DATABASE_CATALYST_URL_PICTURE,
                     Spreadsheet.getValueStringFromDocsApi(
                         element,
-                        MyConfiguration.SPREADSHEET_CATALYST_URL_PICTURE
+                        Configuration.SPREADSHEET_CATALYST_URL_PICTURE
                     )
                 )
                 row.put(
-                    MyConfiguration.DATABASE_CATALYST_NAME,
+                    Configuration.DATABASE_CATALYST_NAME,
                     Spreadsheet.getValueStringFromDocsApi(
                         element,
-                        MyConfiguration.SPREADSHEET_CATALYST_NAME
+                        Configuration.SPREADSHEET_CATALYST_NAME
                     )
                 )
                 row.put(
-                    MyConfiguration.DATABASE_CATALYST_BRAND,
+                    Configuration.DATABASE_CATALYST_BRAND,
                     Spreadsheet.getValueStringFromDocsApi(
                         element,
-                        MyConfiguration.SPREADSHEET_CATALYST_BRAND
+                        Configuration.SPREADSHEET_CATALYST_BRAND
                     )
                 )
                 row.put(
-                    MyConfiguration.DATABASE_CATALYST_PLATINUM,
+                    Configuration.DATABASE_CATALYST_PLATINUM,
                     encrypt(
                         Spreadsheet.getValueFloatStringFromDocsApi(
                             element,
-                            MyConfiguration.SPREADSHEET_CATALYST_PLATINUM
+                            Configuration.SPREADSHEET_CATALYST_PLATINUM
                         ),
                         salt
                     )
                 )
                 row.put(
-                    MyConfiguration.DATABASE_CATALYST_PALLADIUM,
+                    Configuration.DATABASE_CATALYST_PALLADIUM,
                     encrypt(
                         Spreadsheet.getValueFloatStringFromDocsApi(
                             element,
-                            MyConfiguration.SPREADSHEET_CATALYST_PALLADIUM
+                            Configuration.SPREADSHEET_CATALYST_PALLADIUM
                         ),
                         salt
                     )
                 )
                 row.put(
-                    MyConfiguration.DATABASE_CATALYST_RHODIUM,
+                    Configuration.DATABASE_CATALYST_RHODIUM,
                     encrypt(
                         Spreadsheet.getValueFloatStringFromDocsApi(
                             element,
-                            MyConfiguration.SPREADSHEET_CATALYST_RHODIUM
+                            Configuration.SPREADSHEET_CATALYST_RHODIUM
                         ),
                         salt
                     )
                 )
                 row.put(
-                    MyConfiguration.DATABASE_CATALYST_TYPE,
+                    Configuration.DATABASE_CATALYST_TYPE,
                     Spreadsheet.getValueStringFromDocsApi(
                         element,
-                        MyConfiguration.SPREADSHEET_CATALYST_TYPE
+                        Configuration.SPREADSHEET_CATALYST_TYPE
                     )
                 )
                 row.put(
-                    MyConfiguration.DATABASE_CATALYST_WEIGHT,
+                    Configuration.DATABASE_CATALYST_WEIGHT,
                     encrypt(
                         Spreadsheet.getValueFloatStringFromDocsApi(
                             element,
-                            MyConfiguration.SPREADSHEET_CATALYST_WEIGHT
+                            Configuration.SPREADSHEET_CATALYST_WEIGHT
                         ),
                         salt
                     )
                 )
-                val countInserted = db.insert(MyConfiguration.DATABASE_TABLE_CATALYST, null, row)
+                val countInserted = db.insert(Configuration.DATABASE_TABLE_CATALYST, null, row)
                 if (countInserted == -1L) throw IllegalArgumentException()
             }
             db.setTransactionSuccessful()
@@ -388,11 +388,11 @@ class Database(context: Context) : SQLiteAssetHelper(
         try {
             db.beginTransaction()
             val content = ContentValues()
-            content.put(MyConfiguration.DATABASE_CATALYST_THUMBNAIL, thumbnail)
+            content.put(Configuration.DATABASE_CATALYST_THUMBNAIL, thumbnail)
             db.updateWithOnConflict(
-                MyConfiguration.DATABASE_TABLE_CATALYST,
+                Configuration.DATABASE_TABLE_CATALYST,
                 content,
-                MyConfiguration.DATABASE_CATALYST_ID + "= ?",
+                Configuration.DATABASE_CATALYST_ID + "= ?",
                 Array(1) { catalystId.toString() },
                 SQLiteDatabase.CONFLICT_IGNORE
             )
@@ -408,7 +408,7 @@ class Database(context: Context) : SQLiteAssetHelper(
         var cursor: Cursor? = null
         try {
             cursor = readableDatabase.rawQuery(
-                "SELECT count(*) as count FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}",
+                "SELECT count(*) as count FROM ${Configuration.DATABASE_TABLE_CATALYST}",
                 null
             )
             if (cursor.moveToFirst()) {
@@ -426,8 +426,8 @@ class Database(context: Context) : SQLiteAssetHelper(
         var cursor: Cursor? = null
         try {
             cursor = readableDatabase.rawQuery(
-                "SELECT count(*) as count FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}\n" +
-                        "WHERE ${MyConfiguration.DATABASE_CATALYST_THUMBNAIL} IS NOT NULL",
+                "SELECT count(*) as count FROM ${Configuration.DATABASE_TABLE_CATALYST}\n" +
+                        "WHERE ${Configuration.DATABASE_CATALYST_THUMBNAIL} IS NOT NULL",
                 null
             )
             if (cursor.moveToFirst()) {
@@ -445,8 +445,8 @@ class Database(context: Context) : SQLiteAssetHelper(
         var cursor: Cursor? = null
         try {
             cursor = readableDatabase.rawQuery(
-                "SELECT count(*) as count FROM ${MyConfiguration.DATABASE_TABLE_CATALYST}\n" +
-                        "WHERE LENGTH(${MyConfiguration.DATABASE_CATALYST_URL_PICTURE}) != 0",
+                "SELECT count(*) as count FROM ${Configuration.DATABASE_TABLE_CATALYST}\n" +
+                        "WHERE LENGTH(${Configuration.DATABASE_CATALYST_URL_PICTURE}) != 0",
                 null
             )
             if (cursor.moveToFirst()) {
@@ -466,17 +466,17 @@ class Database(context: Context) : SQLiteAssetHelper(
         var cursor: Cursor? = null
         try {
             val fields = arrayOf(
-                MyConfiguration.DATABASE_COURSES_PLATINUM,
-                MyConfiguration.DATABASE_COURSES_PALLADIUM,
-                MyConfiguration.DATABASE_COURSES_RHODIUM,
-                MyConfiguration.DATABASE_COURSES_EUR_PLN,
-                MyConfiguration.DATABASE_COURSES_USD_PLN,
-                MyConfiguration.DATABASE_COURSES_DATE,
-                MyConfiguration.DATABASE_COURSES_YEARMONTH,
+                Configuration.DATABASE_COURSES_PLATINUM,
+                Configuration.DATABASE_COURSES_PALLADIUM,
+                Configuration.DATABASE_COURSES_RHODIUM,
+                Configuration.DATABASE_COURSES_EUR_PLN,
+                Configuration.DATABASE_COURSES_USD_PLN,
+                Configuration.DATABASE_COURSES_DATE,
+                Configuration.DATABASE_COURSES_YEARMONTH,
             )
             val queryString = "SELECT ${fields.joinToString()}\n" +
-                    "FROM ${MyConfiguration.DATABASE_TABLE_COURSES}\n" +
-                    "WHERE ${MyConfiguration.DATABASE_COURSES_YEARMONTH} IN (${
+                    "FROM ${Configuration.DATABASE_TABLE_COURSES}\n" +
+                    "WHERE ${Configuration.DATABASE_COURSES_YEARMONTH} IN (${
                         setOfYearMonth.joinToString(
                             prefix = "'",
                             postfix = "'",
@@ -486,13 +486,13 @@ class Database(context: Context) : SQLiteAssetHelper(
             cursor = readableDatabase.rawQuery(queryString, null)
             while (cursor.moveToNext()) {
                 val myCourses = ModelCourse(
-                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_COURSES_PLATINUM)),
-                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_COURSES_PALLADIUM)),
-                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_COURSES_RHODIUM)),
-                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_COURSES_EUR_PLN)),
-                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_COURSES_USD_PLN)),
-                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_COURSES_DATE)),
-                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_COURSES_YEARMONTH))
+                    cursor.getString(cursor.getColumnIndex(Configuration.DATABASE_COURSES_PLATINUM)),
+                    cursor.getString(cursor.getColumnIndex(Configuration.DATABASE_COURSES_PALLADIUM)),
+                    cursor.getString(cursor.getColumnIndex(Configuration.DATABASE_COURSES_RHODIUM)),
+                    cursor.getString(cursor.getColumnIndex(Configuration.DATABASE_COURSES_EUR_PLN)),
+                    cursor.getString(cursor.getColumnIndex(Configuration.DATABASE_COURSES_USD_PLN)),
+                    cursor.getString(cursor.getColumnIndex(Configuration.DATABASE_COURSES_DATE)),
+                    cursor.getString(cursor.getColumnIndex(Configuration.DATABASE_COURSES_YEARMONTH))
                 )
                 if (result.contains(myCourses.yearMonth) == false) {
                     result[myCourses.yearMonth] = hashMapOf()
@@ -511,34 +511,34 @@ class Database(context: Context) : SQLiteAssetHelper(
             db.beginTransaction()
             val row = ContentValues()
             row.put(
-                MyConfiguration.DATABASE_COURSES_DATE,
+                Configuration.DATABASE_COURSES_DATE,
                 modelCourse.date
             )
             row.put(
-                MyConfiguration.DATABASE_COURSES_YEARMONTH,
+                Configuration.DATABASE_COURSES_YEARMONTH,
                 modelCourse.yearMonth
             )
             row.put(
-                MyConfiguration.DATABASE_COURSES_PLATINUM,
+                Configuration.DATABASE_COURSES_PLATINUM,
                 modelCourse.platinum
             )
             row.put(
-                MyConfiguration.DATABASE_COURSES_PALLADIUM,
+                Configuration.DATABASE_COURSES_PALLADIUM,
                 modelCourse.palladium
             )
             row.put(
-                MyConfiguration.DATABASE_COURSES_RHODIUM,
+                Configuration.DATABASE_COURSES_RHODIUM,
                 modelCourse.rhodium
             )
             row.put(
-                MyConfiguration.DATABASE_COURSES_EUR_PLN,
+                Configuration.DATABASE_COURSES_EUR_PLN,
                 modelCourse.eurPln
             )
             row.put(
-                MyConfiguration.DATABASE_COURSES_USD_PLN,
+                Configuration.DATABASE_COURSES_USD_PLN,
                 modelCourse.usdPln
             )
-            val countInserted = db.insert(MyConfiguration.DATABASE_TABLE_COURSES, null, row)
+            val countInserted = db.insert(Configuration.DATABASE_TABLE_COURSES, null, row)
             if (countInserted == -1L) throw IllegalArgumentException()
             db.setTransactionSuccessful()
         } finally {
@@ -563,25 +563,25 @@ class Database(context: Context) : SQLiteAssetHelper(
                 var firstElement = true
                 for (item in arrayFields) {
                     val arg = item.replace("*", "%")
-                    whereClause += (if (firstElement) "" else " OR ") + "${MyConfiguration.DATABASE_HISTORY_FILTER_NAME} LIKE '%${arg}%'"
+                    whereClause += (if (firstElement) "" else " OR ") + "${Configuration.DATABASE_HISTORY_FILTER_NAME} LIKE '%${arg}%'"
                     firstElement = false
                 }
                 whereClause += "\n"
             }
             val fields = arrayOf(
-                MyConfiguration.DATABASE_HISTORY_FILTER_ID,
-                MyConfiguration.DATABASE_HISTORY_FILTER_NAME
+                Configuration.DATABASE_HISTORY_FILTER_ID,
+                Configuration.DATABASE_HISTORY_FILTER_NAME
             )
             val queryString = "SELECT  ${fields.joinToString()}\n" +
-                    "FROM ${MyConfiguration.DATABASE_TABLE_HISTORY_FILTER}\n" +
+                    "FROM ${Configuration.DATABASE_TABLE_HISTORY_FILTER}\n" +
                     whereClause +
-                    "ORDER BY ${MyConfiguration.DATABASE_HISTORY_FILTER_ID} DESC\n" +
+                    "ORDER BY ${Configuration.DATABASE_HISTORY_FILTER_ID} DESC\n" +
                     "LIMIT $limitElements"
             cursor = readableDatabase.rawQuery(queryString, null)
             while (cursor.moveToNext()) {
                 val modelHistoryFilter = ModelHistoryFilter(
-                    cursor.getInt(cursor.getColumnIndex(MyConfiguration.DATABASE_HISTORY_FILTER_ID)),
-                    cursor.getString(cursor.getColumnIndex(MyConfiguration.DATABASE_HISTORY_FILTER_NAME))
+                    cursor.getInt(cursor.getColumnIndex(Configuration.DATABASE_HISTORY_FILTER_ID)),
+                    cursor.getString(cursor.getColumnIndex(Configuration.DATABASE_HISTORY_FILTER_NAME))
                 )
                 result.add(modelHistoryFilter)
             }
@@ -597,10 +597,10 @@ class Database(context: Context) : SQLiteAssetHelper(
             db.beginTransaction()
             val row = ContentValues()
             row.put(
-                MyConfiguration.DATABASE_HISTORY_FILTER_NAME,
+                Configuration.DATABASE_HISTORY_FILTER_NAME,
                 searchedText
             )
-            val countInserted = db.insert(MyConfiguration.DATABASE_TABLE_HISTORY_FILTER, null, row)
+            val countInserted = db.insert(Configuration.DATABASE_TABLE_HISTORY_FILTER, null, row)
             if (countInserted == -1L) throw IllegalArgumentException()
             db.setTransactionSuccessful()
         } finally {
@@ -613,8 +613,8 @@ class Database(context: Context) : SQLiteAssetHelper(
         try {
             db.beginTransaction()
             db.delete(
-                MyConfiguration.DATABASE_TABLE_HISTORY_FILTER,
-                MyConfiguration.DATABASE_HISTORY_FILTER_ID + "= $id", null
+                Configuration.DATABASE_TABLE_HISTORY_FILTER,
+                Configuration.DATABASE_HISTORY_FILTER_ID + "= $id", null
             )
             db.setTransactionSuccessful()
         } finally {
@@ -627,8 +627,8 @@ class Database(context: Context) : SQLiteAssetHelper(
         try {
             db.beginTransaction()
             db.delete(
-                MyConfiguration.DATABASE_TABLE_HISTORY_FILTER,
-                MyConfiguration.DATABASE_HISTORY_FILTER_NAME + " LIKE '$name'", null
+                Configuration.DATABASE_TABLE_HISTORY_FILTER,
+                Configuration.DATABASE_HISTORY_FILTER_NAME + " LIKE '$name'", null
             )
             db.setTransactionSuccessful()
         } finally {

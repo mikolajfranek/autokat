@@ -34,72 +34,61 @@ import java.util.*
 
 class ResultActivity : AppCompatActivity() {
 
-    private lateinit var bindingActivityResult: ActivityResultBinding
-    private lateinit var bindingMyItemCatalyst: MyItemCatalystBinding
-    private lateinit var bindingMyItemHistoryFilter: MyItemHistoryFilterBinding
+    private lateinit var activityResultBinding: ActivityResultBinding
+    private lateinit var myItemCatalystBinding: MyItemCatalystBinding
+    private lateinit var myItemHistoryFilterBinding: MyItemHistoryFilterBinding
     private lateinit var database: Database
     private lateinit var databaseAdapterCatalysts: ArrayAdapter<ModelCatalyst>
     private var scrollPreLastCatalyst: Int = 0
-    private var scrollLimitCatalyst: Int = MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST
+    private var scrollLimitCatalyst: Int = Configuration.DATABASE_PAGINATE_LIMIT_CATALYST
     private lateinit var databaseAdapterHistoryFilter: ArrayAdapter<ModelHistoryFilter>
     private var scrollPreLastHistoryFilter: Int = 0
     private var scrollLimitHistoryFilter: Int =
-        MyConfiguration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER
+        Configuration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER
     private var menu: Menu? = null
 
-    //oncreate
+    //region override
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        this.bindingActivityResult = ActivityResultBinding.inflate(this.layoutInflater)
-        val view = this.bindingActivityResult.root
-        this.setContentView(view)
-        this.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        //set toolbar
-        this.setSupportActionBar(this.bindingActivityResult.toolbar)
-        //navigate up
-        this.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        //init shared preferences
+        activityResultBinding = ActivityResultBinding.inflate(layoutInflater)
+        val view = activityResultBinding.root
+        setContentView(view)
+        setSupportActionBar(activityResultBinding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         SharedPreference.init(this)
-        //init database object
-        this.database = Database(this.applicationContext)
-        //text listener on change text
-        this.bindingActivityResult.editText.setText(
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        database = Database(applicationContext)
+        activityResultBinding.editText.setText(
             SharedPreference.getKeyFromFile(
                 SharedPreference.LAST_SEARCHED_TEXT
             )
         )
-        this.bindingActivityResult.editText.addTextChangedListener(object : TextWatcher {
+        activityResultBinding.editText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                //save last searched text
                 SharedPreference.setKeyToFile(
                     SharedPreference.LAST_SEARCHED_TEXT,
                     s.toString()
                 )
-                this@ResultActivity.refreshCatalystListView(ScrollRefresh.RESET_LIST)
+                refreshDatabaseAdapterCatalysts(ScrollRefresh.RESET_LIST)
             }
         })
-        //init database adapter catalyst
-        this.databaseAdapterCatalysts = object : ArrayAdapter<ModelCatalyst>(
-            this.applicationContext,
+        databaseAdapterCatalysts = object : ArrayAdapter<ModelCatalyst>(
+            applicationContext,
             R.layout.my_item_catalyst
         ) {
             @SuppressLint("ViewHolder")
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                //set layout of element
-                this@ResultActivity.bindingMyItemCatalyst =
+                myItemCatalystBinding =
                     MyItemCatalystBinding.inflate(this@ResultActivity.layoutInflater, parent, false)
-                val viewItem = this@ResultActivity.bindingMyItemCatalyst.root
-                //get element
-                val itemCatalyst = this.getItem(position)!!
-                //visibility of feature of element
+                val viewItem = myItemCatalystBinding.root
+                val itemCatalyst = getItem(position)!!
                 val visibilityCatalyst: Boolean = SharedPreference.getKeyFromFile(
                     SharedPreference.VISIBILITY
                 ).toInt() == 1
-                //item thumbnail
-                this@ResultActivity.bindingMyItemCatalyst.imageView.setImageBitmap(itemCatalyst.thumbnail)
-                this@ResultActivity.bindingMyItemCatalyst.imageView.setOnLongClickListener(
+                myItemCatalystBinding.imageView.setImageBitmap(itemCatalyst.thumbnail)
+                myItemCatalystBinding.imageView.setOnLongClickListener(
                     OnLongClickListener {
                         Toast.makeText(
                             this@ResultActivity.applicationContext,
@@ -109,43 +98,35 @@ class ResultActivity : AppCompatActivity() {
                             .show()
                         return@OnLongClickListener true
                     })
-                this@ResultActivity.bindingMyItemCatalyst.imageView.setOnClickListener {
+                myItemCatalystBinding.imageView.setOnClickListener {
                     val intent =
                         Intent(this@ResultActivity.applicationContext, PictureActivity::class.java)
                     intent.putExtra("urlPicture", itemCatalyst.urlPicture)
                     this@ResultActivity.startActivity(intent)
                 }
-                //item brand
-                this@ResultActivity.bindingMyItemCatalyst.brand.text = itemCatalyst.brand
-                //item type
-                this@ResultActivity.bindingMyItemCatalyst.type.text = itemCatalyst.type
-                //item name
-                this@ResultActivity.bindingMyItemCatalyst.name.text = itemCatalyst.name
-                //item weight
+                myItemCatalystBinding.brand.text = itemCatalyst.brand
+                myItemCatalystBinding.type.text = itemCatalyst.type
+                myItemCatalystBinding.name.text = itemCatalyst.name
                 val weightText = Formatter.formatStringFloat(
                     itemCatalyst.weight.toString(),
                     3
                 ) + " kg"
-                this@ResultActivity.bindingMyItemCatalyst.weight.text = weightText
-                //item platinum
+                myItemCatalystBinding.weight.text = weightText
                 val platinumText = Formatter.formatStringFloat(
                     if (visibilityCatalyst) itemCatalyst.platinum.toString() else "0.0",
                     3
                 ) + " g/kg"
-                this@ResultActivity.bindingMyItemCatalyst.platinum.text = platinumText
-                //item palladium
+                myItemCatalystBinding.platinum.text = platinumText
                 val palladiumText = Formatter.formatStringFloat(
                     if (visibilityCatalyst) itemCatalyst.palladium.toString() else "0.0",
                     3
                 ) + " g/kg"
-                this@ResultActivity.bindingMyItemCatalyst.palladium.text = palladiumText
-                //item rhodium
+                myItemCatalystBinding.palladium.text = palladiumText
                 val rhodiumText = Formatter.formatStringFloat(
                     if (visibilityCatalyst) itemCatalyst.rhodium.toString() else "0.0",
                     3
                 ) + " g/kg"
-                this@ResultActivity.bindingMyItemCatalyst.rhodium.text = rhodiumText
-                //count price
+                myItemCatalystBinding.rhodium.text = rhodiumText
                 var pricePl = itemCatalyst.countPricePln()
                 val courseEurlnFromConfiguration: String = SharedPreference.getKeyFromFile(
                     SharedPreference.EUR_PLN
@@ -164,23 +145,22 @@ class ResultActivity : AppCompatActivity() {
                     2
                 ) + " zł")
                 if (visibilityCatalyst) {
-                    this@ResultActivity.bindingMyItemCatalyst.priceEur.text = resultPriceEur
-                    this@ResultActivity.bindingMyItemCatalyst.pricePln.text = resultPricePln
-                    this@ResultActivity.bindingMyItemCatalyst.rowPlattinum.visibility = VISIBLE
-                    this@ResultActivity.bindingMyItemCatalyst.rowPalladium.visibility = VISIBLE
-                    this@ResultActivity.bindingMyItemCatalyst.rowRhodium.visibility = VISIBLE
+                    myItemCatalystBinding.priceEur.text = resultPriceEur
+                    myItemCatalystBinding.pricePln.text = resultPricePln
+                    myItemCatalystBinding.rowPlattinum.visibility = VISIBLE
+                    myItemCatalystBinding.rowPalladium.visibility = VISIBLE
+                    myItemCatalystBinding.rowRhodium.visibility = VISIBLE
                 } else {
-                    this@ResultActivity.bindingMyItemCatalyst.priceEurWithoutMetal.text =
+                    myItemCatalystBinding.priceEurWithoutMetal.text =
                         resultPriceEur
-                    this@ResultActivity.bindingMyItemCatalyst.pricePlnWithoutMetal.text =
+                    myItemCatalystBinding.pricePlnWithoutMetal.text =
                         resultPricePln
                 }
                 return viewItem
             }
         }
-        this.bindingActivityResult.catalystListView.adapter = this.databaseAdapterCatalysts
-        //scroll listener
-        this.bindingActivityResult.catalystListView.setOnScrollListener(object :
+        activityResultBinding.catalystListView.adapter = databaseAdapterCatalysts
+        activityResultBinding.catalystListView.setOnScrollListener(object :
             AbsListView.OnScrollListener {
             override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) {}
             override fun onScroll(
@@ -189,46 +169,38 @@ class ResultActivity : AppCompatActivity() {
                 visibleItemCount: Int,
                 totalItemCount: Int
             ) {
-                //helper variable which equals first visible item on list plus many of item which can be on the screen
                 val lastItem: Int = firstVisibleItem + visibleItemCount
-                //if helper equals total elements on list and helper is different that the last helper then refresh list (add elements)
-                if (lastItem == totalItemCount && lastItem != this@ResultActivity.scrollPreLastCatalyst) {
-                    this@ResultActivity.scrollLimitCatalyst += MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST
-                    this@ResultActivity.refreshCatalystListView(ScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS)
-                    this@ResultActivity.scrollPreLastCatalyst = lastItem
+                if (lastItem == totalItemCount && lastItem != scrollPreLastCatalyst) {
+                    scrollLimitCatalyst += Configuration.DATABASE_PAGINATE_LIMIT_CATALYST
+                    refreshDatabaseAdapterCatalysts(ScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS)
+                    scrollPreLastCatalyst = lastItem
                 }
             }
         })
-        //init database adapter history filter
-        this.databaseAdapterHistoryFilter = object : ArrayAdapter<ModelHistoryFilter>(
-            this.applicationContext,
+        databaseAdapterHistoryFilter = object : ArrayAdapter<ModelHistoryFilter>(
+            applicationContext,
             R.layout.my_item_history_filter
         ) {
             @SuppressLint("ViewHolder")
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                //set layout of element
-                this@ResultActivity.bindingMyItemHistoryFilter = MyItemHistoryFilterBinding.inflate(
+                myItemHistoryFilterBinding = MyItemHistoryFilterBinding.inflate(
                     this@ResultActivity.layoutInflater, parent, false
                 )
-                val viewItem = this@ResultActivity.bindingMyItemHistoryFilter.root
-                //get element
-                val itemHistoryFilter = this.getItem(position)!!
-                //item name
-                this@ResultActivity.bindingMyItemHistoryFilter.name.text = itemHistoryFilter.name
-                //click on name history filter
+                val viewItem = myItemHistoryFilterBinding.root
+                val itemHistoryFilter = getItem(position)!!
+                myItemHistoryFilterBinding.name.text = itemHistoryFilter.name
                 viewItem.setOnClickListener {
-                    this@ResultActivity.bindingActivityResult.editText.setText(itemHistoryFilter.name)
-                    this@ResultActivity.bindingActivityResult.drawerLayout.closeDrawers()
+                    activityResultBinding.editText.setText(itemHistoryFilter.name)
+                    activityResultBinding.drawerLayout.closeDrawers()
                 }
-                //click for delete history filter
-                this@ResultActivity.bindingMyItemHistoryFilter.crossDelete.setOnClickListener {
-                    this@ResultActivity.deleteRecordHistoryOfSearch(itemHistoryFilter.id)
+                myItemHistoryFilterBinding.crossDelete.setOnClickListener {
+                    deleteRecordHistoryOfSearch(itemHistoryFilter.id)
                 }
                 return viewItem
             }
         }
-        this.bindingActivityResult.historyFilterListView.adapter = this.databaseAdapterHistoryFilter
-        this.bindingActivityResult.historyFilterListView.setOnScrollListener(object :
+        activityResultBinding.historyFilterListView.adapter = databaseAdapterHistoryFilter
+        activityResultBinding.historyFilterListView.setOnScrollListener(object :
             AbsListView.OnScrollListener {
             override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) {}
             override fun onScroll(
@@ -237,274 +209,255 @@ class ResultActivity : AppCompatActivity() {
                 visibleItemCount: Int,
                 totalItemCount: Int
             ) {
-                //helper variable which equals first visible item on list plus many of item which can be on the screen
                 val lastItem: Int = firstVisibleItem + visibleItemCount
-                //if helper equals total elements on list and helper is different that the last helper then refresh list (add elements)
-                if (lastItem == totalItemCount && lastItem != this@ResultActivity.scrollPreLastHistoryFilter) {
-                    this@ResultActivity.scrollLimitHistoryFilter += MyConfiguration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER
-                    this@ResultActivity.refreshHistoryFilterListView(ScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS)
-                    this@ResultActivity.scrollPreLastHistoryFilter = lastItem
+                if (lastItem == totalItemCount && lastItem != scrollPreLastHistoryFilter) {
+                    scrollLimitHistoryFilter += Configuration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER
+                    refreshDataBaseAdapterHistoryFilter(ScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS)
+                    scrollPreLastHistoryFilter = lastItem
                 }
             }
         })
-        //drawer layout
-        this.bindingActivityResult.drawerLayout.addDrawerListener(object : DrawerListener {
+        activityResultBinding.drawerLayout.addDrawerListener(object : DrawerListener {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
             override fun onDrawerOpened(drawerView: View) {}
             override fun onDrawerClosed(drawerView: View) {}
             override fun onDrawerStateChanged(newState: Int) {
-                //when opening drawer is on final position
-                if (newState == DrawerLayout.STATE_SETTLING && this@ResultActivity.bindingActivityResult.drawerLayout.isDrawerOpen(
-                        this@ResultActivity.bindingActivityResult.navigationHistoryFilter
+                if (newState == DrawerLayout.STATE_SETTLING && activityResultBinding.drawerLayout.isDrawerOpen(
+                        activityResultBinding.navigationHistoryFilter
                     ) == false
                 ) {
-                    this@ResultActivity.refreshHistoryFilterListView(ScrollRefresh.RESET_LIST)
+                    refreshDataBaseAdapterHistoryFilter(ScrollRefresh.RESET_LIST)
                 }
             }
         })
-        //listeners
-        this.bindingActivityResult.adderButtonHistoryOfSearch.setOnClickListener {
-            //click button adding new record history of search
-            Thread(this.TaskAddRecordHistoryFilter()).start()
+        activityResultBinding.adderButtonHistoryOfSearch.setOnClickListener {
+            Thread(TaskAddRecordHistoryFilter()).start()
         }
     }
 
-    //onresume
     override fun onResume() {
         super.onResume()
-        /* checking time */
         if (Checker.checkTimeOnPhone(
                 "",
                 TimeChecking.CHECKING_LICENCE
             ) == false
-        ) this.openMainActivity()
-        //make async task and execute
-        Thread(this.TaskUpdate()).start()
+        ) openMainActivity()
+        Thread(TaskUpdate()).start()
     }
 
-    //toolbar option menu
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        this.menuInflater.inflate(R.menu.toolbar_list_result, menu)
-        this.menu = menu
-        return super.onCreateOptionsMenu(menu)
+    override fun onCreateOptionsMenu(menuInput: Menu): Boolean {
+        menuInflater.inflate(R.menu.toolbar_list_result, menuInput)
+        menu = menuInput
+        return super.onCreateOptionsMenu(menuInput)
     }
 
-    //open main activity
-    fun openMainActivity() {
-        this.startActivity(Intent(this.applicationContext, MainActivity::class.java))
-        this.finish()
-    }
-
-    //open configuration values activity
-    private fun openConfigurationValuesActivity() {
-        this.startActivity(Intent(this.applicationContext, ConfigurationValuesActivity::class.java))
-    }
-
-    //open update activity
-    private fun openUpdateActivity() {
-        this.startActivity(Intent(this.applicationContext, UpdateActivity::class.java))
-    }
-
-    //open about activity
-    private fun openAboutActivity() {
-        this.startActivity(Intent(this.applicationContext, AboutActivity::class.java))
-    }
-
-    //option menu selected
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.toolbar_list_configuration_values -> {
-                this.openConfigurationValuesActivity()
+                openConfigurationValuesActivity()
                 true
             }
             R.id.toolbar_list_update -> {
-                this.openUpdateActivity()
+                openUpdateActivity()
                 true
             }
             R.id.toolbar_list_about -> {
-                this.openAboutActivity()
+                openAboutActivity()
                 true
             }
             else -> {
-                this.finish()
+                finish()
                 true
             }
         }
     }
+    //endregion
 
-    //click button delete record history of search
-    fun deleteRecordHistoryOfSearch(id: Int) {
-        Thread(this.TaskDeleteRecordHistoryFilter(id)).start()
+    //region open activity
+    private fun openMainActivity() {
+        startActivity(Intent(applicationContext, MainActivity::class.java))
+        finish()
     }
 
-    //refresh catalyst list view
-    fun refreshCatalystListView(scrollRefresh: ScrollRefresh) {
+    private fun openConfigurationValuesActivity() {
+        startActivity(Intent(applicationContext, CoursesActivity::class.java))
+    }
+
+    private fun openUpdateActivity() {
+        startActivity(Intent(applicationContext, UpdateActivity::class.java))
+    }
+
+    private fun openAboutActivity() {
+        startActivity(Intent(applicationContext, AboutActivity::class.java))
+    }
+    //endregion
+
+    //region refresh database adapter
+    fun refreshDatabaseAdapterCatalysts(scrollRefresh: ScrollRefresh) {
         val searchedText =
             SharedPreference.getKeyFromFile(SharedPreference.LAST_SEARCHED_TEXT)
         when (scrollRefresh) {
             ScrollRefresh.RESET_LIST -> {
                 //reset variable of scroll
-                this.scrollPreLastCatalyst = 0
-                this.scrollLimitCatalyst = MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST
+                scrollPreLastCatalyst = 0
+                scrollLimitCatalyst = Configuration.DATABASE_PAGINATE_LIMIT_CATALYST
                 //get data from database
                 val result =
-                    this.database.getDataCatalyst(searchedText, this.scrollLimitCatalyst.toString())
-                this.databaseAdapterCatalysts.clear()
-                this.databaseAdapterCatalysts.addAll(result)
+                    database.getDataCatalyst(searchedText, scrollLimitCatalyst.toString())
+                databaseAdapterCatalysts.clear()
+                databaseAdapterCatalysts.addAll(result)
             }
             ScrollRefresh.UPDATE_LIST -> {
                 //get data from database
                 val result =
-                    this.database.getDataCatalyst(searchedText, this.scrollLimitCatalyst.toString())
-                this.databaseAdapterCatalysts.clear()
-                this.databaseAdapterCatalysts.addAll(result)
+                    database.getDataCatalyst(searchedText, scrollLimitCatalyst.toString())
+                databaseAdapterCatalysts.clear()
+                databaseAdapterCatalysts.addAll(result)
             }
             ScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS -> {
                 //limit as offset in format: skip elements, count elements to get
                 val limitWithOffset: String =
-                    (this.scrollLimitCatalyst - MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST).toString() + "," + MyConfiguration.DATABASE_PAGINATE_LIMIT_CATALYST
+                    (scrollLimitCatalyst - Configuration.DATABASE_PAGINATE_LIMIT_CATALYST).toString() + "," + Configuration.DATABASE_PAGINATE_LIMIT_CATALYST
                 //get data from database
-                val result = this.database.getDataCatalyst(searchedText, limitWithOffset)
+                val result = database.getDataCatalyst(searchedText, limitWithOffset)
                 //add to list
-                this.databaseAdapterCatalysts.addAll(result)
+                databaseAdapterCatalysts.addAll(result)
             }
         }
-        if (this.databaseAdapterCatalysts.count == 0 && searchedText.isEmpty() == false) {
-            this.bindingActivityResult.catalystTextViewEmptyList.visibility = VISIBLE
+        if (databaseAdapterCatalysts.count == 0 && searchedText.isEmpty() == false) {
+            activityResultBinding.catalystTextViewEmptyList.visibility = VISIBLE
         } else {
-            this.bindingActivityResult.catalystTextViewEmptyList.visibility = GONE
+            activityResultBinding.catalystTextViewEmptyList.visibility = GONE
         }
     }
 
-    //refresh history filter list view
-    fun refreshHistoryFilterListView(scrollRefresh: ScrollRefresh) {
-        val nameCatalystOrBrandCarInput = this@ResultActivity.bindingActivityResult.editText.text.toString()
+    fun refreshDataBaseAdapterHistoryFilter(scrollRefresh: ScrollRefresh) {
+        val nameCatalystOrBrandCarInput =
+            activityResultBinding.editText.text.toString()
         when (scrollRefresh) {
             ScrollRefresh.RESET_LIST -> {
                 //reset variable of scroll
-                this.scrollPreLastHistoryFilter = 0
-                this.scrollLimitHistoryFilter =
-                    MyConfiguration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER
+                scrollPreLastHistoryFilter = 0
+                scrollLimitHistoryFilter =
+                    Configuration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER
                 //get data from database
                 val result =
-                    this.database.getDataHistoryFilter(this.scrollLimitHistoryFilter.toString(), nameCatalystOrBrandCarInput)
-                this.databaseAdapterHistoryFilter.clear()
-                this.databaseAdapterHistoryFilter.addAll(result)
+                    database.getDataHistoryFilter(
+                        scrollLimitHistoryFilter.toString(),
+                        nameCatalystOrBrandCarInput
+                    )
+                databaseAdapterHistoryFilter.clear()
+                databaseAdapterHistoryFilter.addAll(result)
             }
             ScrollRefresh.UPDATE_LIST -> {
                 //get data from database
                 val result =
-                    this.database.getDataHistoryFilter(this.scrollLimitHistoryFilter.toString(), nameCatalystOrBrandCarInput)
-                this.databaseAdapterHistoryFilter.clear()
-                this.databaseAdapterHistoryFilter.addAll(result)
+                    database.getDataHistoryFilter(
+                        scrollLimitHistoryFilter.toString(),
+                        nameCatalystOrBrandCarInput
+                    )
+                databaseAdapterHistoryFilter.clear()
+                databaseAdapterHistoryFilter.addAll(result)
             }
             ScrollRefresh.UPDATE_LIST_WITH_NEW_ITEMS -> {
                 //limit as offset in format: skip elements, count elements to get
                 val limitWithOffset: String =
-                    (this.scrollLimitHistoryFilter - MyConfiguration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER).toString() + "," + MyConfiguration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER
+                    (scrollLimitHistoryFilter - Configuration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER).toString() + "," + Configuration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER
                 //get data from database
-                val result = this.database.getDataHistoryFilter(limitWithOffset, nameCatalystOrBrandCarInput)
+                val result =
+                    database.getDataHistoryFilter(limitWithOffset, nameCatalystOrBrandCarInput)
                 //add to list
-                this.databaseAdapterHistoryFilter.addAll(result)
+                databaseAdapterHistoryFilter.addAll(result)
             }
         }
-        if (this.databaseAdapterHistoryFilter.count == 0) {
-            this.bindingActivityResult.historyFilterTextViewWaiting.visibility = GONE
-            this.bindingActivityResult.historyFilterTextViewEmptyList.visibility = VISIBLE
-            this.bindingActivityResult.historyFilterListView.visibility = GONE
+        if (databaseAdapterHistoryFilter.count == 0) {
+            activityResultBinding.historyFilterTextViewWaiting.visibility = GONE
+            activityResultBinding.historyFilterTextViewEmptyList.visibility = VISIBLE
+            activityResultBinding.historyFilterListView.visibility = GONE
         } else {
-            this.bindingActivityResult.historyFilterTextViewWaiting.visibility = GONE
-            this.bindingActivityResult.historyFilterTextViewEmptyList.visibility = GONE
-            this.bindingActivityResult.historyFilterListView.visibility = VISIBLE
+            activityResultBinding.historyFilterTextViewWaiting.visibility = GONE
+            activityResultBinding.historyFilterTextViewEmptyList.visibility = GONE
+            activityResultBinding.historyFilterListView.visibility = VISIBLE
         }
     }
+    //endregion
 
-    //update of app
+    fun deleteRecordHistoryOfSearch(id: Int) {
+        Thread(TaskDeleteRecordHistoryFilter(id)).start()
+    }
+
     inner class TaskUpdate : Runnable {
-        //fields
         private var updateCatalyst: Boolean = false
         private var databaseEmpty: Boolean = false
 
-        //run
         @Suppress("ReplaceCallWithBinaryOperator")
         override fun run() {
             //--- onPreExecute
-            this@ResultActivity.runOnUiThread {
-                //disable user interface on process application
+            runOnUiThread {
                 UserInterface.changeStatusLayout(
-                    this@ResultActivity.bindingActivityResult.drawerLayout,
+                    activityResultBinding.drawerLayout,
                     false
                 )
-                //visibility of content
-                this@ResultActivity.bindingActivityResult.catalystTextViewWaiting.visibility =
+                activityResultBinding.catalystTextViewWaiting.visibility =
                     VISIBLE
-                this@ResultActivity.bindingActivityResult.catalystTextViewEmptyDatabase.visibility =
+                activityResultBinding.catalystTextViewEmptyDatabase.visibility =
                     GONE
-                this@ResultActivity.bindingActivityResult.catalystListView.visibility = GONE
+                activityResultBinding.catalystListView.visibility = GONE
             }
             //--- doInBackground
             var processStep: ProcessStep = ProcessStep.NONE
             try {
-                //update value of courses - if from last update passed 6h
                 val lastTimestampUpdateCourseFromConfiguration: String =
                     SharedPreference.getKeyFromFile(SharedPreference.UPDATE_COURSE_TIMESTAMP)
-                if (lastTimestampUpdateCourseFromConfiguration.isEmpty() || ((Date().time - lastTimestampUpdateCourseFromConfiguration.toLong()) > (MyConfiguration.ONE_DAY_IN_MILLISECONDS / 4))) {
+                if (lastTimestampUpdateCourseFromConfiguration.isEmpty() || ((Date().time - lastTimestampUpdateCourseFromConfiguration.toLong()) > (Configuration.ONE_DAY_IN_MILLISECONDS / 4))) {
                     Course.getValues(database)
                 }
-                //flag update catalyst - if amount in spreadsheet is greater than in local database
-                val databaseCatalystCount: Int = this@ResultActivity.database.getCountCatalyst()
-                this.databaseEmpty = databaseCatalystCount == 0
+                val databaseCatalystCount: Int = database.getCountCatalyst()
+                databaseEmpty = databaseCatalystCount == 0
                 val spreadsheetCatalystCount: Int = Spreadsheet.getCountCatalyst()
-                this.updateCatalyst =
+                updateCatalyst =
                     databaseCatalystCount == 0 || spreadsheetCatalystCount > databaseCatalystCount
-                /* authentication */
                 val user: JSONArray? =
                     Spreadsheet.getDataLogin(SharedPreference.getKeyFromFile(SharedPreference.LOGIN))
                 if (user == null) {
                     processStep = ProcessStep.USER_ELAPSED_DATE_LICENCE
                     throw Exception()
                 }
-                /* checking time */
                 if (Checker.checkTimeOnPhone(
-                        user.getString(MyConfiguration.SPREADSHEET_USERS_LICENCE),
+                        user.getString(Configuration.SPREADSHEET_USERS_LICENCE),
                         TimeChecking.PARAMETER_IS_GREATER_THAN_NOW
                     ) == false
                 ) {
                     processStep = ProcessStep.USER_ELAPSED_DATE_LICENCE
                     throw Exception()
                 }
-                /* save configuration */
-                //save licence date
                 SharedPreference.setKeyToFile(
                     SharedPreference.LICENCE_DATE_OF_END,
                     user.getString(
-                        MyConfiguration.SPREADSHEET_USERS_LICENCE
+                        Configuration.SPREADSHEET_USERS_LICENCE
                     )
                 )
-                //save discount
                 SharedPreference.setKeyToFile(
                     SharedPreference.DISCOUNT,
                     Parser.parseStringToInt(
                         user.getString(
-                            MyConfiguration.SPREADSHEET_USERS_DISCOUNT
+                            Configuration.SPREADSHEET_USERS_DISCOUNT
                         )
                     ).toString()
                 )
-                //save visibility
                 SharedPreference.setKeyToFile(
                     SharedPreference.VISIBILITY,
                     Parser.parseStringBooleanToInt(
                         user.getString(
-                            MyConfiguration.SPREADSHEET_USERS_VISIBILITY
+                            Configuration.SPREADSHEET_USERS_VISIBILITY
                         )
                     ).toString()
                 )
-                //save minus elements
                 SharedPreference.setKeyToFile(
                     SharedPreference.MINUS_PLATINUM,
                     Parser.parseStringToInt(
                         user.getString(
-                            MyConfiguration.SPREADSHEET_USERS_MINUS_PLATINUM
+                            Configuration.SPREADSHEET_USERS_MINUS_PLATINUM
                         )
                     ).toString()
                 )
@@ -512,7 +465,7 @@ class ResultActivity : AppCompatActivity() {
                     SharedPreference.MINUS_PALLADIUM,
                     Parser.parseStringToInt(
                         user.getString(
-                            MyConfiguration.SPREADSHEET_USERS_MINUS_PALLADIUM
+                            Configuration.SPREADSHEET_USERS_MINUS_PALLADIUM
                         )
                     ).toString()
                 )
@@ -520,11 +473,10 @@ class ResultActivity : AppCompatActivity() {
                     SharedPreference.MINUS_RHODIUM,
                     Parser.parseStringToInt(
                         user.getString(
-                            MyConfiguration.SPREADSHEET_USERS_MINUS_RHODIUM
+                            Configuration.SPREADSHEET_USERS_MINUS_RHODIUM
                         )
                     ).toString()
                 )
-                //can run service - assuming that app has connection to internet
                 val workRequest: WorkRequest =
                     OneTimeWorkRequestBuilder<WorkerUpload>().build()
                 WorkManager
@@ -532,58 +484,53 @@ class ResultActivity : AppCompatActivity() {
                     .enqueue(workRequest)
                 processStep = ProcessStep.SUCCESS
             } catch (e: Exception) {
-                //nothing
+                //
             }
             //--- onPostExecute
-            this@ResultActivity.runOnUiThread {
-                //if elapsed time then go to main activity
+            runOnUiThread {
                 if (processStep == ProcessStep.USER_ELAPSED_DATE_LICENCE) {
-                    /* set licence as empty */
                     SharedPreference.setKeyToFile(
                         SharedPreference.LICENCE_DATE_OF_END,
                         ""
                     )
-                    this@ResultActivity.openMainActivity()
+                    openMainActivity()
                 }
-                //visibility of content
-                if (this.databaseEmpty) {
-                    this@ResultActivity.bindingActivityResult.catalystTextViewWaiting.visibility =
+                if (databaseEmpty) {
+                    activityResultBinding.catalystTextViewWaiting.visibility =
                         GONE
-                    this@ResultActivity.bindingActivityResult.catalystTextViewEmptyDatabase.visibility =
+                    activityResultBinding.catalystTextViewEmptyDatabase.visibility =
                         VISIBLE
-                    this@ResultActivity.bindingActivityResult.catalystListView.visibility = GONE
+                    activityResultBinding.catalystListView.visibility = GONE
                 } else {
-                    this@ResultActivity.bindingActivityResult.catalystTextViewWaiting.visibility =
+                    activityResultBinding.catalystTextViewWaiting.visibility =
                         GONE
-                    this@ResultActivity.bindingActivityResult.catalystTextViewEmptyDatabase.visibility =
+                    activityResultBinding.catalystTextViewEmptyDatabase.visibility =
                         GONE
-                    this@ResultActivity.bindingActivityResult.catalystListView.visibility = VISIBLE
+                    activityResultBinding.catalystListView.visibility = VISIBLE
                 }
-                if (this@ResultActivity.menu != null) {
-                    //set visibility of ability update catalyst
-                    if (this.updateCatalyst) {
+                if (menu != null) {
+                    if (updateCatalyst) {
                         Dynamic.IS_AVAILABLE_UPDATE = true
-                        this@ResultActivity.menu!!.getItem(1).icon = ContextCompat.getDrawable(
+                        menu!!.getItem(1).icon = ContextCompat.getDrawable(
                             this@ResultActivity.applicationContext,
                             R.mipmap.ic_action_update_catalyst_color
                         )
                     } else {
-                        this@ResultActivity.menu!!.getItem(1).icon = ContextCompat.getDrawable(
+                        menu!!.getItem(1).icon = ContextCompat.getDrawable(
                             this@ResultActivity.applicationContext,
                             R.mipmap.ic_action_update_catalyst
                         )
                     }
-                    //set visibility of status update courses
                     if (Course.isCoursesSelected()) {
                         val actualCoursesDate =
                             SharedPreference.getKeyFromFile(SharedPreference.ACTUAL_COURSES_DATE)
                         if (LocalDate.now().toString().equals(actualCoursesDate)) {
-                            this@ResultActivity.menu!!.getItem(0).icon = ContextCompat.getDrawable(
+                            menu!!.getItem(0).icon = ContextCompat.getDrawable(
                                 this@ResultActivity.applicationContext,
                                 R.mipmap.ic_action_values
                             )
                         } else {
-                            this@ResultActivity.menu!!.getItem(0).icon = ContextCompat.getDrawable(
+                            menu!!.getItem(0).icon = ContextCompat.getDrawable(
                                 this@ResultActivity.applicationContext,
                                 R.mipmap.ic_action_values_color
                             )
@@ -599,7 +546,6 @@ class ResultActivity : AppCompatActivity() {
                             SharedPreference.getKeyFromFile(SharedPreference.PALLADIUM_DATE)
                         val rhodiumDate =
                             SharedPreference.getKeyFromFile(SharedPreference.RHODIUM_DATE)
-                        //yellow when dates are different
                         if (LocalDate.now().toString()
                                 .equals(usdDate) && usdDate.equals(eurDate) && eurDate.equals(
                                 platinumDate
@@ -607,39 +553,33 @@ class ResultActivity : AppCompatActivity() {
                                 palladiumDate
                             ) && palladiumDate.equals(rhodiumDate)
                         ) {
-                            this@ResultActivity.menu!!.getItem(0).icon = ContextCompat.getDrawable(
+                            menu!!.getItem(0).icon = ContextCompat.getDrawable(
                                 this@ResultActivity.applicationContext,
                                 R.mipmap.ic_action_values
                             )
                         } else {
-                            this@ResultActivity.menu!!.getItem(0).icon = ContextCompat.getDrawable(
+                            menu!!.getItem(0).icon = ContextCompat.getDrawable(
                                 this@ResultActivity.applicationContext,
                                 R.mipmap.ic_action_values_color
                             )
                         }
                     }
                 }
-                //refresh list view
-                this@ResultActivity.refreshCatalystListView(ScrollRefresh.UPDATE_LIST)
-                //enable user interface on process application
+                refreshDatabaseAdapterCatalysts(ScrollRefresh.UPDATE_LIST)
                 UserInterface.changeStatusLayout(
-                    this@ResultActivity.bindingActivityResult.drawerLayout,
+                    activityResultBinding.drawerLayout,
                     true
                 )
             }
         }
     }
 
-    //add history filter
     inner class TaskAddRecordHistoryFilter : Runnable {
-        //fields
-        //run
         override fun run() {
             //--- onPreExecute
-            this@ResultActivity.runOnUiThread {
-                //disable user interface on process application
+            runOnUiThread {
                 UserInterface.changeStatusLayout(
-                    this@ResultActivity.bindingActivityResult.drawerLayout,
+                    activityResultBinding.drawerLayout,
                     false
                 )
             }
@@ -650,102 +590,91 @@ class ResultActivity : AppCompatActivity() {
                     SharedPreference.getKeyFromFile(SharedPreference.LAST_SEARCHED_TEXT)
                 searchedText = ("\\s{2,}").toRegex().replace(searchedText.trim(), " ")
                 if (searchedText.isEmpty() == false) {
-                    this@ResultActivity.database.deleteHistoryFilter(searchedText)
-                    this@ResultActivity.database.insertHistoryFilter(searchedText)
+                    database.deleteHistoryFilter(searchedText)
+                    database.insertHistoryFilter(searchedText)
                     processStep = ProcessStep.SUCCESS
                 }
             } catch (e: Exception) {
-                //nothing
                 processStep = ProcessStep.UNHANDLED_EXCEPTION
             }
             //--- onPostExecute
-            this@ResultActivity.runOnUiThread {
-                //do job depends on situation
+            runOnUiThread {
                 when (processStep) {
                     ProcessStep.NONE -> {
                         Toast.makeText(
                             this@ResultActivity.applicationContext,
-                            MyConfiguration.HISTORY_FILTER_CANNOT_SAVE_EMPTY,
+                            Configuration.HISTORY_FILTER_CANNOT_SAVE_EMPTY,
                             Toast.LENGTH_LONG
                         ).show()
                     }
                     ProcessStep.UNHANDLED_EXCEPTION -> {
                         Toast.makeText(
                             this@ResultActivity.applicationContext,
-                            MyConfiguration.UNHANDLED_EXCEPTION,
+                            Configuration.UNHANDLED_EXCEPTION,
                             Toast.LENGTH_LONG
                         ).show()
                     }
                     ProcessStep.SUCCESS -> {
                         Toast.makeText(
                             this@ResultActivity.applicationContext,
-                            MyConfiguration.HISTORY_FILTER_ADDED,
+                            Configuration.HISTORY_FILTER_ADDED,
                             Toast.LENGTH_LONG
                         ).show()
                     }
                     else -> {
-                        //nothing
+                        //
                     }
                 }
-                //enable user interface on process application
                 UserInterface.changeStatusLayout(
-                    this@ResultActivity.bindingActivityResult.drawerLayout,
+                    activityResultBinding.drawerLayout,
                     true
                 )
             }
         }
     }
 
-    //delete history filter
     inner class TaskDeleteRecordHistoryFilter(idInput: Int) : Runnable {
-        //fields
         private var id: Int = idInput
 
-        //run
         override fun run() {
             //--- onPreExecute
-            this@ResultActivity.runOnUiThread {
-                //disable user interface on process application
+            runOnUiThread {
                 UserInterface.changeStatusLayout(
-                    this@ResultActivity.bindingActivityResult.drawerLayout,
+                    activityResultBinding.drawerLayout,
                     false
                 )
             }
             //--- doInBackground
             var processStep: ProcessStep = ProcessStep.SUCCESS
             try {
-                this@ResultActivity.database.deleteHistoryFilter(this.id)
+                database.deleteHistoryFilter(id)
             } catch (e: Exception) {
-                //nothing
                 processStep = ProcessStep.UNHANDLED_EXCEPTION
             }
             //--- onPostExecute
-            this@ResultActivity.runOnUiThread {
-                //do job depends on situation
+            runOnUiThread {
                 when (processStep) {
                     ProcessStep.UNHANDLED_EXCEPTION -> {
                         Toast.makeText(
                             this@ResultActivity.applicationContext,
-                            MyConfiguration.UNHANDLED_EXCEPTION,
+                            Configuration.UNHANDLED_EXCEPTION,
                             Toast.LENGTH_LONG
                         ).show()
                     }
                     ProcessStep.SUCCESS -> {
                         Toast.makeText(
                             this@ResultActivity.applicationContext,
-                            MyConfiguration.HISTORY_FILTER_DELETED,
+                            Configuration.HISTORY_FILTER_DELETED,
                             Toast.LENGTH_LONG
                         ).show()
                     }
                     else -> {
-                        //nothing
+                        //
                     }
                 }
-                //refresh list
-                this@ResultActivity.refreshHistoryFilterListView(ScrollRefresh.UPDATE_LIST)
-                //enable user interface on process application
+                refreshDataBaseAdapterHistoryFilter(ScrollRefresh.UPDATE_LIST)
                 UserInterface.changeStatusLayout(
-                    this@ResultActivity.bindingActivityResult.drawerLayout,
+                    activityResultBinding.drawerLayout,
                     true
                 )
             }
