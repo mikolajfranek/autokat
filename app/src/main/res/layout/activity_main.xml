@@ -34,7 +34,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="5dp"
-        android:background="@drawable/drawable_rectangle"
+        android:background="@drawable/rectangle"
         android:enabled="true"
         android:fontFamily="sans-serif"
         android:hint="@string/activity_main_wprowadz_nazwe_uzytkownika"

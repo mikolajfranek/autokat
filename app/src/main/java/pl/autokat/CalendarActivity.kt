@@ -71,7 +71,7 @@ class CalendarActivity : AppCompatActivity() {
                     when (day.date) {
                         selectedDate -> {
                             textView.setTextColor(Configuration.COLOR_WHITE)
-                            textView.setBackgroundResource(R.drawable.drawable_selectday_background)
+                            textView.setBackgroundResource(R.drawable.selected_day)
                         }
                         else -> {
                             textView.setTextColor(Configuration.COLOR_SUCCESS)
@@ -79,7 +79,7 @@ class CalendarActivity : AppCompatActivity() {
                             if (mapDaysCoursesOfYearMonth.contains(keyYearMonth)) {
                                 val keyDate = Formatter.formatStringDate(day.date.toString())
                                 if (mapDaysCoursesOfYearMonth[keyYearMonth]!!.contains(keyDate)) {
-                                    textView.setBackgroundResource(R.drawable.drawable_selectedday_background)
+                                    textView.setBackgroundResource(R.drawable.courses_day)
                                 } else {
                                     textView.background = null
                                 }
@@ -141,7 +141,7 @@ class CalendarActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.toolbar_list_calendar, menu)
+        menuInflater.inflate(R.menu.calendar, menu)
         menuItemCalendarCheck = menu.getItem(0)
         return super.onCreateOptionsMenu(menu)
     }

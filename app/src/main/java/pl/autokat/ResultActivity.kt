@@ -246,7 +246,7 @@ class ResultActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menuInput: Menu): Boolean {
-        menuInflater.inflate(R.menu.toolbar_list_result, menuInput)
+        menuInflater.inflate(R.menu.result, menuInput)
         menu = menuInput
         return super.onCreateOptionsMenu(menuInput)
     }
