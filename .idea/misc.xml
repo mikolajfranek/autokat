@@ -4,13 +4,17 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../../layout/custom_preview.xml" value="0.21614583333333334" />
+        <entry key="app/src/main/res/drawable/courses_day.xml" value="0.222" />
         <entry key="app/src/main/res/drawable/drawable_check.xml" value="0.215" />
         <entry key="app/src/main/res/drawable/drawable_checked.xml" value="0.2725" />
         <entry key="app/src/main/res/drawable/drawable_rectangle.xml" value="0.236" />
         <entry key="app/src/main/res/drawable/drawable_selectday_background.xml" value="0.2515" />
         <entry key="app/src/main/res/drawable/drawable_selectedday_background.xml" value="0.2725" />
         <entry key="app/src/main/res/drawable/ic_check.xml" value="0.2585" />
+        <entry key="app/src/main/res/drawable/mark.xml" value="0.222" />
+        <entry key="app/src/main/res/drawable/rectangle.xml" value="0.222" />
         <entry key="app/src/main/res/drawable/selectedDay_background.xml" value="0.2585" />
+        <entry key="app/src/main/res/drawable/selected_day.xml" value="0.222" />
         <entry key="app/src/main/res/drawable/selectedday_background.xml" value="0.236" />
         <entry key="app/src/main/res/layout/activity_about.xml" value="0.19202898550724637" />
         <entry key="app/src/main/res/layout/activity_calendar.xml" value="0.2015625" />

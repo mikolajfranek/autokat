@@ -25,18 +25,32 @@ class MainActivity : AppCompatActivity() {
     private lateinit var activityMainBinding: ActivityMainBinding
     private val requestCodeReadPhoneState: Int = 0
 
-    //region override
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    //region methods of override
+    private fun authenticate(login: String, hasClickedButton: Boolean) {
+        Thread(RunnableAuthentication(login, hasClickedButton)).start()
+    }
+
+    private fun init() {
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         val view = activityMainBinding.root
         setContentView(view)
         setSupportActionBar(activityMainBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         SharedPreference.init(this)
+    }
+
+    private fun setClickListeners() {
         activityMainBinding.loginButton.setOnClickListener {
-            tryLogin(activityMainBinding.editText.text.toString(), true)
+            authenticate(activityMainBinding.editText.text.toString(), true)
         }
+    }
+    //endregion
+
+    //region override
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        init()
+        setClickListeners()
     }
 
     override fun onResume() {
@@ -52,7 +66,7 @@ class MainActivity : AppCompatActivity() {
                 requestCodeReadPhoneState
             )
         } else {
-            tryLogin(
+            authenticate(
                 SharedPreference.getKeyFromFile(SharedPreference.LOGIN),
                 false
             )
@@ -68,7 +82,7 @@ class MainActivity : AppCompatActivity() {
         when (requestCode) {
             requestCodeReadPhoneState -> {
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    tryLogin(
+                    authenticate(
                         SharedPreference.getKeyFromFile(SharedPreference.LOGIN),
                         false
                     )
@@ -103,7 +117,7 @@ class MainActivity : AppCompatActivity() {
     }
     //endregion
 
-    //region open activity
+    //region open activities
     private fun openAboutActivity() {
         startActivity(Intent(applicationContext, AboutActivity::class.java))
     }
@@ -114,19 +128,18 @@ class MainActivity : AppCompatActivity() {
     }
     //endregion
 
-    //region ID of user
-    fun decoratorIDOfUser(applicationContext: Context): String {
-        var identificator: String = getIDOfUser(applicationContext)
-        identificator = ("[^A-Za+-z0-9]+").toRegex().replace(identificator, "")
-        if (identificator.isEmpty() == false) return identificator
+    //region id of user
+    fun decoratorIdOfUser(): String {
+        var id: String = getIdOfUser()
+        id = ("[^A-Za+-z0-9]+").toRegex().replace(id, "")
+        if (id.isEmpty() == false) return id
         throw Exception()
     }
 
-    @SuppressLint("MissingPermission", "HardwareIds")
-    fun getIDOfUser(applicationContext: Context): String {
-        var serialId = ""
+    @SuppressLint("HardwareIds")
+    private fun getIdForSdkGreaterOrEqualTo26(): String {
         try {
-            serialId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Build.getSerial()
             } else {
                 @Suppress("DEPRECATION")
@@ -135,39 +148,59 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             //
         }
-        if (serialId.isEmpty() == false) return serialId
+        return ""
+    }
+
+    @SuppressLint("MissingPermission", "HardwareIds")
+    private fun getIdPhoneNumber(): String {
         try {
-            serialId =
-                (applicationContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).line1Number.toString()
+            return (applicationContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).line1Number.toString()
         } catch (e: Exception) {
             //
         }
-        if (serialId.isEmpty() == false) return serialId
+        return ""
+    }
+
+    @SuppressLint("HardwareIds")
+    private fun getIdSimNumber(): String {
         try {
-            serialId =
-                (applicationContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+            return (applicationContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
         } catch (e: Exception) {
             //
         }
-        if (serialId.isEmpty() == false) return serialId
+        return ""
+    }
+
+    @SuppressLint("HardwareIds")
+    private fun getIdAndroidId(): String {
         try {
-            serialId = Settings.Secure.getString(
+            return Settings.Secure.getString(
                 applicationContext.contentResolver,
                 Settings.Secure.ANDROID_ID
             )
         } catch (e: Exception) {
             //
         }
+        return ""
+    }
+
+    private fun getIdOfUser(): String {
+        var serialId = ""
+        serialId = getIdForSdkGreaterOrEqualTo26()
+        if (serialId.isEmpty() == false) return serialId
+        serialId = getIdPhoneNumber()
+        if (serialId.isEmpty() == false) return serialId
+        serialId = getIdSimNumber()
+        if (serialId.isEmpty() == false) return serialId
+        serialId = getIdAndroidId()
         if (serialId.isEmpty() == false) return serialId
         throw Exception()
     }
     //endregion
 
-    private fun tryLogin(login: String, hasClickedButton: Boolean) {
-        Thread(TaskTryLogin(login, hasClickedButton)).start()
-    }
 
-    inner class TaskTryLogin(loginInput: String, hasClickedButtonInput: Boolean) : Runnable {
+
+    inner class RunnableAuthentication(loginInput: String, hasClickedButtonInput: Boolean) : Runnable {
         private var login: String = loginInput.trim()
         private var hasClickedButton: Boolean = hasClickedButtonInput
 
@@ -227,7 +260,7 @@ class MainActivity : AppCompatActivity() {
                                     processStep = ProcessStep.USER_ELAPSED_DATE_LICENCE
                                 } else {
                                     val serialId: String =
-                                        decoratorIDOfUser(this@MainActivity.applicationContext)
+                                        decoratorIdOfUser()
                                     if (user.getString(Configuration.SPREADSHEET_USERS_UUID)
                                             .isEmpty()
                                     ) {

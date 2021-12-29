@@ -21,8 +21,8 @@ import org.json.JSONArray
 import pl.autokat.components.*
 import pl.autokat.components.Formatter
 import pl.autokat.databinding.ActivityResultBinding
-import pl.autokat.databinding.MyItemCatalystBinding
-import pl.autokat.databinding.MyItemHistoryFilterBinding
+import pl.autokat.databinding.CatalystBinding
+import pl.autokat.databinding.HistoryFilterBinding
 import pl.autokat.enums.ProcessStep
 import pl.autokat.enums.ScrollRefresh
 import pl.autokat.enums.TimeChecking
@@ -35,8 +35,8 @@ import java.util.*
 class ResultActivity : AppCompatActivity() {
 
     private lateinit var activityResultBinding: ActivityResultBinding
-    private lateinit var myItemCatalystBinding: MyItemCatalystBinding
-    private lateinit var myItemHistoryFilterBinding: MyItemHistoryFilterBinding
+    private lateinit var catalystBinding: CatalystBinding
+    private lateinit var historyFilterBinding: HistoryFilterBinding
     private lateinit var database: Database
     private lateinit var databaseAdapterCatalysts: ArrayAdapter<ModelCatalyst>
     private var scrollPreLastCatalyst: Int = 0
@@ -76,19 +76,19 @@ class ResultActivity : AppCompatActivity() {
         })
         databaseAdapterCatalysts = object : ArrayAdapter<ModelCatalyst>(
             applicationContext,
-            R.layout.my_item_catalyst
+            R.layout.catalyst
         ) {
             @SuppressLint("ViewHolder")
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                myItemCatalystBinding =
-                    MyItemCatalystBinding.inflate(this@ResultActivity.layoutInflater, parent, false)
-                val viewItem = myItemCatalystBinding.root
+                catalystBinding =
+                    CatalystBinding.inflate(this@ResultActivity.layoutInflater, parent, false)
+                val viewItem = catalystBinding.root
                 val itemCatalyst = getItem(position)!!
                 val visibilityCatalyst: Boolean = SharedPreference.getKeyFromFile(
                     SharedPreference.VISIBILITY
                 ).toInt() == 1
-                myItemCatalystBinding.imageView.setImageBitmap(itemCatalyst.thumbnail)
-                myItemCatalystBinding.imageView.setOnLongClickListener(
+                catalystBinding.imageView.setImageBitmap(itemCatalyst.thumbnail)
+                catalystBinding.imageView.setOnLongClickListener(
                     OnLongClickListener {
                         Toast.makeText(
                             this@ResultActivity.applicationContext,
@@ -98,35 +98,35 @@ class ResultActivity : AppCompatActivity() {
                             .show()
                         return@OnLongClickListener true
                     })
-                myItemCatalystBinding.imageView.setOnClickListener {
+                catalystBinding.imageView.setOnClickListener {
                     val intent =
                         Intent(this@ResultActivity.applicationContext, PictureActivity::class.java)
                     intent.putExtra("urlPicture", itemCatalyst.urlPicture)
                     this@ResultActivity.startActivity(intent)
                 }
-                myItemCatalystBinding.brand.text = itemCatalyst.brand
-                myItemCatalystBinding.type.text = itemCatalyst.type
-                myItemCatalystBinding.name.text = itemCatalyst.name
+                catalystBinding.brand.text = itemCatalyst.brand
+                catalystBinding.type.text = itemCatalyst.type
+                catalystBinding.name.text = itemCatalyst.name
                 val weightText = Formatter.formatStringFloat(
                     itemCatalyst.weight.toString(),
                     3
                 ) + " kg"
-                myItemCatalystBinding.weight.text = weightText
+                catalystBinding.weight.text = weightText
                 val platinumText = Formatter.formatStringFloat(
                     if (visibilityCatalyst) itemCatalyst.platinum.toString() else "0.0",
                     3
                 ) + " g/kg"
-                myItemCatalystBinding.platinum.text = platinumText
+                catalystBinding.platinum.text = platinumText
                 val palladiumText = Formatter.formatStringFloat(
                     if (visibilityCatalyst) itemCatalyst.palladium.toString() else "0.0",
                     3
                 ) + " g/kg"
-                myItemCatalystBinding.palladium.text = palladiumText
+                catalystBinding.palladium.text = palladiumText
                 val rhodiumText = Formatter.formatStringFloat(
                     if (visibilityCatalyst) itemCatalyst.rhodium.toString() else "0.0",
                     3
                 ) + " g/kg"
-                myItemCatalystBinding.rhodium.text = rhodiumText
+                catalystBinding.rhodium.text = rhodiumText
                 var pricePl = itemCatalyst.countPricePln()
                 val courseEurlnFromConfiguration: String = SharedPreference.getKeyFromFile(
                     SharedPreference.EUR_PLN
@@ -145,15 +145,15 @@ class ResultActivity : AppCompatActivity() {
                     2
                 ) + " zł")
                 if (visibilityCatalyst) {
-                    myItemCatalystBinding.priceEur.text = resultPriceEur
-                    myItemCatalystBinding.pricePln.text = resultPricePln
-                    myItemCatalystBinding.rowPlattinum.visibility = VISIBLE
-                    myItemCatalystBinding.rowPalladium.visibility = VISIBLE
-                    myItemCatalystBinding.rowRhodium.visibility = VISIBLE
+                    catalystBinding.priceEur.text = resultPriceEur
+                    catalystBinding.pricePln.text = resultPricePln
+                    catalystBinding.rowPlattinum.visibility = VISIBLE
+                    catalystBinding.rowPalladium.visibility = VISIBLE
+                    catalystBinding.rowRhodium.visibility = VISIBLE
                 } else {
-                    myItemCatalystBinding.priceEurWithoutMetal.text =
+                    catalystBinding.priceEurWithoutMetal.text =
                         resultPriceEur
-                    myItemCatalystBinding.pricePlnWithoutMetal.text =
+                    catalystBinding.pricePlnWithoutMetal.text =
                         resultPricePln
                 }
                 return viewItem
@@ -179,21 +179,21 @@ class ResultActivity : AppCompatActivity() {
         })
         databaseAdapterHistoryFilter = object : ArrayAdapter<ModelHistoryFilter>(
             applicationContext,
-            R.layout.my_item_history_filter
+            R.layout.history_filter
         ) {
             @SuppressLint("ViewHolder")
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                myItemHistoryFilterBinding = MyItemHistoryFilterBinding.inflate(
+                historyFilterBinding = HistoryFilterBinding.inflate(
                     this@ResultActivity.layoutInflater, parent, false
                 )
-                val viewItem = myItemHistoryFilterBinding.root
+                val viewItem = historyFilterBinding.root
                 val itemHistoryFilter = getItem(position)!!
-                myItemHistoryFilterBinding.name.text = itemHistoryFilter.name
+                historyFilterBinding.name.text = itemHistoryFilter.name
                 viewItem.setOnClickListener {
                     activityResultBinding.editText.setText(itemHistoryFilter.name)
                     activityResultBinding.drawerLayout.closeDrawers()
                 }
-                myItemHistoryFilterBinding.crossDelete.setOnClickListener {
+                historyFilterBinding.crossDelete.setOnClickListener {
                     deleteRecordHistoryOfSearch(itemHistoryFilter.id)
                 }
                 return viewItem
@@ -273,7 +273,7 @@ class ResultActivity : AppCompatActivity() {
     }
     //endregion
 
-    //region open activity
+    //region open activities
     private fun openMainActivity() {
         startActivity(Intent(applicationContext, MainActivity::class.java))
         finish()
