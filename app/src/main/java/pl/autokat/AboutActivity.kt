@@ -22,7 +22,7 @@ class AboutActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         SharedPreference.init(this)
         val licenceDateOfEnd: String =
-            SharedPreference.getKeyFromFile(SharedPreference.LICENCE_DATE_OF_END)
+            SharedPreference.getKey(SharedPreference.LICENCE_DATE_OF_END)
         if (licenceDateOfEnd.isEmpty() == false) {
             activityAboutBinding.licence.visibility = VISIBLE
             val licenceText = "Licencja ważna do: " + Formatter.formatStringDate(licenceDateOfEnd)

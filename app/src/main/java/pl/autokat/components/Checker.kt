@@ -21,7 +21,7 @@ class Checker {
                         (json.getLong("unixtime") * 1000L) - Configuration.ONE_HOUR_IN_MILLISECONDS
                     val timestampPhone: Long = Date().time
                     if (timestampPhone > timestampWeb) {
-                        SharedPreference.setKeyToFile(
+                        SharedPreference.setKey(
                             SharedPreference.CURRENT_TIMESTAMP,
                             timestampPhone.toString()
                         )
@@ -38,15 +38,15 @@ class Checker {
                 TimeChecking.CHECKING_LICENCE -> {
                     val timestamp: Long = Date().time
                     val timestampLicence: Long = (SimpleDateFormat("yyyy-MM-dd").parse(
-                        SharedPreference.getKeyFromFile(
+                        SharedPreference.getKey(
                             SharedPreference.LICENCE_DATE_OF_END
                         )
                     )!!.time) + Configuration.ONE_DAY_IN_MILLISECONDS
-                    val timestampFromConfiguration: Long = SharedPreference.getKeyFromFile(
+                    val timestampFromConfiguration: Long = SharedPreference.getKey(
                         SharedPreference.CURRENT_TIMESTAMP
                     ).toLong()
                     if ((timestamp > timestampFromConfiguration) && (timestampLicence > timestamp)) {
-                        SharedPreference.setKeyToFile(
+                        SharedPreference.setKey(
                             SharedPreference.CURRENT_TIMESTAMP,
                             timestamp.toString()
                         )

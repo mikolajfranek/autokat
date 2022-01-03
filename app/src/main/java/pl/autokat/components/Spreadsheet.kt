@@ -62,8 +62,8 @@ class Spreadsheet {
             val (_, response, result) = Fuel.post(TOKEN_URL).body(bodyJson).responseString()
             if (response.statusCode != 200) throw UnknownHostException()
             val accessToken = JSONObject(result.get()).getString("access_token")
-            SharedPreference.setKeyToFile(SharedPreference.ACCESS_TOKEN, accessToken)
-            SharedPreference.setKeyToFile(
+            SharedPreference.setKey(SharedPreference.ACCESS_TOKEN, accessToken)
+            SharedPreference.setKey(
                 SharedPreference.ACCESS_TOKEN_TIMESTAMP,
                 timestamp.toString()
             )
@@ -71,13 +71,13 @@ class Spreadsheet {
 
         private fun getAccessToken(): String {
             val accessTokenTimestamp: String =
-                SharedPreference.getKeyFromFile(SharedPreference.ACCESS_TOKEN_TIMESTAMP)
+                SharedPreference.getKey(SharedPreference.ACCESS_TOKEN_TIMESTAMP)
             val generateNewAccessToken: Boolean =
                 (Date().time - (if (accessTokenTimestamp.isEmpty()) (0).toLong() else accessTokenTimestamp.toLong())) > Configuration.ONE_HOUR_IN_MILLISECONDS
             if (generateNewAccessToken) {
                 generateNewAccessToken()
             }
-            return SharedPreference.getKeyFromFile(SharedPreference.ACCESS_TOKEN)
+            return SharedPreference.getKey(SharedPreference.ACCESS_TOKEN)
         }
 
         fun getValueStringFromDocsApi(jsonArray: JSONArray, index: Int): String {

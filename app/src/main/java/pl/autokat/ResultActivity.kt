@@ -59,7 +59,7 @@ class ResultActivity : AppCompatActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         database = Database(applicationContext)
         activityResultBinding.editText.setText(
-            SharedPreference.getKeyFromFile(
+            SharedPreference.getKey(
                 SharedPreference.LAST_SEARCHED_TEXT
             )
         )
@@ -67,7 +67,7 @@ class ResultActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                SharedPreference.setKeyToFile(
+                SharedPreference.setKey(
                     SharedPreference.LAST_SEARCHED_TEXT,
                     s.toString()
                 )
@@ -84,7 +84,7 @@ class ResultActivity : AppCompatActivity() {
                     CatalystBinding.inflate(this@ResultActivity.layoutInflater, parent, false)
                 val viewItem = catalystBinding.root
                 val itemCatalyst = getItem(position)!!
-                val visibilityCatalyst: Boolean = SharedPreference.getKeyFromFile(
+                val visibilityCatalyst: Boolean = SharedPreference.getKey(
                     SharedPreference.VISIBILITY
                 ).toInt() == 1
                 catalystBinding.imageView.setImageBitmap(itemCatalyst.thumbnail)
@@ -128,7 +128,7 @@ class ResultActivity : AppCompatActivity() {
                 ) + " g/kg"
                 catalystBinding.rhodium.text = rhodiumText
                 var pricePl = itemCatalyst.countPricePln()
-                val courseEurlnFromConfiguration: String = SharedPreference.getKeyFromFile(
+                val courseEurlnFromConfiguration: String = SharedPreference.getKey(
                     SharedPreference.EUR_PLN
                 )
                 val courseEurPln: Float =
@@ -295,7 +295,7 @@ class ResultActivity : AppCompatActivity() {
     //region refresh database adapter
     fun refreshDatabaseAdapterCatalysts(scrollRefresh: ScrollRefresh) {
         val searchedText =
-            SharedPreference.getKeyFromFile(SharedPreference.LAST_SEARCHED_TEXT)
+            SharedPreference.getKey(SharedPreference.LAST_SEARCHED_TEXT)
         when (scrollRefresh) {
             ScrollRefresh.RESET_LIST -> {
                 //reset variable of scroll
@@ -408,7 +408,7 @@ class ResultActivity : AppCompatActivity() {
             var processStep: ProcessStep = ProcessStep.NONE
             try {
                 val lastTimestampUpdateCourseFromConfiguration: String =
-                    SharedPreference.getKeyFromFile(SharedPreference.UPDATE_COURSE_TIMESTAMP)
+                    SharedPreference.getKey(SharedPreference.UPDATE_COURSE_TIMESTAMP)
                 if (lastTimestampUpdateCourseFromConfiguration.isEmpty() || ((Date().time - lastTimestampUpdateCourseFromConfiguration.toLong()) > (Configuration.ONE_DAY_IN_MILLISECONDS / 4))) {
                     Course.getValues(database)
                 }
@@ -418,7 +418,7 @@ class ResultActivity : AppCompatActivity() {
                 updateCatalyst =
                     databaseCatalystCount == 0 || spreadsheetCatalystCount > databaseCatalystCount
                 val user: JSONArray? =
-                    Spreadsheet.getDataLogin(SharedPreference.getKeyFromFile(SharedPreference.LOGIN))
+                    Spreadsheet.getDataLogin(SharedPreference.getKey(SharedPreference.LOGIN))
                 if (user == null) {
                     processStep = ProcessStep.USER_ELAPSED_DATE_LICENCE
                     throw Exception()
@@ -431,13 +431,13 @@ class ResultActivity : AppCompatActivity() {
                     processStep = ProcessStep.USER_ELAPSED_DATE_LICENCE
                     throw Exception()
                 }
-                SharedPreference.setKeyToFile(
+                SharedPreference.setKey(
                     SharedPreference.LICENCE_DATE_OF_END,
                     user.getString(
                         Configuration.SPREADSHEET_USERS_LICENCE
                     )
                 )
-                SharedPreference.setKeyToFile(
+                SharedPreference.setKey(
                     SharedPreference.DISCOUNT,
                     Parser.parseStringToInt(
                         user.getString(
@@ -445,7 +445,7 @@ class ResultActivity : AppCompatActivity() {
                         )
                     ).toString()
                 )
-                SharedPreference.setKeyToFile(
+                SharedPreference.setKey(
                     SharedPreference.VISIBILITY,
                     Parser.parseStringBooleanToInt(
                         user.getString(
@@ -453,7 +453,7 @@ class ResultActivity : AppCompatActivity() {
                         )
                     ).toString()
                 )
-                SharedPreference.setKeyToFile(
+                SharedPreference.setKey(
                     SharedPreference.MINUS_PLATINUM,
                     Parser.parseStringToInt(
                         user.getString(
@@ -461,7 +461,7 @@ class ResultActivity : AppCompatActivity() {
                         )
                     ).toString()
                 )
-                SharedPreference.setKeyToFile(
+                SharedPreference.setKey(
                     SharedPreference.MINUS_PALLADIUM,
                     Parser.parseStringToInt(
                         user.getString(
@@ -469,7 +469,7 @@ class ResultActivity : AppCompatActivity() {
                         )
                     ).toString()
                 )
-                SharedPreference.setKeyToFile(
+                SharedPreference.setKey(
                     SharedPreference.MINUS_RHODIUM,
                     Parser.parseStringToInt(
                         user.getString(
@@ -489,7 +489,7 @@ class ResultActivity : AppCompatActivity() {
             //--- onPostExecute
             runOnUiThread {
                 if (processStep == ProcessStep.USER_ELAPSED_DATE_LICENCE) {
-                    SharedPreference.setKeyToFile(
+                    SharedPreference.setKey(
                         SharedPreference.LICENCE_DATE_OF_END,
                         ""
                     )
@@ -523,7 +523,7 @@ class ResultActivity : AppCompatActivity() {
                     }
                     if (Course.isCoursesSelected()) {
                         val actualCoursesDate =
-                            SharedPreference.getKeyFromFile(SharedPreference.ACTUAL_COURSES_DATE)
+                            SharedPreference.getKey(SharedPreference.ACTUAL_COURSES_DATE)
                         if (LocalDate.now().toString().equals(actualCoursesDate)) {
                             menu!!.getItem(0).icon = ContextCompat.getDrawable(
                                 this@ResultActivity.applicationContext,
@@ -537,15 +537,15 @@ class ResultActivity : AppCompatActivity() {
                         }
                     } else {
                         val usdDate =
-                            SharedPreference.getKeyFromFile(SharedPreference.USD_PLN_DATE)
+                            SharedPreference.getKey(SharedPreference.USD_PLN_DATE)
                         val eurDate =
-                            SharedPreference.getKeyFromFile(SharedPreference.EUR_PLN_DATE)
+                            SharedPreference.getKey(SharedPreference.EUR_PLN_DATE)
                         val platinumDate =
-                            SharedPreference.getKeyFromFile(SharedPreference.PLATINUM_DATE)
+                            SharedPreference.getKey(SharedPreference.PLATINUM_DATE)
                         val palladiumDate =
-                            SharedPreference.getKeyFromFile(SharedPreference.PALLADIUM_DATE)
+                            SharedPreference.getKey(SharedPreference.PALLADIUM_DATE)
                         val rhodiumDate =
-                            SharedPreference.getKeyFromFile(SharedPreference.RHODIUM_DATE)
+                            SharedPreference.getKey(SharedPreference.RHODIUM_DATE)
                         if (LocalDate.now().toString()
                                 .equals(usdDate) && usdDate.equals(eurDate) && eurDate.equals(
                                 platinumDate
@@ -587,7 +587,7 @@ class ResultActivity : AppCompatActivity() {
             var processStep: ProcessStep = ProcessStep.NONE
             try {
                 var searchedText =
-                    SharedPreference.getKeyFromFile(SharedPreference.LAST_SEARCHED_TEXT)
+                    SharedPreference.getKey(SharedPreference.LAST_SEARCHED_TEXT)
                 searchedText = ("\\s{2,}").toRegex().replace(searchedText.trim(), " ")
                 if (searchedText.isEmpty() == false) {
                     database.deleteHistoryFilter(searchedText)

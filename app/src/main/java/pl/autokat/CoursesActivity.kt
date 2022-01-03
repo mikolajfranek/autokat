@@ -31,14 +31,14 @@ class CoursesActivity : AppCompatActivity() {
         activityCoursesBinding.switchCourses.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 val lastCoursesDate =
-                    SharedPreference.getKeyFromFile(SharedPreference.ACTUAL_COURSES_DATE)
+                    SharedPreference.getKey(SharedPreference.ACTUAL_COURSES_DATE)
                 activityCoursesBinding.actualDateCoursesButton.visibility =
                     View.GONE
-                SharedPreference.setKeyToFile(
+                SharedPreference.setKey(
                     SharedPreference.ACTUAL_COURSES_DATE,
                     ""
                 )
-                SharedPreference.setKeyToFile(
+                SharedPreference.setKey(
                     SharedPreference.ACTUAL_COURSES_CHOICE,
                     "1"
                 )
@@ -52,7 +52,7 @@ class CoursesActivity : AppCompatActivity() {
             } else {
                 activityCoursesBinding.actualDateCoursesButton.visibility =
                     View.VISIBLE
-                SharedPreference.setKeyToFile(
+                SharedPreference.setKey(
                     SharedPreference.ACTUAL_COURSES_CHOICE,
                     "0"
                 )
@@ -98,47 +98,47 @@ class CoursesActivity : AppCompatActivity() {
 
     private fun setValuesInView() {
         val platinum: String = Course.calculateCoursesToPln(
-            SharedPreference.getKeyFromFile(SharedPreference.PLATINUM),
-            SharedPreference.getKeyFromFile(SharedPreference.USD_PLN)
+            SharedPreference.getKey(SharedPreference.PLATINUM),
+            SharedPreference.getKey(SharedPreference.USD_PLN)
         )
         val platinumDate: String =
-            SharedPreference.getKeyFromFile(SharedPreference.PLATINUM_DATE)
+            SharedPreference.getKey(SharedPreference.PLATINUM_DATE)
         val platinumText = (Formatter.formatStringFloat(platinum, 2) + " zł/g")
         activityCoursesBinding.platinum.text = platinumText
         activityCoursesBinding.platinumDate.text =
             Formatter.formatStringDate(platinumDate)
         val palladium: String = Course.calculateCoursesToPln(
-            SharedPreference.getKeyFromFile(SharedPreference.PALLADIUM),
-            SharedPreference.getKeyFromFile(SharedPreference.USD_PLN)
+            SharedPreference.getKey(SharedPreference.PALLADIUM),
+            SharedPreference.getKey(SharedPreference.USD_PLN)
         )
         val palladDate: String =
-            SharedPreference.getKeyFromFile(SharedPreference.PALLADIUM_DATE)
+            SharedPreference.getKey(SharedPreference.PALLADIUM_DATE)
         val palladiumText = (Formatter.formatStringFloat(palladium, 2) + " zł/g")
         activityCoursesBinding.palladium.text = palladiumText
         activityCoursesBinding.palladiumDate.text =
             Formatter.formatStringDate(palladDate)
         val rhodium: String = Course.calculateCoursesToPln(
-            SharedPreference.getKeyFromFile(SharedPreference.RHODIUM),
-            SharedPreference.getKeyFromFile(SharedPreference.USD_PLN)
+            SharedPreference.getKey(SharedPreference.RHODIUM),
+            SharedPreference.getKey(SharedPreference.USD_PLN)
         )
         val rhodiumDate: String =
-            SharedPreference.getKeyFromFile(SharedPreference.RHODIUM_DATE)
+            SharedPreference.getKey(SharedPreference.RHODIUM_DATE)
         val rhodiumText = (Formatter.formatStringFloat(rhodium, 2) + " zł/g")
         activityCoursesBinding.rhodium.text = rhodiumText
         activityCoursesBinding.rhodiumDate.text =
             Formatter.formatStringDate(rhodiumDate)
         val courseEurPln: String =
-            SharedPreference.getKeyFromFile(SharedPreference.EUR_PLN)
+            SharedPreference.getKey(SharedPreference.EUR_PLN)
         val courseEurPlnDate: String =
-            SharedPreference.getKeyFromFile(SharedPreference.EUR_PLN_DATE)
+            SharedPreference.getKey(SharedPreference.EUR_PLN_DATE)
         val eurPlnText = (Formatter.formatStringFloat(courseEurPln, 2) + " zł")
         activityCoursesBinding.eurPln.text = eurPlnText
         activityCoursesBinding.eurPlnDate.text =
             Formatter.formatStringDate(courseEurPlnDate)
         val courseUsdPln: String =
-            SharedPreference.getKeyFromFile(SharedPreference.USD_PLN)
+            SharedPreference.getKey(SharedPreference.USD_PLN)
         val courseUsdPlnDate: String =
-            SharedPreference.getKeyFromFile(SharedPreference.USD_PLN_DATE)
+            SharedPreference.getKey(SharedPreference.USD_PLN_DATE)
         val usdPlnText = (Formatter.formatStringFloat(courseUsdPln, 2) + " zł")
         activityCoursesBinding.usdPln.text = usdPlnText
         activityCoursesBinding.usdPlnDate.text =

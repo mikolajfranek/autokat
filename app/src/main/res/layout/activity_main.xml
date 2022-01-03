@@ -27,7 +27,7 @@
         android:textStyle="bold" />
 
     <EditText
-        android:id="@+id/edit_text"
+        android:id="@+id/login"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginLeft="10dp"
@@ -45,7 +45,7 @@
         android:textColor="@color/colorUser" />
 
     <TextView
-        android:id="@+id/text_view"
+        android:id="@+id/notification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -58,7 +58,7 @@
         android:textColor="@color/colorUser" />
 
     <Button
-        android:id="@+id/login_button"
+        android:id="@+id/button_login"
         style="@style/Widget.AppCompat.Button"
         android:layout_width="match_parent"
         android:layout_height="50dp"

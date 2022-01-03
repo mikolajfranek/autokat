@@ -34,7 +34,7 @@
                 tools:ignore="UselessParent">
 
                 <EditText
-                    android:id="@+id/edit_text"
+                    android:id="@+id/login"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_weight="1"

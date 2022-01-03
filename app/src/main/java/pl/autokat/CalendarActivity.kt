@@ -110,7 +110,7 @@ class CalendarActivity : AppCompatActivity() {
             DayOfWeek.MONDAY
         )
         val actualCoursesDate =
-            SharedPreference.getKeyFromFile(SharedPreference.ACTUAL_COURSES_DATE)
+            SharedPreference.getKey(SharedPreference.ACTUAL_COURSES_DATE)
         if (actualCoursesDate.isEmpty()) {
             activityCalendarBinding.calendarView.scrollToDate(today)
         } else {

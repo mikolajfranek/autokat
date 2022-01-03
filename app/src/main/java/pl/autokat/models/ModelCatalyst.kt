@@ -18,29 +18,29 @@ class ModelCatalyst(
 ) {
     fun countPricePln(): Float {
         val courseUsdPlnFromConfiguration: String =
-            SharedPreference.getKeyFromFile(SharedPreference.USD_PLN)
+            SharedPreference.getKey(SharedPreference.USD_PLN)
         val courseUsdPln: Float =
             if (courseUsdPlnFromConfiguration.isEmpty()) 0.0F else courseUsdPlnFromConfiguration.toFloat()
         val pricePlatinum: Float = this.countPriceElement(
             this.platinum, this.weight, courseUsdPln,
-            SharedPreference.getKeyFromFile(SharedPreference.PLATINUM),
-            SharedPreference.getKeyFromFile(SharedPreference.MINUS_PLATINUM)
+            SharedPreference.getKey(SharedPreference.PLATINUM),
+            SharedPreference.getKey(SharedPreference.MINUS_PLATINUM)
         )
         val pricePalladium: Float = this.countPriceElement(
             this.palladium, this.weight, courseUsdPln,
-            SharedPreference.getKeyFromFile(SharedPreference.PALLADIUM),
-            SharedPreference.getKeyFromFile(SharedPreference.MINUS_PALLADIUM)
+            SharedPreference.getKey(SharedPreference.PALLADIUM),
+            SharedPreference.getKey(SharedPreference.MINUS_PALLADIUM)
         )
         var priceRhodium: Float = this.countPriceElement(
             this.rhodium, this.weight, courseUsdPln,
-            SharedPreference.getKeyFromFile(SharedPreference.RHODIUM),
-            SharedPreference.getKeyFromFile(SharedPreference.MINUS_RHODIUM)
+            SharedPreference.getKey(SharedPreference.RHODIUM),
+            SharedPreference.getKey(SharedPreference.MINUS_RHODIUM)
         )
         priceRhodium *= (0.9).toFloat()
         val discount: Float =
-            ((SharedPreference.getKeyFromFile(SharedPreference.DISCOUNT)).toFloat() / ((100).toFloat()))
+            ((SharedPreference.getKey(SharedPreference.DISCOUNT)).toFloat() / ((100).toFloat()))
         val courseEurPlnFromConfiguration: String =
-            SharedPreference.getKeyFromFile(SharedPreference.EUR_PLN)
+            SharedPreference.getKey(SharedPreference.EUR_PLN)
         val courseEurPln: Float =
             if (courseEurPlnFromConfiguration.isEmpty()) 0.0F else courseEurPlnFromConfiguration.toFloat()
         val fiveEuroPerKilogram: Float = (((5.0F).toFloat()) * courseEurPln) * this.weight

@@ -29,11 +29,11 @@ class Course {
             val value = rate.getString("mid").replace(',', '.')
             val valueDate = rate.getString("effectiveDate")
             if (savingToSharedPreferences) {
-                SharedPreference.setKeyToFile(
+                SharedPreference.setKey(
                     SharedPreference.USD_PLN,
                     value
                 )
-                SharedPreference.setKeyToFile(
+                SharedPreference.setKey(
                     SharedPreference.USD_PLN_DATE,
                     valueDate
                 )
@@ -49,11 +49,11 @@ class Course {
             val value = rate.getString("mid").replace(',', '.')
             val valueDate = rate.getString("effectiveDate")
             if (savingToSharedPreferences) {
-                SharedPreference.setKeyToFile(
+                SharedPreference.setKey(
                     SharedPreference.EUR_PLN,
                     value
                 )
-                SharedPreference.setKeyToFile(
+                SharedPreference.setKey(
                     SharedPreference.EUR_PLN_DATE,
                     valueDate
                 )
@@ -70,11 +70,11 @@ class Course {
             val value = content[4].replace(',', '.')
             val valueDate = content[3].split(' ')[0]
             if (savingToSharedPreferences) {
-                SharedPreference.setKeyToFile(
+                SharedPreference.setKey(
                     SharedPreference.PLATINUM,
                     value
                 )
-                SharedPreference.setKeyToFile(
+                SharedPreference.setKey(
                     SharedPreference.PLATINUM_DATE,
                     valueDate
                 )
@@ -91,11 +91,11 @@ class Course {
             val value = content[4].replace(',', '.')
             val valueDate = content[3].split(' ')[0]
             if (savingToSharedPreferences) {
-                SharedPreference.setKeyToFile(
+                SharedPreference.setKey(
                     SharedPreference.PALLADIUM,
                     value
                 )
-                SharedPreference.setKeyToFile(
+                SharedPreference.setKey(
                     SharedPreference.PALLADIUM_DATE,
                     valueDate
                 )
@@ -112,11 +112,11 @@ class Course {
             val value = content[4].replace(',', '.')
             val valueDate = content[3].split(' ')[0]
             if (savingToSharedPreferences) {
-                SharedPreference.setKeyToFile(
+                SharedPreference.setKey(
                     SharedPreference.RHODIUM,
                     value
                 )
-                SharedPreference.setKeyToFile(
+                SharedPreference.setKey(
                     SharedPreference.RHODIUM_DATE,
                     valueDate
                 )
@@ -154,7 +154,7 @@ class Course {
                     //
                 }
             }
-            SharedPreference.setKeyToFile(
+            SharedPreference.setKey(
                 SharedPreference.UPDATE_COURSE_TIMESTAMP,
                 Date().time.toString()
             )
@@ -162,47 +162,47 @@ class Course {
 
         fun saveSelectedCourses(modelCourse: ModelCourse) {
             val date = Parser.parseStringDateToLocalDate(modelCourse.date)
-            SharedPreference.setKeyToFile(
+            SharedPreference.setKey(
                 SharedPreference.ACTUAL_COURSES_DATE,
                 date.toString()
             )
-            SharedPreference.setKeyToFile(
+            SharedPreference.setKey(
                 SharedPreference.USD_PLN,
                 modelCourse.usdPln
             )
-            SharedPreference.setKeyToFile(
+            SharedPreference.setKey(
                 SharedPreference.USD_PLN_DATE,
                 date.toString()
             )
-            SharedPreference.setKeyToFile(
+            SharedPreference.setKey(
                 SharedPreference.EUR_PLN,
                 modelCourse.eurPln
             )
-            SharedPreference.setKeyToFile(
+            SharedPreference.setKey(
                 SharedPreference.EUR_PLN_DATE,
                 date.toString()
             )
-            SharedPreference.setKeyToFile(
+            SharedPreference.setKey(
                 SharedPreference.PLATINUM,
                 modelCourse.platinum
             )
-            SharedPreference.setKeyToFile(
+            SharedPreference.setKey(
                 SharedPreference.PLATINUM_DATE,
                 date.toString()
             )
-            SharedPreference.setKeyToFile(
+            SharedPreference.setKey(
                 SharedPreference.PALLADIUM,
                 modelCourse.palladium
             )
-            SharedPreference.setKeyToFile(
+            SharedPreference.setKey(
                 SharedPreference.PALLADIUM_DATE,
                 date.toString()
             )
-            SharedPreference.setKeyToFile(
+            SharedPreference.setKey(
                 SharedPreference.RHODIUM,
                 modelCourse.rhodium
             )
-            SharedPreference.setKeyToFile(
+            SharedPreference.setKey(
                 SharedPreference.RHODIUM_DATE,
                 date.toString()
             )
@@ -210,9 +210,9 @@ class Course {
 
         fun isCoursesSelected(): Boolean {
             val actualCoursesChoice =
-                SharedPreference.getKeyFromFile(SharedPreference.ACTUAL_COURSES_CHOICE)
+                SharedPreference.getKey(SharedPreference.ACTUAL_COURSES_CHOICE)
             val actualCoursesDate =
-                SharedPreference.getKeyFromFile(SharedPreference.ACTUAL_COURSES_DATE)
+                SharedPreference.getKey(SharedPreference.ACTUAL_COURSES_DATE)
             return actualCoursesChoice == "0" && actualCoursesDate.isNotEmpty()
         }
 

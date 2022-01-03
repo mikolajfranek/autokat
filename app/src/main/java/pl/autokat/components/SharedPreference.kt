@@ -16,12 +16,12 @@ class SharedPreference {
             )
         }
 
-        fun getKeyFromFile(key: String): String {
+        fun getKey(key: String): String {
             return preferences.getString(key, "").toString()
         }
 
         @SuppressLint("ApplySharedPref")
-        fun setKeyToFile(key: String, value: String) {
+        fun setKey(key: String, value: String) {
             val editor = preferences.edit()
             editor.putString(key, value)
             editor.commit()

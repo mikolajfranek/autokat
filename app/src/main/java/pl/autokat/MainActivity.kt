@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var activityMainBinding: ActivityMainBinding
     private val requestCodeReadPhoneState: Int = 0
 
-    //region methods of override
+    //region methods used in override
     private fun authenticate(login: String, hasClickedButton: Boolean) {
         Thread(RunnableAuthentication(login, hasClickedButton)).start()
     }
@@ -40,8 +40,50 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setClickListeners() {
-        activityMainBinding.loginButton.setOnClickListener {
-            authenticate(activityMainBinding.editText.text.toString(), true)
+        activityMainBinding.buttonLogin.setOnClickListener {
+            authenticate(activityMainBinding.login.text.toString(), true)
+        }
+    }
+
+    private fun checkPermissions() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.READ_PHONE_STATE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(android.Manifest.permission.READ_PHONE_STATE),
+                requestCodeReadPhoneState
+            )
+        } else {
+            authenticate(
+                SharedPreference.getKey(SharedPreference.LOGIN),
+                false
+            )
+        }
+    }
+
+    private fun handleRequestCode(
+        requestCode: Int,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            requestCodeReadPhoneState -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    authenticate(
+                        SharedPreference.getKey(SharedPreference.LOGIN),
+                        false
+                    )
+                } else {
+                    finish()
+                }
+                return
+            }
+            else -> {
+                finish()
+                return
+            }
         }
     }
     //endregion
@@ -55,22 +97,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (ContextCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.READ_PHONE_STATE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(android.Manifest.permission.READ_PHONE_STATE),
-                requestCodeReadPhoneState
-            )
-        } else {
-            authenticate(
-                SharedPreference.getKeyFromFile(SharedPreference.LOGIN),
-                false
-            )
-        }
+        checkPermissions()
     }
 
     override fun onRequestPermissionsResult(
@@ -79,23 +106,7 @@ class MainActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            requestCodeReadPhoneState -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    authenticate(
-                        SharedPreference.getKeyFromFile(SharedPreference.LOGIN),
-                        false
-                    )
-                } else {
-                    finish()
-                }
-                return
-            }
-            else -> {
-                finish()
-                return
-            }
-        }
+        handleRequestCode(requestCode, grantResults)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -128,263 +139,283 @@ class MainActivity : AppCompatActivity() {
     }
     //endregion
 
-    //region id of user
-    fun decoratorIdOfUser(): String {
-        var id: String = getIdOfUser()
-        id = ("[^A-Za+-z0-9]+").toRegex().replace(id, "")
-        if (id.isEmpty() == false) return id
-        throw Exception()
-    }
-
-    @SuppressLint("HardwareIds")
-    private fun getIdForSdkGreaterOrEqualTo26(): String {
-        try {
-            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Build.getSerial()
-            } else {
-                @Suppress("DEPRECATION")
-                Build.SERIAL
-            }
-        } catch (e: Exception) {
-            //
-        }
-        return ""
-    }
-
-    @SuppressLint("MissingPermission", "HardwareIds")
-    private fun getIdPhoneNumber(): String {
-        try {
-            return (applicationContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).line1Number.toString()
-        } catch (e: Exception) {
-            //
-        }
-        return ""
-    }
-
-    @SuppressLint("HardwareIds")
-    private fun getIdSimNumber(): String {
-        try {
-            return (applicationContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
-        } catch (e: Exception) {
-            //
-        }
-        return ""
-    }
-
-    @SuppressLint("HardwareIds")
-    private fun getIdAndroidId(): String {
-        try {
-            return Settings.Secure.getString(
-                applicationContext.contentResolver,
-                Settings.Secure.ANDROID_ID
-            )
-        } catch (e: Exception) {
-            //
-        }
-        return ""
-    }
-
-    private fun getIdOfUser(): String {
-        var serialId = ""
-        serialId = getIdForSdkGreaterOrEqualTo26()
-        if (serialId.isEmpty() == false) return serialId
-        serialId = getIdPhoneNumber()
-        if (serialId.isEmpty() == false) return serialId
-        serialId = getIdSimNumber()
-        if (serialId.isEmpty() == false) return serialId
-        serialId = getIdAndroidId()
-        if (serialId.isEmpty() == false) return serialId
-        throw Exception()
-    }
-    //endregion
-
-
-
-    inner class RunnableAuthentication(loginInput: String, hasClickedButtonInput: Boolean) : Runnable {
+    //region inner classes
+    inner class RunnableAuthentication(loginInput: String, hasClickedButtonInput: Boolean) :
+        Runnable {
         private var login: String = loginInput.trim()
         private var hasClickedButton: Boolean = hasClickedButtonInput
 
-        @Suppress("ReplaceCallWithBinaryOperator")
-        override fun run() {
-            //--- onPreExecute
-            runOnUiThread {
-                UserInterface.changeStatusLayout(
-                    activityMainBinding.linearLayout,
-                    false
-                )
-                if (hasClickedButton == false) {
-                    activityMainBinding.editText.setText(login)
-                }
-                activityMainBinding.textView.setTextColor(Configuration.COLOR_SUCCESS)
-                activityMainBinding.textView.text =
-                    Configuration.USER_WAIT_AUTHENTICATING
-            }
-            //--- doInBackground
-            var processStep: ProcessStep = ProcessStep.NONE
+        //region id of user
+        private fun getSerialId(): String {
+            var id: String = getId()
+            id = ("[^A-Za+-z0-9]+").toRegex().replace(id, "")
+            if (id.isEmpty() == false) return id
+            throw Exception()
+        }
+
+        private fun getId(): String {
+            var id = ""
+            id = getIdForSdkGreaterOrEqualTo26()
+            if (id.isEmpty() == false) return id
+            id = getIdPhoneNumber()
+            if (id.isEmpty() == false) return id
+            id = getIdSimNumber()
+            if (id.isEmpty() == false) return id
+            id = getIdAndroidId()
+            if (id.isEmpty() == false) return id
+            throw Exception()
+        }
+
+        @SuppressLint("HardwareIds")
+        private fun getIdForSdkGreaterOrEqualTo26(): String {
             try {
-                if (login.isEmpty()) {
-                    processStep = ProcessStep.USER_NEVER_LOGGED
+                return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    Build.getSerial()
                 } else {
-                    if (SharedPreference.getKeyFromFile(SharedPreference.LICENCE_DATE_OF_END)
-                            .isEmpty() == false
-                    ) {
-                        processStep = if (Checker.checkTimeOnPhone(
-                                "",
-                                TimeChecking.CHECKING_LICENCE
-                            ) == false
-                        ) {
-                            ProcessStep.USER_ELAPSED_DATE_LICENCE
-                        } else {
-                            ProcessStep.SUCCESS
-                        }
-                    } else {
-                        if (Checker.checkTimeOnPhone(
-                                "",
-                                TimeChecking.NOW_GREATER_THAN_TIME_FROM_INTERNET
-                            ) == false
-                        ) {
-                            processStep = ProcessStep.USER_ELAPSED_DATE_LICENCE
-                        } else {
-                            val user: JSONArray? = Spreadsheet.getDataLogin(login)
-                            if (user == null) {
-                                processStep = ProcessStep.USER_FAILED_LOGIN
-                            } else {
-                                if (user.getString(Configuration.SPREADSHEET_USERS_LICENCE)
-                                        .isEmpty()
-                                    || Checker.checkTimeOnPhone(
-                                        user.getString(
-                                            Configuration.SPREADSHEET_USERS_LICENCE
-                                        ), TimeChecking.PARAMETER_IS_GREATER_THAN_NOW
-                                    ) == false
-                                ) {
-                                    processStep = ProcessStep.USER_ELAPSED_DATE_LICENCE
-                                } else {
-                                    val serialId: String =
-                                        decoratorIdOfUser()
-                                    if (user.getString(Configuration.SPREADSHEET_USERS_UUID)
-                                            .isEmpty()
-                                    ) {
-                                        Spreadsheet.saveSerialId(
-                                            user.getInt(Configuration.SPREADSHEET_USERS_ID),
-                                            serialId
-                                        )
-                                    } else {
-                                        if (serialId.equals(user.getString(Configuration.SPREADSHEET_USERS_UUID)) == false) {
-                                            processStep = ProcessStep.USER_FAILED_SERIAL
-                                        }
-                                    }
-                                    if (processStep == ProcessStep.NONE) {
-                                        SharedPreference.setKeyToFile(
-                                            SharedPreference.LICENCE_DATE_OF_END,
-                                            user.getString(
-                                                Configuration.SPREADSHEET_USERS_LICENCE
-                                            )
-                                        )
-                                        SharedPreference.setKeyToFile(
-                                            SharedPreference.DISCOUNT,
-                                            Parser.parseStringToInt(
-                                                user.getString(
-                                                    Configuration.SPREADSHEET_USERS_DISCOUNT
-                                                )
-                                            ).toString()
-                                        )
-                                        SharedPreference.setKeyToFile(
-                                            SharedPreference.VISIBILITY,
-                                            Parser.parseStringBooleanToInt(
-                                                user.getString(
-                                                    Configuration.SPREADSHEET_USERS_VISIBILITY
-                                                )
-                                            ).toString()
-                                        )
-                                        SharedPreference.setKeyToFile(
-                                            SharedPreference.MINUS_PLATINUM,
-                                            Parser.parseStringToInt(
-                                                user.getString(
-                                                    Configuration.SPREADSHEET_USERS_MINUS_PLATINUM
-                                                )
-                                            ).toString()
-                                        )
-                                        SharedPreference.setKeyToFile(
-                                            SharedPreference.MINUS_PALLADIUM,
-                                            Parser.parseStringToInt(
-                                                user.getString(
-                                                    Configuration.SPREADSHEET_USERS_MINUS_PALLADIUM
-                                                )
-                                            ).toString()
-                                        )
-                                        SharedPreference.setKeyToFile(
-                                            SharedPreference.MINUS_RHODIUM,
-                                            Parser.parseStringToInt(
-                                                user.getString(
-                                                    Configuration.SPREADSHEET_USERS_MINUS_RHODIUM
-                                                )
-                                            ).toString()
-                                        )
-                                        SharedPreference.setKeyToFile(
-                                            SharedPreference.LOGIN,
-                                            login
-                                        )
-                                        processStep = ProcessStep.SUCCESS
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    @Suppress("DEPRECATION")
+                    Build.SERIAL
                 }
-            } catch (e: UnknownHostException) {
-                processStep = ProcessStep.NETWORK_FAILED
             } catch (e: Exception) {
-                processStep = ProcessStep.UNHANDLED_EXCEPTION
+                //
             }
-            //--- onPostExecute
-            runOnUiThread {
-                when (processStep) {
-                    ProcessStep.USER_NEVER_LOGGED -> {
-                        activityMainBinding.textView.setTextColor(Configuration.COLOR_SUCCESS)
-                        activityMainBinding.textView.text =
-                            Configuration.USER_NEVER_LOGGED
-                    }
-                    ProcessStep.USER_ELAPSED_DATE_LICENCE -> {
-                        activityMainBinding.textView.setTextColor(Configuration.COLOR_FAILED)
-                        activityMainBinding.textView.text =
-                            Configuration.USER_FAILED_LICENCE
-                        SharedPreference.setKeyToFile(
-                            SharedPreference.LICENCE_DATE_OF_END,
-                            ""
-                        )
-                    }
-                    ProcessStep.USER_FAILED_LOGIN -> {
-                        activityMainBinding.textView.setTextColor(Configuration.COLOR_FAILED)
-                        activityMainBinding.textView.text =
-                            Configuration.USER_FAILED_LOGIN
-                    }
-                    ProcessStep.USER_FAILED_SERIAL -> {
-                        activityMainBinding.textView.setTextColor(Configuration.COLOR_FAILED)
-                        activityMainBinding.textView.text =
-                            Configuration.USER_FAILED_UUID
-                    }
-                    ProcessStep.NETWORK_FAILED -> {
-                        activityMainBinding.textView.setTextColor(Configuration.COLOR_FAILED)
-                        activityMainBinding.textView.text =
-                            Configuration.NETWORK_FAILED
-                    }
-                    ProcessStep.UNHANDLED_EXCEPTION -> {
-                        activityMainBinding.textView.setTextColor(Configuration.COLOR_FAILED)
-                        activityMainBinding.textView.text =
-                            Configuration.UNHANDLED_EXCEPTION
-                    }
-                    ProcessStep.SUCCESS -> {
-                        openResultActivity()
-                    }
-                    else -> {
-                        //
-                    }
-                }
-                UserInterface.changeStatusLayout(
-                    activityMainBinding.linearLayout,
-                    true
+            return ""
+        }
+
+        @SuppressLint("MissingPermission", "HardwareIds")
+        private fun getIdPhoneNumber(): String {
+            try {
+                return (applicationContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).line1Number.toString()
+            } catch (e: Exception) {
+                //
+            }
+            return ""
+        }
+
+        @SuppressLint("HardwareIds")
+        private fun getIdSimNumber(): String {
+            try {
+                return (applicationContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+            } catch (e: Exception) {
+                //
+            }
+            return ""
+        }
+
+        @SuppressLint("HardwareIds")
+        private fun getIdAndroidId(): String {
+            try {
+                return Settings.Secure.getString(
+                    applicationContext.contentResolver,
+                    Settings.Secure.ANDROID_ID
                 )
+            } catch (e: Exception) {
+                //
+            }
+            return ""
+        }
+        //endregion
+
+        //region methods used in doInBackground
+        private fun checkLicence(): ProcessStep {
+            if (SharedPreference.getKey(SharedPreference.LICENCE_DATE_OF_END)
+                    .isEmpty() == false
+            ) {
+                if (Checker.checkTimeOnPhone("", TimeChecking.CHECKING_LICENCE) == false) {
+                    return ProcessStep.USER_ELAPSED_DATE_LICENCE
+                }
+                return ProcessStep.SUCCESS
+            }
+            return ProcessStep.NONE
+        }
+
+        private fun checkTimeOnPhoneWithTimeOnTheInternet(): ProcessStep {
+            if (Checker.checkTimeOnPhone(
+                    "",
+                    TimeChecking.NOW_GREATER_THAN_TIME_FROM_INTERNET
+                ) == false
+            ) {
+                ProcessStep.USER_ELAPSED_DATE_LICENCE
+            }
+            return ProcessStep.NONE
+        }
+
+        private fun checkTimeOfUserLicenceWithTimeOnPhone(user: JSONArray): ProcessStep {
+            val licenceDate = user.getString(Configuration.SPREADSHEET_USERS_LICENCE)
+            if (licenceDate.isEmpty() || Checker.checkTimeOnPhone(
+                    licenceDate, TimeChecking.PARAMETER_IS_GREATER_THAN_NOW
+                ) == false
+            ) {
+                return ProcessStep.USER_ELAPSED_DATE_LICENCE
+            }
+            return ProcessStep.NONE
+        }
+
+        private fun checkSerialId(user: JSONArray): ProcessStep {
+            val serialId: String = getSerialId()
+            val uuid: String = user.getString(Configuration.SPREADSHEET_USERS_UUID)
+            if (uuid.isEmpty()) {
+                Spreadsheet.saveSerialId(
+                    user.getInt(Configuration.SPREADSHEET_USERS_ID),
+                    serialId
+                )
+            } else {
+                if ((serialId == uuid) == false) {
+                    return ProcessStep.USER_FAILED_SERIAL
+                }
+            }
+            return ProcessStep.NONE
+        }
+
+        private fun setSharedPreferencesOfUser(user: JSONArray) {
+            SharedPreference.setKey(
+                SharedPreference.LICENCE_DATE_OF_END,
+                user.getString(
+                    Configuration.SPREADSHEET_USERS_LICENCE
+                )
+            )
+            SharedPreference.setKey(
+                SharedPreference.DISCOUNT,
+                Parser.parseStringToInt(
+                    user.getString(
+                        Configuration.SPREADSHEET_USERS_DISCOUNT
+                    )
+                ).toString()
+            )
+            SharedPreference.setKey(
+                SharedPreference.VISIBILITY,
+                Parser.parseStringBooleanToInt(
+                    user.getString(
+                        Configuration.SPREADSHEET_USERS_VISIBILITY
+                    )
+                ).toString()
+            )
+            SharedPreference.setKey(
+                SharedPreference.MINUS_PLATINUM,
+                Parser.parseStringToInt(
+                    user.getString(
+                        Configuration.SPREADSHEET_USERS_MINUS_PLATINUM
+                    )
+                ).toString()
+            )
+            SharedPreference.setKey(
+                SharedPreference.MINUS_PALLADIUM,
+                Parser.parseStringToInt(
+                    user.getString(
+                        Configuration.SPREADSHEET_USERS_MINUS_PALLADIUM
+                    )
+                ).toString()
+            )
+            SharedPreference.setKey(
+                SharedPreference.MINUS_RHODIUM,
+                Parser.parseStringToInt(
+                    user.getString(
+                        Configuration.SPREADSHEET_USERS_MINUS_RHODIUM
+                    )
+                ).toString()
+            )
+            SharedPreference.setKey(
+                SharedPreference.LOGIN,
+                login
+            )
+        }
+        //endregion
+
+        //region methods of run
+        private fun onPreExecute() {
+            UserInterface.changeStatusLayout(
+                activityMainBinding.linearLayout,
+                false
+            )
+            if (hasClickedButton == false) {
+                activityMainBinding.login.setText(login)
+            }
+            activityMainBinding.notification.setTextColor(Configuration.COLOR_SUCCESS)
+            activityMainBinding.notification.text =
+                Configuration.USER_WAIT_AUTHENTICATING
+        }
+
+        private fun doInBackground(): ProcessStep {
+            var processStep: ProcessStep
+            try {
+                if (login.isEmpty()) return ProcessStep.USER_NEVER_LOGGED
+                processStep = checkLicence()
+                if (processStep != ProcessStep.NONE) return processStep
+                processStep = checkTimeOnPhoneWithTimeOnTheInternet()
+                if (processStep != ProcessStep.NONE) return processStep
+                val user: JSONArray =
+                    Spreadsheet.getDataLogin(login) ?: return ProcessStep.USER_FAILED_LOGIN
+                processStep = checkTimeOfUserLicenceWithTimeOnPhone(user)
+                if (processStep != ProcessStep.NONE) return processStep
+                processStep = checkSerialId(user)
+                if (processStep != ProcessStep.NONE) return processStep
+                setSharedPreferencesOfUser(user)
+                return ProcessStep.SUCCESS
+            } catch (e: UnknownHostException) {
+                return ProcessStep.NETWORK_FAILED
+            } catch (e: Exception) {
+                return ProcessStep.UNHANDLED_EXCEPTION
+            }
+        }
+
+        private fun onPostExecute(processStep: ProcessStep) {
+            when (processStep) {
+                ProcessStep.USER_NEVER_LOGGED -> {
+                    activityMainBinding.notification.setTextColor(Configuration.COLOR_SUCCESS)
+                    activityMainBinding.notification.text =
+                        Configuration.USER_NEVER_LOGGED
+                }
+                ProcessStep.USER_ELAPSED_DATE_LICENCE -> {
+                    activityMainBinding.notification.setTextColor(Configuration.COLOR_FAILED)
+                    activityMainBinding.notification.text =
+                        Configuration.USER_FAILED_LICENCE
+                    SharedPreference.setKey(
+                        SharedPreference.LICENCE_DATE_OF_END,
+                        ""
+                    )
+                }
+                ProcessStep.USER_FAILED_LOGIN -> {
+                    activityMainBinding.notification.setTextColor(Configuration.COLOR_FAILED)
+                    activityMainBinding.notification.text =
+                        Configuration.USER_FAILED_LOGIN
+                }
+                ProcessStep.USER_FAILED_SERIAL -> {
+                    activityMainBinding.notification.setTextColor(Configuration.COLOR_FAILED)
+                    activityMainBinding.notification.text =
+                        Configuration.USER_FAILED_UUID
+                }
+                ProcessStep.NETWORK_FAILED -> {
+                    activityMainBinding.notification.setTextColor(Configuration.COLOR_FAILED)
+                    activityMainBinding.notification.text =
+                        Configuration.NETWORK_FAILED
+                }
+                ProcessStep.UNHANDLED_EXCEPTION -> {
+                    activityMainBinding.notification.setTextColor(Configuration.COLOR_FAILED)
+                    activityMainBinding.notification.text =
+                        Configuration.UNHANDLED_EXCEPTION
+                }
+                ProcessStep.SUCCESS -> {
+                    openResultActivity()
+                }
+                else -> {
+                    //
+                }
+            }
+            UserInterface.changeStatusLayout(
+                activityMainBinding.linearLayout,
+                true
+            )
+        }
+        //endregion
+
+        override fun run() {
+            runOnUiThread {
+                onPreExecute()
+            }
+            val processStep: ProcessStep = doInBackground()
+            runOnUiThread {
+                onPostExecute(processStep)
             }
         }
     }
+    //endregion
 }
