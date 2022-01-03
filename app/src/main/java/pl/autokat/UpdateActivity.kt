@@ -52,25 +52,25 @@ class UpdateActivity : AppCompatActivity() {
         val itemsFromDatabase: Int = database.getCountCatalyst()
         activityUpdateBinding.progessBar.progress =
             ((itemsWithThumbnail.toFloat() / itemsWithUrlThumbnail.toFloat()) * 100.toFloat()).toInt()
-        activityUpdateBinding.textView.setTextColor(Configuration.COLOR_SUCCESS)
+        activityUpdateBinding.notification.setTextColor(Configuration.COLOR_SUCCESS)
         if (itemsFromDatabase != 0) {
             if (Dynamic.IS_AVAILABLE_UPDATE) {
                 activityUpdateBinding.progessBar.progress = 0
-                activityUpdateBinding.textView.text = Configuration.DATABASE_NOT_ACTUAL
+                activityUpdateBinding.notification.text = Configuration.DATABASE_NOT_ACTUAL
             } else {
                 if (itemsWithThumbnail / itemsFromDatabase != 1) {
                     val textView =
                         Configuration.BITMAP_STATUS + " (" + itemsWithThumbnail + "/" + itemsWithUrlThumbnail + "/" + itemsFromDatabase + ")"
-                    activityUpdateBinding.textView.text = textView
+                    activityUpdateBinding.notification.text = textView
                     refreshingDatabase = true
                     Thread(TaskUpdateProgressOfUpdateThumbnail()).start()
                 } else {
-                    activityUpdateBinding.textView.text =
+                    activityUpdateBinding.notification.text =
                         Configuration.DATABASE_ACTUAL
                 }
             }
         } else {
-            activityUpdateBinding.textView.text = Configuration.DATABASE_EMPTY
+            activityUpdateBinding.notification.text = Configuration.DATABASE_EMPTY
         }
     }
     //endregion
@@ -103,7 +103,7 @@ class UpdateActivity : AppCompatActivity() {
                         runOnUiThread {
                             val textView =
                                 Configuration.BITMAP_STATUS + " (" + itemsWithThumbnail.toString() + "/" + itemsWithUrlThumbnail.toString() + "/" + itemsFromDatabase.toString() + ")"
-                            activityUpdateBinding.textView.text = textView
+                            activityUpdateBinding.notification.text = textView
                             activityUpdateBinding.progessBar.progress =
                                 ((itemsWithThumbnail.toFloat() / itemsWithUrlThumbnail.toFloat()) * 100.toFloat()).toInt()
                         }
@@ -132,8 +132,8 @@ class UpdateActivity : AppCompatActivity() {
                     Thread.sleep(100)
                 }
                 activityUpdateBinding.progessBar.progress = 0
-                activityUpdateBinding.textView.setTextColor(Configuration.COLOR_SUCCESS)
-                activityUpdateBinding.textView.text =
+                activityUpdateBinding.notification.setTextColor(Configuration.COLOR_SUCCESS)
+                activityUpdateBinding.notification.text =
                     Configuration.UPDATE_WAIT
             }
             //--- doInBackground
@@ -176,10 +176,10 @@ class UpdateActivity : AppCompatActivity() {
                         runOnUiThread {
                             activityUpdateBinding.progessBar.progress =
                                 progressStep.toInt()
-                            activityUpdateBinding.textView.setTextColor(
+                            activityUpdateBinding.notification.setTextColor(
                                 Configuration.COLOR_SUCCESS
                             )
-                            activityUpdateBinding.textView.text =
+                            activityUpdateBinding.notification.text =
                                 Configuration.UPDATE_WAIT
                         }
                     }
@@ -194,26 +194,26 @@ class UpdateActivity : AppCompatActivity() {
             runOnUiThread {
                 when (processStep) {
                     ProcessStep.NETWORK_FAILED -> {
-                        activityUpdateBinding.textView.setTextColor(
+                        activityUpdateBinding.notification.setTextColor(
                             Configuration.COLOR_FAILED
                         )
-                        activityUpdateBinding.textView.text =
+                        activityUpdateBinding.notification.text =
                             Configuration.NETWORK_FAILED
                     }
                     ProcessStep.UNHANDLED_EXCEPTION -> {
-                        activityUpdateBinding.textView.setTextColor(
+                        activityUpdateBinding.notification.setTextColor(
                             Configuration.COLOR_FAILED
                         )
-                        activityUpdateBinding.textView.text =
+                        activityUpdateBinding.notification.text =
                             Configuration.UPDATE_FAILED
                     }
                     ProcessStep.SUCCESS -> {
                         Dynamic.IS_AVAILABLE_UPDATE = false
                         activityUpdateBinding.progessBar.progress = 100
-                        activityUpdateBinding.textView.setTextColor(
+                        activityUpdateBinding.notification.setTextColor(
                             Configuration.COLOR_SUCCESS
                         )
-                        activityUpdateBinding.textView.text =
+                        activityUpdateBinding.notification.text =
                             Configuration.UPDATE_SUCCESS
                     }
                     else -> {

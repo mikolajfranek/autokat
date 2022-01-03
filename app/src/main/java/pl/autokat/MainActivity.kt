@@ -154,8 +154,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         private fun getId(): String {
-            var id = ""
-            id = getIdForSdkGreaterOrEqualTo26()
+            var id : String = getIdForSdkGreaterOrEqualTo26()
             if (id.isEmpty() == false) return id
             id = getIdPhoneNumber()
             if (id.isEmpty() == false) return id
