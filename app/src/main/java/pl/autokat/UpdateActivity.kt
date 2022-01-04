@@ -10,8 +10,11 @@ import java.net.UnknownHostException
 
 class UpdateActivity : AppCompatActivity() {
 
+    //TODO
     private lateinit var activityUpdateBinding: ActivityUpdateBinding
     private lateinit var database: Database
+
+    //TODO atomic?
     private var refreshingDatabase: Boolean = false
     private var refreshingWork: Boolean = false
 

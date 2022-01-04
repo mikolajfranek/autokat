@@ -34,6 +34,7 @@ import java.util.*
 
 class ResultActivity : AppCompatActivity() {
 
+    //TODO
     private lateinit var activityResultBinding: ActivityResultBinding
     private lateinit var catalystBinding: CatalystBinding
     private lateinit var historyFilterBinding: HistoryFilterBinding
@@ -47,23 +48,36 @@ class ResultActivity : AppCompatActivity() {
         Configuration.DATABASE_PAGINATE_LIMIT_HISTORY_FILTER
     private var menu: Menu? = null
 
-    //region override
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+
+    //region methods used in override
+    private fun init(){
         activityResultBinding = ActivityResultBinding.inflate(layoutInflater)
         val view = activityResultBinding.root
         setContentView(view)
         setSupportActionBar(activityResultBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         SharedPreference.init(this)
+        database = Database(applicationContext)
+    }
+    //endregion
+
+    //region override
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        init()
+
+
+
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        database = Database(applicationContext)
         activityResultBinding.editText.setText(
             SharedPreference.getKey(
                 SharedPreference.LAST_SEARCHED_TEXT
             )
         )
+
+
+
         activityResultBinding.editText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -390,6 +404,8 @@ class ResultActivity : AppCompatActivity() {
         Thread(TaskDeleteRecordHistoryFilter(id)).start()
     }
 
+
+    //region inner classes
     inner class TaskUpdate : Runnable {
         private var updateCatalyst: Boolean = false
         private var databaseEmpty: Boolean = false
@@ -684,4 +700,5 @@ class ResultActivity : AppCompatActivity() {
             }
         }
     }
+    //endregion
 }

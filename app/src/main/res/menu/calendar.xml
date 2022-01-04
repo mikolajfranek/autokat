@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     <item
         android:id="@+id/toolbar_list_calendar_check"
-        android:icon="@drawable/mark"
+        android:icon="@drawable/check"
         android:orderInCategory="100"
         android:title=""
         android:visible="false"
