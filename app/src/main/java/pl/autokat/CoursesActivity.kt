@@ -17,9 +17,8 @@ class CoursesActivity : AppCompatActivity() {
     private lateinit var activityCoursesBinding: ActivityCoursesBinding
     private lateinit var database: Database
 
-    //region override
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    //region methods used in override
+    private fun init() {
         activityCoursesBinding =
             ActivityCoursesBinding.inflate(layoutInflater)
         val view = activityCoursesBinding.root
@@ -28,11 +27,14 @@ class CoursesActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         SharedPreference.init(this)
         database = Database(applicationContext)
-        activityCoursesBinding.switchCourses.setOnCheckedChangeListener { _, isChecked ->
+    }
+
+    private fun setClickListeners() {
+        activityCoursesBinding.switchTypeCourses.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 val lastCoursesDate =
                     SharedPreference.getKey(SharedPreference.ACTUAL_COURSES_DATE)
-                activityCoursesBinding.actualDateCoursesButton.visibility =
+                activityCoursesBinding.buttonSelectDateCourses.visibility =
                     View.GONE
                 SharedPreference.setKey(
                     SharedPreference.ACTUAL_COURSES_DATE,
@@ -50,7 +52,7 @@ class CoursesActivity : AppCompatActivity() {
                     ).show()
                 }
             } else {
-                activityCoursesBinding.actualDateCoursesButton.visibility =
+                activityCoursesBinding.buttonSelectDateCourses.visibility =
                     View.VISIBLE
                 SharedPreference.setKey(
                     SharedPreference.ACTUAL_COURSES_CHOICE,
@@ -58,45 +60,23 @@ class CoursesActivity : AppCompatActivity() {
                 )
             }
         }
-        activityCoursesBinding.actualDateCoursesButton.setOnClickListener {
-            startActivity(Intent(applicationContext, CalendarActivity::class.java))
+        activityCoursesBinding.buttonSelectDateCourses.setOnClickListener {
+            openCalendarActivity()
         }
     }
 
-    @Suppress("ReplaceCallWithBinaryOperator")
-    override fun onResume() {
-        super.onResume()
+    private fun setInViewSelectingCourses(){
         if (Course.isCoursesSelected()) {
-            activityCoursesBinding.switchCourses.isChecked = false
-            activityCoursesBinding.actualDateCoursesButton.visibility =
+            activityCoursesBinding.switchTypeCourses.isChecked = false
+            activityCoursesBinding.buttonSelectDateCourses.visibility =
                 View.VISIBLE
         } else {
-            activityCoursesBinding.switchCourses.isChecked = true
-            activityCoursesBinding.actualDateCoursesButton.visibility = View.GONE
-        }
-        setValuesInView()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.courses, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.toolbar_list_refresh_courses -> {
-                Thread(TaskUpdateCourses()).start()
-                true
-            }
-            else -> {
-                finish()
-                true
-            }
+            activityCoursesBinding.switchTypeCourses.isChecked = true
+            activityCoursesBinding.buttonSelectDateCourses.visibility = View.GONE
         }
     }
-    //endregion
 
-    private fun setValuesInView() {
+    private fun setInViewCourses() {
         val platinum: String = Course.calculateCoursesToPln(
             SharedPreference.getKey(SharedPreference.PLATINUM),
             SharedPreference.getKey(SharedPreference.USD_PLN)
@@ -111,12 +91,12 @@ class CoursesActivity : AppCompatActivity() {
             SharedPreference.getKey(SharedPreference.PALLADIUM),
             SharedPreference.getKey(SharedPreference.USD_PLN)
         )
-        val palladDate: String =
+        val palladiumDate: String =
             SharedPreference.getKey(SharedPreference.PALLADIUM_DATE)
         val palladiumText = (Formatter.formatStringFloat(palladium, 2) + " zł/g")
         activityCoursesBinding.palladium.text = palladiumText
         activityCoursesBinding.palladiumDate.text =
-            Formatter.formatStringDate(palladDate)
+            Formatter.formatStringDate(palladiumDate)
         val rhodium: String = Course.calculateCoursesToPln(
             SharedPreference.getKey(SharedPreference.RHODIUM),
             SharedPreference.getKey(SharedPreference.USD_PLN)
@@ -144,68 +124,121 @@ class CoursesActivity : AppCompatActivity() {
         activityCoursesBinding.usdPlnDate.text =
             Formatter.formatStringDate(courseUsdPlnDate)
     }
+    //endregion
 
-    inner class TaskUpdateCourses : Runnable {
-        override fun run() {
-            //--- onPreExecute
-            runOnUiThread {
-                UserInterface.changeStatusLayout(
-                    activityCoursesBinding.linearLayout,
-                    false
-                )
-                Toast.makeText(
-                    this@CoursesActivity.applicationContext,
-                    Configuration.UPDATE_WAIT,
-                    Toast.LENGTH_SHORT
-                ).show()
+    //region override
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        init()
+        setClickListeners()
+    }
+
+    @Suppress("ReplaceCallWithBinaryOperator")
+    override fun onResume() {
+        super.onResume()
+        setInViewSelectingCourses()
+        setInViewCourses()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.courses, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.toolbar_list_refresh_courses -> {
+                Thread(RunnableUpdateCourses()).start()
+                true
             }
-            //--- doInBackground
-            var processStep: ProcessStep = ProcessStep.SUCCESS
-            try {
-                Course.getValues(database)
-            } catch (e: UnknownHostException) {
-                processStep = ProcessStep.NETWORK_FAILED
-            } catch (e: Exception) {
-                processStep = ProcessStep.UNHANDLED_EXCEPTION
-            }
-            //--- onPostExecute
-            runOnUiThread {
-                when (processStep) {
-                    ProcessStep.NETWORK_FAILED -> {
-                        Toast.makeText(
-                            this@CoursesActivity.applicationContext,
-                            Configuration.NETWORK_FAILED,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    ProcessStep.UNHANDLED_EXCEPTION -> {
-                        Toast.makeText(
-                            this@CoursesActivity.applicationContext,
-                            Configuration.UPDATE_FAILED,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    ProcessStep.SUCCESS -> {
-                        Toast.makeText(
-                            this@CoursesActivity.applicationContext,
-                            Configuration.UPDATE_SUCCESS,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        setValuesInView()
-                    }
-                    else -> {
-                        Toast.makeText(
-                            this@CoursesActivity.applicationContext,
-                            Configuration.UPDATE_FAILED,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-                UserInterface.changeStatusLayout(
-                    activityCoursesBinding.linearLayout,
-                    true
-                )
+            else -> {
+                finish()
+                true
             }
         }
     }
+    //endregion
+
+    //region open activities
+    private fun openCalendarActivity() {
+        startActivity(Intent(applicationContext, CalendarActivity::class.java))
+    }
+    //endregion
+
+    //region inner classes
+    inner class RunnableUpdateCourses : Runnable {
+        //region methods of run
+        private fun onPreExecute() {
+            UserInterface.changeStatusLayout(
+                activityCoursesBinding.linearLayout,
+                false
+            )
+            Toast.makeText(
+                this@CoursesActivity.applicationContext,
+                Configuration.UPDATE_WAIT,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        private fun doInBackground(): ProcessStep {
+            return try {
+                Course.getValues(database)
+                ProcessStep.SUCCESS
+            } catch (e: UnknownHostException) {
+                ProcessStep.NETWORK_FAILED
+            } catch (e: Exception) {
+                ProcessStep.UNHANDLED_EXCEPTION
+            }
+        }
+
+        private fun onPostExecute(processStep: ProcessStep) {
+            when (processStep) {
+                ProcessStep.NETWORK_FAILED -> {
+                    Toast.makeText(
+                        this@CoursesActivity.applicationContext,
+                        Configuration.NETWORK_FAILED,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                ProcessStep.UNHANDLED_EXCEPTION -> {
+                    Toast.makeText(
+                        this@CoursesActivity.applicationContext,
+                        Configuration.UPDATE_FAILED,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                ProcessStep.SUCCESS -> {
+                    Toast.makeText(
+                        this@CoursesActivity.applicationContext,
+                        Configuration.UPDATE_SUCCESS,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    setInViewCourses()
+                }
+                else -> {
+                    Toast.makeText(
+                        this@CoursesActivity.applicationContext,
+                        Configuration.UPDATE_FAILED,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+            UserInterface.changeStatusLayout(
+                activityCoursesBinding.linearLayout,
+                true
+            )
+        }
+        //endregion
+
+        override fun run() {
+            runOnUiThread {
+                onPreExecute()
+            }
+            val processStep: ProcessStep = doInBackground()
+            runOnUiThread {
+                onPostExecute(processStep)
+            }
+        }
+    }
+    //endregion
 }

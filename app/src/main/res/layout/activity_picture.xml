@@ -8,7 +8,7 @@
     tools:context=".PictureActivity">
 
     <com.github.chrisbanes.photoview.PhotoView
-        android:id="@+id/photo_view"
+        android:id="@+id/photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

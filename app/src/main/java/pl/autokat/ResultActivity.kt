@@ -56,6 +56,7 @@ class ResultActivity : AppCompatActivity() {
         setSupportActionBar(activityResultBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         SharedPreference.init(this)
+
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         database = Database(applicationContext)
         activityResultBinding.editText.setText(
@@ -159,6 +160,7 @@ class ResultActivity : AppCompatActivity() {
                 return viewItem
             }
         }
+
         activityResultBinding.catalystListView.adapter = databaseAdapterCatalysts
         activityResultBinding.catalystListView.setOnScrollListener(object :
             AbsListView.OnScrollListener {
@@ -199,6 +201,7 @@ class ResultActivity : AppCompatActivity() {
                 return viewItem
             }
         }
+
         activityResultBinding.historyFilterListView.adapter = databaseAdapterHistoryFilter
         activityResultBinding.historyFilterListView.setOnScrollListener(object :
             AbsListView.OnScrollListener {
@@ -217,6 +220,7 @@ class ResultActivity : AppCompatActivity() {
                 }
             }
         })
+
         activityResultBinding.drawerLayout.addDrawerListener(object : DrawerListener {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
             override fun onDrawerOpened(drawerView: View) {}

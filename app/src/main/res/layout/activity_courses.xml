@@ -17,7 +17,7 @@
         tools:viewBindingIgnore="true" />
 
     <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/switch_courses"
+        android:id="@+id/switch_type_courses"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -28,7 +28,7 @@
         app:switchMinWidth="68dp" />
 
     <Button
-        android:id="@+id/actual_date_courses_button"
+        android:id="@+id/button_select_date_courses"
         style="@style/Widget.AppCompat.Button"
         android:layout_width="match_parent"
         android:layout_height="50dp"

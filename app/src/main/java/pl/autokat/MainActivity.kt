@@ -148,7 +148,7 @@ class MainActivity : AppCompatActivity() {
         //region id of user
         private fun getSerialId(): String {
             var id: String = getId()
-            id = ("[^A-Za+-z0-9]+").toRegex().replace(id, "")
+            id = ("[^A-Za-z0-9]+").toRegex().replace(id, "")
             if (id.isEmpty() == false) return id
             throw Exception()
         }
