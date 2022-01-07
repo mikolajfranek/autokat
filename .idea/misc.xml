@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../../layout/custom_preview.xml" value="0.21614583333333334" />
+        <entry key="app/src/main/res/drawable/check.xml" value="0.2485" />
+        <entry key="app/src/main/res/drawable/course_day.xml" value="0.2485" />
         <entry key="app/src/main/res/drawable/courses_day.xml" value="0.222" />
         <entry key="app/src/main/res/drawable/drawable_check.xml" value="0.215" />
         <entry key="app/src/main/res/drawable/drawable_checked.xml" value="0.2725" />
@@ -17,24 +19,28 @@
         <entry key="app/src/main/res/drawable/selected_day.xml" value="0.222" />
         <entry key="app/src/main/res/drawable/selectedday_background.xml" value="0.236" />
         <entry key="app/src/main/res/layout/activity_about.xml" value="0.19202898550724637" />
-        <entry key="app/src/main/res/layout/activity_calendar.xml" value="0.2015625" />
+        <entry key="app/src/main/res/layout/activity_calendar.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_calendar_view.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_configuration_values.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_courses.xml" value="0.21822916666666667" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/layout/activity_picture.xml" value="0.16875" />
-        <entry key="app/src/main/res/layout/activity_result.xml" value="0.13405797101449277" />
+        <entry key="app/src/main/res/layout/activity_result.xml" value="0.1" />
         <entry key="app/src/main/res/layout/calendar_day.xml" value="0.20989583333333334" />
         <entry key="app/src/main/res/layout/calendar_day_layout.xml" value="0.21770833333333334" />
         <entry key="app/src/main/res/layout/calendar_day_legend.xml" value="0.25407608695652173" />
         <entry key="app/src/main/res/layout/calendar_event_item_view.xml" value="0.28020833333333334" />
         <entry key="app/src/main/res/layout/calendar_header.xml" value="0.20989583333333334" />
+        <entry key="app/src/main/res/layout/catalyst.xml" value="0.21875" />
         <entry key="app/src/main/res/layout/example_2_calendar_day.xml" value="0.10207700101317123" />
         <entry key="app/src/main/res/layout/example_2_calendar_header.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/history_filter.xml" value="0.21875" />
         <entry key="app/src/main/res/layout/my_item_catalyst.xml" value="0.33" />
         <entry key="app/src/main/res/layout/my_item_history_filter.xml" value="0.13405797101449277" />
         <entry key="app/src/main/res/layout/my_toolbar.xml" value="0.13405797101449277" />
+        <entry key="app/src/main/res/layout/nav_header.xml" value="0.21875" />
         <entry key="app/src/main/res/layout/nav_header_main.xml" value="0.13405797101449277" />
+        <entry key="app/src/main/res/menu/calendar.xml" value="0.2671875" />
         <entry key="app/src/main/res/menu/example_2_menu.xml" value="0.253125" />
         <entry key="app/src/main/res/menu/toolbar_list_configurationvalues.xml" value="0.253125" />
         <entry key="app/src/main/res/menu/toolbar_list_main.xml" value="0.253125" />

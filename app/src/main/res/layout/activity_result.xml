@@ -34,7 +34,7 @@
                 tools:ignore="UselessParent">
 
                 <EditText
-                    android:id="@+id/editText"
+                    android:id="@+id/filter"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_weight="1"
@@ -49,7 +49,7 @@
                     android:textColor="@color/colorUser" />
 
                 <Button
-                    android:id="@+id/adder_button_history_of_search"
+                    android:id="@+id/button_add_history_filter"
                     style="@style/Widget.AppCompat.Button"
                     android:layout_width="@android:dimen/app_icon_size"
                     android:layout_height="match_parent"
@@ -72,7 +72,7 @@
             android:visibility="gone" />
 
         <TextView
-            android:id="@+id/catalyst_text_view_waiting"
+            android:id="@+id/catalyst_waiting"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
@@ -84,7 +84,7 @@
             android:visibility="gone" />
 
         <TextView
-            android:id="@+id/catalyst_text_view_empty_list"
+            android:id="@+id/catalyst_empty_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
@@ -96,7 +96,7 @@
             android:visibility="gone" />
 
         <TextView
-            android:id="@+id/catalyst_text_view_empty_database"
+            android:id="@+id/catalyst_empty_database"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
@@ -109,7 +109,7 @@
     </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navigation_history_filter"
+        android:id="@+id/history_filter_navigation_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
@@ -133,7 +133,7 @@
                 android:visibility="gone" />
 
             <TextView
-                android:id="@+id/history_filter_text_view_waiting"
+                android:id="@+id/history_filter_waiting"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
@@ -145,7 +145,7 @@
                 android:visibility="gone" />
 
             <TextView
-                android:id="@+id/history_filter_text_view_empty_list"
+                android:id="@+id/history_filter_empty_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"

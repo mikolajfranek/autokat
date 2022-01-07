@@ -18,9 +18,9 @@ class UpdateActivity : AppCompatActivity() {
     private var refreshingDatabase: Boolean = false
     private var refreshingWork: Boolean = false
 
-    //region override
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+
+    //region methods used in override
+    private fun init(){
         activityUpdateBinding = ActivityUpdateBinding.inflate(layoutInflater)
         val view = activityUpdateBinding.root
         setContentView(view)
@@ -28,14 +28,25 @@ class UpdateActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         SharedPreference.init(this)
         database = Database(applicationContext)
-        activityUpdateBinding.updateNewButton.setOnClickListener {
+
+    }
+    private fun setClickListeners(){
+        activityUpdateBinding.buttonUpdateNew.setOnClickListener {
             refreshingDatabase = false
-            Thread(TaskUpdateCatalyst(false)).start()
+            Thread(RunnableUpdate(false)).start()
         }
-        activityUpdateBinding.updateFullButton.setOnClickListener {
+        activityUpdateBinding.buttonUpdateFull.setOnClickListener {
             refreshingDatabase = false
-            Thread(TaskUpdateCatalyst(true)).start()
+            Thread(RunnableUpdate(true)).start()
         }
+    }
+    //endregion
+
+    //region override
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        init()
+        setClickListeners()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -53,20 +64,23 @@ class UpdateActivity : AppCompatActivity() {
         val itemsWithThumbnail: Int = database.getCountCatalystWithThumbnail()
         val itemsWithUrlThumbnail: Int = database.getCountCatalystWithUrlOfThumbnail()
         val itemsFromDatabase: Int = database.getCountCatalyst()
-        activityUpdateBinding.progessBar.progress =
+        activityUpdateBinding.progressBar.progress =
             ((itemsWithThumbnail.toFloat() / itemsWithUrlThumbnail.toFloat()) * 100.toFloat()).toInt()
         activityUpdateBinding.notification.setTextColor(Configuration.COLOR_SUCCESS)
         if (itemsFromDatabase != 0) {
             if (Dynamic.IS_AVAILABLE_UPDATE) {
-                activityUpdateBinding.progessBar.progress = 0
+                activityUpdateBinding.progressBar.progress = 0
                 activityUpdateBinding.notification.text = Configuration.DATABASE_NOT_ACTUAL
             } else {
                 if (itemsWithThumbnail / itemsFromDatabase != 1) {
                     val textView =
                         Configuration.BITMAP_STATUS + " (" + itemsWithThumbnail + "/" + itemsWithUrlThumbnail + "/" + itemsFromDatabase + ")"
                     activityUpdateBinding.notification.text = textView
+
                     refreshingDatabase = true
-                    Thread(TaskUpdateProgressOfUpdateThumbnail()).start()
+                    //val thread = Thread(RunnableUpdateProgressOfThumbnail())
+                    //thread.start()
+                    Thread(RunnableUpdateProgressOfThumbnail()).start()
                 } else {
                     activityUpdateBinding.notification.text =
                         Configuration.DATABASE_ACTUAL
@@ -78,14 +92,14 @@ class UpdateActivity : AppCompatActivity() {
     }
     //endregion
 
-    fun checkIfRowIsAvailable(row: JSONArray): Boolean {
-        return Spreadsheet.getValueStringFromDocsApi(
-            row,
-            Configuration.SPREADSHEET_CATALYST_ID
-        ).isEmpty() == false
-    }
 
-    inner class TaskUpdateProgressOfUpdateThumbnail : Runnable {
+
+    //region inner classes
+    inner class RunnableUpdateProgressOfThumbnail : Runnable {
+
+
+
+
         override fun run() {
             //--- onPreExecute
             //--- doInBackground
@@ -107,7 +121,7 @@ class UpdateActivity : AppCompatActivity() {
                             val textView =
                                 Configuration.BITMAP_STATUS + " (" + itemsWithThumbnail.toString() + "/" + itemsWithUrlThumbnail.toString() + "/" + itemsFromDatabase.toString() + ")"
                             activityUpdateBinding.notification.text = textView
-                            activityUpdateBinding.progessBar.progress =
+                            activityUpdateBinding.progressBar.progress =
                                 ((itemsWithThumbnail.toFloat() / itemsWithUrlThumbnail.toFloat()) * 100.toFloat()).toInt()
                         }
                     }
@@ -120,8 +134,41 @@ class UpdateActivity : AppCompatActivity() {
         }
     }
 
-    inner class TaskUpdateCatalyst(fullUpdateInput: Boolean) : Runnable {
+    inner class RunnableUpdate(fullUpdateInput: Boolean) : Runnable {
         private var fullUpdate: Boolean = fullUpdateInput
+
+        //region methods used in doInBackground
+        private fun checkIfRowIsAvailable(row: JSONArray): Boolean {
+            return Spreadsheet.getValueStringFromDocsApi(
+                row,
+                Configuration.SPREADSHEET_CATALYST_ID
+            ).isEmpty() == false
+        }
+        //endregion
+
+        //region methods of run
+        private fun onPreExecute(){
+
+        }
+        private fun doInBackground(): ProcessStep {
+
+            return ProcessStep.NONE
+        }
+        private fun onPostExecute(processStep: ProcessStep) {
+
+        }
+        //endregion
+
+        /*override fun run() {
+            runOnUiThread {
+                onPreExecute()
+            }
+            val processStep: ProcessStep = doInBackground()
+            runOnUiThread {
+                onPostExecute(processStep)
+            }
+        }*/
+
 
         override fun run() {
             //--- onPreExecute
@@ -134,7 +181,7 @@ class UpdateActivity : AppCompatActivity() {
                 while (refreshingWork) {
                     Thread.sleep(100)
                 }
-                activityUpdateBinding.progessBar.progress = 0
+                activityUpdateBinding.progressBar.progress = 0
                 activityUpdateBinding.notification.setTextColor(Configuration.COLOR_SUCCESS)
                 activityUpdateBinding.notification.text =
                     Configuration.UPDATE_WAIT
@@ -177,7 +224,7 @@ class UpdateActivity : AppCompatActivity() {
                             ((i * batchSize).toFloat() / progressAll.toFloat()) * (100).toFloat()
                         //--- onProgressUpdate
                         runOnUiThread {
-                            activityUpdateBinding.progessBar.progress =
+                            activityUpdateBinding.progressBar.progress =
                                 progressStep.toInt()
                             activityUpdateBinding.notification.setTextColor(
                                 Configuration.COLOR_SUCCESS
@@ -212,7 +259,7 @@ class UpdateActivity : AppCompatActivity() {
                     }
                     ProcessStep.SUCCESS -> {
                         Dynamic.IS_AVAILABLE_UPDATE = false
-                        activityUpdateBinding.progessBar.progress = 100
+                        activityUpdateBinding.progressBar.progress = 100
                         activityUpdateBinding.notification.setTextColor(
                             Configuration.COLOR_SUCCESS
                         )
@@ -230,4 +277,5 @@ class UpdateActivity : AppCompatActivity() {
             }
         }
     }
+    //endregion
 }

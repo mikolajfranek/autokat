@@ -16,7 +16,7 @@
         tools:viewBindingIgnore="true" />
 
     <ProgressBar
-        android:id="@+id/progess_bar"
+        android:id="@+id/progress_bar"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -40,7 +40,7 @@
         android:textColor="@color/colorUser" />
 
     <Button
-        android:id="@+id/update_new_button"
+        android:id="@+id/button_update_new"
         style="@style/Widget.AppCompat.Button"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -50,7 +50,7 @@
         android:textAllCaps="false" />
 
     <Button
-        android:id="@+id/update_full_button"
+        android:id="@+id/button_update_full"
         style="@style/Widget.AppCompat.Button"
         android:layout_width="match_parent"
         android:layout_height="50dp"

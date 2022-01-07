@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <item
-        android:id="@+id/toolbar_list_calendar_check"
-        android:icon="@drawable/check"
+        android:id="@+id/toolbar_list_calendar_choose"
+        android:icon="@drawable/choose"
         android:orderInCategory="100"
         android:title=""
         android:visible="false"

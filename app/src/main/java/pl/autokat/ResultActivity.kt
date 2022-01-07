@@ -50,7 +50,7 @@ class ResultActivity : AppCompatActivity() {
 
 
     //region methods used in override
-    private fun init(){
+    private fun init() {
         activityResultBinding = ActivityResultBinding.inflate(layoutInflater)
         val view = activityResultBinding.root
         setContentView(view)
@@ -58,6 +58,9 @@ class ResultActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         SharedPreference.init(this)
         database = Database(applicationContext)
+    }
+    private fun deleteHistoryFilter(id: Int) {
+        Thread(RunnableDeleteHistoryFilter(id)).start()
     }
     //endregion
 
@@ -70,7 +73,7 @@ class ResultActivity : AppCompatActivity() {
 
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        activityResultBinding.editText.setText(
+        activityResultBinding.filter.setText(
             SharedPreference.getKey(
                 SharedPreference.LAST_SEARCHED_TEXT
             )
@@ -78,7 +81,7 @@ class ResultActivity : AppCompatActivity() {
 
 
 
-        activityResultBinding.editText.addTextChangedListener(object : TextWatcher {
+        activityResultBinding.filter.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -102,8 +105,8 @@ class ResultActivity : AppCompatActivity() {
                 val visibilityCatalyst: Boolean = SharedPreference.getKey(
                     SharedPreference.VISIBILITY
                 ).toInt() == 1
-                catalystBinding.imageView.setImageBitmap(itemCatalyst.thumbnail)
-                catalystBinding.imageView.setOnLongClickListener(
+                catalystBinding.thumbnail.setImageBitmap(itemCatalyst.thumbnail)
+                catalystBinding.thumbnail.setOnLongClickListener(
                     OnLongClickListener {
                         Toast.makeText(
                             this@ResultActivity.applicationContext,
@@ -113,7 +116,7 @@ class ResultActivity : AppCompatActivity() {
                             .show()
                         return@OnLongClickListener true
                     })
-                catalystBinding.imageView.setOnClickListener {
+                catalystBinding.thumbnail.setOnClickListener {
                     val intent =
                         Intent(this@ResultActivity.applicationContext, PictureActivity::class.java)
                     intent.putExtra("urlPicture", itemCatalyst.urlPicture)
@@ -162,7 +165,7 @@ class ResultActivity : AppCompatActivity() {
                 if (visibilityCatalyst) {
                     catalystBinding.priceEur.text = resultPriceEur
                     catalystBinding.pricePln.text = resultPricePln
-                    catalystBinding.rowPlattinum.visibility = VISIBLE
+                    catalystBinding.rowPlatinum.visibility = VISIBLE
                     catalystBinding.rowPalladium.visibility = VISIBLE
                     catalystBinding.rowRhodium.visibility = VISIBLE
                 } else {
@@ -206,11 +209,11 @@ class ResultActivity : AppCompatActivity() {
                 val itemHistoryFilter = getItem(position)!!
                 historyFilterBinding.name.text = itemHistoryFilter.name
                 viewItem.setOnClickListener {
-                    activityResultBinding.editText.setText(itemHistoryFilter.name)
+                    activityResultBinding.filter.setText(itemHistoryFilter.name)
                     activityResultBinding.drawerLayout.closeDrawers()
                 }
-                historyFilterBinding.crossDelete.setOnClickListener {
-                    deleteRecordHistoryOfSearch(itemHistoryFilter.id)
+                historyFilterBinding.buttonDeleteHistoryFilter.setOnClickListener {
+                    deleteHistoryFilter(itemHistoryFilter.id)
                 }
                 return viewItem
             }
@@ -241,15 +244,15 @@ class ResultActivity : AppCompatActivity() {
             override fun onDrawerClosed(drawerView: View) {}
             override fun onDrawerStateChanged(newState: Int) {
                 if (newState == DrawerLayout.STATE_SETTLING && activityResultBinding.drawerLayout.isDrawerOpen(
-                        activityResultBinding.navigationHistoryFilter
+                        activityResultBinding.historyFilterNavigationView
                     ) == false
                 ) {
                     refreshDataBaseAdapterHistoryFilter(ScrollRefresh.RESET_LIST)
                 }
             }
         })
-        activityResultBinding.adderButtonHistoryOfSearch.setOnClickListener {
-            Thread(TaskAddRecordHistoryFilter()).start()
+        activityResultBinding.buttonAddHistoryFilter.setOnClickListener {
+            Thread(RunnableAddHistoryFilter()).start()
         }
     }
 
@@ -260,7 +263,7 @@ class ResultActivity : AppCompatActivity() {
                 TimeChecking.CHECKING_LICENCE
             ) == false
         ) openMainActivity()
-        Thread(TaskUpdate()).start()
+        Thread(RunnableUpdate()).start()
     }
 
     override fun onCreateOptionsMenu(menuInput: Menu): Boolean {
@@ -343,15 +346,15 @@ class ResultActivity : AppCompatActivity() {
             }
         }
         if (databaseAdapterCatalysts.count == 0 && searchedText.isEmpty() == false) {
-            activityResultBinding.catalystTextViewEmptyList.visibility = VISIBLE
+            activityResultBinding.catalystEmptyList.visibility = VISIBLE
         } else {
-            activityResultBinding.catalystTextViewEmptyList.visibility = GONE
+            activityResultBinding.catalystEmptyList.visibility = GONE
         }
     }
 
     fun refreshDataBaseAdapterHistoryFilter(scrollRefresh: ScrollRefresh) {
         val nameCatalystOrBrandCarInput =
-            activityResultBinding.editText.text.toString()
+            activityResultBinding.filter.text.toString()
         when (scrollRefresh) {
             ScrollRefresh.RESET_LIST -> {
                 //reset variable of scroll
@@ -389,41 +392,62 @@ class ResultActivity : AppCompatActivity() {
             }
         }
         if (databaseAdapterHistoryFilter.count == 0) {
-            activityResultBinding.historyFilterTextViewWaiting.visibility = GONE
-            activityResultBinding.historyFilterTextViewEmptyList.visibility = VISIBLE
+            activityResultBinding.historyFilterWaiting.visibility = GONE
+            activityResultBinding.historyFilterEmptyList.visibility = VISIBLE
             activityResultBinding.historyFilterListView.visibility = GONE
         } else {
-            activityResultBinding.historyFilterTextViewWaiting.visibility = GONE
-            activityResultBinding.historyFilterTextViewEmptyList.visibility = GONE
+            activityResultBinding.historyFilterWaiting.visibility = GONE
+            activityResultBinding.historyFilterEmptyList.visibility = GONE
             activityResultBinding.historyFilterListView.visibility = VISIBLE
         }
     }
     //endregion
 
-    fun deleteRecordHistoryOfSearch(id: Int) {
-        Thread(TaskDeleteRecordHistoryFilter(id)).start()
-    }
+
 
 
     //region inner classes
-    inner class TaskUpdate : Runnable {
+    inner class RunnableUpdate : Runnable {
         private var updateCatalyst: Boolean = false
         private var databaseEmpty: Boolean = false
 
+        //region methods of run
+        private fun onPreExecute() {
+            UserInterface.changeStatusLayout(
+                activityResultBinding.drawerLayout,
+                false
+            )
+            activityResultBinding.catalystWaiting.visibility =
+                VISIBLE
+            activityResultBinding.catalystEmptyDatabase.visibility =
+                GONE
+            activityResultBinding.catalystListView.visibility = GONE
+        }
+
+        private fun doInBackground(): ProcessStep {
+
+            return ProcessStep.NONE
+        }
+
+        private fun onPostExecute(processStep: ProcessStep) {
+
+        }
+        //endregion
+
+        /*override fun run() {
+            runOnUiThread {
+                onPreExecute()
+            }
+            val processStep: ProcessStep = doInBackground()
+            runOnUiThread {
+                onPostExecute(processStep)
+            }
+        }*/
+
+
         @Suppress("ReplaceCallWithBinaryOperator")
         override fun run() {
-            //--- onPreExecute
-            runOnUiThread {
-                UserInterface.changeStatusLayout(
-                    activityResultBinding.drawerLayout,
-                    false
-                )
-                activityResultBinding.catalystTextViewWaiting.visibility =
-                    VISIBLE
-                activityResultBinding.catalystTextViewEmptyDatabase.visibility =
-                    GONE
-                activityResultBinding.catalystListView.visibility = GONE
-            }
+
             //--- doInBackground
             var processStep: ProcessStep = ProcessStep.NONE
             try {
@@ -506,6 +530,8 @@ class ResultActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 //
             }
+
+
             //--- onPostExecute
             runOnUiThread {
                 if (processStep == ProcessStep.USER_ELAPSED_DATE_LICENCE) {
@@ -516,15 +542,15 @@ class ResultActivity : AppCompatActivity() {
                     openMainActivity()
                 }
                 if (databaseEmpty) {
-                    activityResultBinding.catalystTextViewWaiting.visibility =
+                    activityResultBinding.catalystWaiting.visibility =
                         GONE
-                    activityResultBinding.catalystTextViewEmptyDatabase.visibility =
+                    activityResultBinding.catalystEmptyDatabase.visibility =
                         VISIBLE
                     activityResultBinding.catalystListView.visibility = GONE
                 } else {
-                    activityResultBinding.catalystTextViewWaiting.visibility =
+                    activityResultBinding.catalystWaiting.visibility =
                         GONE
-                    activityResultBinding.catalystTextViewEmptyDatabase.visibility =
+                    activityResultBinding.catalystEmptyDatabase.visibility =
                         GONE
                     activityResultBinding.catalystListView.visibility = VISIBLE
                 }
@@ -591,112 +617,140 @@ class ResultActivity : AppCompatActivity() {
                     true
                 )
             }
+
+
+
+
         }
     }
 
-    inner class TaskAddRecordHistoryFilter : Runnable {
-        override fun run() {
-            //--- onPreExecute
-            runOnUiThread {
-                UserInterface.changeStatusLayout(
-                    activityResultBinding.drawerLayout,
-                    false
-                )
-            }
-            //--- doInBackground
-            var processStep: ProcessStep = ProcessStep.NONE
-            try {
+    inner class RunnableAddHistoryFilter : Runnable {
+
+        //region methods of run
+        private fun onPreExecute() {
+            UserInterface.changeStatusLayout(
+                activityResultBinding.drawerLayout,
+                false
+            )
+        }
+
+        private fun doInBackground(): ProcessStep {
+            return try {
                 var searchedText =
                     SharedPreference.getKey(SharedPreference.LAST_SEARCHED_TEXT)
                 searchedText = ("\\s{2,}").toRegex().replace(searchedText.trim(), " ")
                 if (searchedText.isEmpty() == false) {
                     database.deleteHistoryFilter(searchedText)
                     database.insertHistoryFilter(searchedText)
-                    processStep = ProcessStep.SUCCESS
+                    ProcessStep.SUCCESS
+                } else {
+                    ProcessStep.NONE
                 }
             } catch (e: Exception) {
-                processStep = ProcessStep.UNHANDLED_EXCEPTION
+                ProcessStep.UNHANDLED_EXCEPTION
             }
-            //--- onPostExecute
-            runOnUiThread {
-                when (processStep) {
-                    ProcessStep.NONE -> {
-                        Toast.makeText(
-                            this@ResultActivity.applicationContext,
-                            Configuration.HISTORY_FILTER_CANNOT_SAVE_EMPTY,
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                    ProcessStep.UNHANDLED_EXCEPTION -> {
-                        Toast.makeText(
-                            this@ResultActivity.applicationContext,
-                            Configuration.UNHANDLED_EXCEPTION,
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                    ProcessStep.SUCCESS -> {
-                        Toast.makeText(
-                            this@ResultActivity.applicationContext,
-                            Configuration.HISTORY_FILTER_ADDED,
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                    else -> {
-                        //
-                    }
+        }
+
+        private fun onPostExecute(processStep: ProcessStep) {
+            when (processStep) {
+                ProcessStep.NONE -> {
+                    Toast.makeText(
+                        this@ResultActivity.applicationContext,
+                        Configuration.HISTORY_FILTER_CANNOT_SAVE_EMPTY,
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
-                UserInterface.changeStatusLayout(
-                    activityResultBinding.drawerLayout,
-                    true
-                )
+                ProcessStep.UNHANDLED_EXCEPTION -> {
+                    Toast.makeText(
+                        this@ResultActivity.applicationContext,
+                        Configuration.UNHANDLED_EXCEPTION,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                ProcessStep.SUCCESS -> {
+                    Toast.makeText(
+                        this@ResultActivity.applicationContext,
+                        Configuration.HISTORY_FILTER_ADDED,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                else -> {
+                    //
+                }
+            }
+            UserInterface.changeStatusLayout(
+                activityResultBinding.drawerLayout,
+                true
+            )
+        }
+        //endregion
+
+        override fun run() {
+            runOnUiThread {
+                onPreExecute()
+            }
+            val processStep: ProcessStep = doInBackground()
+            runOnUiThread {
+                onPostExecute(processStep)
             }
         }
     }
 
-    inner class TaskDeleteRecordHistoryFilter(idInput: Int) : Runnable {
+    inner class RunnableDeleteHistoryFilter(idInput: Int) : Runnable {
         private var id: Int = idInput
 
-        override fun run() {
-            //--- onPreExecute
-            runOnUiThread {
-                UserInterface.changeStatusLayout(
-                    activityResultBinding.drawerLayout,
-                    false
-                )
-            }
-            //--- doInBackground
-            var processStep: ProcessStep = ProcessStep.SUCCESS
-            try {
+        //region methods of run
+        private fun onPreExecute() {
+            UserInterface.changeStatusLayout(
+                activityResultBinding.drawerLayout,
+                false
+            )
+        }
+
+        private fun doInBackground(): ProcessStep {
+            return try {
                 database.deleteHistoryFilter(id)
+                ProcessStep.SUCCESS
             } catch (e: Exception) {
-                processStep = ProcessStep.UNHANDLED_EXCEPTION
+                ProcessStep.UNHANDLED_EXCEPTION
             }
-            //--- onPostExecute
-            runOnUiThread {
-                when (processStep) {
-                    ProcessStep.UNHANDLED_EXCEPTION -> {
-                        Toast.makeText(
-                            this@ResultActivity.applicationContext,
-                            Configuration.UNHANDLED_EXCEPTION,
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                    ProcessStep.SUCCESS -> {
-                        Toast.makeText(
-                            this@ResultActivity.applicationContext,
-                            Configuration.HISTORY_FILTER_DELETED,
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                    else -> {
-                        //
-                    }
+        }
+
+        private fun onPostExecute(processStep: ProcessStep) {
+            when (processStep) {
+                ProcessStep.UNHANDLED_EXCEPTION -> {
+                    Toast.makeText(
+                        this@ResultActivity.applicationContext,
+                        Configuration.UNHANDLED_EXCEPTION,
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
-                refreshDataBaseAdapterHistoryFilter(ScrollRefresh.UPDATE_LIST)
-                UserInterface.changeStatusLayout(
-                    activityResultBinding.drawerLayout,
-                    true
-                )
+                ProcessStep.SUCCESS -> {
+                    Toast.makeText(
+                        this@ResultActivity.applicationContext,
+                        Configuration.HISTORY_FILTER_DELETED,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                else -> {
+                    //
+                }
+            }
+            refreshDataBaseAdapterHistoryFilter(ScrollRefresh.UPDATE_LIST)
+            UserInterface.changeStatusLayout(
+                activityResultBinding.drawerLayout,
+                true
+            )
+        }
+        //endregion
+
+        override fun run() {
+            runOnUiThread {
+                onPreExecute()
+            }
+            val processStep: ProcessStep = doInBackground()
+            runOnUiThread {
+                onPostExecute(processStep)
             }
         }
     }

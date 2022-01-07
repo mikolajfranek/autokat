@@ -27,7 +27,7 @@
             android:background="@color/colorLine" />
 
         <Button
-            android:id="@+id/cross_delete"
+            android:id="@+id/button_delete_history_filter"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="@android:dimen/app_icon_size"
             android:layout_height="match_parent"
