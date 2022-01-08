@@ -96,7 +96,7 @@
             android:visibility="gone" />
 
         <TextView
-            android:id="@+id/catalyst_empty_database"
+            android:id="@+id/catalyst_empty"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
@@ -145,7 +145,7 @@
                 android:visibility="gone" />
 
             <TextView
-                android:id="@+id/history_filter_empty_list"
+                android:id="@+id/history_filter_empty"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"

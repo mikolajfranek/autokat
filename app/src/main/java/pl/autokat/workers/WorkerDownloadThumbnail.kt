@@ -11,7 +11,7 @@ import pl.autokat.components.Parser
 import java.net.URL
 import java.util.concurrent.atomic.AtomicBoolean
 
-class WorkerUpload(appContext: Context, workerParams: WorkerParameters) :
+class WorkerDownloadThumbnail(appContext: Context, workerParams: WorkerParameters) :
     Worker(appContext, workerParams) {
 
     @Volatile
@@ -19,12 +19,12 @@ class WorkerUpload(appContext: Context, workerParams: WorkerParameters) :
 
     override fun doWork(): Result {
         if (workerExists.compareAndSet(false, true)) {
-            uploadImages()
+            downloadImages()
         }
         return Result.success()
     }
 
-    private fun uploadImages() {
+    private fun downloadImages() {
         try {
             val database = Database(applicationContext)
             val items: JSONArray = database.getCatalystWithoutThumbnail()

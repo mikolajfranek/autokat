@@ -28,7 +28,7 @@ import pl.autokat.enums.ScrollRefresh
 import pl.autokat.enums.TimeChecking
 import pl.autokat.models.ModelCatalyst
 import pl.autokat.models.ModelHistoryFilter
-import pl.autokat.workers.WorkerUpload
+import pl.autokat.workers.WorkerDownloadThumbnail
 import java.time.LocalDate
 import java.util.*
 
@@ -59,6 +59,7 @@ class ResultActivity : AppCompatActivity() {
         SharedPreference.init(this)
         database = Database(applicationContext)
     }
+
     private fun deleteHistoryFilter(id: Int) {
         Thread(RunnableDeleteHistoryFilter(id)).start()
     }
@@ -146,11 +147,11 @@ class ResultActivity : AppCompatActivity() {
                 ) + " g/kg"
                 catalystBinding.rhodium.text = rhodiumText
                 var pricePl = itemCatalyst.countPricePln()
-                val courseEurlnFromConfiguration: String = SharedPreference.getKey(
+                val courseEurPlnFromConfiguration: String = SharedPreference.getKey(
                     SharedPreference.EUR_PLN
                 )
                 val courseEurPln: Float =
-                    if (courseEurlnFromConfiguration.isEmpty()) 0.0F else courseEurlnFromConfiguration.toFloat()
+                    if (courseEurPlnFromConfiguration.isEmpty()) 0.0F else courseEurPlnFromConfiguration.toFloat()
                 var priceEur = if (courseEurPln != 0.0F) (pricePl / courseEurPln) else 0.0F
                 pricePl = if (pricePl < 0) 0.0F else pricePl
                 priceEur = if (priceEur < 0) 0.0F else priceEur
@@ -393,11 +394,11 @@ class ResultActivity : AppCompatActivity() {
         }
         if (databaseAdapterHistoryFilter.count == 0) {
             activityResultBinding.historyFilterWaiting.visibility = GONE
-            activityResultBinding.historyFilterEmptyList.visibility = VISIBLE
+            activityResultBinding.historyFilterEmpty.visibility = VISIBLE
             activityResultBinding.historyFilterListView.visibility = GONE
         } else {
             activityResultBinding.historyFilterWaiting.visibility = GONE
-            activityResultBinding.historyFilterEmptyList.visibility = GONE
+            activityResultBinding.historyFilterEmpty.visibility = GONE
             activityResultBinding.historyFilterListView.visibility = VISIBLE
         }
     }
@@ -406,10 +407,192 @@ class ResultActivity : AppCompatActivity() {
 
 
 
+
+
+
+
+
+
+
+
     //region inner classes
     inner class RunnableUpdate : Runnable {
-        private var updateCatalyst: Boolean = false
-        private var databaseEmpty: Boolean = false
+        private var colorIconUpdateCatalyst: Boolean = false
+        private var isTableCatalystEmpty: Boolean = false
+
+        //region methods used in doInBackground
+        private fun getCourses() {
+            val lastTimestampUpdateCourseFromConfiguration: String =
+                SharedPreference.getKey(SharedPreference.UPDATE_COURSE_TIMESTAMP)
+            if (lastTimestampUpdateCourseFromConfiguration.isEmpty() || ((Date().time - lastTimestampUpdateCourseFromConfiguration.toLong()) > (Configuration.ONE_DAY_IN_MILLISECONDS / 4))) {
+                Course.getValues(database)
+            }
+        }
+
+        private fun checkCountCatalyst() {
+            val databaseCatalystCount: Int = database.getCountCatalyst()
+            isTableCatalystEmpty = databaseCatalystCount == 0
+            val spreadsheetCatalystCount: Int = Spreadsheet.getCountCatalyst()
+            colorIconUpdateCatalyst = spreadsheetCatalystCount > databaseCatalystCount
+        }
+
+        private fun updateUserInformation(): ProcessStep {
+            val user: JSONArray =
+                Spreadsheet.getDataLogin(SharedPreference.getKey(SharedPreference.LOGIN))
+                    ?: return ProcessStep.USER_ELAPSED_DATE_LICENCE
+            if (Checker.checkTimeOnPhone(
+                    user.getString(Configuration.SPREADSHEET_USERS_LICENCE),
+                    TimeChecking.PARAMETER_IS_GREATER_THAN_NOW
+                ) == false
+            ) {
+                return ProcessStep.USER_ELAPSED_DATE_LICENCE
+            }
+            SharedPreference.setKey(
+                SharedPreference.LICENCE_DATE_OF_END,
+                user.getString(
+                    Configuration.SPREADSHEET_USERS_LICENCE
+                )
+            )
+            SharedPreference.setKey(
+                SharedPreference.DISCOUNT,
+                Parser.parseStringToInt(
+                    user.getString(
+                        Configuration.SPREADSHEET_USERS_DISCOUNT
+                    )
+                ).toString()
+            )
+            SharedPreference.setKey(
+                SharedPreference.VISIBILITY,
+                Parser.parseStringBooleanToInt(
+                    user.getString(
+                        Configuration.SPREADSHEET_USERS_VISIBILITY
+                    )
+                ).toString()
+            )
+            SharedPreference.setKey(
+                SharedPreference.MINUS_PLATINUM,
+                Parser.parseStringToInt(
+                    user.getString(
+                        Configuration.SPREADSHEET_USERS_MINUS_PLATINUM
+                    )
+                ).toString()
+            )
+            SharedPreference.setKey(
+                SharedPreference.MINUS_PALLADIUM,
+                Parser.parseStringToInt(
+                    user.getString(
+                        Configuration.SPREADSHEET_USERS_MINUS_PALLADIUM
+                    )
+                ).toString()
+            )
+            SharedPreference.setKey(
+                SharedPreference.MINUS_RHODIUM,
+                Parser.parseStringToInt(
+                    user.getString(
+                        Configuration.SPREADSHEET_USERS_MINUS_RHODIUM
+                    )
+                ).toString()
+            )
+            return ProcessStep.NONE
+        }
+
+        private fun runWorkerDownloadThumbnail() {
+            val workRequest: WorkRequest =
+                OneTimeWorkRequestBuilder<WorkerDownloadThumbnail>().build()
+            WorkManager
+                .getInstance(this@ResultActivity.applicationContext)
+                .enqueue(workRequest)
+        }
+        //endregion
+
+        //region methods used in onPostExecute
+        private fun handleElapsedDateLicence(processStep: ProcessStep) {
+            if (processStep == ProcessStep.USER_ELAPSED_DATE_LICENCE) {
+                SharedPreference.setKey(
+                    SharedPreference.LICENCE_DATE_OF_END,
+                    ""
+                )
+                openMainActivity()
+            }
+        }
+
+        private fun setVisibility() {
+            if (isTableCatalystEmpty) {
+                activityResultBinding.catalystWaiting.visibility =
+                    GONE
+                activityResultBinding.catalystEmpty.visibility =
+                    VISIBLE
+                activityResultBinding.catalystListView.visibility = GONE
+            } else {
+                activityResultBinding.catalystWaiting.visibility =
+                    GONE
+                activityResultBinding.catalystEmpty.visibility =
+                    GONE
+                activityResultBinding.catalystListView.visibility = VISIBLE
+            }
+        }
+
+        private fun setColorIconUpdateCatalyst() {
+            if (colorIconUpdateCatalyst) {
+                Dynamic.IS_AVAILABLE_UPDATE = true
+                menu!!.getItem(1).icon = ContextCompat.getDrawable(
+                    this@ResultActivity.applicationContext,
+                    R.mipmap.ic_action_update_catalyst_color
+                )
+            } else {
+                menu!!.getItem(1).icon = ContextCompat.getDrawable(
+                    this@ResultActivity.applicationContext,
+                    R.mipmap.ic_action_update_catalyst
+                )
+            }
+        }
+
+        private fun setColorIconUpdateCourses() {
+            if (Course.isCoursesSelected()) {
+                val actualCoursesDate =
+                    SharedPreference.getKey(SharedPreference.ACTUAL_COURSES_DATE)
+                if (LocalDate.now().toString().equals(actualCoursesDate)) {
+                    menu!!.getItem(0).icon = ContextCompat.getDrawable(
+                        this@ResultActivity.applicationContext,
+                        R.mipmap.ic_action_values
+                    )
+                } else {
+                    menu!!.getItem(0).icon = ContextCompat.getDrawable(
+                        this@ResultActivity.applicationContext,
+                        R.mipmap.ic_action_values_color
+                    )
+                }
+            } else {
+                val usdDate =
+                    SharedPreference.getKey(SharedPreference.USD_PLN_DATE)
+                val eurDate =
+                    SharedPreference.getKey(SharedPreference.EUR_PLN_DATE)
+                val platinumDate =
+                    SharedPreference.getKey(SharedPreference.PLATINUM_DATE)
+                val palladiumDate =
+                    SharedPreference.getKey(SharedPreference.PALLADIUM_DATE)
+                val rhodiumDate =
+                    SharedPreference.getKey(SharedPreference.RHODIUM_DATE)
+                if (LocalDate.now().toString()
+                        .equals(usdDate) && usdDate.equals(eurDate) && eurDate.equals(
+                        platinumDate
+                    ) && platinumDate.equals(
+                        palladiumDate
+                    ) && palladiumDate.equals(rhodiumDate)
+                ) {
+                    menu!!.getItem(0).icon = ContextCompat.getDrawable(
+                        this@ResultActivity.applicationContext,
+                        R.mipmap.ic_action_values
+                    )
+                } else {
+                    menu!!.getItem(0).icon = ContextCompat.getDrawable(
+                        this@ResultActivity.applicationContext,
+                        R.mipmap.ic_action_values_color
+                    )
+                }
+            }
+        }
+        //endregion
 
         //region methods of run
         private fun onPreExecute() {
@@ -419,22 +602,42 @@ class ResultActivity : AppCompatActivity() {
             )
             activityResultBinding.catalystWaiting.visibility =
                 VISIBLE
-            activityResultBinding.catalystEmptyDatabase.visibility =
+            activityResultBinding.catalystEmpty.visibility =
                 GONE
             activityResultBinding.catalystListView.visibility = GONE
         }
 
         private fun doInBackground(): ProcessStep {
-
-            return ProcessStep.NONE
+            try {
+                getCourses()
+                checkCountCatalyst()
+                val processStep = updateUserInformation()
+                if (processStep != ProcessStep.NONE) {
+                    return processStep
+                }
+                runWorkerDownloadThumbnail()
+                return ProcessStep.SUCCESS
+            } catch (e: Exception) {
+                return ProcessStep.UNHANDLED_EXCEPTION
+            }
         }
 
         private fun onPostExecute(processStep: ProcessStep) {
-
+            handleElapsedDateLicence(processStep)
+            setVisibility()
+            if (menu != null) {
+                setColorIconUpdateCatalyst()
+                setColorIconUpdateCourses()
+            }
+            refreshDatabaseAdapterCatalysts(ScrollRefresh.UPDATE_LIST)
+            UserInterface.changeStatusLayout(
+                activityResultBinding.drawerLayout,
+                true
+            )
         }
         //endregion
 
-        /*override fun run() {
+        override fun run() {
             runOnUiThread {
                 onPreExecute()
             }
@@ -442,185 +645,6 @@ class ResultActivity : AppCompatActivity() {
             runOnUiThread {
                 onPostExecute(processStep)
             }
-        }*/
-
-
-        @Suppress("ReplaceCallWithBinaryOperator")
-        override fun run() {
-
-            //--- doInBackground
-            var processStep: ProcessStep = ProcessStep.NONE
-            try {
-                val lastTimestampUpdateCourseFromConfiguration: String =
-                    SharedPreference.getKey(SharedPreference.UPDATE_COURSE_TIMESTAMP)
-                if (lastTimestampUpdateCourseFromConfiguration.isEmpty() || ((Date().time - lastTimestampUpdateCourseFromConfiguration.toLong()) > (Configuration.ONE_DAY_IN_MILLISECONDS / 4))) {
-                    Course.getValues(database)
-                }
-                val databaseCatalystCount: Int = database.getCountCatalyst()
-                databaseEmpty = databaseCatalystCount == 0
-                val spreadsheetCatalystCount: Int = Spreadsheet.getCountCatalyst()
-                updateCatalyst =
-                    databaseCatalystCount == 0 || spreadsheetCatalystCount > databaseCatalystCount
-                val user: JSONArray? =
-                    Spreadsheet.getDataLogin(SharedPreference.getKey(SharedPreference.LOGIN))
-                if (user == null) {
-                    processStep = ProcessStep.USER_ELAPSED_DATE_LICENCE
-                    throw Exception()
-                }
-                if (Checker.checkTimeOnPhone(
-                        user.getString(Configuration.SPREADSHEET_USERS_LICENCE),
-                        TimeChecking.PARAMETER_IS_GREATER_THAN_NOW
-                    ) == false
-                ) {
-                    processStep = ProcessStep.USER_ELAPSED_DATE_LICENCE
-                    throw Exception()
-                }
-                SharedPreference.setKey(
-                    SharedPreference.LICENCE_DATE_OF_END,
-                    user.getString(
-                        Configuration.SPREADSHEET_USERS_LICENCE
-                    )
-                )
-                SharedPreference.setKey(
-                    SharedPreference.DISCOUNT,
-                    Parser.parseStringToInt(
-                        user.getString(
-                            Configuration.SPREADSHEET_USERS_DISCOUNT
-                        )
-                    ).toString()
-                )
-                SharedPreference.setKey(
-                    SharedPreference.VISIBILITY,
-                    Parser.parseStringBooleanToInt(
-                        user.getString(
-                            Configuration.SPREADSHEET_USERS_VISIBILITY
-                        )
-                    ).toString()
-                )
-                SharedPreference.setKey(
-                    SharedPreference.MINUS_PLATINUM,
-                    Parser.parseStringToInt(
-                        user.getString(
-                            Configuration.SPREADSHEET_USERS_MINUS_PLATINUM
-                        )
-                    ).toString()
-                )
-                SharedPreference.setKey(
-                    SharedPreference.MINUS_PALLADIUM,
-                    Parser.parseStringToInt(
-                        user.getString(
-                            Configuration.SPREADSHEET_USERS_MINUS_PALLADIUM
-                        )
-                    ).toString()
-                )
-                SharedPreference.setKey(
-                    SharedPreference.MINUS_RHODIUM,
-                    Parser.parseStringToInt(
-                        user.getString(
-                            Configuration.SPREADSHEET_USERS_MINUS_RHODIUM
-                        )
-                    ).toString()
-                )
-                val workRequest: WorkRequest =
-                    OneTimeWorkRequestBuilder<WorkerUpload>().build()
-                WorkManager
-                    .getInstance(this@ResultActivity.applicationContext)
-                    .enqueue(workRequest)
-                processStep = ProcessStep.SUCCESS
-            } catch (e: Exception) {
-                //
-            }
-
-
-            //--- onPostExecute
-            runOnUiThread {
-                if (processStep == ProcessStep.USER_ELAPSED_DATE_LICENCE) {
-                    SharedPreference.setKey(
-                        SharedPreference.LICENCE_DATE_OF_END,
-                        ""
-                    )
-                    openMainActivity()
-                }
-                if (databaseEmpty) {
-                    activityResultBinding.catalystWaiting.visibility =
-                        GONE
-                    activityResultBinding.catalystEmptyDatabase.visibility =
-                        VISIBLE
-                    activityResultBinding.catalystListView.visibility = GONE
-                } else {
-                    activityResultBinding.catalystWaiting.visibility =
-                        GONE
-                    activityResultBinding.catalystEmptyDatabase.visibility =
-                        GONE
-                    activityResultBinding.catalystListView.visibility = VISIBLE
-                }
-                if (menu != null) {
-                    if (updateCatalyst) {
-                        Dynamic.IS_AVAILABLE_UPDATE = true
-                        menu!!.getItem(1).icon = ContextCompat.getDrawable(
-                            this@ResultActivity.applicationContext,
-                            R.mipmap.ic_action_update_catalyst_color
-                        )
-                    } else {
-                        menu!!.getItem(1).icon = ContextCompat.getDrawable(
-                            this@ResultActivity.applicationContext,
-                            R.mipmap.ic_action_update_catalyst
-                        )
-                    }
-                    if (Course.isCoursesSelected()) {
-                        val actualCoursesDate =
-                            SharedPreference.getKey(SharedPreference.ACTUAL_COURSES_DATE)
-                        if (LocalDate.now().toString().equals(actualCoursesDate)) {
-                            menu!!.getItem(0).icon = ContextCompat.getDrawable(
-                                this@ResultActivity.applicationContext,
-                                R.mipmap.ic_action_values
-                            )
-                        } else {
-                            menu!!.getItem(0).icon = ContextCompat.getDrawable(
-                                this@ResultActivity.applicationContext,
-                                R.mipmap.ic_action_values_color
-                            )
-                        }
-                    } else {
-                        val usdDate =
-                            SharedPreference.getKey(SharedPreference.USD_PLN_DATE)
-                        val eurDate =
-                            SharedPreference.getKey(SharedPreference.EUR_PLN_DATE)
-                        val platinumDate =
-                            SharedPreference.getKey(SharedPreference.PLATINUM_DATE)
-                        val palladiumDate =
-                            SharedPreference.getKey(SharedPreference.PALLADIUM_DATE)
-                        val rhodiumDate =
-                            SharedPreference.getKey(SharedPreference.RHODIUM_DATE)
-                        if (LocalDate.now().toString()
-                                .equals(usdDate) && usdDate.equals(eurDate) && eurDate.equals(
-                                platinumDate
-                            ) && platinumDate.equals(
-                                palladiumDate
-                            ) && palladiumDate.equals(rhodiumDate)
-                        ) {
-                            menu!!.getItem(0).icon = ContextCompat.getDrawable(
-                                this@ResultActivity.applicationContext,
-                                R.mipmap.ic_action_values
-                            )
-                        } else {
-                            menu!!.getItem(0).icon = ContextCompat.getDrawable(
-                                this@ResultActivity.applicationContext,
-                                R.mipmap.ic_action_values_color
-                            )
-                        }
-                    }
-                }
-                refreshDatabaseAdapterCatalysts(ScrollRefresh.UPDATE_LIST)
-                UserInterface.changeStatusLayout(
-                    activityResultBinding.drawerLayout,
-                    true
-                )
-            }
-
-
-
-
         }
     }
 
