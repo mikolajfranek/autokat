@@ -41,7 +41,10 @@
         <entry key="app/src/main/res/layout/nav_header.xml" value="0.21875" />
         <entry key="app/src/main/res/layout/nav_header_main.xml" value="0.13405797101449277" />
         <entry key="app/src/main/res/menu/calendar.xml" value="0.2671875" />
+        <entry key="app/src/main/res/menu/courses.xml" value="0.20052083333333334" />
         <entry key="app/src/main/res/menu/example_2_menu.xml" value="0.253125" />
+        <entry key="app/src/main/res/menu/main.xml" value="0.20052083333333334" />
+        <entry key="app/src/main/res/menu/result.xml" value="0.20052083333333334" />
         <entry key="app/src/main/res/menu/toolbar_list_configurationvalues.xml" value="0.253125" />
         <entry key="app/src/main/res/menu/toolbar_list_main.xml" value="0.253125" />
       </map>

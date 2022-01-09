@@ -43,6 +43,7 @@ class ResultActivity : AppCompatActivity() {
     private lateinit var historyFilterBinding: HistoryFilterBinding
     private lateinit var database: Database
     private lateinit var menu: Menu
+    private var isAvailableUpdateCatalyst: Boolean = false
     private lateinit var adapterCatalysts: ArrayAdapter<ModelCatalyst>
     private var scrollPreLastCatalyst: Int = 0
     private val paginateLimitCatalyst: Int = 5
@@ -318,7 +319,9 @@ class ResultActivity : AppCompatActivity() {
     }
 
     private fun openUpdateActivity() {
-        startActivity(Intent(applicationContext, UpdateActivity::class.java))
+        val intent = Intent(applicationContext, UpdateActivity::class.java)
+        intent.putExtra("isAvailableUpdateCatalyst", isAvailableUpdateCatalyst)
+        startActivity(intent)
     }
 
     private fun openAboutActivity() {
@@ -422,6 +425,7 @@ class ResultActivity : AppCompatActivity() {
             isTableCatalystEmpty = databaseCatalystCount == 0
             val spreadsheetCatalystCount: Int = Spreadsheet.getCountCatalyst()
             colorIconUpdateCatalyst = spreadsheetCatalystCount > databaseCatalystCount
+            isAvailableUpdateCatalyst = colorIconUpdateCatalyst
         }
 
         private fun updateUserInformation(): ProcessStep {
@@ -522,7 +526,6 @@ class ResultActivity : AppCompatActivity() {
 
         private fun setColorIconUpdateCatalyst() {
             if (colorIconUpdateCatalyst) {
-                Dynamic.IS_AVAILABLE_UPDATE = true
                 menu.getItem(1).icon = ContextCompat.getDrawable(
                     applicationContext,
                     R.mipmap.ic_action_update_catalyst_color
@@ -542,12 +545,12 @@ class ResultActivity : AppCompatActivity() {
                 if (LocalDate.now().toString() == actualCoursesDate) {
                     menu.getItem(0).icon = ContextCompat.getDrawable(
                         applicationContext,
-                        R.mipmap.ic_action_values
+                        R.mipmap.ic_action_update_courses
                     )
                 } else {
                     menu.getItem(0).icon = ContextCompat.getDrawable(
                         applicationContext,
-                        R.mipmap.ic_action_values_color
+                        R.mipmap.ic_action_update_courses_color
                     )
                 }
             } else {
@@ -566,12 +569,12 @@ class ResultActivity : AppCompatActivity() {
                 ) {
                     menu.getItem(0).icon = ContextCompat.getDrawable(
                         applicationContext,
-                        R.mipmap.ic_action_values
+                        R.mipmap.ic_action_update_courses
                     )
                 } else {
                     menu.getItem(0).icon = ContextCompat.getDrawable(
                         applicationContext,
-                        R.mipmap.ic_action_values_color
+                        R.mipmap.ic_action_update_courses_color
                     )
                 }
             }

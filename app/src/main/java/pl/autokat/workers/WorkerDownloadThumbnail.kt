@@ -19,12 +19,12 @@ class WorkerDownloadThumbnail(appContext: Context, workerParams: WorkerParameter
 
     override fun doWork(): Result {
         if (workerExists.compareAndSet(false, true)) {
-            downloadImages()
+            downloadThumbnails()
         }
         return Result.success()
     }
 
-    private fun downloadImages() {
+    private fun downloadThumbnails() {
         try {
             val database = Database(applicationContext)
             val items: JSONArray = database.getCatalystWithoutThumbnail()

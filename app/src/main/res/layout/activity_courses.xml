@@ -22,9 +22,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:checked="true"
-        android:text="@string/activity_configuration_values_switchCourses"
-        android:textOff="@string/activity_configuration_values_switchCourses_no"
-        android:textOn="@string/activity_configuration_values_switchCourses_yes"
+        android:text="@string/activity_courses_korzystanie_z_najnowszych_kursow"
+        android:textOff="@string/activity_courses_switch_no"
+        android:textOn="@string/activity_courses_switch_yes"
         app:switchMinWidth="68dp" />
 
     <Button
@@ -34,7 +34,7 @@
         android:layout_height="50dp"
         android:layout_margin="10dp"
         android:fontFamily="sans-serif"
-        android:text="@string/activity_configuration_values_actualDateCourses"
+        android:text="@string/activity_courses_button_wybierz_date_kursow"
         android:textAllCaps="false"
         android:visibility="gone" />
 
@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:fontFamily="sans-serif"
-        android:text="@string/activity_configuration_values_kurs_metali"
+        android:text="@string/activity_courses_kurs_metali"
         android:textColor="@color/colorUser" />
 
     <TableLayout
@@ -61,21 +61,21 @@
                 android:layout_width="96dp"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:text="@string/activity_configuration_values_metal"
+                android:text="@string/activity_courses_metal"
                 android:textColor="@color/colorUser" />
 
             <TextView
                 android:layout_weight="4"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:text="@string/activity_configuration_values_wartosc"
+                android:text="@string/activity_courses_wartosc"
                 android:textColor="@color/colorUser" />
 
             <TextView
                 android:layout_weight="1"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:text="@string/activity_configuration_values_z_dnia"
+                android:text="@string/activity_courses_z_dnia"
                 android:textColor="@color/colorUser" />
         </TableRow>
 
@@ -91,7 +91,7 @@
                 android:layout_width="96dp"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:text="@string/activity_configuration_values_platyna"
+                android:text="@string/activity_courses_platyna"
                 android:textColor="@color/colorUser" />
 
             <TextView
@@ -121,7 +121,7 @@
                 android:layout_width="96dp"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:text="@string/activity_configuration_values_pallad"
+                android:text="@string/activity_courses_pallad"
                 android:textColor="@color/colorUser" />
 
             <TextView
@@ -151,7 +151,7 @@
                 android:layout_width="96dp"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:text="@string/activity_configuration_values_rod"
+                android:text="@string/activity_courses_rod"
                 android:textColor="@color/colorUser" />
 
             <TextView
@@ -178,7 +178,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
         android:fontFamily="sans-serif"
-        android:text="@string/activity_configuration_values_kurs_walut"
+        android:text="@string/activity_courses_kurs_walut"
         android:textColor="@color/colorUser" />
 
     <TableLayout
@@ -196,21 +196,21 @@
                 android:layout_width="96dp"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:text="@string/activity_configuration_values_waluta"
+                android:text="@string/activity_courses_waluta"
                 android:textColor="@color/colorUser" />
 
             <TextView
                 android:layout_weight="4"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:text="@string/activity_configuration_values_wartosc"
+                android:text="@string/activity_courses_wartosc"
                 android:textColor="@color/colorUser" />
 
             <TextView
                 android:layout_weight="1"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:text="@string/activity_configuration_values_z_dnia"
+                android:text="@string/activity_courses_z_dnia"
                 android:textColor="@color/colorUser" />
         </TableRow>
 
@@ -226,7 +226,7 @@
                 android:layout_width="96dp"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:text="@string/activity_configuration_values_euro"
+                android:text="@string/activity_courses_euro"
                 android:textColor="@color/colorUser" />
 
             <TextView
@@ -256,7 +256,7 @@
                 android:layout_width="96dp"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:text="@string/activity_configuration_values_dolar"
+                android:text="@string/activity_courses_dolar"
                 android:textColor="@color/colorUser" />
 
             <TextView

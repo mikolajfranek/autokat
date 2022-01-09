@@ -6,7 +6,7 @@
         android:id="@+id/toolbar_list_calendar_choose"
         android:icon="@drawable/choose"
         android:orderInCategory="100"
-        android:title=""
+        android:title="@string/menu_wybierz"
         android:visible="false"
         app:showAsAction="always"
         tools:visible="true" />

@@ -53,7 +53,7 @@
             android:layout_marginEnd="5dp"
             android:fontFamily="sans-serif"
             android:gravity="end"
-            android:text="@string/my_item_catalyst_marka"
+            android:text="@string/catalyst_marka"
             android:textColor="@color/colorUser" />
 
         <TextView
@@ -84,7 +84,7 @@
             android:layout_marginEnd="5dp"
             android:fontFamily="sans-serif"
             android:gravity="end"
-            android:text="@string/my_item_catalyst_waga"
+            android:text="@string/catalyst_waga"
             android:textColor="@color/colorUser" />
 
         <TextView
@@ -117,7 +117,7 @@
             android:layout_marginEnd="5dp"
             android:fontFamily="sans-serif"
             android:gravity="end"
-            android:text="@string/my_item_catalyst_platyna"
+            android:text="@string/catalyst_platyna"
             android:textColor="@color/colorUser" />
 
         <TextView
@@ -144,7 +144,7 @@
             android:layout_marginEnd="5dp"
             android:fontFamily="sans-serif"
             android:gravity="end"
-            android:text="@string/my_item_catalyst_pallad"
+            android:text="@string/catalyst_pallad"
             android:textColor="@color/colorUser" />
 
         <TextView
@@ -177,7 +177,7 @@
             android:layout_marginEnd="5dp"
             android:fontFamily="sans-serif"
             android:gravity="end"
-            android:text="@string/my_item_catalyst_rod"
+            android:text="@string/catalyst_rod"
             android:textColor="@color/colorUser" />
 
         <TextView

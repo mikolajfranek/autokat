@@ -3,22 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/toolbar_list_configuration_values"
-        android:icon="@mipmap/ic_action_values"
+        android:icon="@mipmap/ic_action_update_courses"
         android:orderInCategory="100"
-        android:title="@string/menu_toolbar_list_wartosci_kursow"
+        android:title="@string/menu_wartosci_kursow"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/toolbar_list_update"
         android:icon="@mipmap/ic_action_update_catalyst"
         android:orderInCategory="200"
-        android:title="@string/menu_toolbar_list_aktualizacja"
+        android:title="@string/menu_aktualizacja"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/toolbar_list_about"
-        android:icon="@mipmap/ic_action_info"
+        android:icon="@mipmap/ic_action_about"
         android:orderInCategory="300"
-        android:title="@string/menu_toolbar_list_o_aplikacji"
+        android:title="@string/menu_o_aplikacji"
         app:showAsAction="ifRoom" />
 </menu>

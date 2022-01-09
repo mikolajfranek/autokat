@@ -10,17 +10,17 @@ import java.net.UnknownHostException
 
 class UpdateActivity : AppCompatActivity() {
 
-    //TODO
     private lateinit var activityUpdateBinding: ActivityUpdateBinding
     private lateinit var database: Database
+    private var isAvailableUpdateCatalyst: Boolean = false
+
 
     //TODO atomic?
     private var refreshingDatabase: Boolean = false
     private var refreshingWork: Boolean = false
 
-
     //region methods used in override
-    private fun init(){
+    private fun init() {
         activityUpdateBinding = ActivityUpdateBinding.inflate(layoutInflater)
         val view = activityUpdateBinding.root
         setContentView(view)
@@ -30,7 +30,8 @@ class UpdateActivity : AppCompatActivity() {
         database = Database(applicationContext)
 
     }
-    private fun setClickListeners(){
+
+    private fun setClickListeners() {
         activityUpdateBinding.buttonUpdateNew.setOnClickListener {
             refreshingDatabase = false
             Thread(RunnableUpdate(false)).start()
@@ -40,6 +41,10 @@ class UpdateActivity : AppCompatActivity() {
             Thread(RunnableUpdate(true)).start()
         }
     }
+
+    private fun receiveExtraAndSet() {
+        isAvailableUpdateCatalyst = intent.getBooleanExtra("isAvailableUpdateCatalyst", false)
+    }
     //endregion
 
     //region override
@@ -47,6 +52,7 @@ class UpdateActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         init()
         setClickListeners()
+        receiveExtraAndSet()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -62,13 +68,13 @@ class UpdateActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         val itemsWithThumbnail: Int = database.getCountCatalystWithThumbnail()
-        val itemsWithUrlThumbnail: Int = database.getCountCatalystWithUrlOfThumbnail()
+        val itemsWithUrlThumbnail: Int = database.getCountCatalystWithUrlThumbnail()
         val itemsFromDatabase: Int = database.getCountCatalyst()
         activityUpdateBinding.progressBar.progress =
             ((itemsWithThumbnail.toFloat() / itemsWithUrlThumbnail.toFloat()) * 100.toFloat()).toInt()
         activityUpdateBinding.notification.setTextColor(Configuration.COLOR_SUCCESS)
         if (itemsFromDatabase != 0) {
-            if (Dynamic.IS_AVAILABLE_UPDATE) {
+            if (isAvailableUpdateCatalyst) {
                 activityUpdateBinding.progressBar.progress = 0
                 activityUpdateBinding.notification.text = Configuration.DATABASE_NOT_ACTUAL
             } else {
@@ -93,11 +99,8 @@ class UpdateActivity : AppCompatActivity() {
     //endregion
 
 
-
     //region inner classes
     inner class RunnableUpdateProgressOfThumbnail : Runnable {
-
-
 
 
         override fun run() {
@@ -109,11 +112,14 @@ class UpdateActivity : AppCompatActivity() {
                 if (state == true) {
                     refreshingWork = true
                     while (refreshingDatabase) {
+
+                        //odświeżanie widoku co 1s
+
                         Thread.sleep(1000)
                         val itemsWithThumbnail: Int =
                             database.getCountCatalystWithThumbnail()
                         val itemsWithUrlThumbnail: Int =
-                            database.getCountCatalystWithUrlOfThumbnail()
+                            database.getCountCatalystWithUrlThumbnail()
                         val itemsFromDatabase: Int =
                             database.getCountCatalyst()
                         //--- onProgressUpdate
@@ -125,10 +131,13 @@ class UpdateActivity : AppCompatActivity() {
                                 ((itemsWithThumbnail.toFloat() / itemsWithUrlThumbnail.toFloat()) * 100.toFloat()).toInt()
                         }
                     }
-                    refreshingWork = false
+
                 }
             } catch (e: Exception) {
                 //
+            }
+            finally {
+                refreshingWork = false
             }
             //--- onPostExecute
         }
@@ -147,13 +156,15 @@ class UpdateActivity : AppCompatActivity() {
         //endregion
 
         //region methods of run
-        private fun onPreExecute(){
+        private fun onPreExecute() {
 
         }
+
         private fun doInBackground(): ProcessStep {
 
             return ProcessStep.NONE
         }
+
         private fun onPostExecute(processStep: ProcessStep) {
 
         }
@@ -177,10 +188,14 @@ class UpdateActivity : AppCompatActivity() {
                     activityUpdateBinding.linearLayout,
                     false
                 )
+
+                //zakoncz tamten wątek, aby rozpocząć ten...
                 refreshingDatabase = false
                 while (refreshingWork) {
                     Thread.sleep(100)
                 }
+
+
                 activityUpdateBinding.progressBar.progress = 0
                 activityUpdateBinding.notification.setTextColor(Configuration.COLOR_SUCCESS)
                 activityUpdateBinding.notification.text =
@@ -258,7 +273,7 @@ class UpdateActivity : AppCompatActivity() {
                             Configuration.UPDATE_FAILED
                     }
                     ProcessStep.SUCCESS -> {
-                        Dynamic.IS_AVAILABLE_UPDATE = false
+                        isAvailableUpdateCatalyst = false
                         activityUpdateBinding.progressBar.progress = 100
                         activityUpdateBinding.notification.setTextColor(
                             Configuration.COLOR_SUCCESS

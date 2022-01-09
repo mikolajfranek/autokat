@@ -438,7 +438,7 @@ class Database(context: Context) : SQLiteAssetHelper(
     }
 
     @SuppressLint("Range")
-    fun getCountCatalystWithUrlOfThumbnail(): Int {
+    fun getCountCatalystWithUrlThumbnail(): Int {
         var count = 0
         var cursor: Cursor? = null
         try {
