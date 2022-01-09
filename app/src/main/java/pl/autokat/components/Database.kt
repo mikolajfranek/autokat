@@ -11,15 +11,13 @@ import android.util.Base64
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper
 import org.json.JSONArray
 import org.json.JSONObject
-import pl.autokat.models.ModelCourse
 import pl.autokat.models.ModelCatalyst
+import pl.autokat.models.ModelCourse
 import pl.autokat.models.ModelHistoryFilter
 import java.io.FileOutputStream
 import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class Database(context: Context) : SQLiteAssetHelper(
     context,

@@ -50,7 +50,7 @@ class PictureActivity : AppCompatActivity() {
                 false
             )
             Toast.makeText(
-                this@PictureActivity.applicationContext,
+                applicationContext,
                 Configuration.BITMAP_WAIT,
                 Toast.LENGTH_SHORT
             ).show()
@@ -59,7 +59,7 @@ class PictureActivity : AppCompatActivity() {
         private fun doInBackground(): ProcessStep {
             return try {
                 val parsedUrlPicture =
-                    Parser.parseUrlOfPicture(urlPicture, 1920, 1080)
+                    Parser.parseUrlOfPicture(urlPicture, 3840, 2160)
                 bitmap =
                     BitmapFactory.decodeStream(
                         URL(parsedUrlPicture).openConnection().getInputStream()
@@ -76,7 +76,7 @@ class PictureActivity : AppCompatActivity() {
             when (processStep) {
                 ProcessStep.NETWORK_FAILED -> {
                     Toast.makeText(
-                        this@PictureActivity.applicationContext,
+                        applicationContext,
                         Configuration.NETWORK_FAILED,
                         Toast.LENGTH_SHORT
                     ).show()
@@ -84,7 +84,7 @@ class PictureActivity : AppCompatActivity() {
                 }
                 ProcessStep.UNHANDLED_EXCEPTION -> {
                     Toast.makeText(
-                        this@PictureActivity.applicationContext,
+                        applicationContext,
                         Configuration.BITMAP_FAILED,
                         Toast.LENGTH_SHORT
                     ).show()

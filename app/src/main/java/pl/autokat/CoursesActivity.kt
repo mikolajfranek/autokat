@@ -46,7 +46,7 @@ class CoursesActivity : AppCompatActivity() {
                 )
                 if (lastCoursesDate.isNotEmpty()) {
                     Toast.makeText(
-                        this@CoursesActivity.applicationContext,
+                        applicationContext,
                         Configuration.COURSES_REFRESH,
                         Toast.LENGTH_SHORT
                     ).show()
@@ -174,7 +174,7 @@ class CoursesActivity : AppCompatActivity() {
                 false
             )
             Toast.makeText(
-                this@CoursesActivity.applicationContext,
+                applicationContext,
                 Configuration.UPDATE_WAIT,
                 Toast.LENGTH_SHORT
             ).show()
@@ -195,21 +195,21 @@ class CoursesActivity : AppCompatActivity() {
             when (processStep) {
                 ProcessStep.NETWORK_FAILED -> {
                     Toast.makeText(
-                        this@CoursesActivity.applicationContext,
+                        applicationContext,
                         Configuration.NETWORK_FAILED,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
                 ProcessStep.UNHANDLED_EXCEPTION -> {
                     Toast.makeText(
-                        this@CoursesActivity.applicationContext,
+                        applicationContext,
                         Configuration.UPDATE_FAILED,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
                 ProcessStep.SUCCESS -> {
                     Toast.makeText(
-                        this@CoursesActivity.applicationContext,
+                        applicationContext,
                         Configuration.UPDATE_SUCCESS,
                         Toast.LENGTH_SHORT
                     ).show()
@@ -217,7 +217,7 @@ class CoursesActivity : AppCompatActivity() {
                 }
                 else -> {
                     Toast.makeText(
-                        this@CoursesActivity.applicationContext,
+                        applicationContext,
                         Configuration.UPDATE_FAILED,
                         Toast.LENGTH_SHORT
                     ).show()

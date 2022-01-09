@@ -10,8 +10,6 @@ class Configuration {
         const val DATABASE_VERSION: Int = 4
         const val DATABASE_NAME_OF_FILE: String = "autokat.db"
         const val DATABASE_FILE_PATH_ASSETS: String = "databases/$DATABASE_NAME_OF_FILE"
-        const val DATABASE_PAGINATE_LIMIT_CATALYST: Int = 5
-        const val DATABASE_PAGINATE_LIMIT_HISTORY_FILTER: Int = 10
 
         val COLOR_WHITE: Int = Color.parseColor("#FFFFFF")
         val COLOR_FAILED: Int = Color.parseColor("#EF4836")

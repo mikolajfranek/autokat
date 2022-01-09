@@ -42,13 +42,13 @@ class CalendarActivity : AppCompatActivity() {
         if (courses != null) {
             Course.saveSelectedCourses(courses)
             Toast.makeText(
-                this@CalendarActivity.applicationContext,
+                applicationContext,
                 "Wybrano $keyDate",
                 Toast.LENGTH_SHORT
             ).show()
         } else {
             Toast.makeText(
-                this@CalendarActivity.applicationContext,
+                applicationContext,
                 Configuration.UNHANDLED_EXCEPTION,
                 Toast.LENGTH_SHORT
             ).show()
