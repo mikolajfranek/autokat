@@ -8,7 +8,7 @@ class Secret {
             ""
 
         fun getSpreadsheetIdLogin(): String {
-            if (MyConfiguration.PRODUCTION) {
+            if (Configuration.PRODUCTION) {
                 return this.SPREADSHEET_ID_LOGIN
             }
             return this.SPREADSHEET_ID_LOGIN_DEV
@@ -20,7 +20,7 @@ class Secret {
             ""
 
         fun getSpreadsheetIdCatalyst(): String {
-            if (MyConfiguration.PRODUCTION) {
+            if (Configuration.PRODUCTION) {
                 return this.SPREADSHEET_ID_CATALYST
             }
             return this.SPREADSHEET_ID_CATALYST_DEV
@@ -32,18 +32,19 @@ class Secret {
             ""
 
         fun getPrivateKey(): String {
-            if (MyConfiguration.PRODUCTION) {
+            if (Configuration.PRODUCTION) {
                 return this.PRIVATE_KEY
             }
             return this.PRIVATE_KEY_DEV
         }
-        
-        private const val EMAIL: String = ""
+
+        private const val EMAIL: String =
+            ""
         private const val EMAIL_DEV: String =
             ""
 
         fun getEmail(): String {
-            if (MyConfiguration.PRODUCTION) {
+            if (Configuration.PRODUCTION) {
                 return this.EMAIL
             }
             return this.EMAIL_DEV
