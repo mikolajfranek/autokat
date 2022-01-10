@@ -13,11 +13,11 @@ class UpdateActivity : AppCompatActivity() {
     private lateinit var activityUpdateBinding: ActivityUpdateBinding
     private lateinit var database: Database
     private var isAvailableUpdateCatalyst: Boolean = false
-
+    private var threadUpdateProgressOfDownloadThumbnail: Thread? = null
 
     //TODO atomic?
     private var refreshingDatabase: Boolean = false
-    private var refreshingWork: Boolean = false
+    private var refreshingIsWorking: Boolean = false
 
     //region methods used in override
     private fun init() {
@@ -33,11 +33,9 @@ class UpdateActivity : AppCompatActivity() {
 
     private fun setClickListeners() {
         activityUpdateBinding.buttonUpdateNew.setOnClickListener {
-            refreshingDatabase = false
             Thread(RunnableUpdate(false)).start()
         }
         activityUpdateBinding.buttonUpdateFull.setOnClickListener {
-            refreshingDatabase = false
             Thread(RunnableUpdate(true)).start()
         }
     }
@@ -67,27 +65,44 @@ class UpdateActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+
+        //move to another thread?
         val itemsWithThumbnail: Int = database.getCountCatalystWithThumbnail()
         val itemsWithUrlThumbnail: Int = database.getCountCatalystWithUrlThumbnail()
         val itemsFromDatabase: Int = database.getCountCatalyst()
+
+        //do in viewThread
         activityUpdateBinding.progressBar.progress =
             ((itemsWithThumbnail.toFloat() / itemsWithUrlThumbnail.toFloat()) * 100.toFloat()).toInt()
         activityUpdateBinding.notification.setTextColor(Configuration.COLOR_SUCCESS)
+
+
         if (itemsFromDatabase != 0) {
             if (isAvailableUpdateCatalyst) {
+                //do in viewThread
                 activityUpdateBinding.progressBar.progress = 0
                 activityUpdateBinding.notification.text = Configuration.DATABASE_NOT_ACTUAL
             } else {
                 if (itemsWithThumbnail / itemsFromDatabase != 1) {
+
+                    //do in viewThread
                     val textView =
                         Configuration.BITMAP_STATUS + " (" + itemsWithThumbnail + "/" + itemsWithUrlThumbnail + "/" + itemsFromDatabase + ")"
                     activityUpdateBinding.notification.text = textView
 
                     refreshingDatabase = true
-                    //val thread = Thread(RunnableUpdateProgressOfThumbnail())
-                    //thread.start()
-                    Thread(RunnableUpdateProgressOfThumbnail()).start()
+
+
+
+
+                    //if(threadUpdateProgressOfDownloadThumbnail.state == Thread.State.TERMINATED)
+
+
+
+                    Thread(RunnableUpdateProgressOfDownloadThumbnail()).start()
                 } else {
+
+                    //do in viewThread
                     activityUpdateBinding.notification.text =
                         Configuration.DATABASE_ACTUAL
                 }
@@ -95,12 +110,24 @@ class UpdateActivity : AppCompatActivity() {
         } else {
             activityUpdateBinding.notification.text = Configuration.DATABASE_EMPTY
         }
+
+
     }
     //endregion
 
+    //region methods of turing threads
+    private fun startThreadUpdateProgressOfDownloadThumbnail(){
+        if(threadUpdateProgressOfDownloadThumbnail == null){
+            threadUpdateProgressOfDownloadThumbnail = Thread(RunnableUpdateProgressOfDownloadThumbnail())
+            threadUpdateProgressOfDownloadThumbnail!!.start()
+        }
+    }
+    //TODO
+    
+    //endregion
 
     //region inner classes
-    inner class RunnableUpdateProgressOfThumbnail : Runnable {
+    inner class RunnableUpdateProgressOfDownloadThumbnail : Runnable {
 
 
         override fun run() {
@@ -108,9 +135,9 @@ class UpdateActivity : AppCompatActivity() {
             //--- doInBackground
             try {
                 val state: Boolean =
-                    refreshingDatabase && refreshingWork == false
+                    refreshingDatabase && refreshingIsWorking == false
                 if (state == true) {
-                    refreshingWork = true
+                    refreshingIsWorking = true
                     while (refreshingDatabase) {
 
                         //odświeżanie widoku co 1s
@@ -135,13 +162,13 @@ class UpdateActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 //
-            }
-            finally {
-                refreshingWork = false
+            } finally {
+                refreshingIsWorking = false
             }
             //--- onPostExecute
         }
     }
+
 
     inner class RunnableUpdate(fullUpdateInput: Boolean) : Runnable {
         private var fullUpdate: Boolean = fullUpdateInput
@@ -190,8 +217,9 @@ class UpdateActivity : AppCompatActivity() {
                 )
 
                 //zakoncz tamten wątek, aby rozpocząć ten...
+                //zaczekaj aż damten się nie zakończy
                 refreshingDatabase = false
-                while (refreshingWork) {
+                while (refreshingIsWorking) {
                     Thread.sleep(100)
                 }
 
