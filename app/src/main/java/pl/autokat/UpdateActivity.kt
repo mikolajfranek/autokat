@@ -1,6 +1,7 @@
 package pl.autokat
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import org.json.JSONArray
 import pl.autokat.components.*
@@ -61,72 +62,121 @@ class UpdateActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         refreshingDatabase = false
+
+        //threadUpdateProgressOfDownloadThumbnail.interrupt()
     }
 
     override fun onResume() {
         super.onResume()
-
-        //move to another thread?
-        val itemsWithThumbnail: Int = database.getCountCatalystWithThumbnail()
-        val itemsWithUrlThumbnail: Int = database.getCountCatalystWithUrlThumbnail()
-        val itemsFromDatabase: Int = database.getCountCatalyst()
-
-        //do in viewThread
-        activityUpdateBinding.progressBar.progress =
-            ((itemsWithThumbnail.toFloat() / itemsWithUrlThumbnail.toFloat()) * 100.toFloat()).toInt()
-        activityUpdateBinding.notification.setTextColor(Configuration.COLOR_SUCCESS)
-
-
-        if (itemsFromDatabase != 0) {
-            if (isAvailableUpdateCatalyst) {
-                //do in viewThread
-                activityUpdateBinding.progressBar.progress = 0
-                activityUpdateBinding.notification.text = Configuration.DATABASE_NOT_ACTUAL
-            } else {
-                if (itemsWithThumbnail / itemsFromDatabase != 1) {
-
-                    //do in viewThread
-                    val textView =
-                        Configuration.BITMAP_STATUS + " (" + itemsWithThumbnail + "/" + itemsWithUrlThumbnail + "/" + itemsFromDatabase + ")"
-                    activityUpdateBinding.notification.text = textView
-
-                    refreshingDatabase = true
-
-
-
-
-                    //if(threadUpdateProgressOfDownloadThumbnail.state == Thread.State.TERMINATED)
-
-
-
-                    Thread(RunnableUpdateProgressOfDownloadThumbnail()).start()
-                } else {
-
-                    //do in viewThread
-                    activityUpdateBinding.notification.text =
-                        Configuration.DATABASE_ACTUAL
-                }
-            }
-        } else {
-            activityUpdateBinding.notification.text = Configuration.DATABASE_EMPTY
-        }
-
-
+        Thread(RunnableWorkBackground()).start()
     }
     //endregion
 
     //region methods of turing threads
-    private fun startThreadUpdateProgressOfDownloadThumbnail(){
-        if(threadUpdateProgressOfDownloadThumbnail == null){
-            threadUpdateProgressOfDownloadThumbnail = Thread(RunnableUpdateProgressOfDownloadThumbnail())
+    private fun startThreadUpdateProgressOfDownloadThumbnail() {
+        if (threadUpdateProgressOfDownloadThumbnail == null) {
+            threadUpdateProgressOfDownloadThumbnail =
+                Thread(RunnableUpdateProgressOfDownloadThumbnail())
             threadUpdateProgressOfDownloadThumbnail!!.start()
         }
     }
     //TODO
-    
+
     //endregion
 
     //region inner classes
+    inner class RunnableWorkBackground : Runnable {
+        private var itemsWithThumbnail: Int = 0
+        private var itemsWithUrlThumbnail: Int = 0
+        private var itemsFromDatabase: Int = 0
+
+        private fun setInView() {
+            activityUpdateBinding.notification.setTextColor(Configuration.COLOR_SUCCESS)
+            if (itemsFromDatabase != 0) {
+                if (isAvailableUpdateCatalyst) {
+                    activityUpdateBinding.progressBar.progress = 0
+                    activityUpdateBinding.notification.text = Configuration.DATABASE_NOT_ACTUAL
+                } else {
+                    if (itemsWithUrlThumbnail != 0) {
+                        activityUpdateBinding.progressBar.progress = ((itemsWithThumbnail.toFloat() / itemsWithUrlThumbnail.toFloat()) * 100.toFloat()).toInt()
+                    } else {
+                        activityUpdateBinding.progressBar.progress = 0
+                    }
+                    if (itemsWithThumbnail / itemsFromDatabase != 1) {
+                        val textView = Configuration.BITMAP_STATUS + " (" + itemsWithThumbnail + "/" + itemsWithUrlThumbnail + "/" + itemsFromDatabase + ")"
+                        activityUpdateBinding.notification.text = textView
+
+
+
+                        refreshingDatabase = true
+                        //if(threadUpdateProgressOfDownloadThumbnail.state == Thread.State.TERMINATED)
+                        Thread(RunnableUpdateProgressOfDownloadThumbnail()).start()
+
+
+                    } else {
+                        activityUpdateBinding.notification.text = Configuration.DATABASE_ACTUAL
+                    }
+                }
+            } else {
+                activityUpdateBinding.progressBar.progress = 0
+                activityUpdateBinding.notification.text = Configuration.DATABASE_EMPTY
+            }
+        }
+
+        //region methods of run
+        private fun onPreExecute() {
+            UserInterface.changeStatusLayout(
+                activityUpdateBinding.linearLayout,
+                false
+            )
+        }
+
+        private fun doInBackground(): ProcessStep {
+            return try {
+                itemsWithThumbnail = database.getCountCatalystWithThumbnail()
+                itemsWithUrlThumbnail = database.getCountCatalystWithUrlThumbnail()
+                itemsFromDatabase = database.getCountCatalyst()
+                ProcessStep.SUCCESS
+            } catch (e: Exception) {
+                ProcessStep.UNHANDLED_EXCEPTION
+            }
+        }
+
+        private fun onPostExecute(processStep: ProcessStep) {
+            when (processStep) {
+                ProcessStep.UNHANDLED_EXCEPTION -> {
+                    Toast.makeText(
+                        applicationContext,
+                        Configuration.UNHANDLED_EXCEPTION,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                ProcessStep.SUCCESS -> {
+                    setInView()
+                }
+                else -> {
+                    //
+                }
+            }
+            UserInterface.changeStatusLayout(
+                activityUpdateBinding.linearLayout,
+                true
+            )
+        }
+        //endregion
+
+        override fun run() {
+            runOnUiThread {
+                onPreExecute()
+            }
+            val processStep: ProcessStep = doInBackground()
+            runOnUiThread {
+                onPostExecute(processStep)
+            }
+        }
+    }
+
+
     inner class RunnableUpdateProgressOfDownloadThumbnail : Runnable {
 
 

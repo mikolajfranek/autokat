@@ -277,7 +277,7 @@ class ResultActivity : AppCompatActivity() {
                 TimeChecking.CHECKING_LICENCE
             ) == false
         ) openMainActivity()
-        Thread(RunnableUpdate()).start()
+        Thread(RunnableWorkBackground()).start()
     }
 
     override fun onCreateOptionsMenu(menuInput: Menu): Boolean {
@@ -407,7 +407,7 @@ class ResultActivity : AppCompatActivity() {
     //endregion
 
     //region inner classes
-    inner class RunnableUpdate : Runnable {
+    inner class RunnableWorkBackground : Runnable {
         private var colorIconUpdateCatalyst: Boolean = false
         private var isTableCatalystEmpty: Boolean = false
 
