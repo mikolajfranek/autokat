@@ -1,5 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">AUTO-KAT</string>
+    <string name="activity_about_wlasciciel_wartosc">Sławomir Szukała</string>
+    <string name="activity_about_telefon_wartosc">510–076–585</string>
+    <string name="activity_about_email_wartosc">autokat.katalizatory@gmail.com</string>
+    <string name="activity_about_stronawww_wartosc">katalizatorypoznan.pl</string>
     <string name="activity_main_wprowadz_nazwe_uzytkownika">Wprowadź nazwę użytkownika</string>
     <string name="activity_main_zaloguj">Zaloguj</string>
     <string name="activity_result_wprowadz_nazwe_do_filtrowania">Wprowadź nazwę do filtrowania</string>
@@ -8,13 +12,9 @@
     <string name="activity_result_nie_znaleziono_elementow">Nie znaleziono elementów</string>
     <string name="activity_about_dane_kontaktowe">Dane kontaktowe:</string>
     <string name="activity_about_wlasciciel">Właściciel:</string>
-    <string name="activity_about_wlasciciel_wartosc">Sławomir Szukała</string>
     <string name="activity_about_telefon">Telefon:</string>
-    <string name="activity_about_telefon_wartosc">510–076–585</string>
     <string name="activity_about_email">Email:</string>
-    <string name="activity_about_email_wartosc">autokat.katalizatory@gmail.com</string>
     <string name="activity_about_stronawww">Strona:</string>
-    <string name="activity_about_stronawww_wartosc">katalizatorypoznan.pl</string>
     <string name="activity_update_pobierz_nowe_katalizatory" tools:ignore="Typos">Pobierz nowe katalizatory</string>
     <string name="activity_update_synchronizacja_baz_danych">Synchronizacja bazy danych</string>
     <string name="activity_courses_korzystanie_z_najnowszych_kursow">Korzystanie z najnowszych kursów:</string>
