@@ -13,8 +13,12 @@ class UpdateActivity : AppCompatActivity() {
 
     private lateinit var activityUpdateBinding: ActivityUpdateBinding
     private lateinit var database: Database
-    private var isAvailableUpdateCatalyst: Boolean = false
+
+    @Volatile
     private var threadUpdateProgressOfDownloadThumbnail: Thread? = null
+
+    @Volatile
+    private var isAvailableUpdateCatalyst: Boolean = false
 
     //region methods used in override
     private fun init() {

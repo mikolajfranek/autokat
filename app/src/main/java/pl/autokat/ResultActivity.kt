@@ -43,7 +43,6 @@ class ResultActivity : AppCompatActivity() {
     private lateinit var historyFilterBinding: HistoryFilterBinding
     private lateinit var database: Database
     private lateinit var menu: Menu
-    private var isAvailableUpdateCatalyst: Boolean = false
     private lateinit var adapterCatalysts: ArrayAdapter<ModelCatalyst>
     private var scrollPreLastCatalyst: Int = 0
     private val paginateLimitCatalyst: Int = 5
@@ -52,6 +51,9 @@ class ResultActivity : AppCompatActivity() {
     private var scrollPreLastHistoryFilter: Int = 0
     private val paginateLimitHistoryFilter: Int = 10
     private var scrollLimitHistoryFilter: Int = paginateLimitHistoryFilter
+
+    @Volatile
+    private var isAvailableUpdateCatalyst: Boolean = false
 
     //region methods used in override
     private fun init() {

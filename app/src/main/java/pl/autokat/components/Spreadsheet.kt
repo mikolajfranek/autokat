@@ -19,10 +19,8 @@ class Spreadsheet {
     companion object {
         private const val TOKEN_URL: String = "https://oauth2.googleapis.com/token"
         private const val TOKEN_SCOPE: String = "scope"
-        private const val TOKEN_SCOPE_VALUE: String =
-            "https://www.googleapis.com/auth/spreadsheets"
-        private const val SHEET_API_URL: String =
-            "https://sheets.googleapis.com/v4/spreadsheets/"
+        private const val TOKEN_SCOPE_VALUE: String = "https://www.googleapis.com/auth/spreadsheets"
+        private const val SHEET_API_URL: String = "https://sheets.googleapis.com/v4/spreadsheets/"
         private const val SHEET_API_PARAMETER_INPUT: String = "valueInputOption"
         private const val SHEET_API_PARAMETER_INPUT_VALUE: String = "USER_ENTERED"
         private const val DOCS_API_URL: String =
@@ -40,33 +38,28 @@ class Spreadsheet {
             val privateKey: RSAPrivateKey = KeyFactory.getInstance("RSA").generatePrivate(
                 PKCS8EncodedKeySpec(
                     Base64.decode(
-                        Secret.getPrivateKey(), Base64.DEFAULT
+                        Secret.getPrivateKey(),
+                        Base64.DEFAULT
                     )
                 )
             ) as RSAPrivateKey
             val timestamp: Long = Date().time
-            val signedJwt = Jwts.builder()
-                .setClaims(
-                    mapOf(
-                        TOKEN_SCOPE to TOKEN_SCOPE_VALUE,
-                        Claims.ISSUER to Secret.getEmail(),
-                        Claims.AUDIENCE to TOKEN_URL,
-                        Claims.ISSUED_AT to Date(timestamp),
-                        Claims.EXPIRATION to Date(timestamp + Configuration.ONE_HOUR_IN_MILLISECONDS)
-                    )
+            val signedJwt = Jwts.builder().setClaims(
+                mapOf(
+                    TOKEN_SCOPE to TOKEN_SCOPE_VALUE,
+                    Claims.ISSUER to Secret.getEmail(),
+                    Claims.AUDIENCE to TOKEN_URL,
+                    Claims.ISSUED_AT to Date(timestamp),
+                    Claims.EXPIRATION to Date(timestamp + Configuration.ONE_HOUR_IN_MILLISECONDS)
                 )
-                .signWith(privateKey, SignatureAlgorithm.RS256)
-                .compact()
+            ).signWith(privateKey, SignatureAlgorithm.RS256).compact()
             val bodyJson =
                 """{"grant_type":"urn:ietf:params:oauth:grant-type:jwt-bearer","assertion" : "$signedJwt"}"""
             val (_, response, result) = Fuel.post(TOKEN_URL).body(bodyJson).responseString()
             if (response.statusCode != 200) throw UnknownHostException()
             val accessToken = JSONObject(result.get()).getString("access_token")
             SharedPreference.setKey(SharedPreference.ACCESS_TOKEN, accessToken)
-            SharedPreference.setKey(
-                SharedPreference.ACCESS_TOKEN_TIMESTAMP,
-                timestamp.toString()
-            )
+            SharedPreference.setKey(SharedPreference.ACCESS_TOKEN_TIMESTAMP, timestamp.toString())
         }
 
         private fun getAccessToken(): String {
@@ -105,12 +98,8 @@ class Spreadsheet {
                 """{"range": "$sheetCell", "majorDimension": "ROWS", "values": [["$serialId"]]}"""
             val (_, response, result) = Fuel.put(
                 SHEET_API_URL + Secret.getSpreadsheetIdLogin() + "/values/$sheetCell",
-                listOf(
-                    SHEET_API_PARAMETER_INPUT to SHEET_API_PARAMETER_INPUT_VALUE
-                )
-            )
-                .body(bodyJson)
-                .authentication().bearer(getAccessToken()).responseString()
+                listOf(SHEET_API_PARAMETER_INPUT to SHEET_API_PARAMETER_INPUT_VALUE)
+            ).body(bodyJson).authentication().bearer(getAccessToken()).responseString()
             if (response.statusCode != 200) throw UnknownHostException()
             val resultJson = JSONObject(result.get())
             if (resultJson.getInt("updatedRows") != 1 || resultJson.getInt("updatedColumns") != 1 || resultJson.getInt(
@@ -134,8 +123,7 @@ class Spreadsheet {
                             "${Configuration.SPREADSHEET_USERS_COLUMN_MINUS_PALLADIUM} IS NOT NULL AND " +
                             "${Configuration.SPREADSHEET_USERS_COLUMN_MINUS_RHODIUM} IS NOT NULL"
                 )
-            )
-                .authentication().bearer(getAccessToken()).responseString()
+            ).authentication().bearer(getAccessToken()).responseString()
             if (response.statusCode != 200) throw UnknownHostException()
             val rows: JSONArray =
                 Parser.parseToJsonFromResultDocsApi(result.get()).getJSONObject("table")
@@ -143,42 +131,12 @@ class Spreadsheet {
             if (rows.length() != 1) return null
             val user = JSONArray()
             val element: JSONArray = rows.getJSONObject(0).getJSONArray("c")
-            user.put(
-                getValueStringFromDocsApi(
-                    element,
-                    Configuration.SPREADSHEET_USERS_ID
-                )
-            )
-            user.put(
-                getValueStringFromDocsApi(
-                    element,
-                    Configuration.SPREADSHEET_USERS_LOGIN
-                )
-            )
-            user.put(
-                getValueStringFromDocsApi(
-                    element,
-                    Configuration.SPREADSHEET_USERS_UUID
-                )
-            )
-            user.put(
-                getValueStringFromDocsApi(
-                    element,
-                    Configuration.SPREADSHEET_USERS_LICENCE
-                )
-            )
-            user.put(
-                getValueStringFromDocsApi(
-                    element,
-                    Configuration.SPREADSHEET_USERS_DISCOUNT
-                )
-            )
-            user.put(
-                getValueStringFromDocsApi(
-                    element,
-                    Configuration.SPREADSHEET_USERS_VISIBILITY
-                )
-            )
+            user.put(getValueStringFromDocsApi(element, Configuration.SPREADSHEET_USERS_ID))
+            user.put(getValueStringFromDocsApi(element, Configuration.SPREADSHEET_USERS_LOGIN))
+            user.put(getValueStringFromDocsApi(element, Configuration.SPREADSHEET_USERS_UUID))
+            user.put(getValueStringFromDocsApi(element, Configuration.SPREADSHEET_USERS_LICENCE))
+            user.put(getValueStringFromDocsApi(element, Configuration.SPREADSHEET_USERS_DISCOUNT))
+            user.put(getValueStringFromDocsApi(element, Configuration.SPREADSHEET_USERS_VISIBILITY))
             user.put(
                 getValueFloatStringFromDocsApi(
                     element,
@@ -207,8 +165,7 @@ class Spreadsheet {
                     DOCS_API_PARAMETER_JSON to DOCS_API_PARAMETER_JSON_VALUE,
                     DOCS_API_PARAMETER_WHERE to "select * where ${Configuration.SPREADSHEET_CATALYST_COLUMN_ID}>$fromRow"
                 )
-            )
-                .authentication().bearer(getAccessToken()).responseString()
+            ).authentication().bearer(getAccessToken()).responseString()
             if (response.statusCode != 200) throw UnknownHostException()
             return Parser.parseToJsonFromResultDocsApi(result.get()).getJSONObject("table")
                 .getJSONArray("rows")
@@ -222,8 +179,7 @@ class Spreadsheet {
                     DOCS_API_PARAMETER_WHERE to "select count(${Configuration.SPREADSHEET_CATALYST_COLUMN_ID}) where " +
                             "${Configuration.SPREADSHEET_CATALYST_COLUMN_ID} IS NOT NULL"
                 )
-            )
-                .authentication().bearer(getAccessToken()).responseString()
+            ).authentication().bearer(getAccessToken()).responseString()
             if (response.statusCode != 200) throw UnknownHostException()
             val rows: JSONArray =
                 Parser.parseToJsonFromResultDocsApi(result.get()).getJSONObject("table")

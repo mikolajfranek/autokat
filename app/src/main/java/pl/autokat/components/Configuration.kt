@@ -34,10 +34,8 @@ class Configuration {
         const val DATABASE_ACTUAL: String = "Baza danych jest aktualna"
         const val DATABASE_EMPTY: String = "Baza danych jest pusta"
         const val DATABASE_NOT_ACTUAL: String = "Baza danych nie jest aktualna"
-        const val HISTORY_FILTER_ADDED: String =
-            "Pomyślnie zapisano nazwę do filtrowania"
-        const val HISTORY_FILTER_DELETED: String =
-            "Pomyślnie usunięto nazwę do filtrowania"
+        const val HISTORY_FILTER_ADDED: String = "Pomyślnie zapisano nazwę do filtrowania"
+        const val HISTORY_FILTER_DELETED: String = "Pomyślnie usunięto nazwę do filtrowania"
         const val HISTORY_FILTER_CANNOT_SAVE_EMPTY: String = "Nie można zapisać pustej wartości"
         const val COURSES_REFRESH: String = "Odśwież wartości kursów"
 

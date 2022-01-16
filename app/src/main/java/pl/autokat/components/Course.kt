@@ -22,104 +22,69 @@ class Course {
         private const val MY_CATALYST_VALUES_HEADER_ORIGIN = "https://www.kitco.com"
 
         private fun getCourseUsdPln(savingToSharedPreferences: Boolean): Pair<String, String> {
-            val (_, response, result) = Fuel.get(MY_CATALYST_VALUES_URL_USD_PLN)
-                .responseString()
+            val (_, response, result) = Fuel.get(MY_CATALYST_VALUES_URL_USD_PLN).responseString()
             if (response.statusCode != 200) throw UnknownHostException()
             val rate: JSONObject = JSONObject(result.get()).getJSONArray("rates").getJSONObject(0)
             val value = rate.getString("mid").replace(',', '.')
             val valueDate = rate.getString("effectiveDate")
             if (savingToSharedPreferences) {
-                SharedPreference.setKey(
-                    SharedPreference.USD_PLN,
-                    value
-                )
-                SharedPreference.setKey(
-                    SharedPreference.USD_PLN_DATE,
-                    valueDate
-                )
+                SharedPreference.setKey(SharedPreference.USD_PLN, value)
+                SharedPreference.setKey(SharedPreference.USD_PLN_DATE, valueDate)
             }
             return Pair(value, valueDate)
         }
 
         private fun getCourseEurPln(savingToSharedPreferences: Boolean): Pair<String, String> {
-            val (_, response, result) = Fuel.get(MY_CATALYST_VALUES_URL_EUR_PLN)
-                .responseString()
+            val (_, response, result) = Fuel.get(MY_CATALYST_VALUES_URL_EUR_PLN).responseString()
             if (response.statusCode != 200) throw UnknownHostException()
             val rate: JSONObject = JSONObject(result.get()).getJSONArray("rates").getJSONObject(0)
             val value = rate.getString("mid").replace(',', '.')
             val valueDate = rate.getString("effectiveDate")
             if (savingToSharedPreferences) {
-                SharedPreference.setKey(
-                    SharedPreference.EUR_PLN,
-                    value
-                )
-                SharedPreference.setKey(
-                    SharedPreference.EUR_PLN_DATE,
-                    valueDate
-                )
+                SharedPreference.setKey(SharedPreference.EUR_PLN, value)
+                SharedPreference.setKey(SharedPreference.EUR_PLN_DATE, valueDate)
             }
             return Pair(value, valueDate)
         }
 
         private fun getCoursePlatinum(savingToSharedPreferences: Boolean): Pair<String, String> {
             val (_, response, result) = Fuel.get(MY_CATALYST_VALUES_URL_CATALYST_PLATINUM)
-                .header(mapOf("Origin" to MY_CATALYST_VALUES_HEADER_ORIGIN))
-                .responseString()
+                .header(mapOf("Origin" to MY_CATALYST_VALUES_HEADER_ORIGIN)).responseString()
             if (response.statusCode != 200) throw UnknownHostException()
             val content: List<String> = result.get().split(',')
             val value = content[4].replace(',', '.')
             val valueDate = content[3].split(' ')[0]
             if (savingToSharedPreferences) {
-                SharedPreference.setKey(
-                    SharedPreference.PLATINUM,
-                    value
-                )
-                SharedPreference.setKey(
-                    SharedPreference.PLATINUM_DATE,
-                    valueDate
-                )
+                SharedPreference.setKey(SharedPreference.PLATINUM, value)
+                SharedPreference.setKey(SharedPreference.PLATINUM_DATE, valueDate)
             }
             return Pair(value, valueDate)
         }
 
         private fun getCoursePalladium(savingToSharedPreferences: Boolean): Pair<String, String> {
             val (_, response, result) = Fuel.get(MY_CATALYST_VALUES_URL_CATALYST_PALLADIUM)
-                .header(mapOf("Origin" to MY_CATALYST_VALUES_HEADER_ORIGIN))
-                .responseString()
+                .header(mapOf("Origin" to MY_CATALYST_VALUES_HEADER_ORIGIN)).responseString()
             if (response.statusCode != 200) throw UnknownHostException()
             val content: List<String> = result.get().split(',')
             val value = content[4].replace(',', '.')
             val valueDate = content[3].split(' ')[0]
             if (savingToSharedPreferences) {
-                SharedPreference.setKey(
-                    SharedPreference.PALLADIUM,
-                    value
-                )
-                SharedPreference.setKey(
-                    SharedPreference.PALLADIUM_DATE,
-                    valueDate
-                )
+                SharedPreference.setKey(SharedPreference.PALLADIUM, value)
+                SharedPreference.setKey(SharedPreference.PALLADIUM_DATE, valueDate)
             }
             return Pair(value, valueDate)
         }
 
         private fun getCourseRhodium(savingToSharedPreferences: Boolean): Pair<String, String> {
             val (_, response, result) = Fuel.get(MY_CATALYST_VALUES_URL_CATALYST_RHODIUM)
-                .header(mapOf("Origin" to MY_CATALYST_VALUES_HEADER_ORIGIN))
-                .responseString()
+                .header(mapOf("Origin" to MY_CATALYST_VALUES_HEADER_ORIGIN)).responseString()
             if (response.statusCode != 200) throw UnknownHostException()
             val content: List<String> = result.get().split(',')
             val value = content[4].replace(',', '.')
             val valueDate = content[3].split(' ')[0]
             if (savingToSharedPreferences) {
-                SharedPreference.setKey(
-                    SharedPreference.RHODIUM,
-                    value
-                )
-                SharedPreference.setKey(
-                    SharedPreference.RHODIUM_DATE,
-                    valueDate
-                )
+                SharedPreference.setKey(SharedPreference.RHODIUM, value)
+                SharedPreference.setKey(SharedPreference.RHODIUM_DATE, valueDate)
             }
             return Pair(value, valueDate)
         }
@@ -162,57 +127,23 @@ class Course {
 
         fun saveSelectedCourses(modelCourse: ModelCourse) {
             val date = Parser.parseStringDateToLocalDate(modelCourse.date)
-            SharedPreference.setKey(
-                SharedPreference.ACTUAL_COURSES_DATE,
-                date.toString()
-            )
-            SharedPreference.setKey(
-                SharedPreference.USD_PLN,
-                modelCourse.usdPln
-            )
-            SharedPreference.setKey(
-                SharedPreference.USD_PLN_DATE,
-                date.toString()
-            )
-            SharedPreference.setKey(
-                SharedPreference.EUR_PLN,
-                modelCourse.eurPln
-            )
-            SharedPreference.setKey(
-                SharedPreference.EUR_PLN_DATE,
-                date.toString()
-            )
-            SharedPreference.setKey(
-                SharedPreference.PLATINUM,
-                modelCourse.platinum
-            )
-            SharedPreference.setKey(
-                SharedPreference.PLATINUM_DATE,
-                date.toString()
-            )
-            SharedPreference.setKey(
-                SharedPreference.PALLADIUM,
-                modelCourse.palladium
-            )
-            SharedPreference.setKey(
-                SharedPreference.PALLADIUM_DATE,
-                date.toString()
-            )
-            SharedPreference.setKey(
-                SharedPreference.RHODIUM,
-                modelCourse.rhodium
-            )
-            SharedPreference.setKey(
-                SharedPreference.RHODIUM_DATE,
-                date.toString()
-            )
+            SharedPreference.setKey(SharedPreference.ACTUAL_COURSES_DATE, date.toString())
+            SharedPreference.setKey(SharedPreference.USD_PLN, modelCourse.usdPln)
+            SharedPreference.setKey(SharedPreference.USD_PLN_DATE, date.toString())
+            SharedPreference.setKey(SharedPreference.EUR_PLN, modelCourse.eurPln)
+            SharedPreference.setKey(SharedPreference.EUR_PLN_DATE, date.toString())
+            SharedPreference.setKey(SharedPreference.PLATINUM, modelCourse.platinum)
+            SharedPreference.setKey(SharedPreference.PLATINUM_DATE, date.toString())
+            SharedPreference.setKey(SharedPreference.PALLADIUM, modelCourse.palladium)
+            SharedPreference.setKey(SharedPreference.PALLADIUM_DATE, date.toString())
+            SharedPreference.setKey(SharedPreference.RHODIUM, modelCourse.rhodium)
+            SharedPreference.setKey(SharedPreference.RHODIUM_DATE, date.toString())
         }
 
         fun isCoursesSelected(): Boolean {
             val actualCoursesChoice =
                 SharedPreference.getKey(SharedPreference.ACTUAL_COURSES_CHOICE)
-            val actualCoursesDate =
-                SharedPreference.getKey(SharedPreference.ACTUAL_COURSES_DATE)
+            val actualCoursesDate = SharedPreference.getKey(SharedPreference.ACTUAL_COURSES_DATE)
             return actualCoursesChoice == "0" && actualCoursesDate.isNotEmpty()
         }
 

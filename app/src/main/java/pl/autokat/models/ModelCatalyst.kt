@@ -22,17 +22,23 @@ class ModelCatalyst(
         val courseUsdPln: Float =
             if (courseUsdPlnFromConfiguration.isEmpty()) 0.0F else courseUsdPlnFromConfiguration.toFloat()
         val pricePlatinum: Float = this.countPriceElement(
-            this.platinum, this.weight, courseUsdPln,
+            this.platinum,
+            this.weight,
+            courseUsdPln,
             SharedPreference.getKey(SharedPreference.PLATINUM),
             SharedPreference.getKey(SharedPreference.MINUS_PLATINUM)
         )
         val pricePalladium: Float = this.countPriceElement(
-            this.palladium, this.weight, courseUsdPln,
+            this.palladium,
+            this.weight,
+            courseUsdPln,
             SharedPreference.getKey(SharedPreference.PALLADIUM),
             SharedPreference.getKey(SharedPreference.MINUS_PALLADIUM)
         )
         var priceRhodium: Float = this.countPriceElement(
-            this.rhodium, this.weight, courseUsdPln,
+            this.rhodium,
+            this.weight,
+            courseUsdPln,
             SharedPreference.getKey(SharedPreference.RHODIUM),
             SharedPreference.getKey(SharedPreference.MINUS_RHODIUM)
         )

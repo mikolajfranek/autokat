@@ -38,13 +38,10 @@ class Checker {
                 TimeChecking.CHECKING_LICENCE -> {
                     val timestamp: Long = Date().time
                     val timestampLicence: Long = (SimpleDateFormat("yyyy-MM-dd").parse(
-                        SharedPreference.getKey(
-                            SharedPreference.LICENCE_DATE_OF_END
-                        )
+                        SharedPreference.getKey(SharedPreference.LICENCE_DATE_OF_END)
                     )!!.time) + Configuration.ONE_DAY_IN_MILLISECONDS
-                    val timestampFromConfiguration: Long = SharedPreference.getKey(
-                        SharedPreference.CURRENT_TIMESTAMP
-                    ).toLong()
+                    val timestampFromConfiguration: Long =
+                        SharedPreference.getKey(SharedPreference.CURRENT_TIMESTAMP).toLong()
                     if ((timestamp > timestampFromConfiguration) && (timestampLicence > timestamp)) {
                         SharedPreference.setKey(
                             SharedPreference.CURRENT_TIMESTAMP,

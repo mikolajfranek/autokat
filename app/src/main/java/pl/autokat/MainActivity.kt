@@ -46,22 +46,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkPermissions() {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.READ_PHONE_STATE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(android.Manifest.permission.READ_PHONE_STATE),
-                requestCodeReadPhoneState
-            )
-        } else {
-            authenticate(
-                SharedPreference.getKey(SharedPreference.LOGIN),
-                false
-            )
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
+        {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.READ_PHONE_STATE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(android.Manifest.permission.READ_PHONE_STATE),
+                    requestCodeReadPhoneState
+                )
+                return
+            }
         }
+        authenticate(SharedPreference.getKey(SharedPreference.LOGIN), false)
     }
 
     private fun handleRequestCode(

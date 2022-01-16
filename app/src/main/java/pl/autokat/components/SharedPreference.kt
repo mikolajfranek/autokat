@@ -10,10 +10,7 @@ class SharedPreference {
         private const val PREFERENCES_MODE = Context.MODE_PRIVATE
         private lateinit var preferences: SharedPreferences
         fun init(context: Context) {
-            preferences = context.getSharedPreferences(
-                PREFERENCES_NAME,
-                PREFERENCES_MODE
-            )
+            preferences = context.getSharedPreferences(PREFERENCES_NAME, PREFERENCES_MODE)
         }
 
         fun getKey(key: String): String {
@@ -30,16 +27,14 @@ class SharedPreference {
         /* authentication */
         const val CURRENT_TIMESTAMP: String = "CurrentTimestamp"
         const val ACCESS_TOKEN: String = "AccessToken"
-        const val ACCESS_TOKEN_TIMESTAMP: String =
-            "AccessTokenTimestamp"
+        const val ACCESS_TOKEN_TIMESTAMP: String = "AccessTokenTimestamp"
 
         /* user */
         const val LOGIN: String = "Login"
         const val LICENCE_DATE_OF_END: String = "LicenceDate"
         const val DISCOUNT: String = "Discount"
         const val VISIBILITY: String = "Visibility"
-        const val UPDATE_COURSE_TIMESTAMP: String =
-            "UpdateCourseTimestamp"
+        const val UPDATE_COURSE_TIMESTAMP: String = "UpdateCourseTimestamp"
         const val MINUS_PLATINUM: String = "MinusPlatinum"
         const val MINUS_PALLADIUM: String = "MinusPalladium"
         const val MINUS_RHODIUM: String = "MinusRhodium"

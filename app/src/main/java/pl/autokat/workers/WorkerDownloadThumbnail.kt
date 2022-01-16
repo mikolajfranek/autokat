@@ -29,8 +29,7 @@ class WorkerDownloadThumbnail(appContext: Context, workerParams: WorkerParameter
             val database = Database(applicationContext)
             val items: JSONArray = database.getCatalystWithoutThumbnail()
             for (i in 0 until items.length()) {
-                val id: Int =
-                    (items[i] as JSONObject).getInt(Configuration.DATABASE_CATALYST_ID)
+                val id: Int = (items[i] as JSONObject).getInt(Configuration.DATABASE_CATALYST_ID)
                 val urlSharedPicture: String =
                     (items[i] as JSONObject).getString(Configuration.DATABASE_CATALYST_URL_PICTURE)
                 if (urlSharedPicture.isEmpty()) continue
