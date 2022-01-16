@@ -64,17 +64,11 @@ class MainActivity : AppCompatActivity() {
         authenticate(SharedPreference.getKey(SharedPreference.LOGIN), false)
     }
 
-    private fun handleRequestCode(
-        requestCode: Int,
-        grantResults: IntArray
-    ) {
+    private fun handleRequestCode(requestCode: Int, grantResults: IntArray) {
         when (requestCode) {
             requestCodeReadPhoneState -> {
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    authenticate(
-                        SharedPreference.getKey(SharedPreference.LOGIN),
-                        false
-                    )
+                    authenticate(SharedPreference.getKey(SharedPreference.LOGIN), false)
                 } else {
                     finish()
                 }
@@ -142,6 +136,7 @@ class MainActivity : AppCompatActivity() {
     //region inner classes
     inner class RunnableAuthentication(loginInput: String, hasClickedButtonInput: Boolean) :
         Runnable {
+
         private var login: String = loginInput.trim()
         private var hasClickedButton: Boolean = hasClickedButtonInput
 
@@ -216,9 +211,7 @@ class MainActivity : AppCompatActivity() {
 
         //region methods used in doInBackground
         private fun checkLicence(): ProcessStep {
-            if (SharedPreference.getKey(SharedPreference.LICENCE_DATE_OF_END)
-                    .isEmpty() == false
-            ) {
+            if (SharedPreference.getKey(SharedPreference.LICENCE_DATE_OF_END).isEmpty() == false) {
                 if (Checker.checkTimeOnPhone("", TimeChecking.CHECKING_LICENCE) == false) {
                     return ProcessStep.USER_ELAPSED_DATE_LICENCE
                 }
@@ -241,7 +234,8 @@ class MainActivity : AppCompatActivity() {
         private fun checkTimeOfUserLicenceWithTimeOnPhone(user: JSONArray): ProcessStep {
             val licenceDate = user.getString(Configuration.SPREADSHEET_USERS_LICENCE)
             if (licenceDate.isEmpty() || Checker.checkTimeOnPhone(
-                    licenceDate, TimeChecking.PARAMETER_IS_GREATER_THAN_NOW
+                    licenceDate,
+                    TimeChecking.PARAMETER_IS_GREATER_THAN_NOW
                 ) == false
             ) {
                 return ProcessStep.USER_ELAPSED_DATE_LICENCE
@@ -253,10 +247,7 @@ class MainActivity : AppCompatActivity() {
             val serialId: String = getSerialId()
             val uuid: String = user.getString(Configuration.SPREADSHEET_USERS_UUID)
             if (uuid.isEmpty()) {
-                Spreadsheet.saveSerialId(
-                    user.getInt(Configuration.SPREADSHEET_USERS_ID),
-                    serialId
-                )
+                Spreadsheet.saveSerialId(user.getInt(Configuration.SPREADSHEET_USERS_ID), serialId)
             } else {
                 if ((serialId == uuid) == false) {
                     return ProcessStep.USER_FAILED_SERIAL
@@ -268,69 +259,45 @@ class MainActivity : AppCompatActivity() {
         private fun setSharedPreferencesOfUser(user: JSONArray) {
             SharedPreference.setKey(
                 SharedPreference.LICENCE_DATE_OF_END,
-                user.getString(
-                    Configuration.SPREADSHEET_USERS_LICENCE
-                )
+                user.getString(Configuration.SPREADSHEET_USERS_LICENCE)
             )
             SharedPreference.setKey(
                 SharedPreference.DISCOUNT,
-                Parser.parseStringToInt(
-                    user.getString(
-                        Configuration.SPREADSHEET_USERS_DISCOUNT
-                    )
-                ).toString()
+                Parser.parseStringToInt(user.getString(Configuration.SPREADSHEET_USERS_DISCOUNT))
+                    .toString()
             )
             SharedPreference.setKey(
                 SharedPreference.VISIBILITY,
-                Parser.parseStringBooleanToInt(
-                    user.getString(
-                        Configuration.SPREADSHEET_USERS_VISIBILITY
-                    )
-                ).toString()
+                Parser.parseStringBooleanToInt(user.getString(Configuration.SPREADSHEET_USERS_VISIBILITY))
+                    .toString()
             )
             SharedPreference.setKey(
                 SharedPreference.MINUS_PLATINUM,
-                Parser.parseStringToInt(
-                    user.getString(
-                        Configuration.SPREADSHEET_USERS_MINUS_PLATINUM
-                    )
-                ).toString()
+                Parser.parseStringToInt(user.getString(Configuration.SPREADSHEET_USERS_MINUS_PLATINUM))
+                    .toString()
             )
             SharedPreference.setKey(
                 SharedPreference.MINUS_PALLADIUM,
-                Parser.parseStringToInt(
-                    user.getString(
-                        Configuration.SPREADSHEET_USERS_MINUS_PALLADIUM
-                    )
-                ).toString()
+                Parser.parseStringToInt(user.getString(Configuration.SPREADSHEET_USERS_MINUS_PALLADIUM))
+                    .toString()
             )
             SharedPreference.setKey(
                 SharedPreference.MINUS_RHODIUM,
-                Parser.parseStringToInt(
-                    user.getString(
-                        Configuration.SPREADSHEET_USERS_MINUS_RHODIUM
-                    )
-                ).toString()
+                Parser.parseStringToInt(user.getString(Configuration.SPREADSHEET_USERS_MINUS_RHODIUM))
+                    .toString()
             )
-            SharedPreference.setKey(
-                SharedPreference.LOGIN,
-                login
-            )
+            SharedPreference.setKey(SharedPreference.LOGIN, login)
         }
         //endregion
 
         //region methods of run
         private fun onPreExecute() {
-            UserInterface.changeStatusLayout(
-                activityMainBinding.linearLayout,
-                false
-            )
+            UserInterface.changeStatusLayout(activityMainBinding.linearLayout, false)
             if (hasClickedButton == false) {
                 activityMainBinding.login.setText(login)
             }
             activityMainBinding.notification.setTextColor(Configuration.COLOR_SUCCESS)
-            activityMainBinding.notification.text =
-                Configuration.USER_WAIT_AUTHENTICATING
+            activityMainBinding.notification.text = Configuration.USER_WAIT_AUTHENTICATING
         }
 
         private fun doInBackground(): ProcessStep {
@@ -360,37 +327,28 @@ class MainActivity : AppCompatActivity() {
             when (processStep) {
                 ProcessStep.USER_NEVER_LOGGED -> {
                     activityMainBinding.notification.setTextColor(Configuration.COLOR_SUCCESS)
-                    activityMainBinding.notification.text =
-                        Configuration.USER_NEVER_LOGGED
+                    activityMainBinding.notification.text = Configuration.USER_NEVER_LOGGED
                 }
                 ProcessStep.USER_ELAPSED_DATE_LICENCE -> {
                     activityMainBinding.notification.setTextColor(Configuration.COLOR_FAILED)
-                    activityMainBinding.notification.text =
-                        Configuration.USER_FAILED_LICENCE
-                    SharedPreference.setKey(
-                        SharedPreference.LICENCE_DATE_OF_END,
-                        ""
-                    )
+                    activityMainBinding.notification.text = Configuration.USER_FAILED_LICENCE
+                    SharedPreference.setKey(SharedPreference.LICENCE_DATE_OF_END, "")
                 }
                 ProcessStep.USER_FAILED_LOGIN -> {
                     activityMainBinding.notification.setTextColor(Configuration.COLOR_FAILED)
-                    activityMainBinding.notification.text =
-                        Configuration.USER_FAILED_LOGIN
+                    activityMainBinding.notification.text = Configuration.USER_FAILED_LOGIN
                 }
                 ProcessStep.USER_FAILED_SERIAL -> {
                     activityMainBinding.notification.setTextColor(Configuration.COLOR_FAILED)
-                    activityMainBinding.notification.text =
-                        Configuration.USER_FAILED_UUID
+                    activityMainBinding.notification.text = Configuration.USER_FAILED_UUID
                 }
                 ProcessStep.NETWORK_FAILED -> {
                     activityMainBinding.notification.setTextColor(Configuration.COLOR_FAILED)
-                    activityMainBinding.notification.text =
-                        Configuration.NETWORK_FAILED
+                    activityMainBinding.notification.text = Configuration.NETWORK_FAILED
                 }
                 ProcessStep.UNHANDLED_EXCEPTION -> {
                     activityMainBinding.notification.setTextColor(Configuration.COLOR_FAILED)
-                    activityMainBinding.notification.text =
-                        Configuration.UNHANDLED_EXCEPTION
+                    activityMainBinding.notification.text = Configuration.UNHANDLED_EXCEPTION
                 }
                 ProcessStep.SUCCESS -> {
                     openResultActivity()
@@ -399,10 +357,7 @@ class MainActivity : AppCompatActivity() {
                     //
                 }
             }
-            UserInterface.changeStatusLayout(
-                activityMainBinding.linearLayout,
-                true
-            )
+            UserInterface.changeStatusLayout(activityMainBinding.linearLayout, true)
         }
         //endregion
 

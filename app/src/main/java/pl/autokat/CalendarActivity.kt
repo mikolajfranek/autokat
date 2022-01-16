@@ -127,7 +127,6 @@ class CalendarActivity : AppCompatActivity() {
             }
     }
 
-    //TODO
     private fun setupCalendar() {
         val featureStart = LocalDate.parse("01-10-2021", DateTimeFormatter.ofPattern("dd-MM-yyyy"))
         activityCalendarBinding.calendarView.setup(
@@ -135,8 +134,7 @@ class CalendarActivity : AppCompatActivity() {
             YearMonth.now(),
             DayOfWeek.MONDAY
         )
-        val actualCoursesDate =
-            SharedPreference.getKey(SharedPreference.ACTUAL_COURSES_DATE)
+        val actualCoursesDate = SharedPreference.getKey(SharedPreference.ACTUAL_COURSES_DATE)
         if (actualCoursesDate.isEmpty()) {
             activityCalendarBinding.calendarView.scrollToDate(LocalDate.now())
         } else {
@@ -201,9 +199,11 @@ class CalendarActivity : AppCompatActivity() {
 
     //region inner classes
     inner class DayViewContainer(view: View) : ViewContainer(view) {
+
         lateinit var day: CalendarDay
         val textView = CalendarDayBinding.bind(view).textView
 
+        //region methods of init
         private fun resetView() {
             menuItemCheck.isVisible = false
             activityCalendarBinding.footer.visibility = View.GONE
@@ -224,9 +224,7 @@ class CalendarActivity : AppCompatActivity() {
                 selectedDate = day.date
                 activityCalendarBinding.calendarView.notifyDateChanged(day.date)
                 oldDate?.let {
-                    activityCalendarBinding.calendarView.notifyDateChanged(
-                        oldDate
-                    )
+                    activityCalendarBinding.calendarView.notifyDateChanged(oldDate)
                 }
             }
         }
@@ -235,8 +233,7 @@ class CalendarActivity : AppCompatActivity() {
             val keyYearMonth = selectedDate?.yearMonth.toString()
             val keyDate = selectedDate?.toString()?.let { it1 -> Formatter.formatStringDate(it1) }
             if (mapCoursesOfYearMonths.contains(keyYearMonth)) {
-                menuItemCheck.isVisible =
-                    mapCoursesOfYearMonths[keyYearMonth]!!.contains(keyDate)
+                menuItemCheck.isVisible = mapCoursesOfYearMonths[keyYearMonth]!!.contains(keyDate)
                 if (menuItemCheck.isVisible) {
                     val courses = mapCoursesOfYearMonths[keyYearMonth]!![keyDate]
                     setView(courses)
@@ -246,43 +243,27 @@ class CalendarActivity : AppCompatActivity() {
 
         private fun setView(courses: ModelCourse?) {
             if (courses != null) {
-                activityCalendarBinding.footer.visibility =
-                    View.VISIBLE
-                val text =
-                    "Z dnia ${Formatter.formatStringDate(day.date.toString())}"
+                activityCalendarBinding.footer.visibility = View.VISIBLE
+                val text = "Z dnia ${Formatter.formatStringDate(day.date.toString())}"
                 activityCalendarBinding.footerActualDate.text = text
-                val platinum = Course.calculateCoursesToPln(
-                    courses.platinum,
-                    courses.usdPln
-                )
-                val platinumText =
-                    (Formatter.formatStringFloat(platinum, 2) + " zł/g")
-                activityCalendarBinding.footerActualPlatinum.text =
-                    platinumText
-                val palladium = Course.calculateCoursesToPln(
-                    courses.palladium,
-                    courses.usdPln
-                )
-                val palladiumText =
-                    (Formatter.formatStringFloat(palladium, 2) + " zł/g")
-                activityCalendarBinding.footerActualPalladium.text =
-                    palladiumText
-                val rhodium =
-                    Course.calculateCoursesToPln(courses.rhodium, courses.usdPln)
-                val rhodiumText =
-                    (Formatter.formatStringFloat(rhodium, 2) + " zł/g")
-                activityCalendarBinding.footerActualRhodium.text =
-                    rhodiumText
-                val eurText =
-                    (Formatter.formatStringFloat(courses.eurPln, 2) + " zł")
+                val platinum = Course.calculateCoursesToPln(courses.platinum, courses.usdPln)
+                val platinumText = (Formatter.formatStringFloat(platinum, 2) + " zł/g")
+                activityCalendarBinding.footerActualPlatinum.text = platinumText
+                val palladium = Course.calculateCoursesToPln(courses.palladium, courses.usdPln)
+                val palladiumText = (Formatter.formatStringFloat(palladium, 2) + " zł/g")
+                activityCalendarBinding.footerActualPalladium.text = palladiumText
+                val rhodium = Course.calculateCoursesToPln(courses.rhodium, courses.usdPln)
+                val rhodiumText = (Formatter.formatStringFloat(rhodium, 2) + " zł/g")
+                activityCalendarBinding.footerActualRhodium.text = rhodiumText
+                val eurText = (Formatter.formatStringFloat(courses.eurPln, 2) + " zł")
                 activityCalendarBinding.footerActualEurPln.text = eurText
-                val usdText =
-                    (Formatter.formatStringFloat(courses.usdPln, 2) + " zł")
+                val usdText = (Formatter.formatStringFloat(courses.usdPln, 2) + " zł")
                 activityCalendarBinding.footerActualUsdPln.text = usdText
             } else {
                 menuItemCheck.isVisible = false
             }
         }
+        //endregion
 
         init {
             textView.setOnClickListener {
@@ -296,6 +277,7 @@ class CalendarActivity : AppCompatActivity() {
     }
 
     inner class MonthViewContainer(view: View) : ViewContainer(view) {
+
         val textView = CalendarHeaderBinding.bind(view).textView
     }
     //endregion

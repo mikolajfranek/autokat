@@ -90,6 +90,7 @@ class UpdateActivity : AppCompatActivity() {
 
     //region inner classes
     inner class RunnableWorkBackground : Runnable {
+
         private var itemsWithThumbnail: Int = 0
         private var itemsWithUrlThumbnail: Int = 0
         private var itemsFromDatabase: Int = 0
@@ -124,10 +125,7 @@ class UpdateActivity : AppCompatActivity() {
 
         //region methods of run
         private fun onPreExecute() {
-            UserInterface.changeStatusLayout(
-                activityUpdateBinding.linearLayout,
-                false
-            )
+            UserInterface.changeStatusLayout(activityUpdateBinding.linearLayout, false)
         }
 
         private fun doInBackground(): ProcessStep {
@@ -157,10 +155,7 @@ class UpdateActivity : AppCompatActivity() {
                     //
                 }
             }
-            UserInterface.changeStatusLayout(
-                activityUpdateBinding.linearLayout,
-                true
-            )
+            UserInterface.changeStatusLayout(activityUpdateBinding.linearLayout, true)
         }
         //endregion
 
@@ -176,6 +171,7 @@ class UpdateActivity : AppCompatActivity() {
     }
 
     inner class RunnableUpdateProgressOfDownloadThumbnail : Runnable {
+
         private var itemsWithThumbnail: Int = 0
         private var itemsWithUrlThumbnail: Int = 0
         private var itemsFromDatabase: Int = 0
@@ -210,14 +206,13 @@ class UpdateActivity : AppCompatActivity() {
     }
 
     inner class RunnableUpdate(fullUpdateInput: Boolean) : Runnable {
+
         private var fullUpdate: Boolean = fullUpdateInput
 
         //region methods used in doInBackground
         private fun checkIfRowIsAvailable(row: JSONArray): Boolean {
-            return Spreadsheet.getValueStringFromDocsApi(
-                row,
-                Configuration.SPREADSHEET_CATALYST_ID
-            ).isEmpty() == false
+            return Spreadsheet.getValueStringFromDocsApi(row, Configuration.SPREADSHEET_CATALYST_ID)
+                .isEmpty() == false
         }
 
         private fun onProgressUpdate(progressStep: Float) {
@@ -268,10 +263,7 @@ class UpdateActivity : AppCompatActivity() {
 
         //region methods of run
         private fun onPreExecute() {
-            UserInterface.changeStatusLayout(
-                activityUpdateBinding.linearLayout,
-                false
-            )
+            UserInterface.changeStatusLayout(activityUpdateBinding.linearLayout, false)
             stopThreadUpdateProgressOfDownloadThumbnail()
             while (threadUpdateProgressOfDownloadThumbnail != null) {
                 Thread.sleep(100)
@@ -306,18 +298,12 @@ class UpdateActivity : AppCompatActivity() {
         private fun onPostExecute(processStep: ProcessStep) {
             when (processStep) {
                 ProcessStep.NETWORK_FAILED -> {
-                    activityUpdateBinding.notification.setTextColor(
-                        Configuration.COLOR_FAILED
-                    )
-                    activityUpdateBinding.notification.text =
-                        Configuration.NETWORK_FAILED
+                    activityUpdateBinding.notification.setTextColor(Configuration.COLOR_FAILED)
+                    activityUpdateBinding.notification.text = Configuration.NETWORK_FAILED
                 }
                 ProcessStep.UNHANDLED_EXCEPTION -> {
-                    activityUpdateBinding.notification.setTextColor(
-                        Configuration.COLOR_FAILED
-                    )
-                    activityUpdateBinding.notification.text =
-                        Configuration.UPDATE_FAILED
+                    activityUpdateBinding.notification.setTextColor(Configuration.COLOR_FAILED)
+                    activityUpdateBinding.notification.text = Configuration.UPDATE_FAILED
                 }
                 ProcessStep.SUCCESS -> {
                     isAvailableUpdateCatalyst = false
@@ -329,10 +315,7 @@ class UpdateActivity : AppCompatActivity() {
                     //
                 }
             }
-            UserInterface.changeStatusLayout(
-                activityUpdateBinding.linearLayout,
-                true
-            )
+            UserInterface.changeStatusLayout(activityUpdateBinding.linearLayout, true)
         }
         //endregion
 

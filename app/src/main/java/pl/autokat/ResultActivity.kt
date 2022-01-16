@@ -75,106 +75,88 @@ class ResultActivity : AppCompatActivity() {
     }
 
     private fun setFilterField() {
-        activityResultBinding.filter.setText(
-            SharedPreference.getKey(
-                SharedPreference.LAST_SEARCHED_TEXT
-            )
-        )
+        activityResultBinding.filter.setText(SharedPreference.getKey(SharedPreference.LAST_SEARCHED_TEXT))
         activityResultBinding.filter.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                SharedPreference.setKey(
-                    SharedPreference.LAST_SEARCHED_TEXT,
-                    s.toString()
-                )
+                SharedPreference.setKey(SharedPreference.LAST_SEARCHED_TEXT, s.toString())
                 refreshAdapterCatalysts(ScrollRefresh.RESET_LIST)
             }
         })
     }
 
     private fun setCatalystListView() {
-        adapterCatalysts = object : ArrayAdapter<ModelCatalyst>(
-            applicationContext,
-            R.layout.catalyst
-        ) {
-            @SuppressLint("ViewHolder")
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                catalystBinding = CatalystBinding.inflate(layoutInflater, parent, false)
-                val viewItem = catalystBinding.root
-                val itemCatalyst = getItem(position)!!
-                val visibilityCatalyst: Boolean =
-                    SharedPreference.getKey(SharedPreference.VISIBILITY).toInt() == 1
-                catalystBinding.thumbnail.setImageBitmap(itemCatalyst.thumbnail)
-                catalystBinding.thumbnail.setOnLongClickListener {
-                    Toast.makeText(
-                        applicationContext,
-                        itemCatalyst.idPicture,
-                        Toast.LENGTH_LONG
-                    ).show()
-                    true
+        adapterCatalysts =
+            object : ArrayAdapter<ModelCatalyst>(applicationContext, R.layout.catalyst) {
+                @SuppressLint("ViewHolder")
+                override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                    catalystBinding = CatalystBinding.inflate(layoutInflater, parent, false)
+                    val viewItem = catalystBinding.root
+                    val itemCatalyst = getItem(position)!!
+                    val visibilityCatalyst: Boolean =
+                        SharedPreference.getKey(SharedPreference.VISIBILITY).toInt() == 1
+                    catalystBinding.thumbnail.setImageBitmap(itemCatalyst.thumbnail)
+                    catalystBinding.thumbnail.setOnLongClickListener {
+                        Toast.makeText(
+                            applicationContext,
+                            itemCatalyst.idPicture,
+                            Toast.LENGTH_LONG
+                        ).show()
+                        true
+                    }
+                    catalystBinding.thumbnail.setOnClickListener {
+                        val intent = Intent(applicationContext, PictureActivity::class.java)
+                        intent.putExtra("urlPicture", itemCatalyst.urlPicture)
+                        startActivity(intent)
+                    }
+                    catalystBinding.brand.text = itemCatalyst.brand
+                    catalystBinding.type.text = itemCatalyst.type
+                    catalystBinding.name.text = itemCatalyst.name
+                    val weightText =
+                        Formatter.formatStringFloat(itemCatalyst.weight.toString(), 3) + " kg"
+                    catalystBinding.weight.text = weightText
+                    val platinumText = Formatter.formatStringFloat(
+                        if (visibilityCatalyst) itemCatalyst.platinum.toString() else "0.0",
+                        3
+                    ) + " g/kg"
+                    catalystBinding.platinum.text = platinumText
+                    val palladiumText = Formatter.formatStringFloat(
+                        if (visibilityCatalyst) itemCatalyst.palladium.toString() else "0.0",
+                        3
+                    ) + " g/kg"
+                    catalystBinding.palladium.text = palladiumText
+                    val rhodiumText = Formatter.formatStringFloat(
+                        if (visibilityCatalyst) itemCatalyst.rhodium.toString() else "0.0",
+                        3
+                    ) + " g/kg"
+                    catalystBinding.rhodium.text = rhodiumText
+                    var pricePl = itemCatalyst.countPricePln()
+                    val courseEurPlnFromConfiguration: String = SharedPreference.getKey(
+                        SharedPreference.EUR_PLN
+                    )
+                    val courseEurPln: Float =
+                        if (courseEurPlnFromConfiguration.isEmpty()) 0.0F else courseEurPlnFromConfiguration.toFloat()
+                    var priceEur = if (courseEurPln != 0.0F) (pricePl / courseEurPln) else 0.0F
+                    pricePl = if (pricePl < 0) 0.0F else pricePl
+                    priceEur = if (priceEur < 0) 0.0F else priceEur
+                    val resultPriceEur: String =
+                        (Formatter.formatStringFloat(priceEur.toString(), 2) + " €")
+                    val resultPricePln: String =
+                        (Formatter.formatStringFloat(pricePl.toString(), 2) + " zł")
+                    if (visibilityCatalyst) {
+                        catalystBinding.priceEur.text = resultPriceEur
+                        catalystBinding.pricePln.text = resultPricePln
+                        catalystBinding.rowPlatinum.visibility = VISIBLE
+                        catalystBinding.rowPalladium.visibility = VISIBLE
+                        catalystBinding.rowRhodium.visibility = VISIBLE
+                    } else {
+                        catalystBinding.priceEurWithoutMetal.text = resultPriceEur
+                        catalystBinding.pricePlnWithoutMetal.text = resultPricePln
+                    }
+                    return viewItem
                 }
-                catalystBinding.thumbnail.setOnClickListener {
-                    val intent =
-                        Intent(applicationContext, PictureActivity::class.java)
-                    intent.putExtra("urlPicture", itemCatalyst.urlPicture)
-                    startActivity(intent)
-                }
-                catalystBinding.brand.text = itemCatalyst.brand
-                catalystBinding.type.text = itemCatalyst.type
-                catalystBinding.name.text = itemCatalyst.name
-                val weightText = Formatter.formatStringFloat(
-                    itemCatalyst.weight.toString(),
-                    3
-                ) + " kg"
-                catalystBinding.weight.text = weightText
-                val platinumText = Formatter.formatStringFloat(
-                    if (visibilityCatalyst) itemCatalyst.platinum.toString() else "0.0",
-                    3
-                ) + " g/kg"
-                catalystBinding.platinum.text = platinumText
-                val palladiumText = Formatter.formatStringFloat(
-                    if (visibilityCatalyst) itemCatalyst.palladium.toString() else "0.0",
-                    3
-                ) + " g/kg"
-                catalystBinding.palladium.text = palladiumText
-                val rhodiumText = Formatter.formatStringFloat(
-                    if (visibilityCatalyst) itemCatalyst.rhodium.toString() else "0.0",
-                    3
-                ) + " g/kg"
-                catalystBinding.rhodium.text = rhodiumText
-                var pricePl = itemCatalyst.countPricePln()
-                val courseEurPlnFromConfiguration: String = SharedPreference.getKey(
-                    SharedPreference.EUR_PLN
-                )
-                val courseEurPln: Float =
-                    if (courseEurPlnFromConfiguration.isEmpty()) 0.0F else courseEurPlnFromConfiguration.toFloat()
-                var priceEur = if (courseEurPln != 0.0F) (pricePl / courseEurPln) else 0.0F
-                pricePl = if (pricePl < 0) 0.0F else pricePl
-                priceEur = if (priceEur < 0) 0.0F else priceEur
-                val resultPriceEur: String = (Formatter.formatStringFloat(
-                    priceEur.toString(),
-                    2
-                ) + " €")
-                val resultPricePln: String = (Formatter.formatStringFloat(
-                    pricePl.toString(),
-                    2
-                ) + " zł")
-                if (visibilityCatalyst) {
-                    catalystBinding.priceEur.text = resultPriceEur
-                    catalystBinding.pricePln.text = resultPricePln
-                    catalystBinding.rowPlatinum.visibility = VISIBLE
-                    catalystBinding.rowPalladium.visibility = VISIBLE
-                    catalystBinding.rowRhodium.visibility = VISIBLE
-                } else {
-                    catalystBinding.priceEurWithoutMetal.text =
-                        resultPriceEur
-                    catalystBinding.pricePlnWithoutMetal.text =
-                        resultPricePln
-                }
-                return viewItem
             }
-        }
         activityResultBinding.catalystListView.adapter = adapterCatalysts
         activityResultBinding.catalystListView.setOnScrollListener(object :
             AbsListView.OnScrollListener {
@@ -196,28 +178,25 @@ class ResultActivity : AppCompatActivity() {
     }
 
     private fun setHistoryFilterListView() {
-        adapterHistoryFilter = object : ArrayAdapter<ModelHistoryFilter>(
-            applicationContext,
-            R.layout.history_filter
-        ) {
-            @SuppressLint("ViewHolder")
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                historyFilterBinding = HistoryFilterBinding.inflate(
-                    layoutInflater, parent, false
-                )
-                val viewItem = historyFilterBinding.root
-                val itemHistoryFilter = getItem(position)!!
-                historyFilterBinding.name.text = itemHistoryFilter.name
-                viewItem.setOnClickListener {
-                    activityResultBinding.filter.setText(itemHistoryFilter.name)
-                    activityResultBinding.drawerLayout.closeDrawers()
+        adapterHistoryFilter =
+            object : ArrayAdapter<ModelHistoryFilter>(applicationContext, R.layout.history_filter) {
+                @SuppressLint("ViewHolder")
+                override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                    historyFilterBinding =
+                        HistoryFilterBinding.inflate(layoutInflater, parent, false)
+                    val viewItem = historyFilterBinding.root
+                    val itemHistoryFilter = getItem(position)!!
+                    historyFilterBinding.name.text = itemHistoryFilter.name
+                    viewItem.setOnClickListener {
+                        activityResultBinding.filter.setText(itemHistoryFilter.name)
+                        activityResultBinding.drawerLayout.closeDrawers()
+                    }
+                    historyFilterBinding.buttonDeleteHistoryFilter.setOnClickListener {
+                        deleteHistoryFilter(itemHistoryFilter.id)
+                    }
+                    return viewItem
                 }
-                historyFilterBinding.buttonDeleteHistoryFilter.setOnClickListener {
-                    deleteHistoryFilter(itemHistoryFilter.id)
-                }
-                return viewItem
             }
-        }
         activityResultBinding.historyFilterListView.adapter = adapterHistoryFilter
         activityResultBinding.historyFilterListView.setOnScrollListener(object :
             AbsListView.OnScrollListener {
@@ -274,11 +253,7 @@ class ResultActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (Checker.checkTimeOnPhone(
-                "",
-                TimeChecking.CHECKING_LICENCE
-            ) == false
-        ) openMainActivity()
+        if (Checker.checkTimeOnPhone("", TimeChecking.CHECKING_LICENCE) == false) openMainActivity()
         Thread(RunnableWorkBackground()).start()
     }
 
@@ -333,20 +308,17 @@ class ResultActivity : AppCompatActivity() {
 
     //region refresh database adapter
     fun refreshAdapterCatalysts(scrollRefresh: ScrollRefresh) {
-        val searchedText =
-            SharedPreference.getKey(SharedPreference.LAST_SEARCHED_TEXT)
+        val searchedText = SharedPreference.getKey(SharedPreference.LAST_SEARCHED_TEXT)
         when (scrollRefresh) {
             ScrollRefresh.RESET_LIST -> {
                 scrollPreLastCatalyst = 0
                 scrollLimitCatalyst = paginateLimitCatalyst
-                val result =
-                    database.getDataCatalyst(searchedText, scrollLimitCatalyst.toString())
+                val result = database.getDataCatalyst(searchedText, scrollLimitCatalyst.toString())
                 adapterCatalysts.clear()
                 adapterCatalysts.addAll(result)
             }
             ScrollRefresh.UPDATE_LIST -> {
-                val result =
-                    database.getDataCatalyst(searchedText, scrollLimitCatalyst.toString())
+                val result = database.getDataCatalyst(searchedText, scrollLimitCatalyst.toString())
                 adapterCatalysts.clear()
                 adapterCatalysts.addAll(result)
             }
@@ -365,26 +337,23 @@ class ResultActivity : AppCompatActivity() {
     }
 
     fun refreshAdapterHistoryFilter(scrollRefresh: ScrollRefresh) {
-        val nameCatalystOrBrandCarInput =
-            activityResultBinding.filter.text.toString()
+        val nameCatalystOrBrandCarInput = activityResultBinding.filter.text.toString()
         when (scrollRefresh) {
             ScrollRefresh.RESET_LIST -> {
                 scrollPreLastHistoryFilter = 0
                 scrollLimitHistoryFilter = paginateLimitHistoryFilter
-                val result =
-                    database.getDataHistoryFilter(
-                        scrollLimitHistoryFilter.toString(),
-                        nameCatalystOrBrandCarInput
-                    )
+                val result = database.getDataHistoryFilter(
+                    scrollLimitHistoryFilter.toString(),
+                    nameCatalystOrBrandCarInput
+                )
                 adapterHistoryFilter.clear()
                 adapterHistoryFilter.addAll(result)
             }
             ScrollRefresh.UPDATE_LIST -> {
-                val result =
-                    database.getDataHistoryFilter(
-                        scrollLimitHistoryFilter.toString(),
-                        nameCatalystOrBrandCarInput
-                    )
+                val result = database.getDataHistoryFilter(
+                    scrollLimitHistoryFilter.toString(),
+                    nameCatalystOrBrandCarInput
+                )
                 adapterHistoryFilter.clear()
                 adapterHistoryFilter.addAll(result)
             }
@@ -410,6 +379,7 @@ class ResultActivity : AppCompatActivity() {
 
     //region inner classes
     inner class RunnableWorkBackground : Runnable {
+
         private var colorIconUpdateCatalyst: Boolean = false
         private var isTableCatalystEmpty: Boolean = false
 
@@ -443,49 +413,32 @@ class ResultActivity : AppCompatActivity() {
             }
             SharedPreference.setKey(
                 SharedPreference.LICENCE_DATE_OF_END,
-                user.getString(
-                    Configuration.SPREADSHEET_USERS_LICENCE
-                )
+                user.getString(Configuration.SPREADSHEET_USERS_LICENCE)
             )
             SharedPreference.setKey(
                 SharedPreference.DISCOUNT,
-                Parser.parseStringToInt(
-                    user.getString(
-                        Configuration.SPREADSHEET_USERS_DISCOUNT
-                    )
-                ).toString()
+                Parser.parseStringToInt(user.getString(Configuration.SPREADSHEET_USERS_DISCOUNT))
+                    .toString()
             )
             SharedPreference.setKey(
                 SharedPreference.VISIBILITY,
-                Parser.parseStringBooleanToInt(
-                    user.getString(
-                        Configuration.SPREADSHEET_USERS_VISIBILITY
-                    )
-                ).toString()
+                Parser.parseStringBooleanToInt(user.getString(Configuration.SPREADSHEET_USERS_VISIBILITY))
+                    .toString()
             )
             SharedPreference.setKey(
                 SharedPreference.MINUS_PLATINUM,
-                Parser.parseStringToInt(
-                    user.getString(
-                        Configuration.SPREADSHEET_USERS_MINUS_PLATINUM
-                    )
-                ).toString()
+                Parser.parseStringToInt(user.getString(Configuration.SPREADSHEET_USERS_MINUS_PLATINUM))
+                    .toString()
             )
             SharedPreference.setKey(
                 SharedPreference.MINUS_PALLADIUM,
-                Parser.parseStringToInt(
-                    user.getString(
-                        Configuration.SPREADSHEET_USERS_MINUS_PALLADIUM
-                    )
-                ).toString()
+                Parser.parseStringToInt(user.getString(Configuration.SPREADSHEET_USERS_MINUS_PALLADIUM))
+                    .toString()
             )
             SharedPreference.setKey(
                 SharedPreference.MINUS_RHODIUM,
-                Parser.parseStringToInt(
-                    user.getString(
-                        Configuration.SPREADSHEET_USERS_MINUS_RHODIUM
-                    )
-                ).toString()
+                Parser.parseStringToInt(user.getString(Configuration.SPREADSHEET_USERS_MINUS_RHODIUM))
+                    .toString()
             )
             return ProcessStep.NONE
         }
@@ -493,35 +446,26 @@ class ResultActivity : AppCompatActivity() {
         private fun runWorkerDownloadThumbnail() {
             val workRequest: WorkRequest =
                 OneTimeWorkRequestBuilder<WorkerDownloadThumbnail>().build()
-            WorkManager
-                .getInstance(applicationContext)
-                .enqueue(workRequest)
+            WorkManager.getInstance(applicationContext).enqueue(workRequest)
         }
         //endregion
 
         //region methods used in onPostExecute
         private fun handleElapsedDateLicence(processStep: ProcessStep) {
             if (processStep == ProcessStep.USER_ELAPSED_DATE_LICENCE) {
-                SharedPreference.setKey(
-                    SharedPreference.LICENCE_DATE_OF_END,
-                    ""
-                )
+                SharedPreference.setKey(SharedPreference.LICENCE_DATE_OF_END, "")
                 openMainActivity()
             }
         }
 
         private fun setVisibility() {
             if (isTableCatalystEmpty) {
-                activityResultBinding.catalystWaiting.visibility =
-                    GONE
-                activityResultBinding.catalystEmpty.visibility =
-                    VISIBLE
+                activityResultBinding.catalystWaiting.visibility = GONE
+                activityResultBinding.catalystEmpty.visibility = VISIBLE
                 activityResultBinding.catalystListView.visibility = GONE
             } else {
-                activityResultBinding.catalystWaiting.visibility =
-                    GONE
-                activityResultBinding.catalystEmpty.visibility =
-                    GONE
+                activityResultBinding.catalystWaiting.visibility = GONE
+                activityResultBinding.catalystEmpty.visibility = GONE
                 activityResultBinding.catalystListView.visibility = VISIBLE
             }
         }
@@ -556,16 +500,11 @@ class ResultActivity : AppCompatActivity() {
                     )
                 }
             } else {
-                val usdDate =
-                    SharedPreference.getKey(SharedPreference.USD_PLN_DATE)
-                val eurDate =
-                    SharedPreference.getKey(SharedPreference.EUR_PLN_DATE)
-                val platinumDate =
-                    SharedPreference.getKey(SharedPreference.PLATINUM_DATE)
-                val palladiumDate =
-                    SharedPreference.getKey(SharedPreference.PALLADIUM_DATE)
-                val rhodiumDate =
-                    SharedPreference.getKey(SharedPreference.RHODIUM_DATE)
+                val usdDate = SharedPreference.getKey(SharedPreference.USD_PLN_DATE)
+                val eurDate = SharedPreference.getKey(SharedPreference.EUR_PLN_DATE)
+                val platinumDate = SharedPreference.getKey(SharedPreference.PLATINUM_DATE)
+                val palladiumDate = SharedPreference.getKey(SharedPreference.PALLADIUM_DATE)
+                val rhodiumDate = SharedPreference.getKey(SharedPreference.RHODIUM_DATE)
                 if (LocalDate.now()
                         .toString() == usdDate && usdDate == eurDate && eurDate == platinumDate && platinumDate == palladiumDate && palladiumDate == rhodiumDate
                 ) {
@@ -585,14 +524,9 @@ class ResultActivity : AppCompatActivity() {
 
         //region methods of run
         private fun onPreExecute() {
-            UserInterface.changeStatusLayout(
-                activityResultBinding.drawerLayout,
-                false
-            )
-            activityResultBinding.catalystWaiting.visibility =
-                VISIBLE
-            activityResultBinding.catalystEmpty.visibility =
-                GONE
+            UserInterface.changeStatusLayout(activityResultBinding.drawerLayout, false)
+            activityResultBinding.catalystWaiting.visibility = VISIBLE
+            activityResultBinding.catalystEmpty.visibility = GONE
             activityResultBinding.catalystListView.visibility = GONE
         }
 
@@ -639,16 +573,12 @@ class ResultActivity : AppCompatActivity() {
 
         //region methods of run
         private fun onPreExecute() {
-            UserInterface.changeStatusLayout(
-                activityResultBinding.drawerLayout,
-                false
-            )
+            UserInterface.changeStatusLayout(activityResultBinding.drawerLayout, false)
         }
 
         private fun doInBackground(): ProcessStep {
             return try {
-                var searchedText =
-                    SharedPreference.getKey(SharedPreference.LAST_SEARCHED_TEXT)
+                var searchedText = SharedPreference.getKey(SharedPreference.LAST_SEARCHED_TEXT)
                 searchedText = ("\\s{2,}").toRegex().replace(searchedText.trim(), " ")
                 if (searchedText.isEmpty() == false) {
                     database.deleteHistoryFilter(searchedText)
@@ -689,10 +619,7 @@ class ResultActivity : AppCompatActivity() {
                     //
                 }
             }
-            UserInterface.changeStatusLayout(
-                activityResultBinding.drawerLayout,
-                true
-            )
+            UserInterface.changeStatusLayout(activityResultBinding.drawerLayout, true)
         }
         //endregion
 
@@ -708,14 +635,12 @@ class ResultActivity : AppCompatActivity() {
     }
 
     inner class RunnableDeleteHistoryFilter(idInput: Int) : Runnable {
+
         private var id: Int = idInput
 
         //region methods of run
         private fun onPreExecute() {
-            UserInterface.changeStatusLayout(
-                activityResultBinding.drawerLayout,
-                false
-            )
+            UserInterface.changeStatusLayout(activityResultBinding.drawerLayout, false)
         }
 
         private fun doInBackground(): ProcessStep {
@@ -748,10 +673,7 @@ class ResultActivity : AppCompatActivity() {
                 }
             }
             refreshAdapterHistoryFilter(ScrollRefresh.UPDATE_LIST)
-            UserInterface.changeStatusLayout(
-                activityResultBinding.drawerLayout,
-                true
-            )
+            UserInterface.changeStatusLayout(activityResultBinding.drawerLayout, true)
         }
         //endregion
 

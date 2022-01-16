@@ -19,8 +19,7 @@ class CoursesActivity : AppCompatActivity() {
 
     //region methods used in override
     private fun init() {
-        activityCoursesBinding =
-            ActivityCoursesBinding.inflate(layoutInflater)
+        activityCoursesBinding = ActivityCoursesBinding.inflate(layoutInflater)
         val view = activityCoursesBinding.root
         setContentView(view)
         setSupportActionBar(activityCoursesBinding.toolbar)
@@ -32,18 +31,10 @@ class CoursesActivity : AppCompatActivity() {
     private fun setClickListeners() {
         activityCoursesBinding.switchTypeCourses.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                val lastCoursesDate =
-                    SharedPreference.getKey(SharedPreference.ACTUAL_COURSES_DATE)
-                activityCoursesBinding.buttonSelectDateCourses.visibility =
-                    View.GONE
-                SharedPreference.setKey(
-                    SharedPreference.ACTUAL_COURSES_DATE,
-                    ""
-                )
-                SharedPreference.setKey(
-                    SharedPreference.ACTUAL_COURSES_CHOICE,
-                    "1"
-                )
+                val lastCoursesDate = SharedPreference.getKey(SharedPreference.ACTUAL_COURSES_DATE)
+                activityCoursesBinding.buttonSelectDateCourses.visibility = View.GONE
+                SharedPreference.setKey(SharedPreference.ACTUAL_COURSES_DATE, "")
+                SharedPreference.setKey(SharedPreference.ACTUAL_COURSES_CHOICE, "1")
                 if (lastCoursesDate.isNotEmpty()) {
                     Toast.makeText(
                         applicationContext,
@@ -52,12 +43,8 @@ class CoursesActivity : AppCompatActivity() {
                     ).show()
                 }
             } else {
-                activityCoursesBinding.buttonSelectDateCourses.visibility =
-                    View.VISIBLE
-                SharedPreference.setKey(
-                    SharedPreference.ACTUAL_COURSES_CHOICE,
-                    "0"
-                )
+                activityCoursesBinding.buttonSelectDateCourses.visibility = View.VISIBLE
+                SharedPreference.setKey(SharedPreference.ACTUAL_COURSES_CHOICE, "0")
             }
         }
         activityCoursesBinding.buttonSelectDateCourses.setOnClickListener {
@@ -68,8 +55,7 @@ class CoursesActivity : AppCompatActivity() {
     private fun setInViewSelectingCourses(){
         if (Course.isCoursesSelected()) {
             activityCoursesBinding.switchTypeCourses.isChecked = false
-            activityCoursesBinding.buttonSelectDateCourses.visibility =
-                View.VISIBLE
+            activityCoursesBinding.buttonSelectDateCourses.visibility = View.VISIBLE
         } else {
             activityCoursesBinding.switchTypeCourses.isChecked = true
             activityCoursesBinding.buttonSelectDateCourses.visibility = View.GONE
@@ -81,48 +67,36 @@ class CoursesActivity : AppCompatActivity() {
             SharedPreference.getKey(SharedPreference.PLATINUM),
             SharedPreference.getKey(SharedPreference.USD_PLN)
         )
-        val platinumDate: String =
-            SharedPreference.getKey(SharedPreference.PLATINUM_DATE)
+        val platinumDate: String = SharedPreference.getKey(SharedPreference.PLATINUM_DATE)
         val platinumText = (Formatter.formatStringFloat(platinum, 2) + " zł/g")
         activityCoursesBinding.platinum.text = platinumText
-        activityCoursesBinding.platinumDate.text =
-            Formatter.formatStringDate(platinumDate)
+        activityCoursesBinding.platinumDate.text = Formatter.formatStringDate(platinumDate)
         val palladium: String = Course.calculateCoursesToPln(
             SharedPreference.getKey(SharedPreference.PALLADIUM),
             SharedPreference.getKey(SharedPreference.USD_PLN)
         )
-        val palladiumDate: String =
-            SharedPreference.getKey(SharedPreference.PALLADIUM_DATE)
+        val palladiumDate: String = SharedPreference.getKey(SharedPreference.PALLADIUM_DATE)
         val palladiumText = (Formatter.formatStringFloat(palladium, 2) + " zł/g")
         activityCoursesBinding.palladium.text = palladiumText
-        activityCoursesBinding.palladiumDate.text =
-            Formatter.formatStringDate(palladiumDate)
+        activityCoursesBinding.palladiumDate.text = Formatter.formatStringDate(palladiumDate)
         val rhodium: String = Course.calculateCoursesToPln(
             SharedPreference.getKey(SharedPreference.RHODIUM),
             SharedPreference.getKey(SharedPreference.USD_PLN)
         )
-        val rhodiumDate: String =
-            SharedPreference.getKey(SharedPreference.RHODIUM_DATE)
+        val rhodiumDate: String = SharedPreference.getKey(SharedPreference.RHODIUM_DATE)
         val rhodiumText = (Formatter.formatStringFloat(rhodium, 2) + " zł/g")
         activityCoursesBinding.rhodium.text = rhodiumText
-        activityCoursesBinding.rhodiumDate.text =
-            Formatter.formatStringDate(rhodiumDate)
-        val courseEurPln: String =
-            SharedPreference.getKey(SharedPreference.EUR_PLN)
-        val courseEurPlnDate: String =
-            SharedPreference.getKey(SharedPreference.EUR_PLN_DATE)
+        activityCoursesBinding.rhodiumDate.text = Formatter.formatStringDate(rhodiumDate)
+        val courseEurPln: String = SharedPreference.getKey(SharedPreference.EUR_PLN)
+        val courseEurPlnDate: String = SharedPreference.getKey(SharedPreference.EUR_PLN_DATE)
         val eurPlnText = (Formatter.formatStringFloat(courseEurPln, 2) + " zł")
         activityCoursesBinding.eurPln.text = eurPlnText
-        activityCoursesBinding.eurPlnDate.text =
-            Formatter.formatStringDate(courseEurPlnDate)
-        val courseUsdPln: String =
-            SharedPreference.getKey(SharedPreference.USD_PLN)
-        val courseUsdPlnDate: String =
-            SharedPreference.getKey(SharedPreference.USD_PLN_DATE)
+        activityCoursesBinding.eurPlnDate.text = Formatter.formatStringDate(courseEurPlnDate)
+        val courseUsdPln: String = SharedPreference.getKey(SharedPreference.USD_PLN)
+        val courseUsdPlnDate: String = SharedPreference.getKey(SharedPreference.USD_PLN_DATE)
         val usdPlnText = (Formatter.formatStringFloat(courseUsdPln, 2) + " zł")
         activityCoursesBinding.usdPln.text = usdPlnText
-        activityCoursesBinding.usdPlnDate.text =
-            Formatter.formatStringDate(courseUsdPlnDate)
+        activityCoursesBinding.usdPlnDate.text = Formatter.formatStringDate(courseUsdPlnDate)
     }
     //endregion
 
@@ -167,17 +141,11 @@ class CoursesActivity : AppCompatActivity() {
 
     //region inner classes
     inner class RunnableUpdateCourses : Runnable {
+
         //region methods of run
         private fun onPreExecute() {
-            UserInterface.changeStatusLayout(
-                activityCoursesBinding.linearLayout,
-                false
-            )
-            Toast.makeText(
-                applicationContext,
-                Configuration.UPDATE_WAIT,
-                Toast.LENGTH_SHORT
-            ).show()
+            UserInterface.changeStatusLayout(activityCoursesBinding.linearLayout, false)
+            Toast.makeText(applicationContext, Configuration.UPDATE_WAIT, Toast.LENGTH_SHORT).show()
         }
 
         private fun doInBackground(): ProcessStep {
@@ -223,10 +191,7 @@ class CoursesActivity : AppCompatActivity() {
                     ).show()
                 }
             }
-            UserInterface.changeStatusLayout(
-                activityCoursesBinding.linearLayout,
-                true
-            )
+            UserInterface.changeStatusLayout(activityCoursesBinding.linearLayout, true)
         }
         //endregion
 

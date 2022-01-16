@@ -40,30 +40,22 @@ class PictureActivity : AppCompatActivity() {
 
     //region inner classes
     inner class RunnableDownloadFullPicture(urlPictureInput: String) : Runnable {
+
         private var bitmap: Bitmap? = null
         private var urlPicture: String = urlPictureInput
 
         //region methods of run
         private fun onPreExecute() {
-            UserInterface.changeStatusLayout(
-                activityPictureBinding.linearLayout,
-                false
-            )
-            Toast.makeText(
-                applicationContext,
-                Configuration.BITMAP_WAIT,
-                Toast.LENGTH_SHORT
-            ).show()
+            UserInterface.changeStatusLayout(activityPictureBinding.linearLayout, false)
+            Toast.makeText(applicationContext, Configuration.BITMAP_WAIT, Toast.LENGTH_SHORT).show()
         }
 
         private fun doInBackground(): ProcessStep {
             return try {
-                val parsedUrlPicture =
-                    Parser.parseUrlOfPicture(urlPicture, 3840, 2160)
-                bitmap =
-                    BitmapFactory.decodeStream(
-                        URL(parsedUrlPicture).openConnection().getInputStream()
-                    )
+                val parsedUrlPicture = Parser.parseUrlOfPicture(urlPicture, 3840, 2160)
+                bitmap = BitmapFactory.decodeStream(
+                    URL(parsedUrlPicture).openConnection().getInputStream()
+                )
                 ProcessStep.SUCCESS
             } catch (e: UnknownHostException) {
                 ProcessStep.NETWORK_FAILED
@@ -97,10 +89,7 @@ class PictureActivity : AppCompatActivity() {
                     //
                 }
             }
-            UserInterface.changeStatusLayout(
-                activityPictureBinding.linearLayout,
-                true
-            )
+            UserInterface.changeStatusLayout(activityPictureBinding.linearLayout, true)
         }
         //endregion
 
