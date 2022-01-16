@@ -23,8 +23,7 @@ class AboutActivity : AppCompatActivity() {
     }
 
     private fun setInViewInformation() {
-        val licenceDateOfEnd: String =
-            SharedPreference.getKey(SharedPreference.LICENCE_DATE_OF_END)
+        val licenceDateOfEnd: String = SharedPreference.getKey(SharedPreference.LICENCE_DATE_OF_END)
         if (licenceDateOfEnd.isEmpty() == false) {
             val licenceText = "Licencja ważna do: " + Formatter.formatStringDate(licenceDateOfEnd)
             activityAboutBinding.licence.text = licenceText

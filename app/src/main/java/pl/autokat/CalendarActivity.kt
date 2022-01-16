@@ -41,11 +41,7 @@ class CalendarActivity : AppCompatActivity() {
         val courses = mapCoursesOfYearMonths[keyYearMonth]!![keyDate]
         if (courses != null) {
             Course.saveSelectedCourses(courses)
-            Toast.makeText(
-                applicationContext,
-                "Wybrano $keyDate",
-                Toast.LENGTH_SHORT
-            ).show()
+            Toast.makeText(applicationContext, "Wybrano $keyDate", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(
                 applicationContext,
@@ -123,7 +119,6 @@ class CalendarActivity : AppCompatActivity() {
                     11 to "Listopad",
                     12 to "Grudzień"
                 )
-
                 override fun create(view: View) = MonthViewContainer(view)
                 override fun bind(container: MonthViewContainer, month: CalendarMonth) {
                     val monthName = "${mapOfMonthNames[month.yearMonth.month.value]} ${month.year}"
@@ -132,6 +127,7 @@ class CalendarActivity : AppCompatActivity() {
             }
     }
 
+    //TODO
     private fun setupCalendar() {
         val featureStart = LocalDate.parse("01-10-2021", DateTimeFormatter.ofPattern("dd-MM-yyyy"))
         activityCalendarBinding.calendarView.setup(
