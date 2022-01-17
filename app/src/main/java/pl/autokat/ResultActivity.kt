@@ -444,9 +444,11 @@ class ResultActivity : AppCompatActivity() {
         }
 
         private fun runWorkerDownloadThumbnail() {
-            val workRequest: WorkRequest =
-                OneTimeWorkRequestBuilder<WorkerDownloadThumbnail>().build()
-            WorkManager.getInstance(applicationContext).enqueue(workRequest)
+            if (Configuration.workerDownloadThumbnail.compareAndSet(false, true)) {
+                val workRequest: WorkRequest =
+                    OneTimeWorkRequestBuilder<WorkerDownloadThumbnail>().build()
+                WorkManager.getInstance(applicationContext).enqueue(workRequest)
+            }
         }
         //endregion
 

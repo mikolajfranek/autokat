@@ -14,9 +14,7 @@ class WorkerDownloadThumbnail(appContext: Context, workerParams: WorkerParameter
     Worker(appContext, workerParams) {
 
     override fun doWork(): Result {
-        if (Configuration.workerDownloadThumbnail.compareAndSet(false, true)) {
-            downloadThumbnails()
-        }
+        downloadThumbnails()
         return Result.success()
     }
 
