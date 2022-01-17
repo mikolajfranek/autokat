@@ -29,7 +29,7 @@ class CalendarActivity : AppCompatActivity() {
 
     private lateinit var activityCalendarBinding: ActivityCalendarBinding
     private lateinit var database: Database
-    private lateinit var menuItemCheck: MenuItem
+    private var menuItemCheck: MenuItem? = null
     private var selectedDate: LocalDate? = null
     private var mapCoursesOfYearMonths = HashMap<String, HashMap<String, ModelCourse>>()
 
@@ -205,7 +205,7 @@ class CalendarActivity : AppCompatActivity() {
 
         //region methods of init
         private fun resetView() {
-            menuItemCheck.isVisible = false
+            menuItemCheck!!.isVisible = false
             activityCalendarBinding.footer.visibility = View.GONE
             activityCalendarBinding.footerActualDate.text = ""
             activityCalendarBinding.footerActualPlatinum.text = ""
@@ -233,8 +233,8 @@ class CalendarActivity : AppCompatActivity() {
             val keyYearMonth = selectedDate?.yearMonth.toString()
             val keyDate = selectedDate?.toString()?.let { it1 -> Formatter.formatStringDate(it1) }
             if (mapCoursesOfYearMonths.contains(keyYearMonth)) {
-                menuItemCheck.isVisible = mapCoursesOfYearMonths[keyYearMonth]!!.contains(keyDate)
-                if (menuItemCheck.isVisible) {
+                menuItemCheck!!.isVisible = mapCoursesOfYearMonths[keyYearMonth]!!.contains(keyDate)
+                if (menuItemCheck!!.isVisible) {
                     val courses = mapCoursesOfYearMonths[keyYearMonth]!![keyDate]
                     setView(courses)
                 }
@@ -260,7 +260,7 @@ class CalendarActivity : AppCompatActivity() {
                 val usdText = (Formatter.formatStringFloat(courses.usdPln, 2) + " zł")
                 activityCalendarBinding.footerActualUsdPln.text = usdText
             } else {
-                menuItemCheck.isVisible = false
+                menuItemCheck!!.isVisible = false
             }
         }
         //endregion

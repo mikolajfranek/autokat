@@ -9,16 +9,12 @@ import pl.autokat.components.Configuration
 import pl.autokat.components.Database
 import pl.autokat.components.Parser
 import java.net.URL
-import java.util.concurrent.atomic.AtomicBoolean
 
 class WorkerDownloadThumbnail(appContext: Context, workerParams: WorkerParameters) :
     Worker(appContext, workerParams) {
 
-    @Volatile
-    private var workerExists: AtomicBoolean = AtomicBoolean(false)
-
     override fun doWork(): Result {
-        if (workerExists.compareAndSet(false, true)) {
+        if (Configuration.workerDownloadThumbnail.compareAndSet(false, true)) {
             downloadThumbnails()
         }
         return Result.success()
@@ -39,7 +35,7 @@ class WorkerDownloadThumbnail(appContext: Context, workerParams: WorkerParameter
         } catch (e: Exception) {
             //
         } finally {
-            workerExists.set(false)
+            Configuration.workerDownloadThumbnail.set(false)
         }
     }
 }

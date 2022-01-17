@@ -1,6 +1,7 @@
 package pl.autokat.components
 
 import android.graphics.Color
+import java.util.concurrent.atomic.AtomicBoolean
 
 class Configuration {
     companion object {
@@ -10,6 +11,9 @@ class Configuration {
         const val DATABASE_VERSION: Int = 4
         const val DATABASE_NAME_OF_FILE: String = "autokat.db"
         const val DATABASE_FILE_PATH_ASSETS: String = "databases/$DATABASE_NAME_OF_FILE"
+
+        @Volatile
+        var workerDownloadThumbnail: AtomicBoolean = AtomicBoolean(false)
 
         val COLOR_WHITE: Int = Color.parseColor("#FFFFFF")
         val COLOR_FAILED: Int = Color.parseColor("#EF4836")
