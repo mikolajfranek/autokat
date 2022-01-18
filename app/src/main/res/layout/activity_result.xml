@@ -33,7 +33,7 @@
                 android:layout_weight="1"
                 tools:ignore="UselessParent">
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/filter"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"

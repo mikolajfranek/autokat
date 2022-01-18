@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../../layout/custom_preview.xml" value="0.21614583333333334" />
+        <entry key="../../../../Android/Sdk/platforms/android-31/data/res/layout/select_dialog_singlechoice.xml" value="0.20989583333333334" />
         <entry key="app/src/main/res/drawable/check.xml" value="0.2485" />
         <entry key="app/src/main/res/drawable/course_day.xml" value="0.2485" />
         <entry key="app/src/main/res/drawable/courses_day.xml" value="0.222" />
@@ -25,7 +26,8 @@
         <entry key="app/src/main/res/layout/activity_courses.xml" value="0.21822916666666667" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/layout/activity_picture.xml" value="0.16875" />
-        <entry key="app/src/main/res/layout/activity_result.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_result.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/auto_complete_text_view.xml" value="0.22916666666666666" />
         <entry key="app/src/main/res/layout/calendar_day.xml" value="0.20989583333333334" />
         <entry key="app/src/main/res/layout/calendar_day_layout.xml" value="0.21770833333333334" />
         <entry key="app/src/main/res/layout/calendar_day_legend.xml" value="0.25407608695652173" />

@@ -13,6 +13,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.AbsListView
 import android.widget.ArrayAdapter
+import android.widget.Filter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -180,6 +181,9 @@ class ResultActivity : AppCompatActivity() {
     private fun setHistoryFilterListView() {
         adapterHistoryFilter =
             object : ArrayAdapter<ModelHistoryFilter>(applicationContext, R.layout.history_filter) {
+
+                internal var items: ArrayList<ModelHistoryFilter> = ArrayList()
+
                 @SuppressLint("ViewHolder")
                 override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                     historyFilterBinding =
@@ -196,8 +200,73 @@ class ResultActivity : AppCompatActivity() {
                     }
                     return viewItem
                 }
+
+
+                override fun getCount(): Int {
+                    return items.size
+                }
+
+                override fun getItem(index: Int): ModelHistoryFilter? {
+                    return items[index]
+                }
+
+
+                override fun getFilter(): Filter {
+                    return object : Filter() {
+
+                        override fun performFiltering(constraint: CharSequence?): FilterResults {
+                            val filterResults = FilterResults()
+
+
+                            items = if (constraint != null && constraint.length > 2) {
+
+                                // Use your API here instead
+
+                                ArrayList(listOf(ModelHistoryFilter(id = 1, name = "John Smith"),
+                                    ModelHistoryFilter(id = 2, name = "Apple May"),
+                                    ModelHistoryFilter(id = 3, name = "Kotlin Contact")
+                                ).filter { it.name.orEmpty().contains(constraint, true) })
+
+                            } else {
+                                ArrayList(listOf())
+                            }
+                            //pobierz max X elementow?
+
+                            filterResults.values = items
+                            filterResults.count = items.size
+
+                            return filterResults
+                        }
+
+                        override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                            if (results != null && results.count > 0) {
+                                notifyDataSetChanged()
+                            } else {
+                                notifyDataSetInvalidated()
+                            }
+                        }
+
+                    }
+                }
             }
-        activityResultBinding.historyFilterListView.adapter = adapterHistoryFilter
+
+
+
+        //val languages =
+            //arrayOf("C", "C++", "Java", "C#", "PHP", "JavaScript", "jQuery", "AJAX", "JSON")
+        //val adapter: ArrayAdapter<String> =
+            //ArrayAdapter<String>(this, R.layout.auto_complete_text_view, R.id.autoCompleteItem, languages)
+
+
+        activityResultBinding.filter.threshold = 1
+        activityResultBinding.filter.setAdapter(adapterHistoryFilter)
+
+        refreshAdapterHistoryFilter(ScrollRefresh.RESET_LIST)
+
+
+        //activityResultBinding.filter.listener
+        //activityResultBinding.filter.scrollListener
+        //activityResultBinding.historyFilterListView.adapter = adapterHistoryFilter
         activityResultBinding.historyFilterListView.setOnScrollListener(object :
             AbsListView.OnScrollListener {
             override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) {}
