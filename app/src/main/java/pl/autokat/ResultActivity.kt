@@ -181,9 +181,6 @@ class ResultActivity : AppCompatActivity() {
     private fun setHistoryFilterListView() {
         adapterHistoryFilter =
             object : ArrayAdapter<ModelHistoryFilter>(applicationContext, R.layout.history_filter) {
-
-                internal var items: ArrayList<ModelHistoryFilter> = ArrayList()
-
                 @SuppressLint("ViewHolder")
                 override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                     historyFilterBinding =
@@ -202,14 +199,25 @@ class ResultActivity : AppCompatActivity() {
                 }
 
 
+
+
+                var items: ArrayList<ModelHistoryFilter> = ArrayList()
+
+                override fun addAll(collection: MutableCollection<out ModelHistoryFilter>) {
+                    items.addAll(collection)
+                }
+
+                override fun clear() {
+                    items.clear()
+                }
+
                 override fun getCount(): Int {
                     return items.size
                 }
 
-                override fun getItem(index: Int): ModelHistoryFilter? {
+                override fun getItem(index: Int): ModelHistoryFilter {
                     return items[index]
                 }
-
 
                 override fun getFilter(): Filter {
                     return object : Filter() {
@@ -221,14 +229,10 @@ class ResultActivity : AppCompatActivity() {
                             items = if (constraint != null && constraint.length > 2) {
 
                                 // Use your API here instead
-
-                                ArrayList(listOf(ModelHistoryFilter(id = 1, name = "John Smith"),
-                                    ModelHistoryFilter(id = 2, name = "Apple May"),
-                                    ModelHistoryFilter(id = 3, name = "Kotlin Contact")
-                                ).filter { it.name.orEmpty().contains(constraint, true) })
+                                ArrayList(items.filter { it.name.orEmpty().contains(constraint, true) })
 
                             } else {
-                                ArrayList(listOf())
+                                items
                             }
                             //pobierz max X elementow?
 
