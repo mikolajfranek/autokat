@@ -1,160 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
+    android:id="@+id/linear_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="false">
+    android:orientation="vertical">
 
-    <LinearLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:background="@color/colorUser"
+        android:theme="@style/ToolbarTheme"
+        tools:viewBindingIgnore="true" />
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorUser"
-            android:theme="@style/ToolbarTheme"
-            tools:viewBindingIgnore="true" />
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <TableRow
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            tools:ignore="UselessParent">
 
-            <TableRow
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="10dp"
+            <AutoCompleteTextView
+                android:id="@+id/filter"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
                 android:layout_weight="1"
-                tools:ignore="UselessParent">
+                android:background="@drawable/rectangle"
+                android:enabled="true"
+                android:fontFamily="sans-serif"
+                android:hint="@string/activity_result_wprowadz_nazwe_do_filtrowania"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:padding="10dp"
+                android:text=""
+                android:textColor="@color/colorUser" />
 
-                <AutoCompleteTextView
-                    android:id="@+id/filter"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/rectangle"
-                    android:enabled="true"
-                    android:fontFamily="sans-serif"
-                    android:hint="@string/activity_result_wprowadz_nazwe_do_filtrowania"
-                    android:importantForAutofill="no"
-                    android:inputType="text"
-                    android:padding="10dp"
-                    android:text=""
-                    android:textColor="@color/colorUser" />
+            <Button
+                android:id="@+id/button_add_history_filter"
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="@android:dimen/app_icon_size"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/rectangle"
+                android:drawableEnd="@android:drawable/ic_menu_save"
+                android:padding="8dp"
+                android:text=""
+                android:textAllCaps="false"
+                android:tooltipText="Zapisz nazwę do filtrowania"
+                tools:ignore="UnusedAttribute" />
+        </TableRow>
+    </TableLayout>
 
-                <Button
-                    android:id="@+id/button_add_history_filter"
-                    style="@style/Widget.AppCompat.Button"
-                    android:layout_width="@android:dimen/app_icon_size"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
-                    android:background="@drawable/rectangle"
-                    android:drawableEnd="@android:drawable/ic_menu_save"
-                    android:padding="8dp"
-                    android:text=""
-                    android:textAllCaps="false"
-                    android:tooltipText="Zapisz nazwę do filtrowania"
-                    tools:ignore="UnusedAttribute" />
-            </TableRow>
-        </TableLayout>
+    <ListView
+        android:id="@+id/catalyst_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@null"
+        android:visibility="gone" />
 
-        <ListView
-            android:id="@+id/catalyst_list_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="@null"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/catalyst_waiting"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:fontFamily="sans-serif"
-            android:gravity="center"
-            android:text="@string/activity_result_trwa_pobieranie_danych"
-            android:textColor="@color/colorUser"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/catalyst_empty_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:fontFamily="sans-serif"
-            android:gravity="center"
-            android:text="@string/activity_result_nie_znaleziono_elementow"
-            android:textColor="@color/colorUser"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/catalyst_empty"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:fontFamily="sans-serif"
-            android:gravity="center"
-            android:text="@string/activity_result_baza_danych_jest_pusta"
-            android:textColor="@color/colorUser"
-            android:visibility="gone" />
-    </LinearLayout>
-
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/history_filter_navigation_view"
+    <TextView
+        android:id="@+id/catalyst_waiting"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:orientation="vertical">
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:text="@string/activity_result_trwa_pobieranie_danych"
+        android:textColor="@color/colorUser"
+        android:visibility="gone" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+    <TextView
+        android:id="@+id/catalyst_empty_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:text="@string/activity_result_nie_znaleziono_elementow"
+        android:textColor="@color/colorUser"
+        android:visibility="gone" />
 
-            <include
-                layout="@layout/nav_header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <ListView
-                android:id="@+id/history_filter_list_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:divider="@null"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/history_filter_waiting"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:fontFamily="sans-serif"
-                android:gravity="center"
-                android:text="@string/activity_result_trwa_pobieranie_danych"
-                android:textColor="@color/colorUser"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/history_filter_empty"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:fontFamily="sans-serif"
-                android:gravity="center"
-                android:text="@string/activity_result_nie_znaleziono_elementow"
-                android:textColor="@color/colorUser"
-                android:visibility="gone" />
-        </LinearLayout>
-    </com.google.android.material.navigation.NavigationView>
-</androidx.drawerlayout.widget.DrawerLayout>
+    <TextView
+        android:id="@+id/catalyst_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:text="@string/activity_result_baza_danych_jest_pusta"
+        android:textColor="@color/colorUser"
+        android:visibility="gone" />
+</LinearLayout>

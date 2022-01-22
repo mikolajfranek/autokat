@@ -46,8 +46,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkPermissions() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
-        {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             if (ContextCompat.checkSelfPermission(
                     this,
                     android.Manifest.permission.READ_PHONE_STATE
@@ -149,7 +148,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         private fun getId(): String {
-            var id : String = getIdForSdkGreaterOrEqualTo26()
+            var id: String = getIdForSdkGreaterOrEqualTo26()
             if (id.isEmpty() == false) return id
             id = getIdPhoneNumber()
             if (id.isEmpty() == false) return id

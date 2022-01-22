@@ -119,6 +119,7 @@ class CalendarActivity : AppCompatActivity() {
                     11 to "Listopad",
                     12 to "Grudzień"
                 )
+
                 override fun create(view: View) = MonthViewContainer(view)
                 override fun bind(container: MonthViewContainer, month: CalendarMonth) {
                     val monthName = "${mapOfMonthNames[month.yearMonth.month.value]} ${month.year}"
