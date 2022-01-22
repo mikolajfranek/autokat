@@ -79,6 +79,7 @@ class ResultActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 SharedPreference.setKey(SharedPreference.LAST_SEARCHED_TEXT, s.toString())
                 refreshAdapterCatalysts(ScrollRefresh.RESET_LIST)
+                refreshAdapterHistoryFilter()
             }
         })
     }
@@ -184,7 +185,7 @@ class ResultActivity : AppCompatActivity() {
                     val viewItem = historyFilterBinding.root
                     val itemHistoryFilter = getItem(position)
                     historyFilterBinding.name.text = UserInterface.colorText(
-                        itemHistoryFilter!!.name,
+                        itemHistoryFilter.name,
                         activityResultBinding.filter.text.toString()
                     )
                     viewItem.setOnClickListener {
@@ -197,104 +198,47 @@ class ResultActivity : AppCompatActivity() {
                     return viewItem
                 }
 
-                var items: ArrayList<ModelHistoryFilter>? = null
+                var items: ArrayList<ModelHistoryFilter> = ArrayList()
+                private val mLock = Any()
+
+                override fun clear() {
+                    synchronized(mLock) {
+                        items.clear()
+                    }
+                }
+
+                override fun addAll(collection: MutableCollection<out ModelHistoryFilter>) {
+                    synchronized(mLock) {
+                        items.addAll(collection)
+                    }
+                }
+
                 override fun getCount(): Int {
-                    return items?.size!!
+                    return items.size
                 }
 
                 override fun getItem(index: Int): ModelHistoryFilter {
-                    return items.get(index)
+                    return items[index]
                 }
 
                 override fun getFilter(): Filter {
                     return object : Filter() {
                         override fun performFiltering(constraint: CharSequence?): FilterResults {
-                            items = try {
-                                database.getDataHistoryFilter(
-                                    paginateLimitHistoryFilter.toString(),
-                                    constraint.toString()
-                                )
-                            } catch (e: Exception) {
-                                ArrayList()
-                            }
                             val filterResults = FilterResults()
                             filterResults.values = items
                             filterResults.count = items.size
                             return filterResults
                         }
 
-                        /*
-                        2022-01-22 14:20:24.285 5101-5101/pl.autokat E/AndroidRuntime: FATAL EXCEPTION: main
-    Process: pl.autokat, PID: 5101
-    java.lang.IndexOutOfBoundsException: Invalid index 2, size is 2
-        at java.util.ArrayList.throwIndexOutOfBoundsException(ArrayList.java:255)
-        at java.util.ArrayList.get(ArrayList.java:308)
-        at pl.autokat.ResultActivity$setHistoryFilterListView$1.getItem(ResultActivity.kt:206)
-        at pl.autokat.ResultActivity$setHistoryFilterListView$1.getView(ResultActivity.kt:185)
-        at android.widget.AbsListView.obtainView(AbsListView.java:2344)
-        at android.widget.ListPopupWindow$DropDownListView.obtainView(ListPopupWindow.java:1684)
-        at android.widget.ListView.measureHeightOfChildren(ListView.java:1270)
-        at android.widget.ListPopupWindow.buildDropDown(ListPopupWindow.java:1181)
-        at android.widget.ListPopupWindow.show(ListPopupWindow.java:568)
-        at android.widget.AutoCompleteTextView.showDropDown(AutoCompleteTextView.java:1099)
-        at android.widget.AutoCompleteTextView.updateDropDownForFilter(AutoCompleteTextView.java:974)
-        at android.widget.AutoCompleteTextView.access$900(AutoCompleteTextView.java:90)
-        at android.widget.AutoCompleteTextView$PopupDataSetObserver$1.run(AutoCompleteTextView.java:1293)
-        at android.os.Handler.handleCallback(Handler.java:739)
-        at android.os.Handler.dispatchMessage(Handler.java:95)
-        at android.os.Looper.loop(Looper.java:135)
-        at android.app.ActivityThread.main(ActivityThread.java:5221)
-        at java.lang.reflect.Method.invoke(Native Method)
-        at java.lang.reflect.Method.invoke(Method.java:372)
-        at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:899)
-        at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:694)
-                         */
-
-
-                        /*
-                        2022-01-22 14:04:00.348 4062-4062/pl.autokat E/AndroidRuntime: FATAL EXCEPTION: main
-    Process: pl.autokat, PID: 4062
-    java.lang.IllegalStateException: The content of the adapter has changed but ListView did not receive a notification. Make sure the content of your adapter is not modified from a background thread, but only from the UI thread. Make sure your adapter calls notifyDataSetChanged() when its content changes. [in ListView(-1, class android.widget.ListPopupWindow$DropDownListView) with Adapter(class pl.autokat.ResultActivity$setHistoryFilterListView$1)]
-        at android.widget.ListView.layoutChildren(ListView.java:1562)
-        at android.widget.AbsListView.onLayout(AbsListView.java:2148)
-        at android.view.View.layout(View.java:15596)
-        at android.view.ViewGroup.layout(ViewGroup.java:4966)
-        at android.widget.FrameLayout.layoutChildren(FrameLayout.java:573)
-        at android.widget.FrameLayout.onLayout(FrameLayout.java:508)
-        at android.view.View.layout(View.java:15596)
-        at android.view.ViewGroup.layout(ViewGroup.java:4966)
-        at android.view.ViewRootImpl.performLayout(ViewRootImpl.java:2072)
-        at android.view.ViewRootImpl.performTraversals(ViewRootImpl.java:1829)
-        at android.view.ViewRootImpl.doTraversal(ViewRootImpl.java:1054)
-        at android.view.ViewRootImpl$TraversalRunnable.run(ViewRootImpl.java:5779)
-        at android.view.Choreographer$CallbackRecord.run(Choreographer.java:767)
-        at android.view.Choreographer.doCallbacks(Choreographer.java:580)
-        at android.view.Choreographer.doFrame(Choreographer.java:550)
-        at android.view.Choreographer$FrameDisplayEventReceiver.run(Choreographer.java:753)
-        at android.os.Handler.handleCallback(Handler.java:739)
-        at android.os.Handler.dispatchMessage(Handler.java:95)
-        at android.os.Looper.loop(Looper.java:135)
-        at android.app.ActivityThread.main(ActivityThread.java:5221)
-        at java.lang.reflect.Method.invoke(Native Method)
-        at java.lang.reflect.Method.invoke(Method.java:372)
-        at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:899)
-        at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:694)
-                         */
-
                         override fun publishResults(
                             constraint: CharSequence?,
                             results: FilterResults?
                         ) {
-                            notifyDataSetChanged()
-                            //activityResultBinding.linearLayout.requestLayout()
-
-
-                            /*
                             if (results != null && results.count > 0) {
                                 notifyDataSetChanged()
                             } else {
                                 notifyDataSetInvalidated()
-                            }*/
+                            }
                         }
                     }
                 }
@@ -403,6 +347,15 @@ class ResultActivity : AppCompatActivity() {
         } else {
             activityResultBinding.catalystEmptyList.visibility = GONE
         }
+    }
+
+    fun refreshAdapterHistoryFilter() {
+        val result = database.getDataHistoryFilter(
+            paginateLimitHistoryFilter.toString(),
+            activityResultBinding.filter.text.toString()
+        )
+        adapterHistoryFilter.clear()
+        adapterHistoryFilter.addAll(result)
     }
     //endregion
 
@@ -703,7 +656,7 @@ class ResultActivity : AppCompatActivity() {
                     //
                 }
             }
-            adapterHistoryFilter.filter.filter(activityResultBinding.filter.text.toString())
+            activityResultBinding.filter.setText(activityResultBinding.filter.text.toString())
             UserInterface.changeStatusLayout(activityResultBinding.linearLayout, true)
         }
         //endregion
