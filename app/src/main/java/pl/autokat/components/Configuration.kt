@@ -89,6 +89,18 @@ class Configuration {
         const val SPREADSHEET_CATALYST_COLUMN_URL_PICTURE: String = "J"
         //endregion
 
+        //region spreadsheet columns company
+        const val SPREADSHEET_COMPANY_ID: Int = 0
+        const val SPREADSHEET_COMPANY_NAME: Int = 1
+        const val SPREADSHEET_COMPANY_LOG: Int = 2
+        const val SPREADSHEET_COMPANY_STATUS: Int = 3
+
+        const val SPREADSHEET_COMPANY_COLUMN_ID: String = "A"
+        const val SPREADSHEET_COMPANY_COLUMN_NAME: String = "B"
+        const val SPREADSHEET_COMPANY_COLUMN_LOG: String = "C"
+        const val SPREADSHEET_COMPANY_COLUMN_STATUS: String = "D"
+        //endregion
+
         //region database columns catalyst
         const val DATABASE_TABLE_CATALYST = "catalyst"
         const val DATABASE_CATALYST_ID = "id"

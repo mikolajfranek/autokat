@@ -12,6 +12,7 @@ import java.net.UnknownHostException
 import java.security.KeyFactory
 import java.security.interfaces.RSAPrivateKey
 import java.security.spec.PKCS8EncodedKeySpec
+import java.time.LocalDate
 import java.util.*
 
 /* (sheet, docs) api v4 */
@@ -30,15 +31,17 @@ class Spreadsheet {
             DOCS_API_URL + Secret.getSpreadsheetIdLogin() + DOCS_API_URL_SUFFIX
         private val DOCS_API_URL_CATALYST: String =
             DOCS_API_URL + Secret.getSpreadsheetIdCatalyst() + DOCS_API_URL_SUFFIX
+        private val DOCS_API_URL_COMPANY: String =
+            DOCS_API_URL + Secret.getApkSpreadsheetIdCompany() + DOCS_API_URL_SUFFIX
         private const val DOCS_API_PARAMETER_JSON: String = "tqx"
         private const val DOCS_API_PARAMETER_JSON_VALUE: String = "out:json"
         private const val DOCS_API_PARAMETER_WHERE: String = "tq"
 
-        private fun generateNewAccessToken() {
+        private fun generateNewAccessToken(apk: Boolean = false) {
             val privateKey: RSAPrivateKey = KeyFactory.getInstance("RSA").generatePrivate(
                 PKCS8EncodedKeySpec(
                     Base64.decode(
-                        Secret.getPrivateKey(),
+                        if (apk) Secret.getApkPrivateKey() else Secret.getPrivateKey(),
                         Base64.DEFAULT
                     )
                 )
@@ -47,7 +50,7 @@ class Spreadsheet {
             val signedJwt = Jwts.builder().setClaims(
                 mapOf(
                     TOKEN_SCOPE to TOKEN_SCOPE_VALUE,
-                    Claims.ISSUER to Secret.getEmail(),
+                    Claims.ISSUER to if (apk) Secret.getApkEmail() else Secret.getEmail(),
                     Claims.AUDIENCE to TOKEN_URL,
                     Claims.ISSUED_AT to Date(timestamp),
                     Claims.EXPIRATION to Date(timestamp + Configuration.ONE_HOUR_IN_MILLISECONDS)
@@ -58,19 +61,25 @@ class Spreadsheet {
             val (_, response, result) = Fuel.post(TOKEN_URL).body(bodyJson).responseString()
             if (response.statusCode != 200) throw UnknownHostException()
             val accessToken = JSONObject(result.get()).getString("access_token")
-            SharedPreference.setKey(SharedPreference.ACCESS_TOKEN, accessToken)
-            SharedPreference.setKey(SharedPreference.ACCESS_TOKEN_TIMESTAMP, timestamp.toString())
+            SharedPreference.setKey(
+                if (apk) SharedPreference.ACCESS_TOKEN_APK else SharedPreference.ACCESS_TOKEN,
+                accessToken
+            )
+            SharedPreference.setKey(
+                if (apk) SharedPreference.ACCESS_TOKEN_APK_TIMESTAMP else SharedPreference.ACCESS_TOKEN_TIMESTAMP,
+                timestamp.toString()
+            )
         }
 
-        private fun getAccessToken(): String {
+        private fun getAccessToken(apk: Boolean = false): String {
             val accessTokenTimestamp: String =
-                SharedPreference.getKey(SharedPreference.ACCESS_TOKEN_TIMESTAMP)
+                SharedPreference.getKey(if (apk) SharedPreference.ACCESS_TOKEN_APK_TIMESTAMP else SharedPreference.ACCESS_TOKEN_TIMESTAMP)
             val generateNewAccessToken: Boolean =
                 (Date().time - (if (accessTokenTimestamp.isEmpty()) (0).toLong() else accessTokenTimestamp.toLong())) > Configuration.ONE_HOUR_IN_MILLISECONDS
             if (generateNewAccessToken) {
-                generateNewAccessToken()
+                generateNewAccessToken(apk)
             }
-            return SharedPreference.getKey(SharedPreference.ACCESS_TOKEN)
+            return SharedPreference.getKey(if (apk) SharedPreference.ACCESS_TOKEN_APK else SharedPreference.ACCESS_TOKEN)
         }
 
         fun getValueStringFromDocsApi(jsonArray: JSONArray, index: Int): String {
@@ -186,6 +195,57 @@ class Spreadsheet {
                     .getJSONArray("rows")
             if (rows.length() != 1) throw Exception()
             return rows.getJSONObject(0).getJSONArray("c").getJSONObject(0).getInt("v")
+        }
+
+        private fun getStatusCompany(): Boolean? {
+            val (_, response, result) = Fuel.get(
+                DOCS_API_URL_COMPANY,
+                listOf(
+                    DOCS_API_PARAMETER_JSON to DOCS_API_PARAMETER_JSON_VALUE,
+                    DOCS_API_PARAMETER_WHERE to "select * where ${Configuration.SPREADSHEET_COMPANY_COLUMN_ID}=${Secret.ID_COMPANY} AND " +
+                            "${Configuration.SPREADSHEET_COMPANY_COLUMN_ID} IS NOT NULL AND " +
+                            "${Configuration.SPREADSHEET_COMPANY_COLUMN_NAME} IS NOT NULL AND " +
+                            "${Configuration.SPREADSHEET_COMPANY_COLUMN_STATUS} IS NOT NULL"
+                )
+            ).authentication().bearer(getAccessToken(true)).responseString()
+            if (response.statusCode != 200) throw UnknownHostException()
+            val rows: JSONArray =
+                Parser.parseToJsonFromResultDocsApi(result.get()).getJSONObject("table")
+                    .getJSONArray("rows")
+            if (rows.length() != 1) return null
+            val element: JSONArray = rows.getJSONObject(0).getJSONArray("c")
+            return getValueStringFromDocsApi(
+                element,
+                Configuration.SPREADSHEET_COMPANY_STATUS
+            ) == "1"
+        }
+
+        private fun saveLogCompany() {
+            val sheetCell: String =
+                "firmy!" + Configuration.SPREADSHEET_COMPANY_COLUMN_LOG + ((Secret.ID_COMPANY + 1).toString())
+            val output = Formatter.formatStringDate(LocalDate.now().toString())
+            val bodyJson =
+                """{"range": "$sheetCell", "majorDimension": "ROWS", "values": [["$output"]]}"""
+            val (_, response, result) = Fuel.put(
+                SHEET_API_URL + Secret.getApkSpreadsheetIdCompany() + "/values/$sheetCell",
+                listOf(SHEET_API_PARAMETER_INPUT to SHEET_API_PARAMETER_INPUT_VALUE)
+            ).body(bodyJson).authentication().bearer(getAccessToken(true)).responseString()
+            if (response.statusCode != 200) throw UnknownHostException()
+            val resultJson = JSONObject(result.get())
+            if (resultJson.getInt("updatedRows") != 1 || resultJson.getInt("updatedColumns") != 1 || resultJson.getInt(
+                    "updatedCells"
+                ) != 1
+            ) throw Exception()
+        }
+
+        fun isExpiredLicenceOfCompany(sensitive: Boolean): Boolean {
+            val result: Boolean = try {
+                //saveLogCompany()
+                getStatusCompany() == true
+            } catch (e: Exception) {
+                sensitive
+            }
+            return result
         }
     }
 }

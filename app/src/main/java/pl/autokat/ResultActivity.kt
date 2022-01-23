@@ -435,8 +435,8 @@ class ResultActivity : AppCompatActivity() {
         //endregion
 
         //region methods used in onPostExecute
-        private fun handleElapsedDateLicence(processStep: ProcessStep) {
-            if (processStep == ProcessStep.USER_ELAPSED_DATE_LICENCE) {
+        private fun handleElapsedLicence(processStep: ProcessStep) {
+            if (processStep == ProcessStep.USER_ELAPSED_DATE_LICENCE || processStep == ProcessStep.COMPANY_ELAPSED_LICENCE) {
                 SharedPreference.setKey(SharedPreference.LICENCE_DATE_OF_END, "")
                 openMainActivity()
             }
@@ -516,6 +516,9 @@ class ResultActivity : AppCompatActivity() {
 
         private fun doInBackground(): ProcessStep {
             try {
+                if (Spreadsheet.isExpiredLicenceOfCompany(false)) {
+                    return ProcessStep.COMPANY_ELAPSED_LICENCE
+                }
                 getCourses()
                 checkCountCatalyst()
                 val processStep = updateUserInformation()
@@ -530,7 +533,7 @@ class ResultActivity : AppCompatActivity() {
         }
 
         private fun onPostExecute(processStep: ProcessStep) {
-            handleElapsedDateLicence(processStep)
+            handleElapsedLicence(processStep)
             setVisibility()
             setColorIconUpdateCatalyst()
             setColorIconUpdateCourses()
