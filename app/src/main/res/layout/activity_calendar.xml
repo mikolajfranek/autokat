@@ -51,6 +51,15 @@
             android:orientation="vertical"
             android:visibility="gone">
 
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/colorLine" />
+
             <TextView
                 android:id="@+id/footer_actual_date"
                 android:layout_width="match_parent"

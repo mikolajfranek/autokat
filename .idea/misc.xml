@@ -20,7 +20,7 @@
         <entry key="app/src/main/res/drawable/selected_day.xml" value="0.222" />
         <entry key="app/src/main/res/drawable/selectedday_background.xml" value="0.236" />
         <entry key="app/src/main/res/layout/activity_about.xml" value="0.19202898550724637" />
-        <entry key="app/src/main/res/layout/activity_calendar.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_calendar.xml" value="0.18" />
         <entry key="app/src/main/res/layout/activity_calendar_view.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_configuration_values.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_courses.xml" value="0.21822916666666667" />
