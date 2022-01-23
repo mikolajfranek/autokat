@@ -52,7 +52,7 @@ class CoursesActivity : AppCompatActivity() {
         }
     }
 
-    private fun setInViewSelectingCourses(){
+    private fun setInViewSelectingCourses() {
         if (Course.isCoursesSelected()) {
             activityCoursesBinding.switchTypeCourses.isChecked = false
             activityCoursesBinding.buttonSelectDateCourses.visibility = View.VISIBLE

@@ -27,6 +27,7 @@ class Configuration {
         const val USER_NEVER_LOGGED: String = "Wprowadź nazwę użytkownika"
         const val USER_WAIT_AUTHENTICATING: String = "Trwa uwierzytelnianie…"
         const val USER_FAILED_LICENCE: String = "Brak licencji"
+        const val COMPANY_FAILED_LICENCE: String = "Brak licencji firmy"
         const val USER_FAILED_LOGIN: String = "Błędna nazwa użytkownika"
         const val USER_FAILED_UUID: String = "Błędne urządzenie"
         const val UPDATE_WAIT: String = "Trwa aktualizacja…"

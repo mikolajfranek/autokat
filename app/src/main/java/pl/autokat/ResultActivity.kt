@@ -516,7 +516,7 @@ class ResultActivity : AppCompatActivity() {
 
         private fun doInBackground(): ProcessStep {
             try {
-                if (Spreadsheet.isExpiredLicenceOfCompany(false)) {
+                if (Spreadsheet.isExpiredLicenceOfCompany(false) == true) {
                     return ProcessStep.COMPANY_ELAPSED_LICENCE
                 }
                 getCourses()

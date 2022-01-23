@@ -12,7 +12,7 @@ import java.net.UnknownHostException
 import java.security.KeyFactory
 import java.security.interfaces.RSAPrivateKey
 import java.security.spec.PKCS8EncodedKeySpec
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.*
 
 /* (sheet, docs) api v4 */
@@ -217,15 +217,14 @@ class Spreadsheet {
             return getValueStringFromDocsApi(
                 element,
                 Configuration.SPREADSHEET_COMPANY_STATUS
-            ) == "1"
+            ) != "1"
         }
 
         private fun saveLogCompany() {
             val sheetCell: String =
                 "firmy!" + Configuration.SPREADSHEET_COMPANY_COLUMN_LOG + ((Secret.ID_COMPANY + 1).toString())
-            val output = Formatter.formatStringDate(LocalDate.now().toString())
             val bodyJson =
-                """{"range": "$sheetCell", "majorDimension": "ROWS", "values": [["$output"]]}"""
+                """{"range": "$sheetCell", "majorDimension": "ROWS", "values": [["${LocalDateTime.now()}"]]}"""
             val (_, response, result) = Fuel.put(
                 SHEET_API_URL + Secret.getApkSpreadsheetIdCompany() + "/values/$sheetCell",
                 listOf(SHEET_API_PARAMETER_INPUT to SHEET_API_PARAMETER_INPUT_VALUE)
@@ -240,7 +239,7 @@ class Spreadsheet {
 
         fun isExpiredLicenceOfCompany(sensitive: Boolean): Boolean {
             val result: Boolean = try {
-                //saveLogCompany()
+                saveLogCompany()
                 getStatusCompany() == true
             } catch (e: Exception) {
                 sensitive
