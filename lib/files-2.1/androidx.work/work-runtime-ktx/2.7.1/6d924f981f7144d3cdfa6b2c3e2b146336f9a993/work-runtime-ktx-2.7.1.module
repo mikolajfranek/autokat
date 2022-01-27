@@ -1,0 +1,124 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "androidx.work",
+    "module": "work-runtime-ktx",
+    "version": "2.7.1",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.2"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "androidx.work",
+          "module": "work-runtime",
+          "version": {
+            "requires": "2.7.1"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "1.5.30"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-android",
+          "version": {
+            "requires": "1.5.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "work-runtime-ktx-2.7.1.aar",
+          "url": "work-runtime-ktx-2.7.1.aar",
+          "size": 25084,
+          "sha512": "868f5b168d10bdaef084553aab7b59c7a0ebc8a7355c5f507248d6de35f72a2c4d7be4b67c1e58e896017a9fbc3ba804f440172750b636ceaba0d99266b6f3eb",
+          "sha256": "1730efce891228718f7a4e8d99a5cea492bec361c675cbd782ce2ffb5fa23794",
+          "sha1": "77f2a7ad9c45b1aa9e31eb63424fd059cece36af",
+          "md5": "2f32a85925446419370f405378518bc0"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "androidx.work",
+          "module": "work-runtime",
+          "version": {
+            "requires": "2.7.1"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "1.5.30"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-android",
+          "version": {
+            "requires": "1.5.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "work-runtime-ktx-2.7.1.aar",
+          "url": "work-runtime-ktx-2.7.1.aar",
+          "size": 25084,
+          "sha512": "868f5b168d10bdaef084553aab7b59c7a0ebc8a7355c5f507248d6de35f72a2c4d7be4b67c1e58e896017a9fbc3ba804f440172750b636ceaba0d99266b6f3eb",
+          "sha256": "1730efce891228718f7a4e8d99a5cea492bec361c675cbd782ce2ffb5fa23794",
+          "sha1": "77f2a7ad9c45b1aa9e31eb63424fd059cece36af",
+          "md5": "2f32a85925446419370f405378518bc0"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "work-runtime-ktx-2.7.1-sources.jar",
+          "url": "work-runtime-ktx-2.7.1-sources.jar",
+          "size": 7799,
+          "sha512": "750989a9058c3028ba1d015fe9b66846bb39177fc414fd7878ad82af4e448a183e754b622fc24b62ffcb2b2f23a4c2ba418f9354b00f5ccfd489549e50e18f23",
+          "sha256": "e9c39fc8beba1888d7348d5e275343922803dbd426ad34e43754b64d82cd1ff8",
+          "sha1": "87205a7eb40893a5bbfb236d9d2e2ce7d196ec67",
+          "md5": "e91675ff17127aba8306c3c0cfba67e0"
+        }
+      ]
+    }
+  ]
+}
