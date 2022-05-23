@@ -14,6 +14,7 @@ class Configuration {
 
         @Volatile
         var workerDownloadThumbnail: AtomicBoolean = AtomicBoolean(false)
+
         @Volatile
         var workerCopyData: AtomicBoolean = AtomicBoolean(false)
 
@@ -102,6 +103,32 @@ class Configuration {
         const val SPREADSHEET_COMPANY_COLUMN_NAME: String = "B"
         const val SPREADSHEET_COMPANY_COLUMN_LOG: String = "C"
         const val SPREADSHEET_COMPANY_COLUMN_STATUS: String = "D"
+        //endregion
+
+        //region spreadsheet columns catalysts of companies
+        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_ID: Int = 0
+        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_ID_COMPANY: Int = 1
+        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_NAME: Int = 2
+        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_BRAND: Int = 3
+        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_WEIGHT: Int = 4
+        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_PLATINUM: Int = 5
+        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_PALLADIUM: Int = 6
+        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_RHODIUM: Int = 7
+        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_TYPE: Int = 8
+        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_ID_PICTURE: Int = 9
+        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_URL_PICTURE: Int = 10
+
+        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID: String = "A"
+        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID_COMPANY: String = "B"
+        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_NAME: String = "C"
+        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_BRAND: String = "D"
+        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_WEIGHT: String = "E"
+        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_PLATINUM: String = "F"
+        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_PALLADIUM: String = "G"
+        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_RHODIUM: String = "H"
+        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_TYPE: String = "I"
+        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID_PICTURE: String = "J"
+        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_URL_PICTURE: String = "K"
         //endregion
 
         //region database columns catalyst

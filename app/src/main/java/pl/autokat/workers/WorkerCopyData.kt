@@ -8,6 +8,7 @@ import org.json.JSONObject
 import pl.autokat.components.Configuration
 import pl.autokat.components.Database
 import pl.autokat.components.Parser
+import pl.autokat.components.Spreadsheet
 import java.net.URL
 
 class WorkerCopyData(appContext: Context, workerParams: WorkerParameters) :
@@ -20,9 +21,20 @@ class WorkerCopyData(appContext: Context, workerParams: WorkerParameters) :
 
     private fun copyData() {
         try {
+            val database = Database(applicationContext)
+            val countDatabase = database.getCountCatalyst()
+            var countSpreadsheet = Spreadsheet.getCountCatalystsOfCompanies()
+
             //TODO
 
-            val database = Database(applicationContext)
+            //sprawdź max (id, SECRET.company_name) z spreadsheet
+
+            //jeśli max == count w bazie danych, wtedy koniec
+
+            //w innym przypadku weź większe od id rekordy z bazy danych i wrzucaj do spredsheeta
+
+
+
             val items: JSONArray = database.getCatalystWithoutThumbnail()
             for (i in 0 until items.length()) {
                 val id: Int = (items[i] as JSONObject).getInt(Configuration.DATABASE_CATALYST_ID)
@@ -34,8 +46,9 @@ class WorkerCopyData(appContext: Context, workerParams: WorkerParameters) :
             }
         } catch (e: Exception) {
             //
+            Configuration.workerCopyData.set(false)
         } finally {
-            Configuration.workerDownloadThumbnail.set(false)
+            Configuration.workerCopyData.set(false)
         }
     }
 }

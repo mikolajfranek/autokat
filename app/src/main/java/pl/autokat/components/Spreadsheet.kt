@@ -33,6 +33,8 @@ class Spreadsheet {
             DOCS_API_URL + Secret.getSpreadsheetIdCatalyst() + DOCS_API_URL_SUFFIX
         private val DOCS_API_URL_COMPANY: String =
             DOCS_API_URL + Secret.getApkSpreadsheetIdCompany() + DOCS_API_URL_SUFFIX
+        private val DOCS_API_URL_CATALYSTS_OF_COMPANIES: String =
+            DOCS_API_URL + Secret.getApkSpreadsheetIdCatalystsOfCompanies() + DOCS_API_URL_SUFFIX
         private const val DOCS_API_PARAMETER_JSON: String = "tqx"
         private const val DOCS_API_PARAMETER_JSON_VALUE: String = "out:json"
         private const val DOCS_API_PARAMETER_WHERE: String = "tq"
@@ -245,6 +247,24 @@ class Spreadsheet {
                 sensitive
             }
             return result
+        }
+
+        fun getCountCatalystsOfCompanies(): Int {
+            val (_, response, result) = Fuel.get(
+                DOCS_API_URL_CATALYSTS_OF_COMPANIES,
+                listOf(
+                    DOCS_API_PARAMETER_JSON to DOCS_API_PARAMETER_JSON_VALUE,
+                    DOCS_API_PARAMETER_WHERE to "select count(${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID}) where " +
+                            "${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID} IS NOT NULL AND " +
+                            "${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID_COMPANY}=${Secret.ID_COMPANY}"
+                )
+            ).authentication().bearer(getAccessToken(true)).responseString()
+            if (response.statusCode != 200) throw UnknownHostException()
+            val rows: JSONArray =
+                Parser.parseToJsonFromResultDocsApi(result.get()).getJSONObject("table")
+                    .getJSONArray("rows")
+            if (rows.length() != 1) throw Exception()
+            return rows.getJSONObject(0).getJSONArray("c").getJSONObject(0).getInt("v")
         }
     }
 }
