@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 class Configuration {
     companion object {
         const val PRODUCTION: Boolean = false
-        const val VERSION_APK: String = "1.0.7"
+        const val VERSION_APK: String = "1.0.8"
         const val DATABASE_VERSION_1_0_6: Int = 4
         const val DATABASE_VERSION: Int = 4
         const val DATABASE_NAME_OF_FILE: String = "autokat.db"
@@ -14,6 +14,8 @@ class Configuration {
 
         @Volatile
         var workerDownloadThumbnail: AtomicBoolean = AtomicBoolean(false)
+        @Volatile
+        var workerCopyData: AtomicBoolean = AtomicBoolean(false)
 
         val COLOR_WHITE: Int = Color.parseColor("#FFFFFF")
         val COLOR_FAILED: Int = Color.parseColor("#EF4836")

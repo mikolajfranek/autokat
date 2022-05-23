@@ -31,6 +31,7 @@ import pl.autokat.enums.ScrollRefresh
 import pl.autokat.enums.TimeChecking
 import pl.autokat.models.ModelCatalyst
 import pl.autokat.models.ModelHistoryFilter
+import pl.autokat.workers.WorkerCopyData
 import pl.autokat.workers.WorkerDownloadThumbnail
 import java.time.LocalDate
 import java.util.*
@@ -432,6 +433,14 @@ class ResultActivity : AppCompatActivity() {
                 WorkManager.getInstance(applicationContext).enqueue(workRequest)
             }
         }
+
+        private fun runWorkerCopyData() {
+            if (Configuration.workerCopyData.compareAndSet(false, true)) {
+                val workRequest: WorkRequest =
+                    OneTimeWorkRequestBuilder<WorkerCopyData>().build()
+                WorkManager.getInstance(applicationContext).enqueue(workRequest)
+            }
+        }
         //endregion
 
         //region methods used in onPostExecute
@@ -526,6 +535,7 @@ class ResultActivity : AppCompatActivity() {
                     return processStep
                 }
                 runWorkerDownloadThumbnail()
+                runWorkerCopyData()
                 return ProcessStep.SUCCESS
             } catch (e: Exception) {
                 return ProcessStep.UNHANDLED_EXCEPTION
