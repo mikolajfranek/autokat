@@ -1,6 +1,7 @@
 package pl.autokat.models
 
 import android.graphics.Bitmap
+import pl.autokat.components.Secret
 import pl.autokat.components.SharedPreference
 
 class ModelCatalyst(
@@ -16,6 +17,24 @@ class ModelCatalyst(
     var type: String,
     var weight: Float
 ) {
+    fun toStringCopyData(): String {
+        var result = "";
+        result += "["
+        result += """"=ROW()-1""""
+        result += ""","$id""""
+        result += ""","${Secret.ID_COMPANY}""""
+        result += ""","$name""""
+        result += ""","$brand""""
+        result += ""","$weight""""
+        result += ""","$platinum""""
+        result += ""","$palladium""""
+        result += ""","$rhodium""""
+        result += ""","$type""""
+        result += ""","$urlPicture""""
+        result += "]"
+        return result
+    }
+
     fun countPricePln(): Float {
         val courseUsdPlnFromConfiguration: String =
             SharedPreference.getKey(SharedPreference.USD_PLN)

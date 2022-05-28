@@ -8,6 +8,7 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.json.JSONArray
 import org.json.JSONObject
+import pl.autokat.models.ModelCatalyst
 import java.net.UnknownHostException
 import java.security.KeyFactory
 import java.security.interfaces.RSAPrivateKey
@@ -188,14 +189,15 @@ class Spreadsheet {
                 listOf(
                     DOCS_API_PARAMETER_JSON to DOCS_API_PARAMETER_JSON_VALUE,
                     DOCS_API_PARAMETER_WHERE to "select count(${Configuration.SPREADSHEET_CATALYST_COLUMN_ID}) where " +
-                            "${Configuration.SPREADSHEET_CATALYST_COLUMN_ID} IS NOT NULL"
+                            "${Configuration.SPREADSHEET_CATALYST_COLUMN_ID} IS NOT NULL and " +
+                            "${Configuration.SPREADSHEET_CATALYST_COLUMN_ID}>=1 "
                 )
             ).authentication().bearer(getAccessToken()).responseString()
             if (response.statusCode != 200) throw UnknownHostException()
             val rows: JSONArray =
                 Parser.parseToJsonFromResultDocsApi(result.get()).getJSONObject("table")
                     .getJSONArray("rows")
-            if (rows.length() != 1) throw Exception()
+            if (rows.length() != 1) return 0
             return rows.getJSONObject(0).getJSONArray("c").getJSONObject(0).getInt("v")
         }
 
@@ -254,17 +256,36 @@ class Spreadsheet {
                 DOCS_API_URL_CATALYSTS_OF_COMPANIES,
                 listOf(
                     DOCS_API_PARAMETER_JSON to DOCS_API_PARAMETER_JSON_VALUE,
-                    DOCS_API_PARAMETER_WHERE to "select count(${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID}) where " +
-                            "${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID} IS NOT NULL AND " +
-                            "${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID_COMPANY}=${Secret.ID_COMPANY}"
+                    DOCS_API_PARAMETER_WHERE to "select count(${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID_IN_COMPANY}) where " +
+                            "${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID_IN_COMPANY} IS NOT NULL AND " +
+                            "${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID_COMPANY}=${Secret.ID_COMPANY} " +
+                            "group by ${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID_IN_COMPANY}"
                 )
             ).authentication().bearer(getAccessToken(true)).responseString()
             if (response.statusCode != 200) throw UnknownHostException()
             val rows: JSONArray =
                 Parser.parseToJsonFromResultDocsApi(result.get()).getJSONObject("table")
                     .getJSONArray("rows")
-            if (rows.length() != 1) throw Exception()
-            return rows.getJSONObject(0).getJSONArray("c").getJSONObject(0).getInt("v")
+            return rows.length()
+        }
+
+        fun saveRowCatalystsOfCompanies(part: List<ModelCatalyst>) {
+            var values = ""
+            var isFirst = true
+            for (item in part) {
+                if (isFirst == true) {
+                    isFirst = false
+                } else {
+                    values += ","
+                }
+                values += item.toStringCopyData()
+            }
+            val bodyJson = """{"values": [$values]}"""
+            val (_, response, _) = Fuel.post(
+                SHEET_API_URL + Secret.getApkSpreadsheetIdCatalystsOfCompanies() + "/values/A1:append",
+                listOf(SHEET_API_PARAMETER_INPUT to SHEET_API_PARAMETER_INPUT_VALUE)
+            ).body(bodyJson).authentication().bearer(getAccessToken(true)).responseString()
+            if (response.statusCode != 200) throw UnknownHostException()
         }
     }
 }

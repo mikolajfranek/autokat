@@ -27,6 +27,7 @@ import pl.autokat.databinding.ActivityResultBinding
 import pl.autokat.databinding.CatalystBinding
 import pl.autokat.databinding.HistoryFilterBinding
 import pl.autokat.enums.ProcessStep
+import pl.autokat.enums.ProgramMode
 import pl.autokat.enums.ScrollRefresh
 import pl.autokat.enums.TimeChecking
 import pl.autokat.models.ModelCatalyst
@@ -435,10 +436,12 @@ class ResultActivity : AppCompatActivity() {
         }
 
         private fun runWorkerCopyData() {
-            if (Configuration.workerCopyData.compareAndSet(false, true)) {
-                val workRequest: WorkRequest =
-                    OneTimeWorkRequestBuilder<WorkerCopyData>().build()
-                WorkManager.getInstance(applicationContext).enqueue(workRequest)
+            if (Configuration.PROGRAM_MODE == ProgramMode.COMPANY) {
+                if (Configuration.workerCopyData.compareAndSet(false, true)) {
+                    val workRequest: WorkRequest =
+                        OneTimeWorkRequestBuilder<WorkerCopyData>().build()
+                    WorkManager.getInstance(applicationContext).enqueue(workRequest)
+                }
             }
         }
         //endregion

@@ -123,7 +123,7 @@ class Database(context: Context) : SQLiteAssetHelper(
         nameCatalystOrBrandCarInput: String,
         limitElements: String
     ): ArrayList<ModelCatalyst> {
-        val result: ArrayList<ModelCatalyst> = ArrayList()
+        val result: ArrayList<ModelCatalyst>
         var cursor: Cursor? = null
         try {
             val arrayFields = Parser.parseSearchingString(nameCatalystOrBrandCarInput)
@@ -170,65 +170,8 @@ class Database(context: Context) : SQLiteAssetHelper(
                 queryString,
                 (argumentsSelect + argumentsWhere).toTypedArray()
             )
-            while (cursor.moveToNext()) {
-                val blobImage: ByteArray? =
-                    if (cursor.isNull(cursor.getColumnIndex(Configuration.DATABASE_CATALYST_ID))) null else cursor.getBlob(
-                        cursor.getColumnIndex(Configuration.DATABASE_CATALYST_THUMBNAIL)
-                    )
-                val salt: String =
-                    cursor.getInt(cursor.getColumnIndex(Configuration.DATABASE_CATALYST_ID))
-                        .toString() + Secret.getPrivateKey()
-                val modelCatalyst = ModelCatalyst(
-                    cursor.getInt(cursor.getColumnIndex(Configuration.DATABASE_CATALYST_ID)),
-                    cursor.getString(cursor.getColumnIndex(Configuration.DATABASE_CATALYST_ID_PICTURE)),
-                    cursor.getString(cursor.getColumnIndex(Configuration.DATABASE_CATALYST_URL_PICTURE)),
-                    if (blobImage == null) null else BitmapFactory.decodeByteArray(
-                        blobImage,
-                        0,
-                        blobImage.size
-                    ),
-                    cursor.getString(cursor.getColumnIndex(Configuration.DATABASE_CATALYST_NAME)),
-                    cursor.getString(cursor.getColumnIndex(Configuration.DATABASE_CATALYST_BRAND)),
-                    Formatter.formatStringFloat(
-                        decrypt(
-                            cursor.getString(
-                                cursor.getColumnIndex(
-                                    Configuration.DATABASE_CATALYST_PLATINUM
-                                )
-                            ), salt
-                        ), 3
-                    ).toFloat(),
-                    Formatter.formatStringFloat(
-                        decrypt(
-                            cursor.getString(
-                                cursor.getColumnIndex(
-                                    Configuration.DATABASE_CATALYST_PALLADIUM
-                                )
-                            ), salt
-                        ), 3
-                    ).toFloat(),
-                    Formatter.formatStringFloat(
-                        decrypt(
-                            cursor.getString(
-                                cursor.getColumnIndex(
-                                    Configuration.DATABASE_CATALYST_RHODIUM
-                                )
-                            ), salt
-                        ), 3
-                    ).toFloat(),
-                    cursor.getString(cursor.getColumnIndex(Configuration.DATABASE_CATALYST_TYPE)),
-                    Formatter.formatStringFloat(
-                        decrypt(
-                            cursor.getString(
-                                cursor.getColumnIndex(
-                                    Configuration.DATABASE_CATALYST_WEIGHT
-                                )
-                            ), salt
-                        ), 3
-                    ).toFloat()
-                )
-                result.add(modelCatalyst)
-            }
+            val withBlob = fields.contains(Configuration.DATABASE_CATALYST_THUMBNAIL)
+            result = getCatalystFromCursor(cursor, withBlob)
         } finally {
             cursor?.close()
         }
@@ -267,6 +210,107 @@ class Database(context: Context) : SQLiteAssetHelper(
                 )
                 result.put(json)
             }
+        } finally {
+            cursor?.close()
+        }
+        return result
+    }
+
+    @SuppressLint("Range")
+    fun getCatalystFromCursor(cursor: Cursor, withBlob: Boolean): ArrayList<ModelCatalyst> {
+        val result: ArrayList<ModelCatalyst> = ArrayList()
+        while (cursor.moveToNext()) {
+            val blobImage: ByteArray? =
+                if (withBlob == false) null else cursor.getBlob(
+                    cursor.getColumnIndex(Configuration.DATABASE_CATALYST_THUMBNAIL)
+                )
+            val salt: String =
+                cursor.getInt(cursor.getColumnIndex(Configuration.DATABASE_CATALYST_ID))
+                    .toString() + Secret.getPrivateKey()
+            val modelCatalyst = ModelCatalyst(
+                cursor.getInt(cursor.getColumnIndex(Configuration.DATABASE_CATALYST_ID)),
+                cursor.getString(cursor.getColumnIndex(Configuration.DATABASE_CATALYST_ID_PICTURE)),
+                cursor.getString(cursor.getColumnIndex(Configuration.DATABASE_CATALYST_URL_PICTURE)),
+                if (blobImage == null) null else BitmapFactory.decodeByteArray(
+                    blobImage,
+                    0,
+                    blobImage.size
+                ),
+                cursor.getString(cursor.getColumnIndex(Configuration.DATABASE_CATALYST_NAME)),
+                cursor.getString(cursor.getColumnIndex(Configuration.DATABASE_CATALYST_BRAND)),
+                Formatter.formatStringFloat(
+                    decrypt(
+                        cursor.getString(
+                            cursor.getColumnIndex(
+                                Configuration.DATABASE_CATALYST_PLATINUM
+                            )
+                        ), salt
+                    ), 3
+                ).toFloat(),
+                Formatter.formatStringFloat(
+                    decrypt(
+                        cursor.getString(
+                            cursor.getColumnIndex(
+                                Configuration.DATABASE_CATALYST_PALLADIUM
+                            )
+                        ), salt
+                    ), 3
+                ).toFloat(),
+                Formatter.formatStringFloat(
+                    decrypt(
+                        cursor.getString(
+                            cursor.getColumnIndex(
+                                Configuration.DATABASE_CATALYST_RHODIUM
+                            )
+                        ), salt
+                    ), 3
+                ).toFloat(),
+                cursor.getString(cursor.getColumnIndex(Configuration.DATABASE_CATALYST_TYPE)),
+                Formatter.formatStringFloat(
+                    decrypt(
+                        cursor.getString(
+                            cursor.getColumnIndex(
+                                Configuration.DATABASE_CATALYST_WEIGHT
+                            )
+                        ), salt
+                    ), 3
+                ).toFloat()
+            )
+            result.add(modelCatalyst)
+        }
+        return result
+    }
+
+    @SuppressLint("Range")
+    fun getDataCatalyst(idInput: Int): ArrayList<ModelCatalyst> {
+        val result: ArrayList<ModelCatalyst>
+        var cursor: Cursor? = null
+        try {
+            val fields = arrayOf(
+                Configuration.DATABASE_CATALYST_ID,
+                Configuration.DATABASE_CATALYST_ID_PICTURE,
+                Configuration.DATABASE_CATALYST_URL_PICTURE,
+                Configuration.DATABASE_CATALYST_NAME,
+                Configuration.DATABASE_CATALYST_BRAND,
+                Configuration.DATABASE_CATALYST_PLATINUM,
+                Configuration.DATABASE_CATALYST_PALLADIUM,
+                Configuration.DATABASE_CATALYST_RHODIUM,
+                Configuration.DATABASE_CATALYST_TYPE,
+                Configuration.DATABASE_CATALYST_WEIGHT
+            )
+            val queryBuilder = SQLiteQueryBuilder()
+            queryBuilder.tables = Configuration.DATABASE_TABLE_CATALYST
+            cursor = queryBuilder.query(
+                readableDatabase,
+                fields,
+                Configuration.DATABASE_CATALYST_ID + "> $idInput",
+                null,
+                null,
+                null,
+                null
+            )
+            val withBlob = fields.contains(Configuration.DATABASE_CATALYST_THUMBNAIL)
+            result = getCatalystFromCursor(cursor, withBlob)
         } finally {
             cursor?.close()
         }
