@@ -436,6 +436,8 @@ class ResultActivity : AppCompatActivity() {
         }
 
         private fun runWorkerCopyData() {
+            val aaa = Spreadsheet.getDataCatalystsOfCompanies(1)
+
             if (Configuration.PROGRAM_MODE == ProgramMode.COMPANY) {
                 if (Configuration.workerCopyData.compareAndSet(false, true)) {
                     val workRequest: WorkRequest =

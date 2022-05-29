@@ -287,5 +287,31 @@ class Spreadsheet {
             ).body(bodyJson).authentication().bearer(getAccessToken(true)).responseString()
             if (response.statusCode != 200) throw UnknownHostException()
         }
+
+        //TODO
+        fun getDataCatalystsOfCompanies(fromRow: Int): JSONArray {
+            val projection =
+                "${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID_IN_COMPANY}, " +
+                        "${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID_COMPANY}, " +
+                        "${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_NAME}, " +
+                        "${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_BRAND}, " +
+                        "${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_WEIGHT}, " +
+                        "${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_PLATINUM}, " +
+                        "${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_PALLADIUM}, " +
+                        "${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_RHODIUM}, " +
+                        "${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_TYPE}, " +
+                        Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_URL_PICTURE
+            val (_, response, result) = Fuel.get(
+                DOCS_API_URL_CATALYSTS_OF_COMPANIES,
+                listOf(
+                    DOCS_API_PARAMETER_JSON to DOCS_API_PARAMETER_JSON_VALUE,
+                    DOCS_API_PARAMETER_WHERE to "select ${projection} where ${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID}>$fromRow " +
+                            "group by ${projection}"
+                )
+            ).authentication().bearer(getAccessToken(true)).responseString()
+            if (response.statusCode != 200) throw UnknownHostException()
+            return Parser.parseToJsonFromResultDocsApi(result.get()).getJSONObject("table")
+                .getJSONArray("rows")
+        }
     }
 }
