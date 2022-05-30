@@ -19,7 +19,7 @@ class WorkerCopyData(appContext: Context, workerParams: WorkerParameters) :
         try {
             val database = Database(applicationContext)
             val countDatabase = database.getCountCatalyst()
-            val countSpreadsheet = Spreadsheet.getCountCatalystsOfCompanies()
+            val countSpreadsheet = Spreadsheet.getCountCatalystsOfCompaniesGrouped()
             if (countDatabase == countSpreadsheet) return
             val data = database.getDataCatalyst(countSpreadsheet).chunked(10)
             for (part in data) {

@@ -97,13 +97,15 @@ class ResultActivity : AppCompatActivity() {
                     val visibilityCatalyst: Boolean =
                         SharedPreference.getKey(SharedPreference.VISIBILITY).toInt() == 1
                     catalystBinding.thumbnail.setImageBitmap(itemCatalyst.thumbnail)
-                    catalystBinding.thumbnail.setOnLongClickListener {
-                        Toast.makeText(
-                            applicationContext,
-                            itemCatalyst.idPicture,
-                            Toast.LENGTH_LONG
-                        ).show()
-                        true
+                    if (Configuration.PROGRAM_MODE == ProgramMode.COMPANY) {
+                        catalystBinding.thumbnail.setOnLongClickListener {
+                            Toast.makeText(
+                                applicationContext,
+                                itemCatalyst.idPicture,
+                                Toast.LENGTH_LONG
+                            ).show()
+                            true
+                        }
                     }
                     catalystBinding.thumbnail.setOnClickListener {
                         val intent = Intent(applicationContext, PictureActivity::class.java)
@@ -436,8 +438,6 @@ class ResultActivity : AppCompatActivity() {
         }
 
         private fun runWorkerCopyData() {
-            val aaa = Spreadsheet.getDataCatalystsOfCompanies(1)
-
             if (Configuration.PROGRAM_MODE == ProgramMode.COMPANY) {
                 if (Configuration.workerCopyData.compareAndSet(false, true)) {
                     val workRequest: WorkRequest =
