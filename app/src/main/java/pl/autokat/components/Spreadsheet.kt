@@ -306,7 +306,6 @@ class Spreadsheet {
             return rows.getJSONObject(0).getJSONArray("c").getJSONObject(0).getInt("v")
         }
 
-        //TODO where fromRow>?
         fun getDataCatalystsOfCompanies(fromRow: Int): JSONArray {
             val projection =
                 "${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID_IN_COMPANY}, " +

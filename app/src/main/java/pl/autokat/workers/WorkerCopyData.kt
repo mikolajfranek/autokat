@@ -20,7 +20,7 @@ class WorkerCopyData(appContext: Context, workerParams: WorkerParameters) :
             val database = Database(applicationContext)
             val countDatabase = database.getCountCatalyst()
             val countSpreadsheet = Spreadsheet.getCountCatalystsOfCompaniesGrouped()
-            if (countDatabase == countSpreadsheet) return
+            if (countDatabase <= countSpreadsheet) return
             val data = database.getDataCatalyst(countSpreadsheet).chunked(10)
             for (part in data) {
                 Spreadsheet.saveRowCatalystsOfCompanies(part)
