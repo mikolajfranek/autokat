@@ -149,6 +149,24 @@ class Configuration {
         const val DATABASE_CATALYST_TEMP_HITCOUNT = "hitcount"
         //endregion
 
+        //region database columns catalyst client
+        const val DATABASE_TABLE_CATALYST_CLIENT = "catalyst_client"
+        const val DATABASE_CATALYST_CLIENT_ID = "id"
+        const val DATABASE_CATALYST_CLIENT_ID_IN_COMPANY = "id_in_company"
+        const val DATABASE_CATALYST_CLIENT_ID_COMPANY = "id_company"
+        const val DATABASE_CATALYST_CLIENT_URL_PICTURE = "url_picture"
+        const val DATABASE_CATALYST_CLIENT_THUMBNAIL = "thumbnail"
+        const val DATABASE_CATALYST_CLIENT_NAME = "name"
+        const val DATABASE_CATALYST_CLIENT_BRAND = "brand"
+        const val DATABASE_CATALYST_CLIENT_PLATINUM = "platinum"
+        const val DATABASE_CATALYST_CLIENT_PALLADIUM = "palladium"
+        const val DATABASE_CATALYST_CLIENT_RHODIUM = "rhodium"
+        const val DATABASE_CATALYST_CLIENT_TYPE = "type"
+        const val DATABASE_CATALYST_CLIENT_WEIGHT = "weight"
+        const val DATABASE_CATALYST_CLIENT_DUPLICATE = "duplicate"
+        const val DATABASE_CATALYST_CLIENT_TEMP_HITCOUNT = "hitcount"
+        //endregion
+
         //region database columns history filter
         const val DATABASE_TABLE_HISTORY_FILTER = "history_filter"
         const val DATABASE_HISTORY_FILTER_ID = "id"

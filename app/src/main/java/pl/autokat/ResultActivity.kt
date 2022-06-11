@@ -134,25 +134,36 @@ class ResultActivity : AppCompatActivity() {
                     ) + " g/kg"
                     catalystBinding.rhodium.text = rhodiumText
                     var pricePl = itemCatalyst.countPricePln()
+                    pricePl = if (pricePl < 0) 0.0F else pricePl
                     val courseEurPlnFromConfiguration: String = SharedPreference.getKey(
                         SharedPreference.EUR_PLN
                     )
                     val courseEurPln: Float =
                         if (courseEurPlnFromConfiguration.isEmpty()) 0.0F else courseEurPlnFromConfiguration.toFloat()
                     var priceEur = if (courseEurPln != 0.0F) (pricePl / courseEurPln) else 0.0F
-                    pricePl = if (pricePl < 0) 0.0F else pricePl
                     priceEur = if (priceEur < 0) 0.0F else priceEur
+                    val courseUsdPlnFromConfiguration: String = SharedPreference.getKey(
+                        SharedPreference.USD_PLN
+                    )
+                    val courseUsdPln: Float =
+                        if (courseUsdPlnFromConfiguration.isEmpty()) 0.0F else courseUsdPlnFromConfiguration.toFloat()
+                    var priceUsd = if (courseUsdPln != 0.0F) (pricePl / courseUsdPln) else 0.0F
+                    priceUsd = if (priceUsd < 0) 0.0F else priceUsd
+                    val resultPriceUsd: String =
+                        (Formatter.formatStringFloat(priceUsd.toString(), 2) + " $")
                     val resultPriceEur: String =
                         (Formatter.formatStringFloat(priceEur.toString(), 2) + " €")
                     val resultPricePln: String =
                         (Formatter.formatStringFloat(pricePl.toString(), 2) + " zł")
                     if (visibilityCatalyst) {
+                        catalystBinding.priceUsd.text = resultPriceUsd
                         catalystBinding.priceEur.text = resultPriceEur
                         catalystBinding.pricePln.text = resultPricePln
                         catalystBinding.rowPlatinum.visibility = VISIBLE
                         catalystBinding.rowPalladium.visibility = VISIBLE
                         catalystBinding.rowRhodium.visibility = VISIBLE
                     } else {
+                        catalystBinding.priceUsdWithoutMetal.text = resultPriceUsd
                         catalystBinding.priceEurWithoutMetal.text = resultPriceEur
                         catalystBinding.pricePlnWithoutMetal.text = resultPricePln
                     }

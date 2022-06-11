@@ -34,10 +34,27 @@
             android:fontFamily="sans-serif"
             android:textColor="@color/colorUser" />
 
-        <TextView
-            android:id="@+id/type"
-            android:fontFamily="sans-serif"
-            android:gravity="end" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:textAlignment="textEnd"
+                android:fontFamily="sans-serif"
+                android:gravity="end" />
+
+            <TextView
+                android:id="@+id/price_usd_without_metal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:textAlignment="textEnd"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/colorGreen" />
+        </RelativeLayout>
     </TableRow>
 
     <TableRow
@@ -127,6 +144,12 @@
             android:width="0dp"
             android:fontFamily="sans-serif"
             android:textColor="@color/colorUser" />
+
+        <TextView
+            android:id="@+id/price_usd"
+            android:fontFamily="sans-serif"
+            android:gravity="end"
+            android:textColor="@color/colorGreen" />
     </TableRow>
 
     <TableRow

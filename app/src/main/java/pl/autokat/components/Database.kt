@@ -89,6 +89,8 @@ class Database(context: Context) : SQLiteAssetHelper(
             db.beginTransaction()
             db.execSQL("DELETE FROM ${Configuration.DATABASE_TABLE_CATALYST};VACUUM;")
             db.execSQL("DELETE FROM ${Configuration.DATABASE_TABLE_SQLITE_SEQUENCE} WHERE ${Configuration.DATABASE_SQLITE_SEQUENCE_NAME} LIKE '${Configuration.DATABASE_TABLE_CATALYST}';VACUUM;")
+            db.execSQL("DELETE FROM ${Configuration.DATABASE_TABLE_CATALYST_CLIENT};VACUUM;")
+            db.execSQL("DELETE FROM ${Configuration.DATABASE_TABLE_SQLITE_SEQUENCE} WHERE ${Configuration.DATABASE_SQLITE_SEQUENCE_NAME} LIKE '${Configuration.DATABASE_TABLE_CATALYST_CLIENT}';VACUUM;")
             db.setTransactionSuccessful()
         } finally {
             db.endTransaction()
