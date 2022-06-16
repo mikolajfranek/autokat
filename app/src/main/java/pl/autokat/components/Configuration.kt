@@ -147,7 +147,7 @@ class Configuration {
         const val DATABASE_CATALYST_TYPE = "type"
         const val DATABASE_CATALYST_WEIGHT = "weight"
         const val DATABASE_CATALYST_TEMP_HITCOUNT = "hitcount"
-        //endregion
+        //endregion"name"
 
         //region database columns catalyst client
         const val DATABASE_TABLE_CATALYST_CLIENT = "catalyst_client"

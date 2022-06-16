@@ -287,6 +287,9 @@ class ResultActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menuInput: Menu): Boolean {
         menuInflater.inflate(R.menu.result, menuInput)
+        if (Configuration.PROGRAM_MODE == ProgramMode.CLIENT) {
+            menuInput.getItem(2).isVisible = false
+        }
         menu = menuInput
         return super.onCreateOptionsMenu(menuInput)
     }
@@ -541,8 +544,10 @@ class ResultActivity : AppCompatActivity() {
 
         private fun doInBackground(): ProcessStep {
             try {
-                if (Spreadsheet.isExpiredLicenceOfCompany(false) == true) {
-                    return ProcessStep.COMPANY_ELAPSED_LICENCE
+                if (Configuration.PROGRAM_MODE == ProgramMode.COMPANY) {
+                    if (Spreadsheet.isExpiredLicenceOfCompany(false) == true) {
+                        return ProcessStep.COMPANY_ELAPSED_LICENCE
+                    }
                 }
                 getCourses()
                 checkCountCatalyst()

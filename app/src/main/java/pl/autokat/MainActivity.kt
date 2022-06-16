@@ -17,6 +17,7 @@ import org.json.JSONArray
 import pl.autokat.components.*
 import pl.autokat.databinding.ActivityMainBinding
 import pl.autokat.enums.ProcessStep
+import pl.autokat.enums.ProgramMode
 import pl.autokat.enums.TimeChecking
 import java.net.UnknownHostException
 
@@ -102,9 +103,12 @@ class MainActivity : AppCompatActivity() {
         handleRequestCode(requestCode, grantResults)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main, menu)
-        return super.onCreateOptionsMenu(menu)
+    override fun onCreateOptionsMenu(menuInput: Menu): Boolean {
+        menuInflater.inflate(R.menu.main, menuInput)
+        if (Configuration.PROGRAM_MODE == ProgramMode.CLIENT) {
+            menuInput.getItem(0).isVisible = false
+        }
+        return super.onCreateOptionsMenu(menuInput)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -306,8 +310,10 @@ class MainActivity : AppCompatActivity() {
             var processStep: ProcessStep
             try {
                 if (login.isEmpty()) return ProcessStep.USER_NEVER_LOGGED
-                processStep = checkLicence()
-                if (processStep != ProcessStep.NONE) return processStep
+                if (Configuration.PROGRAM_MODE == ProgramMode.COMPANY) {
+                    processStep = checkLicence()
+                    if (processStep != ProcessStep.NONE) return processStep
+                }
                 processStep = checkTimeOnPhoneWithTimeOnTheInternet()
                 if (processStep != ProcessStep.NONE) return processStep
                 val user: JSONArray =

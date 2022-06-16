@@ -8,6 +8,7 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.json.JSONArray
 import org.json.JSONObject
+import pl.autokat.enums.ProgramMode
 import pl.autokat.models.ModelCatalyst
 import java.net.UnknownHostException
 import java.security.KeyFactory
