@@ -10,6 +10,7 @@ class Configuration {
         val PROGRAM_MODE: ProgramMode = ProgramMode.COMPANY
         const val VERSION_APK: String = "1.0.8"
         const val DATABASE_VERSION_1_0_6: Int = 4
+        const val DATABASE_VERSION_NEXT: Int = 5
         const val DATABASE_VERSION: Int = 4
         const val DATABASE_NAME_OF_FILE: String = "autokat.db"
         const val DATABASE_FILE_PATH_ASSETS: String = "databases/$DATABASE_NAME_OF_FILE"

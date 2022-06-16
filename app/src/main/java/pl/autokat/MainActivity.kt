@@ -13,6 +13,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.get
 import org.json.JSONArray
 import pl.autokat.components.*
 import pl.autokat.databinding.ActivityMainBinding
@@ -106,7 +107,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menuInput: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menuInput)
         if (Configuration.PROGRAM_MODE == ProgramMode.CLIENT) {
-            menuInput.getItem(0).isVisible = false
+            menuInput.get(menuInput.size() - 1).isVisible = false
         }
         return super.onCreateOptionsMenu(menuInput)
     }
@@ -310,10 +311,8 @@ class MainActivity : AppCompatActivity() {
             var processStep: ProcessStep
             try {
                 if (login.isEmpty()) return ProcessStep.USER_NEVER_LOGGED
-                if (Configuration.PROGRAM_MODE == ProgramMode.COMPANY) {
-                    processStep = checkLicence()
-                    if (processStep != ProcessStep.NONE) return processStep
-                }
+                processStep = checkLicence()
+                if (processStep != ProcessStep.NONE) return processStep
                 processStep = checkTimeOnPhoneWithTimeOnTheInternet()
                 if (processStep != ProcessStep.NONE) return processStep
                 val user: JSONArray =

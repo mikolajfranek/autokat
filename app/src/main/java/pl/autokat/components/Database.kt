@@ -11,6 +11,7 @@ import android.util.Base64
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper
 import org.json.JSONArray
 import org.json.JSONObject
+import pl.autokat.enums.ProgramMode
 import pl.autokat.models.ModelCatalyst
 import pl.autokat.models.ModelCourse
 import pl.autokat.models.ModelHistoryFilter
@@ -65,6 +66,17 @@ class Database(context: Context) : SQLiteAssetHelper(
             when (newVersion) {
                 Configuration.DATABASE_VERSION_1_0_6 -> {
                     upgrade106(db)
+                }
+                Configuration.DATABASE_VERSION_NEXT -> {
+                    /*
+                    In version 1.0.8 database changed
+                    (It added tables/indexes for version of client, so in next upgrade of database it should be added 'if' conditions like below)
+                    if (Configuration.PROGRAM_MODE == ProgramMode.COMPANY) {
+                        //do something
+                    } else {
+                        //do something
+                    }
+                    */
                 }
                 //in other case override database (copy database from assets to directory system where is database of app)
                 else -> {
