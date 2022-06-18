@@ -37,22 +37,23 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <TextView
                 android:id="@+id/type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:textAlignment="textEnd"
                 android:fontFamily="sans-serif"
-                android:gravity="end" />
+                android:gravity="end"
+                android:textAlignment="textEnd" />
 
             <TextView
                 android:id="@+id/price_usd_without_metal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:textAlignment="textEnd"
                 android:fontFamily="sans-serif"
+                android:textAlignment="textEnd"
                 android:textColor="@color/colorGreen" />
         </RelativeLayout>
     </TableRow>

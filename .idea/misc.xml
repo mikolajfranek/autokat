@@ -4,11 +4,14 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../../layout/custom_preview.xml" value="0.21614583333333334" />
+        <entry key="../../../../.gradle/caches/transforms-3/d0e8f22e312394d67b28e89a642fd258/transformed/appcompat-1.4.2/res/drawable/abc_btn_default_mtrl_shape.xml" value="0.2195" />
         <entry key="../../../../Android/Sdk/platforms/android-31/data/res/layout/select_dialog_singlechoice.xml" value="0.20989583333333334" />
         <entry key="app/src/main/res/drawable/check.xml" value="0.2485" />
         <entry key="app/src/main/res/drawable/choose.xml" value="0.2185" />
         <entry key="app/src/main/res/drawable/course_day.xml" value="0.2485" />
         <entry key="app/src/main/res/drawable/courses_day.xml" value="0.222" />
+        <entry key="app/src/main/res/drawable/custom_thumb.xml" value="0.2185" />
+        <entry key="app/src/main/res/drawable/custom_track.xml" value="0.2185" />
         <entry key="app/src/main/res/drawable/drawable_check.xml" value="0.215" />
         <entry key="app/src/main/res/drawable/drawable_checked.xml" value="0.2725" />
         <entry key="app/src/main/res/drawable/drawable_rectangle.xml" value="0.236" />
@@ -24,7 +27,7 @@
         <entry key="app/src/main/res/layout/activity_calendar.xml" value="0.18" />
         <entry key="app/src/main/res/layout/activity_calendar_view.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_configuration_values.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/activity_courses.xml" value="0.21822916666666667" />
+        <entry key="app/src/main/res/layout/activity_courses.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/layout/activity_picture.xml" value="0.16875" />
         <entry key="app/src/main/res/layout/activity_result.xml" value="0.25" />

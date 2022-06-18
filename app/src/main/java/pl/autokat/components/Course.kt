@@ -10,9 +10,9 @@ import java.util.*
 class Course {
     companion object {
         private const val MY_CATALYST_VALUES_URL_USD_PLN =
-            "https://api.nbp.pl/api/exchangerates/rates/a/usd?format=json"
+            "https://api.nbp.pl/api/exchangerates/rates/a/usd"
         private const val MY_CATALYST_VALUES_URL_EUR_PLN =
-            "https://api.nbp.pl/api/exchangerates/rates/a/eur?format=json"
+            "https://api.nbp.pl/api/exchangerates/rates/a/eur"
         private const val MY_CATALYST_VALUES_URL_CATALYST_PLATINUM =
             "https://proxy.kitco.com/getPM?symbol=PT&unit=gram&currency=USD"
         private const val MY_CATALYST_VALUES_URL_CATALYST_PALLADIUM =
@@ -21,8 +21,22 @@ class Course {
             "https://proxy.kitco.com/getPM?symbol=RH&unit=gram&currency=USD"
         private const val MY_CATALYST_VALUES_HEADER_ORIGIN = "https://www.kitco.com"
 
-        private fun getCourseUsdPln(savingToSharedPreferences: Boolean): Pair<String, String> {
-            val (_, response, result) = Fuel.get(MY_CATALYST_VALUES_URL_USD_PLN).responseString()
+        private fun decoratorOfUrlNBP(input: String, date: String): String {
+            return "$input/$date?format=json"
+        }
+
+        //TODO dla nbp yyyy-mm-dd, a dla kitco???
+
+        private fun getCourseUsdPln(
+            savingToSharedPreferences: Boolean,
+            date: String
+        ): Pair<String, String> {
+            val (_, response, result) = Fuel.get(
+                decoratorOfUrlNBP(
+                    MY_CATALYST_VALUES_URL_USD_PLN,
+                    date
+                )
+            ).responseString()
             if (response.statusCode != 200) throw UnknownHostException()
             val rate: JSONObject = JSONObject(result.get()).getJSONArray("rates").getJSONObject(0)
             val value = rate.getString("mid").replace(',', '.')
@@ -34,8 +48,16 @@ class Course {
             return Pair(value, valueDate)
         }
 
-        private fun getCourseEurPln(savingToSharedPreferences: Boolean): Pair<String, String> {
-            val (_, response, result) = Fuel.get(MY_CATALYST_VALUES_URL_EUR_PLN).responseString()
+        private fun getCourseEurPln(
+            savingToSharedPreferences: Boolean,
+            date: String
+        ): Pair<String, String> {
+            val (_, response, result) = Fuel.get(
+                decoratorOfUrlNBP(
+                    MY_CATALYST_VALUES_URL_EUR_PLN,
+                    date
+                )
+            ).responseString()
             if (response.statusCode != 200) throw UnknownHostException()
             val rate: JSONObject = JSONObject(result.get()).getJSONArray("rates").getJSONObject(0)
             val value = rate.getString("mid").replace(',', '.')
@@ -89,11 +111,12 @@ class Course {
             return Pair(value, valueDate)
         }
 
+
         @Suppress("ReplaceCallWithBinaryOperator")
-        fun getValues(database: Database) {
+        fun getValues(database: Database, date: String) {
             val savingToSharedPreferences: Boolean = isCoursesSelected() == false
-            val (usdPln, usdDate) = getCourseUsdPln(savingToSharedPreferences)
-            val (eurPln, eurDate) = getCourseEurPln(savingToSharedPreferences)
+            val (usdPln, usdDate) = getCourseUsdPln(savingToSharedPreferences, date)
+            val (eurPln, eurDate) = getCourseEurPln(savingToSharedPreferences, date)
             val (platinum, platinumDate) = getCoursePlatinum(savingToSharedPreferences)
             val (palladium, palladiumDate) = getCoursePalladium(savingToSharedPreferences)
             val (rhodium, rhodiumDate) = getCourseRhodium(savingToSharedPreferences)

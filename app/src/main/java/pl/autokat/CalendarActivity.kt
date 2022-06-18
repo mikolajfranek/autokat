@@ -29,11 +29,32 @@ class CalendarActivity : AppCompatActivity() {
 
     private lateinit var activityCalendarBinding: ActivityCalendarBinding
     private lateinit var database: Database
+    private var menuItemDownloadCourses: MenuItem? = null
     private var menuItemCheck: MenuItem? = null
     private var selectedDate: LocalDate? = null
     private var mapCoursesOfYearMonths = HashMap<String, HashMap<String, ModelCourse>>()
 
     //region methods used in override
+    private fun downloadCourses() : Boolean {
+        selectedDate ?: return false
+        val keyDate = selectedDate.toString().let { it1 -> Formatter.formatStringDate(it1) }
+
+
+
+        Course.getValues(database, selectedDate.toString())
+
+
+        //TODO
+        Toast.makeText(
+            applicationContext,
+            Configuration.UNHANDLED_EXCEPTION,
+            Toast.LENGTH_SHORT
+        ).show()
+
+
+        return true
+    }
+
     private fun chooseDay(): Boolean {
         selectedDate ?: return false
         val keyYearMonth = selectedDate!!.yearMonth.toString()
@@ -181,12 +202,16 @@ class CalendarActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.calendar, menu)
-        menuItemCheck = menu.getItem(0)
+        menuItemDownloadCourses = menu.getItem(menu.size() - 2)
+        menuItemCheck = menu.getItem(menu.size() - 1)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.toolbar_list_calendar_download_courses -> {
+                return downloadCourses()
+            }
             R.id.toolbar_list_calendar_choose -> {
                 return chooseDay()
             }
@@ -206,6 +231,7 @@ class CalendarActivity : AppCompatActivity() {
 
         //region methods of init
         private fun resetView() {
+            menuItemDownloadCourses!!.isVisible = true
             menuItemCheck!!.isVisible = false
             activityCalendarBinding.footer.visibility = View.GONE
             activityCalendarBinding.footerActualDate.text = ""

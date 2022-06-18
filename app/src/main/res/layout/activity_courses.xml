@@ -25,7 +25,8 @@
         android:text="@string/activity_courses_korzystanie_z_najnowszych_kursow"
         android:textOff="@string/activity_courses_switch_no"
         android:textOn="@string/activity_courses_switch_yes"
-        app:switchMinWidth="68dp" />
+        android:thumb="@drawable/thumb"
+        app:track="@drawable/track" />
 
     <Button
         android:id="@+id/button_select_date_courses"

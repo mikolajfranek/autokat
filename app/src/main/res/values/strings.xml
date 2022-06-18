@@ -40,6 +40,7 @@
     <string name="catalyst_rod">Rod:</string>
     <string name="menu_wartosci_kursow">Wartości kursów</string>
     <string name="menu_aktualizacja">Aktualizacja</string>
+    <string name="menu_pobierz_kursy">Pobierz kursy</string>
     <string name="menu_o_aplikacji">O aplikacji</string>
     <string name="menu_odswiez">Odśwież</string>
     <string name="menu_wybierz">Wybierz</string>
