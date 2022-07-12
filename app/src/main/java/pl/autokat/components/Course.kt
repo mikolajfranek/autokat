@@ -26,6 +26,16 @@ class Course {
         }
 
         //TODO dla nbp yyyy-mm-dd, a dla kitco???
+        /*
+
+        https://www.kitco.com/londonfix/gold.londonfix22.html
+        fix<ROK>
+
+
+        $("td.date").filter(function(){return this.textContent=='2022-07-07'})[0].parentElement
+
+         */
+
 
         private fun getCourseUsdPln(
             savingToSharedPreferences: Boolean,
@@ -113,7 +123,8 @@ class Course {
 
 
         @Suppress("ReplaceCallWithBinaryOperator")
-        fun getValues(database: Database, date: String) {
+        fun getValues(database: Database) {
+            val date = ""
             val savingToSharedPreferences: Boolean = isCoursesSelected() == false
             val (usdPln, usdDate) = getCourseUsdPln(savingToSharedPreferences, date)
             val (eurPln, eurDate) = getCourseEurPln(savingToSharedPreferences, date)
