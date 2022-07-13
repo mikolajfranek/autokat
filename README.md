@@ -2,7 +2,7 @@
 Catalyst app
 
 #### run android studio
-"/home/debian/android-studio-2021.1.1.20-linux/android-studio/bin/studio.sh"
+"/home/debian/android-studio-2021.2.1.15-linux/android-studio/bin/studio.sh"
 
 #### older running emulator
 "/home/debian/Android/Sdk/emulator/emulator -avd api27"

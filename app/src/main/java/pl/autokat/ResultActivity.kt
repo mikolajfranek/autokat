@@ -389,7 +389,7 @@ class ResultActivity : AppCompatActivity() {
             val lastTimestampUpdateCourseFromConfiguration: String =
                 SharedPreference.getKey(SharedPreference.UPDATE_COURSE_TIMESTAMP)
             if (lastTimestampUpdateCourseFromConfiguration.isEmpty() || ((Date().time - lastTimestampUpdateCourseFromConfiguration.toLong()) > (Configuration.ONE_DAY_IN_MILLISECONDS / 4))) {
-                Course.getValues(database)
+                Course.getValues(database, LocalDate.now())
             }
         }
 

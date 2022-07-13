@@ -11,6 +11,7 @@ import pl.autokat.components.*
 import pl.autokat.databinding.ActivityCoursesBinding
 import pl.autokat.enums.ProcessStep
 import java.net.UnknownHostException
+import java.time.LocalDate
 
 class CoursesActivity : AppCompatActivity() {
 
@@ -150,7 +151,7 @@ class CoursesActivity : AppCompatActivity() {
 
         private fun doInBackground(): ProcessStep {
             return try {
-                Course.getValues(database)
+                Course.getValues(database, LocalDate.now())
                 ProcessStep.SUCCESS
             } catch (e: UnknownHostException) {
                 ProcessStep.NETWORK_FAILED

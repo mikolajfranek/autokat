@@ -19,7 +19,9 @@ import pl.autokat.components.*
 import pl.autokat.databinding.ActivityCalendarBinding
 import pl.autokat.databinding.CalendarDayBinding
 import pl.autokat.databinding.CalendarHeaderBinding
+import pl.autokat.enums.ProcessStep
 import pl.autokat.models.ModelCourse
+import java.net.UnknownHostException
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -35,14 +37,20 @@ class CalendarActivity : AppCompatActivity() {
     private var mapCoursesOfYearMonths = HashMap<String, HashMap<String, ModelCourse>>()
 
     //region methods used in override
-    private fun downloadCourses() : Boolean {
+    private fun downloadCourses(): Boolean {
         selectedDate ?: return false
-        val keyDate = selectedDate.toString().let { it1 -> Formatter.formatStringDate(it1) }
 
 
-
-        Course.getValues(database, selectedDate.toString())
-
+        //can throw...
+        /*
+        return try {
+            Course.getValues(database, selectedDate!!)
+        } catch (e: UnknownHostException) {
+            ProcessStep.NETWORK_FAILED
+        } catch (e: Exception) {
+            ProcessStep.UNHANDLED_EXCEPTION
+        }
+        */
 
         //TODO
         Toast.makeText(
@@ -231,7 +239,7 @@ class CalendarActivity : AppCompatActivity() {
 
         //region methods of init
         private fun resetView() {
-            menuItemDownloadCourses!!.isVisible = true
+            menuItemDownloadCourses!!.isVisible = false
             menuItemCheck!!.isVisible = false
             activityCalendarBinding.footer.visibility = View.GONE
             activityCalendarBinding.footerActualDate.text = ""
@@ -254,14 +262,16 @@ class CalendarActivity : AppCompatActivity() {
                     activityCalendarBinding.calendarView.notifyDateChanged(oldDate)
                 }
             }
+            menuItemDownloadCourses!!.isVisible = day.date < LocalDate.now()
         }
 
         private fun markSelectedDate() {
             val keyYearMonth = selectedDate?.yearMonth.toString()
             val keyDate = selectedDate?.toString()?.let { it1 -> Formatter.formatStringDate(it1) }
             if (mapCoursesOfYearMonths.contains(keyYearMonth)) {
-                menuItemCheck!!.isVisible = mapCoursesOfYearMonths[keyYearMonth]!!.contains(keyDate)
-                if (menuItemCheck!!.isVisible) {
+                val isVisible = mapCoursesOfYearMonths[keyYearMonth]!!.contains(keyDate)
+                menuItemCheck!!.isVisible = isVisible
+                if (isVisible) {
                     val courses = mapCoursesOfYearMonths[keyYearMonth]!![keyDate]
                     setView(courses)
                 }

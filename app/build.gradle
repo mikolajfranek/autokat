@@ -70,5 +70,6 @@ dependencies {
         exclude group: 'org.json', module: 'json' //provided by Android natively
     }
     implementation 'com.github.kizitonwose:CalendarView:1.0.4'
+    implementation 'org.jsoup:jsoup:1.15.2'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.6'
 }
