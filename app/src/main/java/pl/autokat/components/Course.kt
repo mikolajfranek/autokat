@@ -3,8 +3,10 @@ package pl.autokat.components
 import com.github.kittinunf.fuel.Fuel
 import com.kizitonwose.calendarview.utils.yearMonth
 import org.json.JSONObject
+import org.jsoup.Jsoup
 import pl.autokat.enums.Metal
 import pl.autokat.models.ModelCourse
+import java.lang.IllegalArgumentException
 import java.net.UnknownHostException
 import java.time.LocalDate
 import java.util.*
@@ -29,15 +31,31 @@ class Course {
             return "$MY_CATALYST_VALUES_URL_USD_PLN/$date?format=json"
         }
 
-        private fun parseKico
+        private fun getURLKitcoNotToday(date: LocalDate): String {
+            val yearShortcut = date.year.toString().substring(2,4)
+            return "https://www.kitco.com/londonfix/gold.londonfix$yearShortcut.html"
+        }
+
+        private fun getValuesCourses(metal : Metal, date: LocalDate) : Pair<String, String>{
+            val url = getURLKitcoNotToday(date)
+            val doc =  Jsoup.connect(url).get();
+            val element = doc.select("td.date:contains($date)")
+            if(element.size != 1) throw IllegalArgumentException()
+            val parent = element[0].parent()
+
+            parent.select("td.pt.pm") //platinium
+            parent.select("td.pl.pm") //palladium
+            //there not rhodium :((
+
+            return Pair("", "")
+        }
+
+
 
 /*
-        https://www.kitco.com/londonfix/gold.londonfix22.html
-        fix<ROK>
-
         $("td.date").filter(function(){return this.textContent=='2022-07-07'})[0].parentElement
 
-        Document doc = Jsoup.connect("https://en.wikipedia.org/").get();
+        Document doc =
         log(doc.title());
         Elements newsHeadlines = doc.select("#mp-itn b a");
         for (Element headline : newsHeadlines) {
@@ -93,7 +111,9 @@ class Course {
                 value = content[4].replace(',', '.')
                 valueDate = content[3].split(' ')[0]
             } else {
-                //TODO
+                val pair = getValuesCourses(Metal.PLATINUM, date)
+                value = pair.first
+                valueDate = pair.second
             }
             if (savingToSharedPreferences) {
                 SharedPreference.setKey(SharedPreference.PLATINUM, value)

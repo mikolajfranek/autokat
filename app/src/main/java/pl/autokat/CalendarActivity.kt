@@ -41,21 +41,21 @@ class CalendarActivity : AppCompatActivity() {
         selectedDate ?: return false
 
 
-        //can throw...
-        /*
-        return try {
-            Course.getValues(database, selectedDate!!)
+        //TODO
+        val message = try {
+
+            Thread(RunnableUpdateCourses(selectedDate!!)).start()
+
+            ProcessStep.SUCCESS
         } catch (e: UnknownHostException) {
             ProcessStep.NETWORK_FAILED
         } catch (e: Exception) {
             ProcessStep.UNHANDLED_EXCEPTION
         }
-        */
 
-        //TODO
         Toast.makeText(
             applicationContext,
-            Configuration.UNHANDLED_EXCEPTION,
+            message.toString(),
             Toast.LENGTH_SHORT
         ).show()
 
@@ -316,6 +316,74 @@ class CalendarActivity : AppCompatActivity() {
     inner class MonthViewContainer(view: View) : ViewContainer(view) {
 
         val textView = CalendarHeaderBinding.bind(view).textView
+    }
+
+    inner class RunnableUpdateCourses(dateInput: LocalDate) : Runnable {
+
+        private var date: LocalDate = dateInput
+
+        //region methods of run
+        private fun onPreExecute() {
+            UserInterface.changeStatusLayout(activityCalendarBinding.linearLayout, false)
+            Toast.makeText(applicationContext, Configuration.UPDATE_WAIT, Toast.LENGTH_SHORT).show()
+        }
+
+        private fun doInBackground(): ProcessStep {
+            return try {
+                Course.getValues(database, date)
+                ProcessStep.SUCCESS
+            } catch (e: UnknownHostException) {
+                ProcessStep.NETWORK_FAILED
+            } catch (e: Exception) {
+                ProcessStep.UNHANDLED_EXCEPTION
+            }
+        }
+
+        private fun onPostExecute(processStep: ProcessStep) {
+            when (processStep) {
+                ProcessStep.NETWORK_FAILED -> {
+                    Toast.makeText(
+                        applicationContext,
+                        Configuration.NETWORK_FAILED,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                ProcessStep.UNHANDLED_EXCEPTION -> {
+                    Toast.makeText(
+                        applicationContext,
+                        Configuration.UPDATE_FAILED,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                ProcessStep.SUCCESS -> {
+                    Toast.makeText(
+                        applicationContext,
+                        Configuration.UPDATE_SUCCESS,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    //setInViewCourses()
+                }
+                else -> {
+                    Toast.makeText(
+                        applicationContext,
+                        Configuration.UPDATE_FAILED,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+            UserInterface.changeStatusLayout(activityCalendarBinding.linearLayout, true)
+        }
+        //endregion
+
+        override fun run() {
+            runOnUiThread {
+                onPreExecute()
+            }
+            val processStep: ProcessStep = doInBackground()
+            runOnUiThread {
+                onPostExecute(processStep)
+            }
+        }
     }
     //endregion
 }
