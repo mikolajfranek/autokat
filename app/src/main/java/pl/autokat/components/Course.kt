@@ -1,15 +1,21 @@
 package pl.autokat.components
 
+import android.content.Context
+import android.graphics.BitmapFactory
+import androidx.test.core.app.ApplicationProvider
 import com.github.kittinunf.fuel.Fuel
+import com.google.android.gms.vision.Frame
+import com.google.android.gms.vision.text.TextRecognizer
 import com.kizitonwose.calendarview.utils.yearMonth
 import org.json.JSONObject
 import org.jsoup.Jsoup
 import pl.autokat.enums.Metal
 import pl.autokat.models.ModelCourse
-import java.lang.IllegalArgumentException
+import java.net.URL
 import java.net.UnknownHostException
 import java.time.LocalDate
 import java.util.*
+
 
 class Course {
     companion object {
@@ -36,34 +42,44 @@ class Course {
             return "https://www.kitco.com/londonfix/gold.londonfix$yearShortcut.html"
         }
 
+        private fun getValuesCoursesRhodium(date:LocalDate): Pair<String, String>{
+            val url = "https://www.kitco.com/LFgif/rd00-09D.gif"
+
+            //TODO
+            //try do google vision library?
+            //for get rhodium avg of month
+
+            val textRecognizer =
+                TextRecognizer.Builder(ApplicationProvider.getApplicationContext<Context>()).build()
+
+            val imageData = URL(url).readBytes()
+            val bmp = BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
+            val frame = Frame.Builder().setBitmap(bmp).build()
+
+            val textBlocks = textRecognizer.detect(frame)
+
+
+
+
+            return Pair("", "")
+        }
+
         private fun getValuesCourses(metal : Metal, date: LocalDate) : Pair<String, String>{
+            getValuesCoursesRhodium(date)
+
             val url = getURLKitcoNotToday(date)
             val doc =  Jsoup.connect(url).get();
             val element = doc.select("td.date:contains($date)")
             if(element.size != 1) throw IllegalArgumentException()
             val parent = element[0].parent()
 
-            parent.select("td.pt.pm") //platinium
-            parent.select("td.pl.pm") //palladium
+            //parent.select("td.pt.pm") //platinium
+            //parent.select("td.pl.pm") //palladium
+            //TODO
             //there not rhodium :((
 
             return Pair("", "")
         }
-
-
-
-/*
-        $("td.date").filter(function(){return this.textContent=='2022-07-07'})[0].parentElement
-
-        Document doc =
-        log(doc.title());
-        Elements newsHeadlines = doc.select("#mp-itn b a");
-        for (Element headline : newsHeadlines) {
-            log("%s\n\t%s",
-                headline.attr("title"), headline.absUrl("href"));
-        }
-*/
-
 
         private fun getCourseUsdPln(
             savingToSharedPreferences: Boolean,
