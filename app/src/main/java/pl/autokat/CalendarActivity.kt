@@ -21,6 +21,7 @@ import pl.autokat.databinding.CalendarDayBinding
 import pl.autokat.databinding.CalendarHeaderBinding
 import pl.autokat.enums.ProcessStep
 import pl.autokat.models.ModelCourse
+import java.io.FileOutputStream
 import java.net.UnknownHostException
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -330,6 +331,18 @@ class CalendarActivity : AppCompatActivity() {
 
         private fun doInBackground(): ProcessStep {
             return try {
+
+                val aaaa =
+                    applicationContext.assets.open("tessdata/eng.traineddata")
+                val ccc = applicationContext.getDatabasePath(Configuration.DATABASE_NAME_OF_FILE)
+                //val ppp = Path("/data/user/0/pl.autokat/tessdata/").createDirectory()
+
+                val bbbb = FileOutputStream("/data/user/0/pl.autokat/tessdata/eng.traineddata")
+                aaaa.copyTo(bbbb)
+                bbbb.close()
+                aaaa.close()
+
+
                 Course.getValues(database, date)
                 ProcessStep.SUCCESS
             } catch (e: UnknownHostException) {

@@ -1,11 +1,12 @@
 package pl.autokat.components
 
-import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import androidx.test.core.app.ApplicationProvider
+import android.net.Uri
+import android.os.Environment
 import com.github.kittinunf.fuel.Fuel
-import com.google.android.gms.vision.Frame
-import com.google.android.gms.vision.text.TextRecognizer
+import com.googlecode.leptonica.android.WriteFile
+import com.googlecode.tesseract.android.TessBaseAPI
 import com.kizitonwose.calendarview.utils.yearMonth
 import org.json.JSONObject
 import org.jsoup.Jsoup
@@ -42,23 +43,31 @@ class Course {
             return "https://www.kitco.com/londonfix/gold.londonfix$yearShortcut.html"
         }
 
+        private fun extractText(bitmap: Bitmap): String? {
+            val tessBaseApi = TessBaseAPI()
+            val path: Uri = Uri.parse("")
+
+
+//TODo
+            tessBaseApi.init("/data/user/0/pl.autokat/","eng")
+            tessBaseApi.setImage(bitmap)
+
+
+            val extractedText = tessBaseApi.utF8Text
+            tessBaseApi.end()
+            return extractedText
+        }
+
         private fun getValuesCoursesRhodium(date:LocalDate): Pair<String, String>{
             val url = "https://www.kitco.com/LFgif/rd00-09D.gif"
+            val imageData = URL(url).readBytes()
+            val bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
+
+            var text = extractText(bitmap)
+
 
             //TODO
-            //try do google vision library?
             //for get rhodium avg of month
-
-            val textRecognizer =
-                TextRecognizer.Builder(ApplicationProvider.getApplicationContext<Context>()).build()
-
-            val imageData = URL(url).readBytes()
-            val bmp = BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
-            val frame = Frame.Builder().setBitmap(bmp).build()
-
-            val textBlocks = textRecognizer.detect(frame)
-
-
 
 
             return Pair("", "")
