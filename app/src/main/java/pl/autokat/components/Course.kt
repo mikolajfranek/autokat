@@ -3,17 +3,14 @@ package pl.autokat.components
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.github.kittinunf.fuel.Fuel
-import com.github.ramonrabello.opencv.android.ktx.adaptiveThreshold
-import com.github.ramonrabello.opencv.android.ktx.canny
 import com.github.ramonrabello.opencv.android.ktx.threshold
 import com.googlecode.tesseract.android.TessBaseAPI
 import com.kizitonwose.calendarview.utils.yearMonth
 import org.json.JSONObject
 import org.jsoup.Jsoup
-import org.opencv.android.Utils
 import org.opencv.core.Mat
-import org.opencv.imgproc.Imgproc
 import pl.autokat.enums.Metal
+import pl.autokat.exceptions.NoneCoursesException
 import pl.autokat.models.ModelCourse
 import java.net.URL
 import java.net.UnknownHostException
@@ -27,35 +24,57 @@ class Course {
             "https://api.nbp.pl/api/exchangerates/rates/a/usd"
         private const val MY_CATALYST_VALUES_URL_EUR_PLN =
             "https://api.nbp.pl/api/exchangerates/rates/a/eur"
-
         private const val MY_CATALYST_VALUES_URL_CATALYST_PLATINUM =
             "https://proxy.kitco.com/getPM?symbol=PT&unit=gram&currency=USD"
         private const val MY_CATALYST_VALUES_URL_CATALYST_PALLADIUM =
             "https://proxy.kitco.com/getPM?symbol=PD&unit=gram&currency=USD"
         private const val MY_CATALYST_VALUES_URL_CATALYST_RHODIUM =
             "https://proxy.kitco.com/getPM?symbol=RH&unit=gram&currency=USD"
-
         private const val MY_CATALYST_VALUES_HEADER_ORIGIN = "https://www.kitco.com"
 
         private fun getUrlNBP(date: LocalDate): String {
             return "$MY_CATALYST_VALUES_URL_USD_PLN/$date?format=json"
         }
 
-        private fun getURLKitcoNotToday(date: LocalDate): String {
-            val yearShortcut = date.year.toString().substring(2,4)
+        private fun getURLKitcoLondonFix(date: LocalDate): String {
+            val yearShortcut = date.year.toString().substring(2, 4)
             return "https://www.kitco.com/londonfix/gold.londonfix$yearShortcut.html"
         }
 
-        private fun extractText(bitmap: Bitmap): String? {
+        private fun getURLKitcoRhodiumTable(): String {
+            return "https://www.kitco.com/LFgif/rd00-09D.gif"
+        }
+
+        private fun getValueKitcoLondonFix(
+            date: LocalDate,
+            cssQuery1: String,
+            cssQuery2: String
+        ): String {
+            val doc = Jsoup.connect(getURLKitcoLondonFix(date)).get();
+            val element = doc.select("td.date:contains($date)")
+            if (element.size != 1) throw NoneCoursesException()
+            val result1 = element[0].parent()!!.select(cssQuery1).text()
+            if (result1.equals("-") == false) return result1
+            val result2 = element[0].parent()!!.select(cssQuery2).text()
+            if (result2.equals("-")) throw NoneCoursesException()
+            return result2
+        }
+
+        private fun getValueKitcoRhodium(date: LocalDate): String {
+            val byteArray = URL(getURLKitcoRhodiumTable()).readBytes()
+            val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
             val tess = TessBaseAPI()
 
 
-            tess.init("/data/user/0/pl.autokat/","digits")
+            //TODO
+            //for get rhodium avg of month
 
-            val bitmap2 = Bitmap.createBitmap(bitmap, 40, 50,bitmap.width - 40,bitmap.height-50-40)
+            tess.init("/data/user/0/pl.autokat/", "digits")
+            val bitmap2 =
+                Bitmap.createBitmap(bitmap, 40, 50, bitmap.width - 40, bitmap.height - 50 - 40)
 
             val mat = Mat()
-            mat.threshold(bitmap2, 106.0){
+            mat.threshold(bitmap2, 106.0) {
                 tess.setImage(it)
             }
 
@@ -65,36 +84,21 @@ class Course {
             return text
         }
 
-        private fun getValuesCoursesRhodium(date:LocalDate): Pair<String, String>{
-            val url = "https://www.kitco.com/LFgif/rd00-09D.gif"
-            val imageData = URL(url).readBytes()
-
-
-            val bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
-
-            var text = extractText(bitmap)
-
+        private fun getValuesCourses(metal: Metal, date: LocalDate): Pair<String, String> {
+            var left = ""
+            var right = ""
             //TODO
-            //for get rhodium avg of month
-
-
-            return Pair("", "")
-        }
-
-        private fun getValuesCourses(metal : Metal, date: LocalDate) : Pair<String, String>{
-            getValuesCoursesRhodium(date)
-
-            val url = getURLKitcoNotToday(date)
-            val doc =  Jsoup.connect(url).get();
-            val element = doc.select("td.date:contains($date)")
-            if(element.size != 1) throw IllegalArgumentException()
-            val parent = element[0].parent()
-
-            //parent.select("td.pt.pm") //platinium
-            //parent.select("td.pl.pm") //palladium
-            //TODO
-            //there not rhodium :((
-
+            when (metal) {
+                Metal.PLATINUM -> {
+                    left = getValueKitcoLondonFix(date, "td.pt.pm", "td.pt.am")
+                }
+                Metal.PALLADIUM -> {
+                    left = getValueKitcoLondonFix(date, "td.pl.pm", "td.pl.am")
+                }
+                Metal.RHODIUM -> {
+                    left = getValueKitcoRhodium(date)
+                }
+            }
             return Pair("", "")
         }
 
@@ -169,7 +173,9 @@ class Course {
                 value = content[4].replace(',', '.')
                 valueDate = content[3].split(' ')[0]
             } else {
-                //TODO
+                val pair = getValuesCourses(Metal.PALLADIUM, date)
+                value = pair.first
+                valueDate = pair.second
             }
             if (savingToSharedPreferences) {
                 SharedPreference.setKey(SharedPreference.PALLADIUM, value)
@@ -192,7 +198,9 @@ class Course {
                 value = content[4].replace(',', '.')
                 valueDate = content[3].split(' ')[0]
             } else {
-                //TODO
+                val pair = getValuesCourses(Metal.RHODIUM, date)
+                value = pair.first
+                valueDate = pair.second
             }
             if (savingToSharedPreferences) {
                 SharedPreference.setKey(SharedPreference.RHODIUM, value)
@@ -202,7 +210,7 @@ class Course {
         }
 
         @Suppress("ReplaceCallWithBinaryOperator")
-        fun getValues(database: Database, date: LocalDate) {
+        fun getValues(database: Database, date: LocalDate = LocalDate.now()) {
             val savingToSharedPreferences: Boolean = isCoursesSelected() == false
             val (usdPln, usdDate) = getCourseUsdPln(savingToSharedPreferences, date)
             val (eurPln, eurDate) = getCourseEurPln(savingToSharedPreferences, date)
