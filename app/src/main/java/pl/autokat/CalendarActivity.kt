@@ -27,6 +27,8 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
+import kotlin.io.path.Path
+import kotlin.io.path.createDirectories
 
 class CalendarActivity : AppCompatActivity() {
 
@@ -333,11 +335,13 @@ class CalendarActivity : AppCompatActivity() {
             return try {
 
                 val aaaa =
-                    applicationContext.assets.open("tessdata/eng.traineddata")
+                    applicationContext.assets.open("tessdata/digits.traineddata")
                 val ccc = applicationContext.getDatabasePath(Configuration.DATABASE_NAME_OF_FILE)
-                //val ppp = Path("/data/user/0/pl.autokat/tessdata/").createDirectory()
 
-                val bbbb = FileOutputStream("/data/user/0/pl.autokat/tessdata/eng.traineddata")
+                val ppp = Path("/data/user/0/pl.autokat/tessdata/")
+                ppp.createDirectories()
+
+                val bbbb = FileOutputStream("/data/user/0/pl.autokat/tessdata/digits.traineddata")
                 aaaa.copyTo(bbbb)
                 bbbb.close()
                 aaaa.close()

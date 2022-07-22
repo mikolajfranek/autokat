@@ -2,14 +2,17 @@ package pl.autokat.components
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
-import android.os.Environment
 import com.github.kittinunf.fuel.Fuel
-import com.googlecode.leptonica.android.WriteFile
+import com.github.ramonrabello.opencv.android.ktx.adaptiveThreshold
+import com.github.ramonrabello.opencv.android.ktx.canny
+import com.github.ramonrabello.opencv.android.ktx.threshold
 import com.googlecode.tesseract.android.TessBaseAPI
 import com.kizitonwose.calendarview.utils.yearMonth
 import org.json.JSONObject
 import org.jsoup.Jsoup
+import org.opencv.android.Utils
+import org.opencv.core.Mat
+import org.opencv.imgproc.Imgproc
 import pl.autokat.enums.Metal
 import pl.autokat.models.ModelCourse
 import java.net.URL
@@ -44,27 +47,32 @@ class Course {
         }
 
         private fun extractText(bitmap: Bitmap): String? {
-            val tessBaseApi = TessBaseAPI()
-            val path: Uri = Uri.parse("")
+            val tess = TessBaseAPI()
 
 
-//TODo
-            tessBaseApi.init("/data/user/0/pl.autokat/","eng")
-            tessBaseApi.setImage(bitmap)
+            tess.init("/data/user/0/pl.autokat/","digits")
+
+            val bitmap2 = Bitmap.createBitmap(bitmap, 40, 50,bitmap.width - 40,bitmap.height-50-40)
+
+            val mat = Mat()
+            mat.threshold(bitmap2, 106.0){
+                tess.setImage(it)
+            }
+
+            val text = tess.utF8Text
 
 
-            val extractedText = tessBaseApi.utF8Text
-            tessBaseApi.end()
-            return extractedText
+            return text
         }
 
         private fun getValuesCoursesRhodium(date:LocalDate): Pair<String, String>{
             val url = "https://www.kitco.com/LFgif/rd00-09D.gif"
             val imageData = URL(url).readBytes()
+
+
             val bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
 
             var text = extractText(bitmap)
-
 
             //TODO
             //for get rhodium avg of month

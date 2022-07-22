@@ -41,6 +41,15 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'x86', 'x86_64', 'armeabi', 'armeabi-v7a', 'mips', 'mips64', 'arm64-v8a'
+            universalApk false
+        }
+    }
 }
 
 dependencies {
@@ -72,6 +81,7 @@ dependencies {
     }
     implementation 'com.github.kizitonwose:CalendarView:1.0.4'
     implementation 'org.jsoup:jsoup:1.15.2'
-    implementation 'com.rmtheis:tess-two:9.1.0'
+    implementation 'cz.adaptech:tesseract4android:4.1.1'
+    implementation 'com.github.ramonrabello:opencv-android-ktx:1.0.0'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.6'
 }
