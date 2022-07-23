@@ -335,7 +335,7 @@ class CalendarActivity : AppCompatActivity() {
             return try {
 
                 val aaaa =
-                    applicationContext.assets.open("tessdata/digits.traineddata")
+                    applicationContext.assets.open("")
                 val ccc = applicationContext.getDatabasePath(Configuration.DATABASE_NAME_OF_FILE)
 
                 val ppp = Path("/data/user/0/pl.autokat/tessdata/")

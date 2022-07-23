@@ -11,11 +11,9 @@ import android.util.Base64
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper
 import org.json.JSONArray
 import org.json.JSONObject
-import pl.autokat.enums.ProgramMode
 import pl.autokat.models.ModelCatalyst
 import pl.autokat.models.ModelCourse
 import pl.autokat.models.ModelHistoryFilter
-import java.io.FileOutputStream
 import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
@@ -26,7 +24,7 @@ class Database(context: Context) : SQLiteAssetHelper(
     null,
     Configuration.DATABASE_VERSION
 ) {
-    private val myContext: Context = context
+    private val context: Context = context
     private val transformation: String = "BLOWFISH/ECB/PKCS5Padding"
 
     //region upgrade, update
@@ -81,13 +79,7 @@ class Database(context: Context) : SQLiteAssetHelper(
                 //in other case override database (copy database from assets to directory system where is database of app)
                 else -> {
                     db.endTransaction()
-                    val fileDatabaseInAssets =
-                        myContext.assets.open(Configuration.DATABASE_FILE_PATH_ASSETS)
-                    val fileDatabaseInSystem =
-                        FileOutputStream(myContext.getDatabasePath(Configuration.DATABASE_NAME_OF_FILE))
-                    fileDatabaseInAssets.copyTo(fileDatabaseInSystem)
-                    fileDatabaseInSystem.close()
-                    fileDatabaseInAssets.close()
+                    Assetser.copyAssetFileToInternal(context, Configuration.DATABASE_FILE_PATH_ASSETS)
                     db.beginTransaction()
                     onCreate(db)
                 }

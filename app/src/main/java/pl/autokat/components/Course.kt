@@ -1,5 +1,6 @@
 package pl.autokat.components
 
+import android.content.res.AssetManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.github.kittinunf.fuel.Fuel
@@ -66,10 +67,17 @@ class Course {
             val tess = TessBaseAPI()
 
 
+
+
+
+
             //TODO
             //for get rhodium avg of month
 
             tess.init("/data/user/0/pl.autokat/", "digits")
+
+
+
             val bitmap2 =
                 Bitmap.createBitmap(bitmap, 40, 50, bitmap.width - 40, bitmap.height - 50 - 40)
 
