@@ -8,9 +8,8 @@ import kotlin.io.path.createDirectories
 
 class Assetser {
     companion object {
-        private fun getPathInternal(context: Context): String {
-            var pathInternal = context.getDatabasePath(Configuration.DATABASE_NAME_OF_FILE).path
-            pathInternal = pathInternal.substring(0, pathInternal.lastIndexOf('/'))
+        fun getPathInternal(context: Context): String {
+            var pathInternal = context.getFileStreamPath("").path
             pathInternal = pathInternal.substring(0, pathInternal.lastIndexOf('/'))
             return pathInternal
         }
@@ -19,11 +18,6 @@ class Assetser {
             context: Context,
             relativePathOfFileInAssets: String
         ) {
-
-            //TODO - decide, where copy tessdata?
-            //val f = File(context.getFileStreamPath("").path)
-            //f.listFiles()
-
             val directoryPathInternal = getPathInternal(context)
             val filePathInternal = directoryPathInternal.plus("/$relativePathOfFileInAssets")
             if (File(filePathInternal).exists() == false) {

@@ -333,21 +333,8 @@ class CalendarActivity : AppCompatActivity() {
 
         private fun doInBackground(): ProcessStep {
             return try {
-
-                val aaaa =
-                    applicationContext.assets.open("")
-                val ccc = applicationContext.getDatabasePath(Configuration.DATABASE_NAME_OF_FILE)
-
-                val ppp = Path("/data/user/0/pl.autokat/tessdata/")
-                ppp.createDirectories()
-
-                val bbbb = FileOutputStream("/data/user/0/pl.autokat/tessdata/digits.traineddata")
-                aaaa.copyTo(bbbb)
-                bbbb.close()
-                aaaa.close()
-
-
-                Course.getValues(database, date)
+                val dataPathTessBaseAPI = Assetser.getPathInternal(applicationContext)
+                Course.getValues(database, date, dataPathTessBaseAPI)
                 ProcessStep.SUCCESS
             } catch (e: UnknownHostException) {
                 ProcessStep.NETWORK_FAILED
