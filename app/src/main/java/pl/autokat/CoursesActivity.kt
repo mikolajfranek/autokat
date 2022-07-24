@@ -153,8 +153,6 @@ class CoursesActivity : AppCompatActivity() {
             return try {
                 Course.getValues(database)
                 ProcessStep.SUCCESS
-            } catch(e: NoneCoursesException){
-                ProcessStep.NETWORK_FAILED
             } catch (e: UnknownHostException) {
                 ProcessStep.NETWORK_FAILED
             } catch (e: Exception) {

@@ -14,6 +14,13 @@ class Configuration {
         const val DATABASE_VERSION: Int = 4
         const val DATABASE_NAME_OF_FILE: String = "autokat.db"
         const val DATABASE_FILE_PATH_ASSETS: String = "databases/$DATABASE_NAME_OF_FILE"
+        const val OZ_VALUE: Double = 31.1034768
+
+        /*
+        TODO
+         - podczas wątku (blokowanie GUI) nie powinno również działąć na przyciskach z menu?
+         - otworzenie aplikacji (COMPANY) nie powinno otwierać activity result jako pierwszego?
+         */
 
         @Volatile
         var workerDownloadThumbnail: AtomicBoolean = AtomicBoolean(false)
@@ -49,6 +56,7 @@ class Configuration {
         const val HISTORY_FILTER_DELETED: String = "Pomyślnie usunięto nazwę do filtrowania"
         const val HISTORY_FILTER_CANNOT_SAVE_EMPTY: String = "Nie można zapisać pustej wartości"
         const val COURSES_REFRESH: String = "Odśwież wartości kursów"
+        const val COURSES_NONE: String = "Brak wartości kursóœ dla danego dnia"
 
         //region spreadsheet columns users
         const val SPREADSHEET_USERS_ID: Int = 0

@@ -20,15 +20,13 @@ import pl.autokat.databinding.ActivityCalendarBinding
 import pl.autokat.databinding.CalendarDayBinding
 import pl.autokat.databinding.CalendarHeaderBinding
 import pl.autokat.enums.ProcessStep
+import pl.autokat.exceptions.NoneCoursesException
 import pl.autokat.models.ModelCourse
-import java.io.FileOutputStream
 import java.net.UnknownHostException
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
-import kotlin.io.path.Path
-import kotlin.io.path.createDirectories
 
 class CalendarActivity : AppCompatActivity() {
 
@@ -40,29 +38,9 @@ class CalendarActivity : AppCompatActivity() {
     private var mapCoursesOfYearMonths = HashMap<String, HashMap<String, ModelCourse>>()
 
     //region methods used in override
-    private fun downloadCourses(): Boolean {
+    private fun downloadHistoricalCourses(): Boolean {
         selectedDate ?: return false
-
-
-        //TODO
-        val message = try {
-
-            Thread(RunnableUpdateCourses(selectedDate!!)).start()
-
-            ProcessStep.SUCCESS
-        } catch (e: UnknownHostException) {
-            ProcessStep.NETWORK_FAILED
-        } catch (e: Exception) {
-            ProcessStep.UNHANDLED_EXCEPTION
-        }
-
-        Toast.makeText(
-            applicationContext,
-            message.toString(),
-            Toast.LENGTH_SHORT
-        ).show()
-
-
+        Thread(RunnableUpdateCourses(selectedDate!!)).start()
         return true
     }
 
@@ -220,8 +198,8 @@ class CalendarActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.toolbar_list_calendar_download_courses -> {
-                return downloadCourses()
+            R.id.toolbar_list_calendar_download_historical_courses -> {
+                return downloadHistoricalCourses()
             }
             R.id.toolbar_list_calendar_choose -> {
                 return chooseDay()
@@ -334,8 +312,16 @@ class CalendarActivity : AppCompatActivity() {
         private fun doInBackground(): ProcessStep {
             return try {
                 val dataPathTessBaseAPI = Assetser.getPathInternal(applicationContext)
-                Course.getValues(database, date, dataPathTessBaseAPI)
+                Course.getValues(
+                    database,
+                    false,
+                    date,
+                    dataPathTessBaseAPI,
+                    true
+                )
                 ProcessStep.SUCCESS
+            } catch (e: NoneCoursesException) {
+                ProcessStep.NONE_COURSES
             } catch (e: UnknownHostException) {
                 ProcessStep.NETWORK_FAILED
             } catch (e: Exception) {
@@ -352,10 +338,10 @@ class CalendarActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-                ProcessStep.UNHANDLED_EXCEPTION -> {
+                ProcessStep.NONE_COURSES -> {
                     Toast.makeText(
                         applicationContext,
-                        Configuration.UPDATE_FAILED,
+                        Configuration.COURSES_NONE,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -365,7 +351,11 @@ class CalendarActivity : AppCompatActivity() {
                         Configuration.UPDATE_SUCCESS,
                         Toast.LENGTH_SHORT
                     ).show()
-                    //setInViewCourses()
+                    /*
+                    TODO
+                     - odśwież kalendarz, aby była widoczna zmiana,
+                     - zaznacz ewentualnie ten 'dzień'
+                     */
                 }
                 else -> {
                     Toast.makeText(

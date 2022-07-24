@@ -9,6 +9,7 @@ import com.kizitonwose.calendarview.utils.yearMonth
 import org.json.JSONObject
 import org.jsoup.Jsoup
 import org.opencv.core.Mat
+import pl.autokat.enums.Currency
 import pl.autokat.enums.Metal
 import pl.autokat.exceptions.NoneCoursesException
 import pl.autokat.models.ModelCourse
@@ -17,7 +18,6 @@ import java.net.UnknownHostException
 import java.time.LocalDate
 import java.util.*
 import kotlin.math.absoluteValue
-
 
 class Course {
     companion object {
@@ -33,11 +33,22 @@ class Course {
             "https://proxy.kitco.com/getPM?symbol=RH&unit=gram&currency=USD"
         private const val MY_CATALYST_VALUES_HEADER_ORIGIN = "https://www.kitco.com"
 
-        private fun getUrlNBP(date: LocalDate): String {
-            if (date == LocalDate.now()) {
-                return "$MY_CATALYST_VALUES_URL_USD_PLN?format=json"
+        private fun getUrlNBP(currency: Currency, date: LocalDate?): String {
+            val basicURL = when (currency) {
+                Currency.USD -> {
+                    MY_CATALYST_VALUES_URL_USD_PLN
+                }
+                Currency.EUR -> {
+                    MY_CATALYST_VALUES_URL_EUR_PLN
+                }
+                else -> {
+                    ""
+                }
             }
-            return "$MY_CATALYST_VALUES_URL_USD_PLN/$date?format=json"
+            if (date == null) {
+                return "$basicURL?format=json"
+            }
+            return "$basicURL/$date?format=json"
         }
 
         private fun getURLKitcoLondonFix(date: LocalDate): String {
@@ -93,12 +104,12 @@ class Course {
             }
         }
 
-        private fun getValuesCourses(
+        private fun getHistoricalCourses(
             metal: Metal,
             date: LocalDate,
             dataPathTessBaseAPI: String
         ): String {
-            return when (metal) {
+            val courseString = when (metal) {
                 Metal.PLATINUM -> {
                     getValueKitcoLondonFix(date, "td.pt.pm", "td.pt.am")
                 }
@@ -109,113 +120,95 @@ class Course {
                     getValueKitcoRhodium(date, dataPathTessBaseAPI)
                 }
             }
+            return courseString.toDouble().div(Configuration.OZ_VALUE).toString()
         }
 
-        private fun getCourseUsdPln(
+        private fun getCourse(
+            currency: Currency,
             savingToSharedPreferences: Boolean,
-            date: LocalDate
+            dateHistorical: LocalDate? = null,
+            downloadedHistoricalCourses: Boolean = false
         ): Pair<String, String> {
-            val (_, response, result) = Fuel.get(getUrlNBP(date)).responseString()
-            if (response.statusCode == 404) throw NoneCoursesException()
+            val (_, response, result) = Fuel.get(
+                getUrlNBP(
+                    currency,
+                    if (downloadedHistoricalCourses) dateHistorical else null
+                )
+            ).responseString()
+            if (downloadedHistoricalCourses == true && response.statusCode == 404) throw NoneCoursesException()
             if (response.statusCode != 200) throw UnknownHostException()
             val rate: JSONObject = JSONObject(result.get()).getJSONArray("rates").getJSONObject(0)
             val value = rate.getString("mid").replace(',', '.')
             val valueDate = rate.getString("effectiveDate")
             if (savingToSharedPreferences) {
-                SharedPreference.setKey(SharedPreference.USD_PLN, value)
-                SharedPreference.setKey(SharedPreference.USD_PLN_DATE, valueDate)
+                when (currency) {
+                    Currency.USD -> {
+                        SharedPreference.setKey(SharedPreference.USD_PLN, value)
+                        SharedPreference.setKey(SharedPreference.USD_PLN_DATE, valueDate)
+                    }
+                    Currency.EUR -> {
+                        SharedPreference.setKey(SharedPreference.EUR_PLN, value)
+                        SharedPreference.setKey(SharedPreference.EUR_PLN_DATE, valueDate)
+                    }
+                    else -> {
+                        //
+                    }
+                }
             }
             return Pair(value, valueDate)
+
         }
 
-        private fun getCourseEurPln(
+        private fun getCourse(
+            metal: Metal,
             savingToSharedPreferences: Boolean,
-            date: LocalDate
-        ): Pair<String, String> {
-            val (_, response, result) = Fuel.get(getUrlNBP(date)).responseString()
-            if (response.statusCode == 404) throw NoneCoursesException()
-            if (response.statusCode != 200) throw UnknownHostException()
-            val rate: JSONObject = JSONObject(result.get()).getJSONArray("rates").getJSONObject(0)
-            val value = rate.getString("mid").replace(',', '.')
-            val valueDate = rate.getString("effectiveDate")
-            if (savingToSharedPreferences) {
-                SharedPreference.setKey(SharedPreference.EUR_PLN, value)
-                SharedPreference.setKey(SharedPreference.EUR_PLN_DATE, valueDate)
-            }
-            return Pair(value, valueDate)
-        }
-
-        private fun getCoursePlatinum(
-            savingToSharedPreferences: Boolean,
-            date: LocalDate,
-            dataPathTessBaseAPI: String
+            dateHistorical: LocalDate = LocalDate.now(),
+            dataPathTessBaseAPI: String = "",
+            downloadedHistoricalCourses: Boolean = false
         ): Pair<String, String> {
             var value = ""
             var valueDate = ""
-            if (date == LocalDate.now()) {
-                val (_, response, result) = Fuel.get(MY_CATALYST_VALUES_URL_CATALYST_PLATINUM)
-                    .header(mapOf("Origin" to MY_CATALYST_VALUES_HEADER_ORIGIN)).responseString()
+            if (downloadedHistoricalCourses == false) {
+                val (_, response, result) = when (metal) {
+                    Metal.PLATINUM -> {
+                        Fuel.get(MY_CATALYST_VALUES_URL_CATALYST_PLATINUM)
+                            .header(mapOf("Origin" to MY_CATALYST_VALUES_HEADER_ORIGIN))
+                            .responseString()
+                    }
+                    Metal.PALLADIUM -> {
+                        Fuel.get(MY_CATALYST_VALUES_URL_CATALYST_PALLADIUM)
+                            .header(mapOf("Origin" to MY_CATALYST_VALUES_HEADER_ORIGIN))
+                            .responseString()
+                    }
+                    Metal.RHODIUM -> {
+                        Fuel.get(MY_CATALYST_VALUES_URL_CATALYST_RHODIUM)
+                            .header(mapOf("Origin" to MY_CATALYST_VALUES_HEADER_ORIGIN))
+                            .responseString()
+                    }
+                }
                 if (response.statusCode != 200) throw UnknownHostException()
                 val content: List<String> = result.get().split(',')
                 value = content[4].replace(',', '.')
                 valueDate = content[3].split(' ')[0]
             } else {
-                value = getValuesCourses(Metal.PLATINUM, date, dataPathTessBaseAPI)
-                valueDate = date.toString()
+                value = getHistoricalCourses(metal, dateHistorical, dataPathTessBaseAPI)
+                valueDate = dateHistorical.toString()
             }
             if (savingToSharedPreferences) {
-                SharedPreference.setKey(SharedPreference.PLATINUM, value)
-                SharedPreference.setKey(SharedPreference.PLATINUM_DATE, valueDate)
-            }
-            return Pair(value, valueDate)
-        }
-
-        private fun getCoursePalladium(
-            savingToSharedPreferences: Boolean,
-            date: LocalDate,
-            dataPathTessBaseAPI: String
-        ): Pair<String, String> {
-            var value = ""
-            var valueDate = ""
-            if (date == LocalDate.now()) {
-                val (_, response, result) = Fuel.get(MY_CATALYST_VALUES_URL_CATALYST_PALLADIUM)
-                    .header(mapOf("Origin" to MY_CATALYST_VALUES_HEADER_ORIGIN)).responseString()
-                if (response.statusCode != 200) throw UnknownHostException()
-                val content: List<String> = result.get().split(',')
-                value = content[4].replace(',', '.')
-                valueDate = content[3].split(' ')[0]
-            } else {
-                value = getValuesCourses(Metal.PALLADIUM, date, dataPathTessBaseAPI)
-                valueDate = date.toString()
-            }
-            if (savingToSharedPreferences) {
-                SharedPreference.setKey(SharedPreference.PALLADIUM, value)
-                SharedPreference.setKey(SharedPreference.PALLADIUM_DATE, valueDate)
-            }
-            return Pair(value, valueDate)
-        }
-
-        private fun getCourseRhodium(
-            savingToSharedPreferences: Boolean,
-            date: LocalDate,
-            dataPathTessBaseAPI: String
-        ): Pair<String, String> {
-            var value = ""
-            var valueDate = ""
-            if (date == LocalDate.now()) {
-                val (_, response, result) = Fuel.get(MY_CATALYST_VALUES_URL_CATALYST_RHODIUM)
-                    .header(mapOf("Origin" to MY_CATALYST_VALUES_HEADER_ORIGIN)).responseString()
-                if (response.statusCode != 200) throw UnknownHostException()
-                val content: List<String> = result.get().split(',')
-                value = content[4].replace(',', '.')
-                valueDate = content[3].split(' ')[0]
-            } else {
-                value = getValuesCourses(Metal.RHODIUM, date, dataPathTessBaseAPI)
-                valueDate = date.toString()
-            }
-            if (savingToSharedPreferences) {
-                SharedPreference.setKey(SharedPreference.RHODIUM, value)
-                SharedPreference.setKey(SharedPreference.RHODIUM_DATE, valueDate)
+                when (metal) {
+                    Metal.PLATINUM -> {
+                        SharedPreference.setKey(SharedPreference.PLATINUM, value)
+                        SharedPreference.setKey(SharedPreference.PLATINUM_DATE, valueDate)
+                    }
+                    Metal.PALLADIUM -> {
+                        SharedPreference.setKey(SharedPreference.PALLADIUM, value)
+                        SharedPreference.setKey(SharedPreference.PALLADIUM_DATE, valueDate)
+                    }
+                    Metal.RHODIUM -> {
+                        SharedPreference.setKey(SharedPreference.RHODIUM, value)
+                        SharedPreference.setKey(SharedPreference.RHODIUM_DATE, valueDate)
+                    }
+                }
             }
             return Pair(value, valueDate)
         }
@@ -223,29 +216,42 @@ class Course {
         @Suppress("ReplaceCallWithBinaryOperator")
         fun getValues(
             database: Database,
-            date: LocalDate = LocalDate.now(),
-            dataPathTessBaseAPI: String = ""
+            savingToSharedPreferences: Boolean = isCoursesSelected() == false,
+            dateHistorical: LocalDate = LocalDate.now(),
+            dataPathTessBaseAPI: String = "",
+            downloadedHistoricalCourses: Boolean = false
         ) {
-            //TODO - savingToSharedPreferences nie pasuje tutaj?
-
-
-            val savingToSharedPreferences: Boolean = isCoursesSelected() == false
-            val (usdPln, usdDate) = getCourseUsdPln(savingToSharedPreferences, date)
-            val (eurPln, eurDate) = getCourseEurPln(savingToSharedPreferences, date)
-            val (platinum, platinumDate) = getCoursePlatinum(
+            val (usdPln, usdDate) = getCourse(
+                Currency.USD,
                 savingToSharedPreferences,
-                date,
-                dataPathTessBaseAPI
+                dateHistorical,
+                downloadedHistoricalCourses
             )
-            val (palladium, palladiumDate) = getCoursePalladium(
-                savingToSharedPreferences,
-                date,
-                dataPathTessBaseAPI
+            val (eurPln, eurDate) = getCourse(
+                Currency.EUR, savingToSharedPreferences,
+                dateHistorical,
+                downloadedHistoricalCourses
             )
-            val (rhodium, rhodiumDate) = getCourseRhodium(
+            val (platinum, platinumDate) = getCourse(
+                Metal.PLATINUM,
                 savingToSharedPreferences,
-                date,
-                dataPathTessBaseAPI
+                dateHistorical,
+                dataPathTessBaseAPI,
+                downloadedHistoricalCourses
+            )
+            val (palladium, palladiumDate) = getCourse(
+                Metal.PALLADIUM,
+                savingToSharedPreferences,
+                dateHistorical,
+                dataPathTessBaseAPI,
+                downloadedHistoricalCourses
+            )
+            val (rhodium, rhodiumDate) = getCourse(
+                Metal.RHODIUM,
+                savingToSharedPreferences,
+                dateHistorical,
+                dataPathTessBaseAPI,
+                downloadedHistoricalCourses
             )
             if (usdDate.equals(eurDate) && eurDate.equals(platinumDate) && platinumDate.equals(
                     palladiumDate
@@ -269,10 +275,12 @@ class Course {
                     //
                 }
             }
-            SharedPreference.setKey(
-                SharedPreference.UPDATE_COURSE_TIMESTAMP,
-                Date().time.toString()
-            )
+            if (downloadedHistoricalCourses == false) {
+                SharedPreference.setKey(
+                    SharedPreference.UPDATE_COURSE_TIMESTAMP,
+                    Date().time.toString()
+                )
+            }
         }
 
         fun saveSelectedCourses(modelCourse: ModelCourse) {
