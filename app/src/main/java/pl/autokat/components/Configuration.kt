@@ -56,7 +56,7 @@ class Configuration {
         const val HISTORY_FILTER_DELETED: String = "Pomyślnie usunięto nazwę do filtrowania"
         const val HISTORY_FILTER_CANNOT_SAVE_EMPTY: String = "Nie można zapisać pustej wartości"
         const val COURSES_REFRESH: String = "Odśwież wartości kursów"
-        const val COURSES_NONE: String = "Brak wartości kursóœ dla danego dnia"
+        const val COURSES_NONE: String = "Brak wartości kursów dla danego dnia"
 
         //region spreadsheet columns users
         const val SPREADSHEET_USERS_ID: Int = 0
