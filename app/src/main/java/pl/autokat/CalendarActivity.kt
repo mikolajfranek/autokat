@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -16,6 +17,7 @@ import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
 import com.kizitonwose.calendarview.utils.yearMonth
 import pl.autokat.components.*
+import pl.autokat.databinding.ActivityAboutBinding
 import pl.autokat.databinding.ActivityCalendarBinding
 import pl.autokat.databinding.CalendarDayBinding
 import pl.autokat.databinding.CalendarHeaderBinding
@@ -27,6 +29,7 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
+import java.util.concurrent.atomic.AtomicBoolean
 
 class CalendarActivity : AppCompatActivity() {
 
@@ -35,6 +38,7 @@ class CalendarActivity : AppCompatActivity() {
     private var menuItemDownloadCourses: MenuItem? = null
     private var menuItemCheck: MenuItem? = null
     private var selectedDate: LocalDate? = null
+    private var selectedTextView: TextView? = null
     private var mapCoursesOfYearMonths = HashMap<String, HashMap<String, ModelCourse>>()
 
     //region methods used in override
@@ -234,10 +238,12 @@ class CalendarActivity : AppCompatActivity() {
         private fun handleChangeDay() {
             if (selectedDate == day.date) {
                 selectedDate = null
+                selectedTextView = null
                 activityCalendarBinding.calendarView.notifyDayChanged(day)
             } else {
                 val oldDate = selectedDate
                 selectedDate = day.date
+                selectedTextView = textView
                 activityCalendarBinding.calendarView.notifyDateChanged(day.date)
                 oldDate?.let {
                     activityCalendarBinding.calendarView.notifyDateChanged(oldDate)
@@ -346,16 +352,22 @@ class CalendarActivity : AppCompatActivity() {
                     ).show()
                 }
                 ProcessStep.SUCCESS -> {
+                    val keyYearMonth = date.yearMonth.toString()
+                    val setOfYearMonth = hashSetOf(keyYearMonth)
+                    val valueOfDatabase =
+                        database.getCoursesOfYearMonths(setOfYearMonth)[keyYearMonth]
+                    if (valueOfDatabase?.isEmpty() == false) {
+                        if (mapCoursesOfYearMonths.contains(keyYearMonth))
+                            mapCoursesOfYearMonths.remove(keyYearMonth)
+                        mapCoursesOfYearMonths[keyYearMonth] = valueOfDatabase
+                    }
+                    selectedDate = null
+                    selectedTextView?.performClick()
                     Toast.makeText(
                         applicationContext,
                         Configuration.UPDATE_SUCCESS,
                         Toast.LENGTH_SHORT
                     ).show()
-                    /*
-                    TODO
-                     - odśwież kalendarz, aby była widoczna zmiana,
-                     - zaznacz ewentualnie ten 'dzień'
-                     */
                 }
                 else -> {
                     Toast.makeText(

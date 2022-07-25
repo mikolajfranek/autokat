@@ -156,7 +156,6 @@ class Course {
                 }
             }
             return Pair(value, valueDate)
-
         }
 
         private fun getCourse(
