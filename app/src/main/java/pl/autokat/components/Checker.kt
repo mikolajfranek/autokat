@@ -2,6 +2,7 @@ package pl.autokat.components
 
 import android.annotation.SuppressLint
 import org.json.JSONObject
+import pl.autokat.enums.ProgramMode
 import pl.autokat.enums.TimeChecking
 import java.net.URL
 import java.text.SimpleDateFormat
@@ -12,8 +13,17 @@ class Checker {
         private const val URL_TIMESTAMP: String =
             "https://worldtimeapi.org/api/timezone/Europe/Warsaw"
 
+        fun checkTimeIsGreaterThanNow(dateInput: String): Boolean {
+            val timestamp: Long = Date().time
+            val timestampInput: Long =
+                (SimpleDateFormat("yyyy-MM-dd").parse(dateInput)!!.time) + Configuration.ONE_DAY_IN_MILLISECONDS
+            return timestampInput > timestamp
+
+            //TODO
+        }
+
         @SuppressLint("SimpleDateFormat")
-        fun checkTimeOnPhone(dateInput: String, timeChecking: TimeChecking): Boolean {
+        fun checkTimeOnPhone(timeChecking: TimeChecking): Boolean {
             when (timeChecking) {
                 TimeChecking.NOW_GREATER_THAN_TIME_FROM_INTERNET -> {
                     val json = JSONObject(URL(URL_TIMESTAMP).readText())
@@ -28,21 +38,22 @@ class Checker {
                         return true
                     }
                     return false
-                }
-                TimeChecking.PARAMETER_IS_GREATER_THAN_NOW -> {
-                    val timestamp: Long = Date().time
-                    val timestampInput: Long =
-                        (SimpleDateFormat("yyyy-MM-dd").parse(dateInput)!!.time) + Configuration.ONE_DAY_IN_MILLISECONDS
-                    return timestampInput > timestamp
+                    //TODO
+
                 }
                 TimeChecking.CHECKING_LICENCE -> {
-                    val timestamp: Long = Date().time
-                    val timestampLicence: Long = (SimpleDateFormat("yyyy-MM-dd").parse(
+                    if (Configuration.PROGRAM_MODE == ProgramMode.CLIENT) return true
+                    val dateSavedInSharedPreference =
                         SharedPreference.getKey(SharedPreference.LICENCE_DATE_OF_END)
-                    )!!.time) + Configuration.ONE_DAY_IN_MILLISECONDS
-                    val timestampFromConfiguration: Long =
+                    if (dateSavedInSharedPreference.isEmpty()) return false
+                    val timestampLicence: Long =
+                        Parser.parseStringDateToDate(dateSavedInSharedPreference).time.plus(
+                            Configuration.ONE_DAY_IN_MILLISECONDS
+                        )
+                    val timestamp: Long = Date().time
+                    val timestampSavedInSharedPreference: Long =
                         SharedPreference.getKey(SharedPreference.CURRENT_TIMESTAMP).toLong()
-                    if ((timestamp > timestampFromConfiguration) && (timestampLicence > timestamp)) {
+                    if ((timestampLicence > timestamp) && (timestamp > timestampSavedInSharedPreference)) {
                         SharedPreference.setKey(
                             SharedPreference.CURRENT_TIMESTAMP,
                             timestamp.toString()

@@ -219,7 +219,7 @@ class MainActivity : AppCompatActivity() {
                 return ProcessStep.COMPANY_ELAPSED_LICENCE
             }
             if (SharedPreference.getKey(SharedPreference.LICENCE_DATE_OF_END).isEmpty() == false) {
-                if (Checker.checkTimeOnPhone("", TimeChecking.CHECKING_LICENCE) == false) {
+                if (Checker.checkTimeOnPhone(TimeChecking.CHECKING_LICENCE) == false) {
                     return ProcessStep.USER_ELAPSED_DATE_LICENCE
                 }
                 return ProcessStep.SUCCESS
@@ -228,10 +228,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         private fun checkTimeOnPhoneWithTimeOnTheInternet(): ProcessStep {
-            if (Checker.checkTimeOnPhone(
-                    "",
-                    TimeChecking.NOW_GREATER_THAN_TIME_FROM_INTERNET
-                ) == false
+            if (Checker.checkTimeOnPhone(TimeChecking.NOW_GREATER_THAN_TIME_FROM_INTERNET) == false
             ) {
                 ProcessStep.USER_ELAPSED_DATE_LICENCE
             }
@@ -240,10 +237,7 @@ class MainActivity : AppCompatActivity() {
 
         private fun checkTimeOfUserLicenceWithTimeOnPhone(user: JSONArray): ProcessStep {
             val licenceDate = user.getString(Configuration.SPREADSHEET_USERS_LICENCE)
-            if (licenceDate.isEmpty() || Checker.checkTimeOnPhone(
-                    licenceDate,
-                    TimeChecking.PARAMETER_IS_GREATER_THAN_NOW
-                ) == false
+            if (licenceDate.isEmpty() || Checker.checkTimeIsGreaterThanNow(licenceDate) == false
             ) {
                 return ProcessStep.USER_ELAPSED_DATE_LICENCE
             }

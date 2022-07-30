@@ -282,8 +282,11 @@ class ResultActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (Checker.checkTimeOnPhone("", TimeChecking.CHECKING_LICENCE) == false) openMainActivity()
-        Thread(RunnableWorkBackground()).start()
+        if (Checker.checkTimeOnPhone(TimeChecking.CHECKING_LICENCE) == false){
+            openMainActivity()
+        }else{
+            Thread(RunnableWorkBackground()).start()
+        }
     }
 
     override fun onCreateOptionsMenu(menuInput: Menu): Boolean {
@@ -405,9 +408,8 @@ class ResultActivity : AppCompatActivity() {
             val user: JSONArray =
                 Spreadsheet.getDataLogin(SharedPreference.getKey(SharedPreference.LOGIN))
                     ?: return ProcessStep.USER_ELAPSED_DATE_LICENCE
-            if (Checker.checkTimeOnPhone(
-                    user.getString(Configuration.SPREADSHEET_USERS_LICENCE),
-                    TimeChecking.PARAMETER_IS_GREATER_THAN_NOW
+            if (Checker.checkTimeIsGreaterThanNow(
+                    user.getString(Configuration.SPREADSHEET_USERS_LICENCE)
                 ) == false
             ) {
                 return ProcessStep.USER_ELAPSED_DATE_LICENCE

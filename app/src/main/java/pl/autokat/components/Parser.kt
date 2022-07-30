@@ -1,8 +1,10 @@
 package pl.autokat.components
 
 import org.json.JSONObject
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 class Parser {
     companion object {
@@ -14,6 +16,10 @@ class Parser {
         fun parseStringDateToLocalDate(date: String): LocalDate {
             val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
             return LocalDate.parse(date, formatter)
+        }
+
+        fun parseStringDateToDate(date: String): Date {
+            return SimpleDateFormat("yyyy-MM-dd").parse(date)!!
         }
 
         fun parseUrlOfPicture(urlShared: String, width: Int, height: Int): String {
