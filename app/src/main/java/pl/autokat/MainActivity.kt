@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         val view = activityMainBinding.root
         setContentView(view)
-        setSupportActionBar(activityMainBinding.toolbar)
+        //setSupportActionBar(activityMainBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         SharedPreference.init(this)
     }

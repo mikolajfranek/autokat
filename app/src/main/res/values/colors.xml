@@ -6,4 +6,8 @@
     <color name="colorGray">#EEEEEE</color>
     <color name="colorLine">#E7E7E7</color>
     <color name="colorBlack">#000000</color>
+
+    <color name="white">#ffffff</color>
+    <color name="mainColor">#DEF2E6</color>
+    <color name="black">#293462</color>
 </resources>

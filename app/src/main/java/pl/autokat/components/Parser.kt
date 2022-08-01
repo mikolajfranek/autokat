@@ -19,7 +19,7 @@ class Parser {
         }
 
         fun parseStringDateToDate(date: String): Date {
-            return SimpleDateFormat("yyyy-MM-dd").parse(date)!!
+            return SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(date)!!
         }
 
         fun parseUrlOfPicture(urlShared: String, width: Int, height: Int): String {

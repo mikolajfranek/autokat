@@ -19,7 +19,6 @@ class Configuration {
         /*
         TODO
          - podczas wątku (blokowanie GUI) nie powinno również działąć na przyciskach z menu?
-         - otworzenie aplikacji (COMPANY) nie powinno otwierać activity result jako pierwszego?
          */
 
         @Volatile
