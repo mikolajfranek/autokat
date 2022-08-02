@@ -17,6 +17,7 @@ import androidx.core.view.get
 import org.json.JSONArray
 import pl.autokat.components.*
 import pl.autokat.databinding.ActivityMainBinding
+import pl.autokat.enums.CompanyMapKeys
 import pl.autokat.enums.ProcessStep
 import pl.autokat.enums.ProgramMode
 import pl.autokat.enums.TimeChecking
@@ -37,8 +38,18 @@ class MainActivity : AppCompatActivity() {
         val view = activityMainBinding.root
         setContentView(view)
         //setSupportActionBar(activityMainBinding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
         SharedPreference.init(this)
+        activityMainBinding.companyName.text =
+            Secret.map[Secret.ID_COMPANY]!![CompanyMapKeys.NAME]
+        activityMainBinding.companyOwner.text =
+            Secret.map[Secret.ID_COMPANY]!![CompanyMapKeys.OWNER]
+        activityMainBinding.companyPhone.text =
+            Secret.map[Secret.ID_COMPANY]!![CompanyMapKeys.PHONE]
+        activityMainBinding.companyEmail.text =
+            Secret.map[Secret.ID_COMPANY]!![CompanyMapKeys.EMAIL]
+        activityMainBinding.companyUrl.text =
+            Secret.map[Secret.ID_COMPANY]!![CompanyMapKeys.URL]
     }
 
     private fun setClickListeners() {

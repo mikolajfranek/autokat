@@ -1,11 +1,17 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">AUTO-KAT</string>
+    <string name="app_name">CatBook</string>
+    <string name="activity_main_nazwa_uzytkownika">Nazwa użytkownika</string>
+    <string name="activity_main_zaloguj">Zaloguj</string>
+
+
+
+
+
+
     <string name="activity_about_wlasciciel_wartosc">Sławomir Szukała</string>
     <string name="activity_about_telefon_wartosc">510–076–585</string>
     <string name="activity_about_email_wartosc">autokat.katalizatory@gmail.com</string>
     <string name="activity_about_stronawww_wartosc">katalizatorypoznan.pl</string>
-    <string name="activity_main_wprowadz_nazwe_uzytkownika">Wprowadź nazwę użytkownika</string>
-    <string name="activity_main_zaloguj">Zaloguj</string>
     <string name="activity_result_wprowadz_nazwe_do_filtrowania">Wprowadź nazwę do filtrowania</string>
     <string name="activity_result_baza_danych_jest_pusta">Baza danych jest pusta</string>
     <string name="activity_result_trwa_pobieranie_danych">Trwa pobieranie danych…</string>
