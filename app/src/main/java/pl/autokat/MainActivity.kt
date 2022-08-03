@@ -1,5 +1,6 @@
 package pl.autokat
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -35,10 +36,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun init() {
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
-        val view = activityMainBinding.root
-        setContentView(view)
-        //setSupportActionBar(activityMainBinding.toolbar)
-        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        setContentView(activityMainBinding.root)
         SharedPreference.init(this)
         activityMainBinding.companyName.text =
             Secret.map[Secret.ID_COMPANY]!![CompanyMapKeys.NAME]
@@ -115,14 +113,6 @@ class MainActivity : AppCompatActivity() {
         handleRequestCode(requestCode, grantResults)
     }
 
-    override fun onCreateOptionsMenu(menuInput: Menu): Boolean {
-        menuInflater.inflate(R.menu.main, menuInput)
-        if (Configuration.PROGRAM_MODE == ProgramMode.CLIENT) {
-            menuInput.get(menuInput.size() - 1).isVisible = false
-        }
-        return super.onCreateOptionsMenu(menuInput)
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.toolbar_list_about -> {
@@ -166,8 +156,6 @@ class MainActivity : AppCompatActivity() {
         private fun getId(): String {
             var id: String = getIdForSdkGreaterOrEqualTo26()
             if (id.isEmpty() == false) return id
-            id = getIdPhoneNumber()
-            if (id.isEmpty() == false) return id
             id = getIdSimNumber()
             if (id.isEmpty() == false) return id
             id = getIdAndroidId()
@@ -184,16 +172,6 @@ class MainActivity : AppCompatActivity() {
                     @Suppress("DEPRECATION")
                     Build.SERIAL
                 }
-            } catch (e: Exception) {
-                //
-            }
-            return ""
-        }
-
-        @SuppressLint("MissingPermission", "HardwareIds")
-        private fun getIdPhoneNumber(): String {
-            try {
-                return (applicationContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).line1Number.toString()
             } catch (e: Exception) {
                 //
             }
@@ -308,7 +286,12 @@ class MainActivity : AppCompatActivity() {
             if (hasClickedButton == false) {
                 activityMainBinding.login.setText(login)
             }
-            activityMainBinding.notification.setTextColor(Configuration.COLOR_SUCCESS)
+            activityMainBinding.notification.setTextColor(
+                ContextCompat.getColor(
+                    applicationContext,
+                    R.color.color_main
+                )
+            )
             activityMainBinding.notification.text = Configuration.USER_WAIT_AUTHENTICATING
         }
 
@@ -338,32 +321,67 @@ class MainActivity : AppCompatActivity() {
         private fun onPostExecute(processStep: ProcessStep) {
             when (processStep) {
                 ProcessStep.USER_NEVER_LOGGED -> {
-                    activityMainBinding.notification.setTextColor(Configuration.COLOR_SUCCESS)
+                    activityMainBinding.notification.setTextColor(
+                        ContextCompat.getColor(
+                            applicationContext,
+                            R.color.color_main
+                        )
+                    )
                     activityMainBinding.notification.text = Configuration.USER_NEVER_LOGGED
                 }
                 ProcessStep.COMPANY_ELAPSED_LICENCE -> {
-                    activityMainBinding.notification.setTextColor(Configuration.COLOR_FAILED)
+                    activityMainBinding.notification.setTextColor(
+                        ContextCompat.getColor(
+                            applicationContext,
+                            R.color.color_failed
+                        )
+                    )
                     activityMainBinding.notification.text = Configuration.COMPANY_FAILED_LICENCE
                 }
                 ProcessStep.USER_ELAPSED_DATE_LICENCE -> {
-                    activityMainBinding.notification.setTextColor(Configuration.COLOR_FAILED)
+                    activityMainBinding.notification.setTextColor(
+                        ContextCompat.getColor(
+                            applicationContext,
+                            R.color.color_failed
+                        )
+                    )
                     activityMainBinding.notification.text = Configuration.USER_FAILED_LICENCE
                     SharedPreference.setKey(SharedPreference.LICENCE_DATE_OF_END, "")
                 }
                 ProcessStep.USER_FAILED_LOGIN -> {
-                    activityMainBinding.notification.setTextColor(Configuration.COLOR_FAILED)
+                    activityMainBinding.notification.setTextColor(
+                        ContextCompat.getColor(
+                            applicationContext,
+                            R.color.color_failed
+                        )
+                    )
                     activityMainBinding.notification.text = Configuration.USER_FAILED_LOGIN
                 }
                 ProcessStep.USER_FAILED_SERIAL -> {
-                    activityMainBinding.notification.setTextColor(Configuration.COLOR_FAILED)
+                    activityMainBinding.notification.setTextColor(
+                        ContextCompat.getColor(
+                            applicationContext,
+                            R.color.color_failed
+                        )
+                    )
                     activityMainBinding.notification.text = Configuration.USER_FAILED_UUID
                 }
                 ProcessStep.NETWORK_FAILED -> {
-                    activityMainBinding.notification.setTextColor(Configuration.COLOR_FAILED)
+                    activityMainBinding.notification.setTextColor(
+                        ContextCompat.getColor(
+                            applicationContext,
+                            R.color.color_failed
+                        )
+                    )
                     activityMainBinding.notification.text = Configuration.NETWORK_FAILED
                 }
                 ProcessStep.UNHANDLED_EXCEPTION -> {
-                    activityMainBinding.notification.setTextColor(Configuration.COLOR_FAILED)
+                    activityMainBinding.notification.setTextColor(
+                        ContextCompat.getColor(
+                            applicationContext,
+                            R.color.color_failed
+                        )
+                    )
                     activityMainBinding.notification.text = Configuration.UNHANDLED_EXCEPTION
                 }
                 ProcessStep.SUCCESS -> {

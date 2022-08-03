@@ -50,6 +50,7 @@ android {
             universalApk false
         }
     }
+    namespace 'pl.autokat'
 }
 
 dependencies {
@@ -84,5 +85,5 @@ dependencies {
     implementation 'cz.adaptech:tesseract4android:4.1.1'
     implementation 'com.github.ramonrabello:opencv-android-ktx:1.0.0'
     runtimeOnly group: 'com.google.android.material', name: 'material', version: '1.6.1'
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.6'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.0'
 }

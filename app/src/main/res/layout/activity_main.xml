@@ -22,7 +22,7 @@
             android:fontFamily="sans-serif"
             android:gravity="center"
             android:text="@string/app_name"
-            android:textColor="@color/white"
+            android:textColor="@color/color_white"
             android:textSize="48sp"
             android:textStyle="bold" />
     </RelativeLayout>
@@ -31,20 +31,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/header"
-        android:layout_marginTop="-20dp">
+        android:layout_marginTop="-35dp">
 
         <RelativeLayout
             android:id="@+id/content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
+                android:layout_margin="15dp"
                 android:background="#fff"
-                app:cardBackgroundColor="@color/white"
+                app:cardBackgroundColor="@color/color_white"
                 app:cardCornerRadius="9dp"
                 card_view:cardElevation="10dp"
                 card_view:cardPreventCornerOverlap="false">
@@ -66,12 +65,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
+                            android:autofillHints=""
                             android:hint="@string/activity_main_nazwa_uzytkownika"
                             android:inputType="text"
                             android:paddingBottom="15dp"
                             android:singleLine="true"
-                            android:textColor="@color/black"
-                            android:textColorHint="@color/mainColor" />
+                            android:textColor="@color/color_black"
+                            android:textColorHint="@color/color_main" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <TextView
@@ -80,7 +80,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="35dp"
                         android:gravity="center"
-                        android:textColor="@color/mainColor" />
+                        android:textColor="@color/color_main" />
 
                     <Button
                         android:id="@+id/button_login"
@@ -92,7 +92,7 @@
                         android:background="@drawable/button_bg"
                         android:foreground="?android:attr/selectableItemBackground"
                         android:text="@string/activity_main_zaloguj"
-                        android:textColor="@color/white"
+                        android:textColor="@color/color_white"
                         android:textSize="16sp" />
 
                     <TextView
@@ -101,7 +101,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
                         android:gravity="center"
-                        android:textColor="@color/mainColor" />
+                        android:textColor="@color/color_main" />
 
                     <TextView
                         android:id="@+id/companyOwner"
@@ -109,7 +109,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
                         android:gravity="center"
-                        android:textColor="@color/mainColor" />
+                        android:textColor="@color/color_main" />
 
                     <TextView
                         android:id="@+id/companyPhone"
@@ -118,7 +118,7 @@
                         android:layout_marginBottom="5dp"
                         android:autoLink="phone"
                         android:gravity="center"
-                        android:textColor="@color/mainColor" />
+                        android:textColor="@color/color_main" />
 
                     <TextView
                         android:id="@+id/companyEmail"
@@ -127,7 +127,7 @@
                         android:layout_marginBottom="5dp"
                         android:autoLink="email"
                         android:gravity="center"
-                        android:textColor="@color/mainColor" />
+                        android:textColor="@color/color_main" />
 
                     <TextView
                         android:id="@+id/companyUrl"
@@ -136,7 +136,7 @@
                         android:layout_marginBottom="5dp"
                         android:autoLink="web"
                         android:gravity="center"
-                        android:textColor="@color/mainColor" />
+                        android:textColor="@color/color_main" />
 
                 </LinearLayout>
 

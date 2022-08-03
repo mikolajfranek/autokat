@@ -27,10 +27,6 @@ class Configuration {
         @Volatile
         var workerCopyData: AtomicBoolean = AtomicBoolean(false)
 
-        val COLOR_WHITE: Int = Color.parseColor("#FFFFFF")
-        val COLOR_FAILED: Int = Color.parseColor("#EF4836")
-        val COLOR_SUCCESS: Int = Color.parseColor("#363636")
-
         const val ONE_DAY_IN_MILLISECONDS: Long = 86400000
         const val ONE_HOUR_IN_MILLISECONDS: Long = 3600000L
 

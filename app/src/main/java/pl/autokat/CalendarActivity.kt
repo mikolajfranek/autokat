@@ -8,6 +8,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
 import com.kizitonwose.calendarview.model.DayOwner
@@ -17,7 +18,6 @@ import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
 import com.kizitonwose.calendarview.utils.yearMonth
 import pl.autokat.components.*
-import pl.autokat.databinding.ActivityAboutBinding
 import pl.autokat.databinding.ActivityCalendarBinding
 import pl.autokat.databinding.CalendarDayBinding
 import pl.autokat.databinding.CalendarHeaderBinding
@@ -29,7 +29,6 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
-import java.util.concurrent.atomic.AtomicBoolean
 
 class CalendarActivity : AppCompatActivity() {
 
@@ -88,11 +87,21 @@ class CalendarActivity : AppCompatActivity() {
                     textView.visibility = View.VISIBLE
                     when (day.date) {
                         selectedDate -> {
-                            textView.setTextColor(Configuration.COLOR_WHITE)
+                            textView.setTextColor(
+                                ContextCompat.getColor(
+                                    applicationContext,
+                                    R.color.color_white
+                                )
+                            )
                             textView.setBackgroundResource(R.drawable.selected_day)
                         }
                         else -> {
-                            textView.setTextColor(Configuration.COLOR_SUCCESS)
+                            textView.setTextColor(
+                                ContextCompat.getColor(
+                                    applicationContext,
+                                    R.color.color_main
+                                )
+                            )
                             val keyYearMonth = day.date.yearMonth.toString()
                             if (mapCoursesOfYearMonths.contains(keyYearMonth)) {
                                 val keyDate = Formatter.formatStringDate(day.date.toString())
@@ -105,7 +114,12 @@ class CalendarActivity : AppCompatActivity() {
                                 textView.background = null
                             }
                             if (day.date == LocalDate.now()) {
-                                textView.setTextColor(Configuration.COLOR_FAILED)
+                                textView.setTextColor(
+                                    ContextCompat.getColor(
+                                        applicationContext,
+                                        R.color.color_failed
+                                    )
+                                )
                             }
                         }
                     }

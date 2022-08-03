@@ -3,6 +3,7 @@ package pl.autokat
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import org.json.JSONArray
 import pl.autokat.components.*
 import pl.autokat.databinding.ActivityUpdateBinding
@@ -94,7 +95,12 @@ class UpdateActivity : AppCompatActivity() {
         private var itemsFromDatabase: Int = 0
 
         private fun setInView() {
-            activityUpdateBinding.notification.setTextColor(Configuration.COLOR_SUCCESS)
+            activityUpdateBinding.notification.setTextColor(
+                ContextCompat.getColor(
+                    applicationContext,
+                    R.color.color_main
+                )
+            )
             if (itemsFromDatabase != 0) {
                 if (isAvailableUpdateCatalyst) {
                     activityUpdateBinding.progressBar.progress = 0
@@ -215,7 +221,12 @@ class UpdateActivity : AppCompatActivity() {
 
         private fun onProgressUpdate(progressStep: Float) {
             activityUpdateBinding.progressBar.progress = progressStep.toInt()
-            activityUpdateBinding.notification.setTextColor(Configuration.COLOR_SUCCESS)
+            activityUpdateBinding.notification.setTextColor(
+                ContextCompat.getColor(
+                    applicationContext,
+                    R.color.color_main
+                )
+            )
             activityUpdateBinding.notification.text = Configuration.UPDATE_WAIT
         }
 
@@ -267,7 +278,12 @@ class UpdateActivity : AppCompatActivity() {
                 Thread.sleep(100)
             }
             activityUpdateBinding.progressBar.progress = 0
-            activityUpdateBinding.notification.setTextColor(Configuration.COLOR_SUCCESS)
+            activityUpdateBinding.notification.setTextColor(
+                ContextCompat.getColor(
+                    applicationContext,
+                    R.color.color_main
+                )
+            )
             activityUpdateBinding.notification.text = Configuration.UPDATE_WAIT
         }
 
@@ -296,17 +312,29 @@ class UpdateActivity : AppCompatActivity() {
         private fun onPostExecute(processStep: ProcessStep) {
             when (processStep) {
                 ProcessStep.NETWORK_FAILED -> {
-                    activityUpdateBinding.notification.setTextColor(Configuration.COLOR_FAILED)
+                    activityUpdateBinding.notification.setTextColor(
+                        ContextCompat.getColor(applicationContext, R.color.color_failed)
+                    )
                     activityUpdateBinding.notification.text = Configuration.NETWORK_FAILED
                 }
                 ProcessStep.UNHANDLED_EXCEPTION -> {
-                    activityUpdateBinding.notification.setTextColor(Configuration.COLOR_FAILED)
+                    activityUpdateBinding.notification.setTextColor(
+                        ContextCompat.getColor(
+                            applicationContext,
+                            R.color.color_failed
+                        )
+                    )
                     activityUpdateBinding.notification.text = Configuration.UPDATE_FAILED
                 }
                 ProcessStep.SUCCESS -> {
                     isAvailableUpdateCatalyst = false
                     activityUpdateBinding.progressBar.progress = 100
-                    activityUpdateBinding.notification.setTextColor(Configuration.COLOR_SUCCESS)
+                    activityUpdateBinding.notification.setTextColor(
+                        ContextCompat.getColor(
+                            applicationContext,
+                            R.color.color_main
+                        )
+                    )
                     activityUpdateBinding.notification.text = Configuration.UPDATE_SUCCESS
                 }
                 else -> {

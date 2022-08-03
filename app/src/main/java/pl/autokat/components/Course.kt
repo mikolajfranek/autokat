@@ -165,8 +165,8 @@ class Course {
             dataPathTessBaseAPI: String = "",
             downloadedHistoricalCourses: Boolean = false
         ): Pair<String, String> {
-            var value = ""
-            var valueDate = ""
+            val value : String?
+            val valueDate : String?
             if (downloadedHistoricalCourses == false) {
                 val (_, response, result) = when (metal) {
                     Metal.PLATINUM -> {
