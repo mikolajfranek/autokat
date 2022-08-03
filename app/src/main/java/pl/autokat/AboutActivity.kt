@@ -19,7 +19,7 @@ class AboutActivity : AppCompatActivity() {
         setContentView(view)
         setSupportActionBar(activityAboutBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        SharedPreference.init(this)
+        //SharedPreference.init(this)
     }
 
     private fun setInViewInformation() {

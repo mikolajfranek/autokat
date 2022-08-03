@@ -292,7 +292,7 @@ class ResultActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menuInput: Menu): Boolean {
         menuInflater.inflate(R.menu.result, menuInput)
         if (Configuration.PROGRAM_MODE == ProgramMode.CLIENT) {
-            menuInput.get(menuInput.size() - 1).isVisible = false
+            menuInput[menuInput.size() - 1].isVisible = false
         }
         menu = menuInput
         return super.onCreateOptionsMenu(menuInput)

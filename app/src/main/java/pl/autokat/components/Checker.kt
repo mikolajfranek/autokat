@@ -16,10 +16,11 @@ class Checker {
         fun checkTimeIsGreaterThanNow(dateInput: String): Boolean {
             val timestamp: Long = Date().time
             val timestampInput: Long =
-                (SimpleDateFormat("yyyy-MM-dd").parse(dateInput)!!.time) + Configuration.ONE_DAY_IN_MILLISECONDS
+                (SimpleDateFormat(
+                    "yyyy-MM-dd",
+                    Locale.GERMANY
+                ).parse(dateInput)!!.time) + Configuration.ONE_DAY_IN_MILLISECONDS
             return timestampInput > timestamp
-
-            //TODO
         }
 
         @SuppressLint("SimpleDateFormat")
@@ -38,8 +39,6 @@ class Checker {
                         return true
                     }
                     return false
-                    //TODO
-
                 }
                 TimeChecking.CHECKING_LICENCE -> {
                     if (Configuration.PROGRAM_MODE == ProgramMode.CLIENT) return true

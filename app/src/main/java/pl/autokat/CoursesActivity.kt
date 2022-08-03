@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import pl.autokat.components.*
 import pl.autokat.databinding.ActivityCoursesBinding
 import pl.autokat.enums.ProcessStep
-import pl.autokat.exceptions.NoneCoursesException
 import java.net.UnknownHostException
 
 class CoursesActivity : AppCompatActivity() {
@@ -25,7 +24,7 @@ class CoursesActivity : AppCompatActivity() {
         setContentView(view)
         setSupportActionBar(activityCoursesBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        SharedPreference.init(this)
+        //SharedPreference.init(this)
         database = Database(applicationContext)
     }
 

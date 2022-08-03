@@ -26,7 +26,7 @@ class UpdateActivity : AppCompatActivity() {
         setContentView(view)
         setSupportActionBar(activityUpdateBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        SharedPreference.init(this)
+        //SharedPreference.init(this)
         database = Database(applicationContext)
 
     }

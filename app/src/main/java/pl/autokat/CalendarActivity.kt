@@ -72,7 +72,7 @@ class CalendarActivity : AppCompatActivity() {
         setContentView(view)
         setSupportActionBar(activityCalendarBinding.toolbar as Toolbar?)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        SharedPreference.init(this)
+        //SharedPreference.init(this)
         database = Database(applicationContext)
     }
 

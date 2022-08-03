@@ -9,18 +9,14 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.telephony.TelephonyManager
-import android.view.Menu
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.get
 import org.json.JSONArray
 import pl.autokat.components.*
 import pl.autokat.databinding.ActivityMainBinding
 import pl.autokat.enums.CompanyMapKeys
 import pl.autokat.enums.ProcessStep
-import pl.autokat.enums.ProgramMode
 import pl.autokat.enums.TimeChecking
 import java.net.UnknownHostException
 
@@ -60,12 +56,12 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             if (ContextCompat.checkSelfPermission(
                     this,
-                    android.Manifest.permission.READ_PHONE_STATE
+                    Manifest.permission.READ_PHONE_STATE
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
                 ActivityCompat.requestPermissions(
                     this,
-                    arrayOf(android.Manifest.permission.READ_PHONE_STATE),
+                    arrayOf(Manifest.permission.READ_PHONE_STATE),
                     requestCodeReadPhoneState
                 )
                 return
@@ -112,26 +108,9 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         handleRequestCode(requestCode, grantResults)
     }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.toolbar_list_about -> {
-                openAboutActivity()
-                true
-            }
-            else -> {
-                finish()
-                true
-            }
-        }
-    }
     //endregion
 
     //region open activities
-    private fun openAboutActivity() {
-        startActivity(Intent(applicationContext, AboutActivity::class.java))
-    }
-
     fun openResultActivity() {
         startActivity(Intent(applicationContext, ResultActivity::class.java))
         finish()
@@ -154,7 +133,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         private fun getId(): String {
-            var id: String = getIdForSdkGreaterOrEqualTo26()
+            var id: String = getIdSerial()
             if (id.isEmpty() == false) return id
             id = getIdSimNumber()
             if (id.isEmpty() == false) return id
@@ -164,9 +143,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         @SuppressLint("HardwareIds")
-        private fun getIdForSdkGreaterOrEqualTo26(): String {
+        private fun getIdSerial(): String {
             try {
-                return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     Build.getSerial()
                 } else {
                     @Suppress("DEPRECATION")
