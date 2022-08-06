@@ -144,7 +144,7 @@ class CoursesActivity : AppCompatActivity() {
 
         //region methods of run
         private fun onPreExecute() {
-            UserInterface.changeStatusLayout(activityCoursesBinding.linearLayout, false)
+            UserInterface.changeStatusLayout(activityCoursesBinding.layout, false)
             Toast.makeText(applicationContext, Configuration.UPDATE_WAIT, Toast.LENGTH_SHORT).show()
         }
 
@@ -191,7 +191,7 @@ class CoursesActivity : AppCompatActivity() {
                     ).show()
                 }
             }
-            UserInterface.changeStatusLayout(activityCoursesBinding.linearLayout, true)
+            UserInterface.changeStatusLayout(activityCoursesBinding.layout, true)
         }
         //endregion
 

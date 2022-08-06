@@ -261,7 +261,7 @@ class MainActivity : AppCompatActivity() {
 
         //region methods of run
         private fun onPreExecute() {
-            UserInterface.changeStatusLayout(activityMainBinding.linearLayout, false)
+            UserInterface.changeStatusLayout(activityMainBinding.layout, false)
             if (hasClickedButton == false) {
                 activityMainBinding.login.setText(login)
             }
@@ -370,7 +370,7 @@ class MainActivity : AppCompatActivity() {
                     //
                 }
             }
-            UserInterface.changeStatusLayout(activityMainBinding.linearLayout, true)
+            UserInterface.changeStatusLayout(activityMainBinding.layout, true)
         }
         //endregion
 

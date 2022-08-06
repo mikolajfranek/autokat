@@ -539,7 +539,7 @@ class ResultActivity : AppCompatActivity() {
 
         //region methods of run
         private fun onPreExecute() {
-            UserInterface.changeStatusLayout(activityResultBinding.linearLayout, false)
+            UserInterface.changeStatusLayout(activityResultBinding.layout, false)
             activityResultBinding.catalystWaiting.visibility = VISIBLE
             activityResultBinding.catalystEmpty.visibility = GONE
             activityResultBinding.catalystListView.visibility = GONE
@@ -571,7 +571,7 @@ class ResultActivity : AppCompatActivity() {
             setColorIconUpdateCourses()
             refreshAdapterCatalysts(ScrollRefresh.UPDATE_LIST)
             UserInterface.changeStatusLayout(
-                activityResultBinding.linearLayout,
+                activityResultBinding.layout,
                 true
             )
         }
@@ -592,7 +592,7 @@ class ResultActivity : AppCompatActivity() {
 
         //region methods of run
         private fun onPreExecute() {
-            UserInterface.changeStatusLayout(activityResultBinding.linearLayout, false)
+            UserInterface.changeStatusLayout(activityResultBinding.layout, false)
         }
 
         private fun doInBackground(): ProcessStep {
@@ -638,7 +638,7 @@ class ResultActivity : AppCompatActivity() {
                     //
                 }
             }
-            UserInterface.changeStatusLayout(activityResultBinding.linearLayout, true)
+            UserInterface.changeStatusLayout(activityResultBinding.layout, true)
         }
         //endregion
 
@@ -659,7 +659,7 @@ class ResultActivity : AppCompatActivity() {
 
         //region methods of run
         private fun onPreExecute() {
-            UserInterface.changeStatusLayout(activityResultBinding.linearLayout, false)
+            UserInterface.changeStatusLayout(activityResultBinding.layout, false)
         }
 
         private fun doInBackground(): ProcessStep {
@@ -692,7 +692,7 @@ class ResultActivity : AppCompatActivity() {
                 }
             }
             activityResultBinding.filter.setText(activityResultBinding.filter.text.toString())
-            UserInterface.changeStatusLayout(activityResultBinding.linearLayout, true)
+            UserInterface.changeStatusLayout(activityResultBinding.layout, true)
         }
         //endregion
 

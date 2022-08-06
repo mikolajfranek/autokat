@@ -4,14 +4,18 @@ import android.graphics.Color
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
+import android.view.View
 import android.view.ViewGroup
 
 class UserInterface {
     companion object {
-        fun changeStatusLayout(linearLayout: ViewGroup, isEnabled: Boolean) {
-            for (i in 0 until linearLayout.childCount) {
-                val view = linearLayout.getChildAt(i)
-                view.isEnabled = isEnabled
+        fun changeStatusLayout(view: View, isEnabled: Boolean) {
+            view.isEnabled = isEnabled
+            if (view is ViewGroup) {
+                for (i in 0 until view.childCount) {
+                    val child = view.getChildAt(i)
+                    changeStatusLayout(child, isEnabled)
+                }
             }
         }
 

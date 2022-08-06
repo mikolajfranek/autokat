@@ -46,7 +46,7 @@ class PictureActivity : AppCompatActivity() {
 
         //region methods of run
         private fun onPreExecute() {
-            UserInterface.changeStatusLayout(activityPictureBinding.linearLayout, false)
+            UserInterface.changeStatusLayout(activityPictureBinding.layout, false)
             Toast.makeText(applicationContext, Configuration.BITMAP_WAIT, Toast.LENGTH_SHORT).show()
         }
 
@@ -89,7 +89,7 @@ class PictureActivity : AppCompatActivity() {
                     //
                 }
             }
-            UserInterface.changeStatusLayout(activityPictureBinding.linearLayout, true)
+            UserInterface.changeStatusLayout(activityPictureBinding.layout, true)
         }
         //endregion
 

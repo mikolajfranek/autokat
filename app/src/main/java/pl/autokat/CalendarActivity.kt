@@ -325,7 +325,7 @@ class CalendarActivity : AppCompatActivity() {
 
         //region methods of run
         private fun onPreExecute() {
-            UserInterface.changeStatusLayout(activityCalendarBinding.linearLayout, false)
+            UserInterface.changeStatusLayout(activityCalendarBinding.layout, false)
             Toast.makeText(applicationContext, Configuration.UPDATE_WAIT, Toast.LENGTH_SHORT).show()
         }
 
@@ -391,7 +391,7 @@ class CalendarActivity : AppCompatActivity() {
                     ).show()
                 }
             }
-            UserInterface.changeStatusLayout(activityCalendarBinding.linearLayout, true)
+            UserInterface.changeStatusLayout(activityCalendarBinding.layout, true)
         }
         //endregion
 

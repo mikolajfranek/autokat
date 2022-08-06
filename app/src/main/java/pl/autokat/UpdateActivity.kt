@@ -129,7 +129,7 @@ class UpdateActivity : AppCompatActivity() {
 
         //region methods of run
         private fun onPreExecute() {
-            UserInterface.changeStatusLayout(activityUpdateBinding.linearLayout, false)
+            UserInterface.changeStatusLayout(activityUpdateBinding.layout, false)
         }
 
         private fun doInBackground(): ProcessStep {
@@ -159,7 +159,7 @@ class UpdateActivity : AppCompatActivity() {
                     //
                 }
             }
-            UserInterface.changeStatusLayout(activityUpdateBinding.linearLayout, true)
+            UserInterface.changeStatusLayout(activityUpdateBinding.layout, true)
         }
         //endregion
 
@@ -272,7 +272,7 @@ class UpdateActivity : AppCompatActivity() {
 
         //region methods of run
         private fun onPreExecute() {
-            UserInterface.changeStatusLayout(activityUpdateBinding.linearLayout, false)
+            UserInterface.changeStatusLayout(activityUpdateBinding.layout, false)
             stopThreadUpdateProgressOfDownloadThumbnail()
             while (threadUpdateProgressOfDownloadThumbnail != null) {
                 Thread.sleep(100)
@@ -341,7 +341,7 @@ class UpdateActivity : AppCompatActivity() {
                     //
                 }
             }
-            UserInterface.changeStatusLayout(activityUpdateBinding.linearLayout, true)
+            UserInterface.changeStatusLayout(activityUpdateBinding.layout, true)
         }
         //endregion
 
