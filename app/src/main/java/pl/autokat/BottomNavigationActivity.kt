@@ -5,11 +5,34 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColor
 import androidx.fragment.app.Fragment
+import pl.autokat.components.UserInterface
 import pl.autokat.databinding.ActivityBottomNavigationBinding
 
 
 class BottomNavigationActivity : AppCompatActivity() {
     private lateinit var activityBottomNavigationBinding: ActivityBottomNavigationBinding
+
+    fun badgeOn(r_id_bottom_menu: Int) {
+        val badge =
+            activityBottomNavigationBinding.bottomNavigation.getOrCreateBadge(r_id_bottom_menu)
+        badge.isVisible = true
+    }
+
+    fun badgeOff(r_id_bottom_menu: Int) {
+        val badge =
+            activityBottomNavigationBinding.bottomNavigation.getOrCreateBadge(r_id_bottom_menu)
+        badge.isVisible = false
+    }
+
+    fun layoutOn() {
+        UserInterface.changeStatusLayout(activityBottomNavigationBinding.layout, true)
+    }
+
+    fun layoutOff() {
+        UserInterface.changeStatusLayout(activityBottomNavigationBinding.layout, false)
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityBottomNavigationBinding = ActivityBottomNavigationBinding.inflate(layoutInflater)
@@ -26,10 +49,12 @@ class BottomNavigationActivity : AppCompatActivity() {
                 }
                 R.id.bottom_menu_courses -> {
                     selectedFragment = CoursesFragment()
-
                 }
-                R.id.bottom_menu_catalyst -> {
+                R.id.bottom_menu_update -> {
                     selectedFragment = UpdateFragment()
+                }
+                R.id.bottom_menu_settings -> {
+                    selectedFragment = SettingFragment()
                 }
             }
 
@@ -44,7 +69,5 @@ class BottomNavigationActivity : AppCompatActivity() {
             .replace(R.id.fragment_container, ResultFragment()).commit()
 
 
-        val badge = activityBottomNavigationBinding.bottomNavigation.getOrCreateBadge(R.id.bottom_menu_catalyst)
-        badge.isVisible = true
     }
 }

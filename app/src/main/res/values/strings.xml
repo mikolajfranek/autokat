@@ -4,10 +4,6 @@
     <string name="activity_main_zaloguj">Zaloguj</string>
 
 
-
-
-
-
     <string name="activity_about_wlasciciel_wartosc">Sławomir Szukała</string>
     <string name="activity_about_telefon_wartosc">510–076–585</string>
     <string name="activity_about_email_wartosc">autokat.katalizatory@gmail.com</string>
@@ -50,4 +46,6 @@
     <string name="menu_o_aplikacji">O aplikacji</string>
     <string name="menu_odswiez">Odśwież</string>
     <string name="menu_wybierz">Wybierz</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

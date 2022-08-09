@@ -3,13 +3,17 @@
     <item
         android:id="@+id/bottom_menu_result"
         android:icon="@drawable/home"
-        android:title="ResultActivity"/>
+        android:title="ResultActivity" />
     <item
         android:id="@+id/bottom_menu_courses"
         android:icon="@drawable/activity"
         android:title="CoursesActivity" />
     <item
-        android:id="@+id/bottom_menu_catalyst"
-        android:icon="@drawable/settings"
+        android:id="@+id/bottom_menu_update"
+        android:icon="@drawable/flag"
         android:title="UpdateActivity" />
+    <item
+        android:id="@+id/bottom_menu_settings"
+        android:icon="@drawable/settings"
+        android:title="SettingActivity" />
 </menu>

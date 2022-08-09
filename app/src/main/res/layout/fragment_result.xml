@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ResultFragment">
-
-
 
     <TableLayout
         android:layout_width="match_parent"
@@ -34,20 +33,21 @@
                 android:inputType="text"
                 android:padding="10dp"
                 android:text=""
-                android:textColor="@color/color_white" />
+                android:textColor="@color/color_black" />
 
             <Button
                 android:id="@+id/button_add_history_filter"
-                style="@style/Widget.AppCompat.Button"
                 android:layout_width="@android:dimen/app_icon_size"
                 android:layout_height="match_parent"
                 android:layout_marginStart="10dp"
-                android:background="@drawable/rectangle"
-                android:drawableEnd="@android:drawable/ic_menu_save"
+                android:background="@drawable/button_bg"
+                android:drawableEnd="@drawable/feedback"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:padding="8dp"
                 android:text=""
                 android:textAllCaps="false"
                 android:tooltipText="Zapisz nazwę do filtrowania"
+                app:backgroundTint="@color/color_main"
                 tools:ignore="UnusedAttribute" />
         </TableRow>
     </TableLayout>

@@ -13,7 +13,7 @@
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="110dp"
-        android:background="@color/colorUser"
+        android:background="@color/color_main"
         android:gravity="center">
 
         <TextView
@@ -43,7 +43,6 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
                 android:background="#fff"
-                app:cardBackgroundColor="@color/color_white"
                 app:cardCornerRadius="9dp"
                 card_view:cardElevation="10dp"
                 card_view:cardPreventCornerOverlap="false">
@@ -70,8 +69,8 @@
                             android:inputType="text"
                             android:paddingBottom="15dp"
                             android:singleLine="true"
-                            android:textColor="@color/color_black"
-                            android:textColorHint="@color/color_main" />
+                            android:textColor="@color/color_white"
+                            android:textColorHint="@color/color_white" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <TextView
@@ -80,7 +79,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="35dp"
                         android:gravity="center"
-                        android:textColor="@color/color_main" />
+                        android:textColor="@color/color_white" />
 
                     <Button
                         android:id="@+id/button_login"
@@ -93,7 +92,8 @@
                         android:foreground="?android:attr/selectableItemBackground"
                         android:text="@string/activity_main_zaloguj"
                         android:textColor="@color/color_white"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        app:backgroundTint="@color/color_main" />
 
                     <TextView
                         android:id="@+id/companyName"
@@ -101,7 +101,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
                         android:gravity="center"
-                        android:textColor="@color/color_main" />
+                        android:textColor="@color/color_white" />
 
                     <TextView
                         android:id="@+id/companyOwner"
@@ -109,7 +109,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
                         android:gravity="center"
-                        android:textColor="@color/color_main" />
+                        android:textColor="@color/color_white" />
 
                     <TextView
                         android:id="@+id/companyPhone"
@@ -118,7 +118,7 @@
                         android:layout_marginBottom="5dp"
                         android:autoLink="phone"
                         android:gravity="center"
-                        android:textColor="@color/color_main" />
+                        android:textColor="@color/color_white" />
 
                     <TextView
                         android:id="@+id/companyEmail"
@@ -127,7 +127,7 @@
                         android:layout_marginBottom="5dp"
                         android:autoLink="email"
                         android:gravity="center"
-                        android:textColor="@color/color_main" />
+                        android:textColor="@color/color_white" />
 
                     <TextView
                         android:id="@+id/companyUrl"
@@ -136,7 +136,7 @@
                         android:layout_marginBottom="5dp"
                         android:autoLink="web"
                         android:gravity="center"
-                        android:textColor="@color/color_main" />
+                        android:textColor="@color/color_white" />
 
                 </LinearLayout>
 
