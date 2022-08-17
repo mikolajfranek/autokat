@@ -38,7 +38,6 @@ class ResultFragment : Fragment() {
     private lateinit var catalystBinding: CatalystBinding
     private lateinit var historyFilterBinding: HistoryFilterBinding
     private lateinit var database: Database
-    private lateinit var menu: Menu
     private lateinit var adapterCatalysts: ArrayAdapter<ModelCatalyst>
     private var scrollPreLastCatalyst: Int = 0
     private val paginateLimitCatalyst: Int = 5
@@ -48,7 +47,6 @@ class ResultFragment : Fragment() {
 
     @Volatile
     private var isAvailableUpdateCatalyst: Boolean = false
-
 
     //region methods used in override
     private fun init() {
@@ -269,7 +267,6 @@ class ResultFragment : Fragment() {
     }
     //endregion
 
-
     //region override
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -282,11 +279,6 @@ class ResultFragment : Fragment() {
         setCatalystListView()
         setHistoryFilterListView()
         setClickListeners()
-
-        //TODO
-        //activityResultBinding.catalystEmpty.visibility = View.VISIBLE
-
-        //binding works here
     }
 
     override fun onResume() {
@@ -313,7 +305,7 @@ class ResultFragment : Fragment() {
     }
     //endregion
 
-
+    //TODO
     //region open activities
     private fun openMainActivity() {
         startActivity(Intent(requireActivity().applicationContext, MainActivity::class.java))

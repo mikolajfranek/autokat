@@ -46,6 +46,4 @@
     <string name="menu_o_aplikacji">O aplikacji</string>
     <string name="menu_odswiez">Odśwież</string>
     <string name="menu_wybierz">Wybierz</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

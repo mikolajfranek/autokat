@@ -16,11 +16,6 @@ class Configuration {
         const val DATABASE_FILE_PATH_ASSETS: String = "databases/$DATABASE_NAME_OF_FILE"
         const val OZ_VALUE: Double = 31.1034768
 
-        /*
-        TODO
-         - podczas wątku (blokowanie GUI) nie powinno również działąć na przyciskach z menu?
-         */
-
         @Volatile
         var workerDownloadThumbnail: AtomicBoolean = AtomicBoolean(false)
 
