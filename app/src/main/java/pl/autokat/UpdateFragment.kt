@@ -19,7 +19,7 @@ import java.net.UnknownHostException
 class UpdateFragment : Fragment() {
 
     private var _binding: FragmentUpdateBinding? = null
-    private val activityUpdateBinding get() = _binding!!
+    private val fragmentUpdateBinding get() = _binding!!
     private lateinit var database: Database
     private var isAvailableUpdateCatalyst: Boolean = false
 
@@ -30,14 +30,13 @@ class UpdateFragment : Fragment() {
     private fun init() {
         SharedPreference.init(requireActivity().applicationContext)
         database = Database(requireActivity().applicationContext)
-
     }
 
     private fun setClickListeners() {
-        activityUpdateBinding.buttonUpdateNew.setOnClickListener {
+        fragmentUpdateBinding.buttonUpdateNew.setOnClickListener {
             Thread(RunnableUpdate(false)).start()
         }
-        activityUpdateBinding.buttonUpdateFull.setOnClickListener {
+        fragmentUpdateBinding.buttonUpdateFull.setOnClickListener {
             Thread(RunnableUpdate(true)).start()
         }
     }
@@ -74,7 +73,7 @@ class UpdateFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentUpdateBinding.inflate(inflater, container, false)
-        return activityUpdateBinding.root
+        return fragmentUpdateBinding.root
     }
 
     override fun onDestroyView() {
@@ -109,35 +108,35 @@ class UpdateFragment : Fragment() {
         private var itemsFromDatabase: Int = 0
 
         private fun setInView() {
-            activityUpdateBinding.notification.setTextColor(
+            fragmentUpdateBinding.notification.setTextColor(
                 ContextCompat.getColor(
                     requireActivity().applicationContext,
-                    R.color.color_main
+                    R.color.color_white
                 )
             )
             if (itemsFromDatabase != 0) {
                 if (isAvailableUpdateCatalyst) {
-                    activityUpdateBinding.progressBar.progress = 0
-                    activityUpdateBinding.notification.text = Configuration.DATABASE_NOT_ACTUAL
+                    fragmentUpdateBinding.progressBar.progress = 0
+                    fragmentUpdateBinding.notification.text = Configuration.DATABASE_NOT_ACTUAL
                 } else {
                     if (itemsWithUrlThumbnail != 0) {
-                        activityUpdateBinding.progressBar.progress =
+                        fragmentUpdateBinding.progressBar.progress =
                             ((itemsWithThumbnail.toFloat() / itemsWithUrlThumbnail.toFloat()) * 100.toFloat()).toInt()
                     } else {
-                        activityUpdateBinding.progressBar.progress = 0
+                        fragmentUpdateBinding.progressBar.progress = 0
                     }
                     if (itemsWithThumbnail / itemsFromDatabase != 1) {
                         val textView =
                             Configuration.BITMAP_STATUS + " (" + itemsWithThumbnail + "/" + itemsWithUrlThumbnail + "/" + itemsFromDatabase + ")"
-                        activityUpdateBinding.notification.text = textView
+                        fragmentUpdateBinding.notification.text = textView
                         startThreadUpdateProgressOfDownloadThumbnail()
                     } else {
-                        activityUpdateBinding.notification.text = Configuration.DATABASE_ACTUAL
+                        fragmentUpdateBinding.notification.text = Configuration.DATABASE_ACTUAL
                     }
                 }
             } else {
-                activityUpdateBinding.progressBar.progress = 0
-                activityUpdateBinding.notification.text = Configuration.DATABASE_EMPTY
+                fragmentUpdateBinding.progressBar.progress = 0
+                fragmentUpdateBinding.notification.text = Configuration.DATABASE_EMPTY
             }
         }
 
@@ -198,8 +197,8 @@ class UpdateFragment : Fragment() {
         private fun onProgressUpdate() {
             val textView =
                 Configuration.BITMAP_STATUS + " (" + itemsWithThumbnail.toString() + "/" + itemsWithUrlThumbnail.toString() + "/" + itemsFromDatabase.toString() + ")"
-            activityUpdateBinding.notification.text = textView
-            activityUpdateBinding.progressBar.progress =
+            fragmentUpdateBinding.notification.text = textView
+            fragmentUpdateBinding.progressBar.progress =
                 ((itemsWithThumbnail.toFloat() / itemsWithUrlThumbnail.toFloat()) * 100.toFloat()).toInt()
         }
         //endregion
@@ -234,14 +233,14 @@ class UpdateFragment : Fragment() {
         }
 
         private fun onProgressUpdate(progressStep: Float) {
-            activityUpdateBinding.progressBar.progress = progressStep.toInt()
-            activityUpdateBinding.notification.setTextColor(
+            fragmentUpdateBinding.progressBar.progress = progressStep.toInt()
+            fragmentUpdateBinding.notification.setTextColor(
                 ContextCompat.getColor(
                     requireActivity().applicationContext,
-                    R.color.color_main
+                    R.color.color_white
                 )
             )
-            activityUpdateBinding.notification.text = Configuration.UPDATE_WAIT
+            fragmentUpdateBinding.notification.text = Configuration.UPDATE_WAIT
         }
 
         private fun getCountOfCatalyst(fullUpdate: Boolean): Pair<Int, Int> {
@@ -291,14 +290,14 @@ class UpdateFragment : Fragment() {
             while (threadUpdateProgressOfDownloadThumbnail != null) {
                 Thread.sleep(100)
             }
-            activityUpdateBinding.progressBar.progress = 0
-            activityUpdateBinding.notification.setTextColor(
+            fragmentUpdateBinding.progressBar.progress = 0
+            fragmentUpdateBinding.notification.setTextColor(
                 ContextCompat.getColor(
                     requireActivity().applicationContext,
-                    R.color.color_main
+                    R.color.color_white
                 )
             )
-            activityUpdateBinding.notification.text = Configuration.UPDATE_WAIT
+            fragmentUpdateBinding.notification.text = Configuration.UPDATE_WAIT
         }
 
         private fun doInBackground(): ProcessStep {
@@ -326,30 +325,30 @@ class UpdateFragment : Fragment() {
         private fun onPostExecute(processStep: ProcessStep) {
             when (processStep) {
                 ProcessStep.NETWORK_FAILED -> {
-                    activityUpdateBinding.notification.setTextColor(
+                    fragmentUpdateBinding.notification.setTextColor(
                         ContextCompat.getColor(requireActivity().applicationContext, R.color.color_failed)
                     )
-                    activityUpdateBinding.notification.text = Configuration.NETWORK_FAILED
+                    fragmentUpdateBinding.notification.text = Configuration.NETWORK_FAILED
                 }
                 ProcessStep.UNHANDLED_EXCEPTION -> {
-                    activityUpdateBinding.notification.setTextColor(
+                    fragmentUpdateBinding.notification.setTextColor(
                         ContextCompat.getColor(
                             requireActivity().applicationContext,
                             R.color.color_failed
                         )
                     )
-                    activityUpdateBinding.notification.text = Configuration.UPDATE_FAILED
+                    fragmentUpdateBinding.notification.text = Configuration.UPDATE_FAILED
                 }
                 ProcessStep.SUCCESS -> {
                     isAvailableUpdateCatalyst = false
-                    activityUpdateBinding.progressBar.progress = 100
-                    activityUpdateBinding.notification.setTextColor(
+                    fragmentUpdateBinding.progressBar.progress = 100
+                    fragmentUpdateBinding.notification.setTextColor(
                         ContextCompat.getColor(
                             requireActivity().applicationContext,
-                            R.color.color_main
+                            R.color.color_white
                         )
                     )
-                    activityUpdateBinding.notification.text = Configuration.UPDATE_SUCCESS
+                    fragmentUpdateBinding.notification.text = Configuration.UPDATE_SUCCESS
                 }
                 else -> {
                     //

@@ -32,7 +32,7 @@
             android:layout_weight="1"
             android:width="0dp"
             android:fontFamily="sans-serif"
-            android:textColor="@color/colorUser" />
+            android:textColor="@color/color_white" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -45,7 +45,8 @@
                 android:layout_alignParentTop="true"
                 android:fontFamily="sans-serif"
                 android:gravity="end"
-                android:textAlignment="textEnd" />
+                android:textAlignment="textEnd"
+                android:textColor="@color/color_white" />
 
             <TextView
                 android:id="@+id/price_usd_without_metal"
@@ -72,7 +73,7 @@
             android:fontFamily="sans-serif"
             android:gravity="end"
             android:text="@string/catalyst_marka"
-            android:textColor="@color/colorUser" />
+            android:textColor="@color/color_white" />
 
         <TextView
             android:id="@+id/brand"
@@ -80,7 +81,7 @@
             android:layout_weight="1"
             android:width="0dp"
             android:fontFamily="sans-serif"
-            android:textColor="@color/colorUser" />
+            android:textColor="@color/color_white" />
 
         <TextView
             android:id="@+id/price_eur_without_metal"
@@ -103,7 +104,7 @@
             android:fontFamily="sans-serif"
             android:gravity="end"
             android:text="@string/catalyst_waga"
-            android:textColor="@color/colorUser" />
+            android:textColor="@color/color_white" />
 
         <TextView
             android:id="@+id/weight"
@@ -111,7 +112,7 @@
             android:layout_weight="1"
             android:width="0dp"
             android:fontFamily="sans-serif"
-            android:textColor="@color/colorUser" />
+            android:textColor="@color/color_white" />
 
         <TextView
             android:id="@+id/price_pln_without_metal"
@@ -136,7 +137,7 @@
             android:fontFamily="sans-serif"
             android:gravity="end"
             android:text="@string/catalyst_platyna"
-            android:textColor="@color/colorUser" />
+            android:textColor="@color/color_white" />
 
         <TextView
             android:id="@+id/platinum"
@@ -144,7 +145,7 @@
             android:layout_weight="1"
             android:width="0dp"
             android:fontFamily="sans-serif"
-            android:textColor="@color/colorUser" />
+            android:textColor="@color/color_white" />
 
         <TextView
             android:id="@+id/price_usd"
@@ -169,7 +170,7 @@
             android:fontFamily="sans-serif"
             android:gravity="end"
             android:text="@string/catalyst_pallad"
-            android:textColor="@color/colorUser" />
+            android:textColor="@color/color_white" />
 
         <TextView
             android:id="@+id/palladium"
@@ -177,7 +178,7 @@
             android:layout_weight="1"
             android:width="0dp"
             android:fontFamily="sans-serif"
-            android:textColor="@color/colorUser" />
+            android:textColor="@color/color_white" />
 
         <TextView
             android:id="@+id/price_eur"
@@ -202,7 +203,7 @@
             android:fontFamily="sans-serif"
             android:gravity="end"
             android:text="@string/catalyst_rod"
-            android:textColor="@color/colorUser" />
+            android:textColor="@color/color_white" />
 
         <TextView
             android:id="@+id/rhodium"
@@ -210,7 +211,7 @@
             android:layout_weight="1"
             android:width="0dp"
             android:fontFamily="sans-serif"
-            android:textColor="@color/colorUser" />
+            android:textColor="@color/color_white" />
 
         <TextView
             android:id="@+id/price_pln"

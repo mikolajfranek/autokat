@@ -34,7 +34,7 @@ import java.util.*
 class ResultFragment : Fragment() {
 
     private var _binding: FragmentResultBinding? = null
-    private val activityResultBinding get() = _binding!!
+    private val fragmentResultBinding get() = _binding!!
     private lateinit var catalystBinding: CatalystBinding
     private lateinit var historyFilterBinding: HistoryFilterBinding
     private lateinit var database: Database
@@ -63,8 +63,8 @@ class ResultFragment : Fragment() {
     }
 
     private fun setFilterField() {
-        activityResultBinding.filter.setText(SharedPreference.getKey(SharedPreference.LAST_SEARCHED_TEXT))
-        activityResultBinding.filter.addTextChangedListener(object : TextWatcher {
+        fragmentResultBinding.filter.setText(SharedPreference.getKey(SharedPreference.LAST_SEARCHED_TEXT))
+        fragmentResultBinding.filter.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -165,8 +165,8 @@ class ResultFragment : Fragment() {
                     return viewItem
                 }
             }
-        activityResultBinding.catalystListView.adapter = adapterCatalysts
-        activityResultBinding.catalystListView.setOnScrollListener(object :
+        fragmentResultBinding.catalystListView.adapter = adapterCatalysts
+        fragmentResultBinding.catalystListView.setOnScrollListener(object :
             AbsListView.OnScrollListener {
             override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) {}
             override fun onScroll(
@@ -199,11 +199,11 @@ class ResultFragment : Fragment() {
                     val itemHistoryFilter = getItem(position)
                     historyFilterBinding.name.text = UserInterface.colorText(
                         itemHistoryFilter.name,
-                        activityResultBinding.filter.text.toString()
+                        fragmentResultBinding.filter.text.toString()
                     )
                     viewItem.setOnClickListener {
-                        activityResultBinding.filter.setText(itemHistoryFilter.name)
-                        activityResultBinding.filter.dismissDropDown()
+                        fragmentResultBinding.filter.setText(itemHistoryFilter.name)
+                        fragmentResultBinding.filter.dismissDropDown()
                     }
                     historyFilterBinding.buttonDeleteHistoryFilter.setOnClickListener {
                         deleteHistoryFilter(itemHistoryFilter.id)
@@ -256,12 +256,12 @@ class ResultFragment : Fragment() {
                     }
                 }
             }
-        activityResultBinding.filter.threshold = 1
-        activityResultBinding.filter.setAdapter(adapterHistoryFilter)
+        fragmentResultBinding.filter.threshold = 1
+        fragmentResultBinding.filter.setAdapter(adapterHistoryFilter)
     }
 
     private fun setClickListeners() {
-        activityResultBinding.buttonAddHistoryFilter.setOnClickListener {
+        fragmentResultBinding.buttonAddHistoryFilter.setOnClickListener {
             addHistoryFilter()
         }
     }
@@ -296,7 +296,7 @@ class ResultFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentResultBinding.inflate(inflater, container, false)
-        return activityResultBinding.root
+        return fragmentResultBinding.root
     }
 
     override fun onDestroyView() {
@@ -351,16 +351,16 @@ class ResultFragment : Fragment() {
             }
         }
         if (adapterCatalysts.count == 0 && searchedText.isEmpty() == false) {
-            activityResultBinding.catalystEmptyList.visibility = View.VISIBLE
+            fragmentResultBinding.catalystEmptyList.visibility = View.VISIBLE
         } else {
-            activityResultBinding.catalystEmptyList.visibility = View.GONE
+            fragmentResultBinding.catalystEmptyList.visibility = View.GONE
         }
     }
 
     fun refreshAdapterHistoryFilter() {
         val result = database.getDataHistoryFilter(
             paginateLimitHistoryFilter.toString(),
-            activityResultBinding.filter.text.toString()
+            fragmentResultBinding.filter.text.toString()
         )
         adapterHistoryFilter.clear()
         adapterHistoryFilter.addAll(result)
@@ -462,13 +462,13 @@ class ResultFragment : Fragment() {
 
         private fun setVisibility() {
             if (isTableCatalystEmpty) {
-                activityResultBinding.catalystWaiting.visibility = View.GONE
-                activityResultBinding.catalystEmpty.visibility = View.VISIBLE
-                activityResultBinding.catalystListView.visibility = View.GONE
+                fragmentResultBinding.catalystWaiting.visibility = View.GONE
+                fragmentResultBinding.catalystEmpty.visibility = View.VISIBLE
+                fragmentResultBinding.catalystListView.visibility = View.GONE
             } else {
-                activityResultBinding.catalystWaiting.visibility = View.GONE
-                activityResultBinding.catalystEmpty.visibility = View.GONE
-                activityResultBinding.catalystListView.visibility = View.VISIBLE
+                fragmentResultBinding.catalystWaiting.visibility = View.GONE
+                fragmentResultBinding.catalystEmpty.visibility = View.GONE
+                fragmentResultBinding.catalystListView.visibility = View.VISIBLE
             }
         }
 
@@ -509,9 +509,9 @@ class ResultFragment : Fragment() {
         //region methods of run
         private fun onPreExecute() {
             (activity as BottomNavigationActivity).layoutOff()
-            activityResultBinding.catalystWaiting.visibility = View.VISIBLE
-            activityResultBinding.catalystEmpty.visibility = View.GONE
-            activityResultBinding.catalystListView.visibility = View.GONE
+            fragmentResultBinding.catalystWaiting.visibility = View.VISIBLE
+            fragmentResultBinding.catalystEmpty.visibility = View.GONE
+            fragmentResultBinding.catalystListView.visibility = View.GONE
         }
 
         private fun doInBackground(): ProcessStep {
@@ -657,7 +657,7 @@ class ResultFragment : Fragment() {
                     //
                 }
             }
-            activityResultBinding.filter.setText(activityResultBinding.filter.text.toString())
+            fragmentResultBinding.filter.setText(fragmentResultBinding.filter.text.toString())
             (activity as BottomNavigationActivity).layoutOn()
         }
         //endregion

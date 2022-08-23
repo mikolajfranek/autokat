@@ -268,7 +268,7 @@ class MainActivity : AppCompatActivity() {
             activityMainBinding.notification.setTextColor(
                 ContextCompat.getColor(
                     applicationContext,
-                    R.color.color_main
+                    R.color.color_white
                 )
             )
             activityMainBinding.notification.text = Configuration.USER_WAIT_AUTHENTICATING
@@ -303,7 +303,7 @@ class MainActivity : AppCompatActivity() {
                     activityMainBinding.notification.setTextColor(
                         ContextCompat.getColor(
                             applicationContext,
-                            R.color.color_main
+                            R.color.color_white
                         )
                     )
                     activityMainBinding.notification.text = Configuration.USER_NEVER_LOGGED
