@@ -2,12 +2,9 @@ package pl.autokat
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.toColor
 import androidx.fragment.app.Fragment
 import pl.autokat.components.UserInterface
 import pl.autokat.databinding.ActivityBottomNavigationBinding
-
 
 class BottomNavigationActivity : AppCompatActivity() {
     private lateinit var activityBottomNavigationBinding: ActivityBottomNavigationBinding

@@ -18,13 +18,12 @@ import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
 
-class Database(context: Context) : SQLiteAssetHelper(
+class Database(private val context: Context) : SQLiteAssetHelper(
     context,
     Configuration.DATABASE_NAME_OF_FILE,
     null,
     Configuration.DATABASE_VERSION
 ) {
-    private val context: Context = context
     private val transformation: String = "BLOWFISH/ECB/PKCS5Padding"
 
     //region upgrade, update
@@ -65,9 +64,10 @@ class Database(context: Context) : SQLiteAssetHelper(
                 Configuration.DATABASE_VERSION_1_0_6 -> {
                     upgrade106(db)
                 }
+
                 Configuration.DATABASE_VERSION_NEXT -> {
                     /*
-                    In version 1.0.8 database changed
+                    In version 2.0.0 database has changed
                     (It added tables/indexes for version of client, so in next upgrade of database it should be added 'if' conditions like below)
                     if (Configuration.PROGRAM_MODE == ProgramMode.COMPANY) {
                         //do something
@@ -79,7 +79,10 @@ class Database(context: Context) : SQLiteAssetHelper(
                 //in other case override database (copy database from assets to directory system where is database of app)
                 else -> {
                     db.endTransaction()
-                    Assetser.copyAssetFileToInternal(context, Configuration.DATABASE_FILE_PATH_ASSETS)
+                    Assetser.copyAssetFileToInternal(
+                        context,
+                        Configuration.DATABASE_FILE_PATH_ASSETS
+                    )
                     db.beginTransaction()
                     onCreate(db)
                 }
@@ -92,8 +95,8 @@ class Database(context: Context) : SQLiteAssetHelper(
         try {
             db.beginTransaction()
             db.execSQL("DELETE FROM ${Configuration.DATABASE_TABLE_CATALYST};VACUUM;")
-            db.execSQL("DELETE FROM ${Configuration.DATABASE_TABLE_SQLITE_SEQUENCE} WHERE ${Configuration.DATABASE_SQLITE_SEQUENCE_NAME} LIKE '${Configuration.DATABASE_TABLE_CATALYST}';VACUUM;")
             db.execSQL("DELETE FROM ${Configuration.DATABASE_TABLE_CATALYST_CLIENT};VACUUM;")
+            db.execSQL("DELETE FROM ${Configuration.DATABASE_TABLE_SQLITE_SEQUENCE} WHERE ${Configuration.DATABASE_SQLITE_SEQUENCE_NAME} LIKE '${Configuration.DATABASE_TABLE_CATALYST}';VACUUM;")
             db.execSQL("DELETE FROM ${Configuration.DATABASE_TABLE_SQLITE_SEQUENCE} WHERE ${Configuration.DATABASE_SQLITE_SEQUENCE_NAME} LIKE '${Configuration.DATABASE_TABLE_CATALYST_CLIENT}';VACUUM;")
             db.setTransactionSuccessful()
         } finally {
