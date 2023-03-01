@@ -18,7 +18,7 @@ import org.json.JSONArray
 import pl.autokat.components.*
 import pl.autokat.components.Formatter
 import pl.autokat.databinding.CatalystBinding
-import pl.autokat.databinding.FragmentResultBinding
+import pl.autokat.databinding.FragmentResultsBinding
 import pl.autokat.databinding.HistoryFilterBinding
 import pl.autokat.enums.ProcessStep
 import pl.autokat.enums.ProgramMode
@@ -31,9 +31,9 @@ import pl.autokat.workers.WorkerDownloadThumbnail
 import java.time.LocalDate
 import java.util.*
 
-class ResultFragment : Fragment() {
+class ResultsFragment : Fragment() {
 
-    private var _binding: FragmentResultBinding? = null
+    private var _binding: FragmentResultsBinding? = null
     private val fragmentResultBinding get() = _binding!!
     private lateinit var catalystBinding: CatalystBinding
     private lateinit var historyFilterBinding: HistoryFilterBinding
@@ -295,7 +295,7 @@ class ResultFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentResultBinding.inflate(inflater, container, false)
+        _binding = FragmentResultsBinding.inflate(inflater, container, false)
         return fragmentResultBinding.root
     }
 

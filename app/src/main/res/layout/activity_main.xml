@@ -13,7 +13,7 @@
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="@color/color_main"
+        android:background="@color/colorUser"
         android:gravity="center">
 
         <TextView
@@ -22,7 +22,7 @@
             android:fontFamily="sans-serif"
             android:gravity="center"
             android:text="@string/app_name"
-            android:textColor="@color/color_white"
+            android:textColor="@color/colorGray"
             android:textSize="32sp"
             android:textStyle="bold" />
     </RelativeLayout>
@@ -56,6 +56,8 @@
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        app:hintTextColor="@color/colorGray"
+                        app:boxStrokeColor="@color/colorGray"
                         android:layout_marginBottom="10dp">
 
                         <EditText
@@ -68,8 +70,8 @@
                             android:inputType="text"
                             android:paddingBottom="15dp"
                             android:singleLine="true"
-                            android:textColor="@color/color_white"
-                            android:textColorHint="@color/color_white" />
+                            android:textColor="@color/colorGray"
+                            android:textColorHint="@color/colorGray" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <TextView
@@ -78,7 +80,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="35dp"
                         android:gravity="center"
-                        android:textColor="@color/color_white" />
+                        android:textColor="@color/colorGray" />
 
                     <Button
                         android:id="@+id/button_login"
@@ -90,7 +92,7 @@
                         android:background="@drawable/button_bg"
                         android:foreground="?android:attr/selectableItemBackground"
                         android:text="@string/activity_main_zaloguj"
-                        android:textColor="@color/color_white"
+                        android:textColor="@color/colorGray"
                         android:textSize="11sp"
                         app:backgroundTint="#293462" />
 
@@ -100,7 +102,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
                         android:gravity="center"
-                        android:textColor="@color/color_white" />
+                        android:textColor="@color/colorGray" />
 
                     <TextView
                         android:id="@+id/companyOwner"
@@ -108,7 +110,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
                         android:gravity="center"
-                        android:textColor="@color/color_white" />
+                        android:textColor="@color/colorGray" />
 
                     <TextView
                         android:id="@+id/companyPhone"
@@ -117,7 +119,7 @@
                         android:layout_marginBottom="5dp"
                         android:autoLink="phone"
                         android:gravity="center"
-                        android:textColor="@color/color_white" />
+                        android:textColor="@color/colorGray" />
 
                     <TextView
                         android:id="@+id/companyEmail"
@@ -126,7 +128,7 @@
                         android:layout_marginBottom="5dp"
                         android:autoLink="email"
                         android:gravity="center"
-                        android:textColor="@color/color_white" />
+                        android:textColor="@color/colorGray" />
 
                     <TextView
                         android:id="@+id/companyUrl"
@@ -135,7 +137,7 @@
                         android:layout_marginBottom="5dp"
                         android:autoLink="web"
                         android:gravity="center"
-                        android:textColor="@color/color_white" />
+                        android:textColor="@color/colorGray" />
 
                 </LinearLayout>
 

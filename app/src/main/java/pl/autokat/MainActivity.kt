@@ -22,6 +22,8 @@ import java.net.UnknownHostException
 
 class MainActivity : AppCompatActivity() {
 
+    //TODO refactor this activity and layout (check all)
+
     private lateinit var activityMainBinding: ActivityMainBinding
     private val requestCodeReadPhoneState: Int = 0
 
@@ -111,8 +113,8 @@ class MainActivity : AppCompatActivity() {
     //endregion
 
     //region open activities
-    fun openResultActivity() {
-        startActivity(Intent(applicationContext, ResultActivity::class.java))
+    fun openBottomNavigationActivity() {
+        startActivity(Intent(applicationContext, BottomNavigationActivity::class.java))
         finish()
     }
     //endregion
@@ -268,7 +270,7 @@ class MainActivity : AppCompatActivity() {
             activityMainBinding.notification.setTextColor(
                 ContextCompat.getColor(
                     applicationContext,
-                    R.color.color_white
+                    R.color.colorGray
                 )
             )
             activityMainBinding.notification.text = Configuration.USER_WAIT_AUTHENTICATING
@@ -303,7 +305,7 @@ class MainActivity : AppCompatActivity() {
                     activityMainBinding.notification.setTextColor(
                         ContextCompat.getColor(
                             applicationContext,
-                            R.color.color_white
+                            R.color.colorGray
                         )
                     )
                     activityMainBinding.notification.text = Configuration.USER_NEVER_LOGGED
@@ -312,7 +314,7 @@ class MainActivity : AppCompatActivity() {
                     activityMainBinding.notification.setTextColor(
                         ContextCompat.getColor(
                             applicationContext,
-                            R.color.color_failed
+                            R.color.colorFailed
                         )
                     )
                     activityMainBinding.notification.text = Configuration.COMPANY_FAILED_LICENCE
@@ -321,7 +323,7 @@ class MainActivity : AppCompatActivity() {
                     activityMainBinding.notification.setTextColor(
                         ContextCompat.getColor(
                             applicationContext,
-                            R.color.color_failed
+                            R.color.colorFailed
                         )
                     )
                     activityMainBinding.notification.text = Configuration.USER_FAILED_LICENCE
@@ -331,7 +333,7 @@ class MainActivity : AppCompatActivity() {
                     activityMainBinding.notification.setTextColor(
                         ContextCompat.getColor(
                             applicationContext,
-                            R.color.color_failed
+                            R.color.colorFailed
                         )
                     )
                     activityMainBinding.notification.text = Configuration.USER_FAILED_LOGIN
@@ -340,7 +342,7 @@ class MainActivity : AppCompatActivity() {
                     activityMainBinding.notification.setTextColor(
                         ContextCompat.getColor(
                             applicationContext,
-                            R.color.color_failed
+                            R.color.colorFailed
                         )
                     )
                     activityMainBinding.notification.text = Configuration.USER_FAILED_UUID
@@ -349,7 +351,7 @@ class MainActivity : AppCompatActivity() {
                     activityMainBinding.notification.setTextColor(
                         ContextCompat.getColor(
                             applicationContext,
-                            R.color.color_failed
+                            R.color.colorFailed
                         )
                     )
                     activityMainBinding.notification.text = Configuration.NETWORK_FAILED
@@ -358,13 +360,13 @@ class MainActivity : AppCompatActivity() {
                     activityMainBinding.notification.setTextColor(
                         ContextCompat.getColor(
                             applicationContext,
-                            R.color.color_failed
+                            R.color.colorFailed
                         )
                     )
                     activityMainBinding.notification.text = Configuration.UNHANDLED_EXCEPTION
                 }
                 ProcessStep.SUCCESS -> {
-                    openResultActivity()
+                    openBottomNavigationActivity()
                 }
                 else -> {
                     //

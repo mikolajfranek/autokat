@@ -12,13 +12,13 @@ import pl.autokat.components.Configuration
 import pl.autokat.components.Database
 import pl.autokat.components.SharedPreference
 import pl.autokat.components.Spreadsheet
-import pl.autokat.databinding.FragmentUpdateBinding
+import pl.autokat.databinding.FragmentUpdatesBinding
 import pl.autokat.enums.ProcessStep
 import java.net.UnknownHostException
 
-class UpdateFragment : Fragment() {
+class UpdatesFragment : Fragment() {
 
-    private var _binding: FragmentUpdateBinding? = null
+    private var _binding: FragmentUpdatesBinding? = null
     private val fragmentUpdateBinding get() = _binding!!
     private lateinit var database: Database
     private var isAvailableUpdateCatalyst: Boolean = false
@@ -72,7 +72,7 @@ class UpdateFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentUpdateBinding.inflate(inflater, container, false)
+        _binding = FragmentUpdatesBinding.inflate(inflater, container, false)
         return fragmentUpdateBinding.root
     }
 
@@ -111,7 +111,7 @@ class UpdateFragment : Fragment() {
             fragmentUpdateBinding.notification.setTextColor(
                 ContextCompat.getColor(
                     requireActivity().applicationContext,
-                    R.color.color_white
+                    R.color.colorGray
                 )
             )
             if (itemsFromDatabase != 0) {
@@ -237,7 +237,7 @@ class UpdateFragment : Fragment() {
             fragmentUpdateBinding.notification.setTextColor(
                 ContextCompat.getColor(
                     requireActivity().applicationContext,
-                    R.color.color_white
+                    R.color.colorGray
                 )
             )
             fragmentUpdateBinding.notification.text = Configuration.UPDATE_WAIT
@@ -294,7 +294,7 @@ class UpdateFragment : Fragment() {
             fragmentUpdateBinding.notification.setTextColor(
                 ContextCompat.getColor(
                     requireActivity().applicationContext,
-                    R.color.color_white
+                    R.color.colorGray
                 )
             )
             fragmentUpdateBinding.notification.text = Configuration.UPDATE_WAIT
@@ -326,7 +326,7 @@ class UpdateFragment : Fragment() {
             when (processStep) {
                 ProcessStep.NETWORK_FAILED -> {
                     fragmentUpdateBinding.notification.setTextColor(
-                        ContextCompat.getColor(requireActivity().applicationContext, R.color.color_failed)
+                        ContextCompat.getColor(requireActivity().applicationContext, R.color.colorFailed)
                     )
                     fragmentUpdateBinding.notification.text = Configuration.NETWORK_FAILED
                 }
@@ -334,7 +334,7 @@ class UpdateFragment : Fragment() {
                     fragmentUpdateBinding.notification.setTextColor(
                         ContextCompat.getColor(
                             requireActivity().applicationContext,
-                            R.color.color_failed
+                            R.color.colorFailed
                         )
                     )
                     fragmentUpdateBinding.notification.text = Configuration.UPDATE_FAILED
@@ -345,7 +345,7 @@ class UpdateFragment : Fragment() {
                     fragmentUpdateBinding.notification.setTextColor(
                         ContextCompat.getColor(
                             requireActivity().applicationContext,
-                            R.color.color_white
+                            R.color.colorGray
                         )
                     )
                     fragmentUpdateBinding.notification.text = Configuration.UPDATE_SUCCESS

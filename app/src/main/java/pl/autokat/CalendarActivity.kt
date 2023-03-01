@@ -90,7 +90,7 @@ class CalendarActivity : AppCompatActivity() {
                             textView.setTextColor(
                                 ContextCompat.getColor(
                                     applicationContext,
-                                    R.color.color_white
+                                    R.color.colorGray
                                 )
                             )
                             textView.setBackgroundResource(R.drawable.selected_day)
@@ -99,7 +99,7 @@ class CalendarActivity : AppCompatActivity() {
                             textView.setTextColor(
                                 ContextCompat.getColor(
                                     applicationContext,
-                                    R.color.color_main
+                                    R.color.colorUser
                                 )
                             )
                             val keyYearMonth = day.date.yearMonth.toString()
@@ -117,7 +117,7 @@ class CalendarActivity : AppCompatActivity() {
                                 textView.setTextColor(
                                     ContextCompat.getColor(
                                         applicationContext,
-                                        R.color.color_failed
+                                        R.color.colorFailed
                                     )
                                 )
                             }

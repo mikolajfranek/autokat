@@ -6,10 +6,7 @@
     <color name="colorGray">#EEEEEE</color>
     <color name="colorLine">#E7E7E7</color>
     <color name="colorBlack">#000000</color>
-
-    <color name="color_yellow">#ffd700</color>
-    <color name="color_failed">#F37365</color>
-    <color name="color_white">#ffffff</color>
-    <color name="color_main">#363636</color>
-    <color name="color_black">#293462</color>
+    <color name="colorBlue">#293462</color>
+    <color name="colorYellow">#ffd700</color>
+    <color name="colorFailed">#F37365</color>
 </resources>

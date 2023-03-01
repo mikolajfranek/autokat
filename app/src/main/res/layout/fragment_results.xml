@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ResultFragment">
+    tools:context=".ResultsFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -38,7 +38,7 @@
                     android:inputType="text"
                     android:padding="10dp"
                     android:text=""
-                    android:textColor="@color/color_black" />
+                    android:textColor="@color/colorBlue" />
 
                 <Button
                     android:id="@+id/button_add_history_filter"
@@ -52,7 +52,7 @@
                     android:text=""
                     android:textAllCaps="false"
                     android:tooltipText="Zapisz nazwę do filtrowania"
-                    app:backgroundTint="@color/color_main"
+                    app:backgroundTint="@color/colorUser"
                     tools:ignore="UnusedAttribute" />
             </TableRow>
         </TableLayout>
@@ -73,7 +73,7 @@
             android:fontFamily="sans-serif"
             android:gravity="center"
             android:text="@string/activity_result_trwa_pobieranie_danych"
-            android:textColor="@color/color_white"
+            android:textColor="@color/colorGray"
             android:visibility="gone" />
 
         <TextView
@@ -85,7 +85,7 @@
             android:fontFamily="sans-serif"
             android:gravity="center"
             android:text="@string/activity_result_nie_znaleziono_elementow"
-            android:textColor="@color/color_white"
+            android:textColor="@color/colorGray"
             android:visibility="gone" />
 
         <TextView
@@ -97,7 +97,7 @@
             android:fontFamily="sans-serif"
             android:gravity="center"
             android:text="@string/activity_result_baza_danych_jest_pusta"
-            android:textColor="@color/color_white"
+            android:textColor="@color/colorGray"
             android:visibility="gone" />
 
     </LinearLayout>

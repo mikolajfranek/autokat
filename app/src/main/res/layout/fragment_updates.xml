@@ -4,12 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UpdateFragment">
+    tools:context=".UpdatesFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="10dp"
+            android:scaleX="2"
+            android:scaleY="2"
+            android:background="@drawable/download" />
 
         <ProgressBar
             android:id="@+id/progress_bar"
@@ -32,7 +42,7 @@
             android:fontFamily="sans-serif"
             android:gravity="center"
             android:text=""
-            android:textColor="@color/color_white" />
+            android:textColor="@color/colorGray" />
 
         <Button
             android:id="@+id/button_update_new"
@@ -44,9 +54,9 @@
             android:background="@drawable/button_bg"
             android:foreground="?android:attr/selectableItemBackground"
             android:text="@string/activity_update_pobierz_nowe_katalizatory"
-            android:textColor="@color/color_white"
+            android:textColor="@color/colorGray"
             android:textSize="11sp"
-            app:backgroundTint="@color/color_main" />
+            app:backgroundTint="@color/colorUser" />
 
         <Button
             android:id="@+id/button_update_full"
@@ -58,8 +68,8 @@
             android:background="@drawable/button_bg"
             android:foreground="?android:attr/selectableItemBackground"
             android:text="@string/activity_update_synchronizacja_baz_danych"
-            android:textColor="@color/color_white"
+            android:textColor="@color/colorGray"
             android:textSize="11sp"
-            app:backgroundTint="@color/color_main" />
+            app:backgroundTint="@color/colorUser" />
     </LinearLayout>
 </FrameLayout>

@@ -98,7 +98,7 @@ class UpdateActivity : AppCompatActivity() {
             activityUpdateBinding.notification.setTextColor(
                 ContextCompat.getColor(
                     applicationContext,
-                    R.color.color_main
+                    R.color.colorUser
                 )
             )
             if (itemsFromDatabase != 0) {
@@ -224,7 +224,7 @@ class UpdateActivity : AppCompatActivity() {
             activityUpdateBinding.notification.setTextColor(
                 ContextCompat.getColor(
                     applicationContext,
-                    R.color.color_main
+                    R.color.colorUser
                 )
             )
             activityUpdateBinding.notification.text = Configuration.UPDATE_WAIT
@@ -281,7 +281,7 @@ class UpdateActivity : AppCompatActivity() {
             activityUpdateBinding.notification.setTextColor(
                 ContextCompat.getColor(
                     applicationContext,
-                    R.color.color_main
+                    R.color.colorUser
                 )
             )
             activityUpdateBinding.notification.text = Configuration.UPDATE_WAIT
@@ -313,7 +313,7 @@ class UpdateActivity : AppCompatActivity() {
             when (processStep) {
                 ProcessStep.NETWORK_FAILED -> {
                     activityUpdateBinding.notification.setTextColor(
-                        ContextCompat.getColor(applicationContext, R.color.color_failed)
+                        ContextCompat.getColor(applicationContext, R.color.colorFailed)
                     )
                     activityUpdateBinding.notification.text = Configuration.NETWORK_FAILED
                 }
@@ -321,7 +321,7 @@ class UpdateActivity : AppCompatActivity() {
                     activityUpdateBinding.notification.setTextColor(
                         ContextCompat.getColor(
                             applicationContext,
-                            R.color.color_failed
+                            R.color.colorFailed
                         )
                     )
                     activityUpdateBinding.notification.text = Configuration.UPDATE_FAILED
@@ -332,7 +332,7 @@ class UpdateActivity : AppCompatActivity() {
                     activityUpdateBinding.notification.setTextColor(
                         ContextCompat.getColor(
                             applicationContext,
-                            R.color.color_main
+                            R.color.colorUser
                         )
                     )
                     activityUpdateBinding.notification.text = Configuration.UPDATE_SUCCESS

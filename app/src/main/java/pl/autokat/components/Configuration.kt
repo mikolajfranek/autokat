@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 class Configuration {
     companion object {
         const val PRODUCTION: Boolean = false
-        val PROGRAM_MODE: ProgramMode = ProgramMode.CLIENT
+        val PROGRAM_MODE: ProgramMode = ProgramMode.COMPANY
         const val VERSION_APK: String = "2.0.0"
         const val DATABASE_VERSION_1_0_6: Int = 4
         const val DATABASE_VERSION_2_0_0: Int = 5

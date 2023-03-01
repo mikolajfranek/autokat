@@ -42,16 +42,16 @@ class BottomNavigationActivity : AppCompatActivity() {
 
             when (it.itemId) {
                 R.id.bottom_menu_result -> {
-                    selectedFragment = ResultFragment()
+                    selectedFragment = ResultsFragment()
                 }
                 R.id.bottom_menu_courses -> {
                     selectedFragment = CoursesFragment()
                 }
                 R.id.bottom_menu_update -> {
-                    selectedFragment = UpdateFragment()
+                    selectedFragment = UpdatesFragment()
                 }
                 R.id.bottom_menu_settings -> {
-                    selectedFragment = SettingFragment()
+                    selectedFragment = SettingsFragment()
                 }
             }
 
@@ -63,7 +63,7 @@ class BottomNavigationActivity : AppCompatActivity() {
             return@setOnItemSelectedListener true
         }
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, ResultFragment()).commit()
+            .replace(R.id.fragment_container, ResultsFragment()).commit()
 
 
     }
