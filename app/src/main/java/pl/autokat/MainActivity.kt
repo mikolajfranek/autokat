@@ -21,13 +21,9 @@ import pl.autokat.enums.TimeChecking
 import java.net.UnknownHostException
 
 /**
- *
- *
- * *
+ * describe happy path, conditions, the most important information
  */
 class MainActivity : AppCompatActivity() {
-
-    //TODO refactor this activity and layout (check all)
 
     private lateinit var activityMainBinding: ActivityMainBinding
     private val requestCodeReadPhoneState: Int = 0
@@ -41,16 +37,11 @@ class MainActivity : AppCompatActivity() {
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMainBinding.root)
         SharedPreference.init(this)
-        activityMainBinding.companyName.text =
-            Secret.map[Secret.ID_COMPANY]!![CompanyMapKeys.NAME]
-        activityMainBinding.companyOwner.text =
-            Secret.map[Secret.ID_COMPANY]!![CompanyMapKeys.OWNER]
-        activityMainBinding.companyPhone.text =
-            Secret.map[Secret.ID_COMPANY]!![CompanyMapKeys.PHONE]
-        activityMainBinding.companyEmail.text =
-            Secret.map[Secret.ID_COMPANY]!![CompanyMapKeys.EMAIL]
-        activityMainBinding.companyUrl.text =
-            Secret.map[Secret.ID_COMPANY]!![CompanyMapKeys.URL]
+        activityMainBinding.companyName.text = Secret.COMPANY_INFO[CompanyMapKeys.NAME]
+        activityMainBinding.companyOwner.text = Secret.COMPANY_INFO[CompanyMapKeys.OWNER]
+        activityMainBinding.companyPhone.text = Secret.COMPANY_INFO[CompanyMapKeys.PHONE]
+        activityMainBinding.companyEmail.text = Secret.COMPANY_INFO[CompanyMapKeys.EMAIL]
+        activityMainBinding.companyUrl.text = Secret.COMPANY_INFO[CompanyMapKeys.URL]
     }
 
     private fun setClickListeners() {
@@ -87,6 +78,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 return
             }
+
             else -> {
                 finish()
                 return
@@ -315,6 +307,7 @@ class MainActivity : AppCompatActivity() {
                     )
                     activityMainBinding.notification.text = Configuration.USER_NEVER_LOGGED
                 }
+
                 ProcessStep.COMPANY_ELAPSED_LICENCE -> {
                     activityMainBinding.notification.setTextColor(
                         ContextCompat.getColor(
@@ -324,6 +317,7 @@ class MainActivity : AppCompatActivity() {
                     )
                     activityMainBinding.notification.text = Configuration.COMPANY_FAILED_LICENCE
                 }
+
                 ProcessStep.USER_ELAPSED_DATE_LICENCE -> {
                     activityMainBinding.notification.setTextColor(
                         ContextCompat.getColor(
@@ -334,6 +328,7 @@ class MainActivity : AppCompatActivity() {
                     activityMainBinding.notification.text = Configuration.USER_FAILED_LICENCE
                     SharedPreference.setKey(SharedPreference.LICENCE_DATE_OF_END, "")
                 }
+
                 ProcessStep.USER_FAILED_LOGIN -> {
                     activityMainBinding.notification.setTextColor(
                         ContextCompat.getColor(
@@ -343,6 +338,7 @@ class MainActivity : AppCompatActivity() {
                     )
                     activityMainBinding.notification.text = Configuration.USER_FAILED_LOGIN
                 }
+
                 ProcessStep.USER_FAILED_SERIAL -> {
                     activityMainBinding.notification.setTextColor(
                         ContextCompat.getColor(
@@ -352,6 +348,7 @@ class MainActivity : AppCompatActivity() {
                     )
                     activityMainBinding.notification.text = Configuration.USER_FAILED_UUID
                 }
+
                 ProcessStep.NETWORK_FAILED -> {
                     activityMainBinding.notification.setTextColor(
                         ContextCompat.getColor(
@@ -361,6 +358,7 @@ class MainActivity : AppCompatActivity() {
                     )
                     activityMainBinding.notification.text = Configuration.NETWORK_FAILED
                 }
+
                 ProcessStep.UNHANDLED_EXCEPTION -> {
                     activityMainBinding.notification.setTextColor(
                         ContextCompat.getColor(
@@ -370,9 +368,11 @@ class MainActivity : AppCompatActivity() {
                     )
                     activityMainBinding.notification.text = Configuration.UNHANDLED_EXCEPTION
                 }
+
                 ProcessStep.SUCCESS -> {
                     openBottomNavigationActivity()
                 }
+
                 else -> {
                     //
                 }
