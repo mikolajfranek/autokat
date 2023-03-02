@@ -12,7 +12,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="Pn"
-        android:textColor="@color/colorLine"
+        android:textColor="@color/colorGray"
         android:textSize="14sp" />
 
     <TextView
@@ -21,7 +21,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="Wt"
-        android:textColor="@color/colorLine"
+        android:textColor="@color/colorGray"
         android:textSize="14sp" />
 
     <TextView
@@ -30,7 +30,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="Śr"
-        android:textColor="@color/colorLine"
+        android:textColor="@color/colorGray"
         android:textSize="14sp" />
 
     <TextView
@@ -39,7 +39,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="Czw"
-        android:textColor="@color/colorLine"
+        android:textColor="@color/colorGray"
         android:textSize="14sp" />
 
     <TextView
@@ -48,7 +48,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="Pt"
-        android:textColor="@color/colorLine"
+        android:textColor="@color/colorGray"
         android:textSize="14sp" />
 
     <TextView
@@ -57,7 +57,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="Sob"
-        android:textColor="@color/colorLine"
+        android:textColor="@color/colorGray"
         android:textSize="14sp" />
 
     <TextView
@@ -66,7 +66,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="Nd"
-        android:textColor="@color/colorLine"
+        android:textColor="@color/colorGray"
         android:textSize="14sp" />
 
 </LinearLayout>

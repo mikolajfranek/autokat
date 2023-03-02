@@ -326,7 +326,7 @@ class UpdatesFragment : Fragment() {
             when (processStep) {
                 ProcessStep.NETWORK_FAILED -> {
                     fragmentUpdateBinding.notification.setTextColor(
-                        ContextCompat.getColor(requireActivity().applicationContext, R.color.colorFailed)
+                        ContextCompat.getColor(requireActivity().applicationContext, R.color.colorRed)
                     )
                     fragmentUpdateBinding.notification.text = Configuration.NETWORK_FAILED
                 }
@@ -334,7 +334,7 @@ class UpdatesFragment : Fragment() {
                     fragmentUpdateBinding.notification.setTextColor(
                         ContextCompat.getColor(
                             requireActivity().applicationContext,
-                            R.color.colorFailed
+                            R.color.colorRed
                         )
                     )
                     fragmentUpdateBinding.notification.text = Configuration.UPDATE_FAILED

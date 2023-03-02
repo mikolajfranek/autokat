@@ -20,6 +20,11 @@ import pl.autokat.enums.ProcessStep
 import pl.autokat.enums.TimeChecking
 import java.net.UnknownHostException
 
+/**
+ *
+ *
+ * *
+ */
 class MainActivity : AppCompatActivity() {
 
     //TODO refactor this activity and layout (check all)
@@ -314,7 +319,7 @@ class MainActivity : AppCompatActivity() {
                     activityMainBinding.notification.setTextColor(
                         ContextCompat.getColor(
                             applicationContext,
-                            R.color.colorFailed
+                            R.color.colorRed
                         )
                     )
                     activityMainBinding.notification.text = Configuration.COMPANY_FAILED_LICENCE
@@ -323,7 +328,7 @@ class MainActivity : AppCompatActivity() {
                     activityMainBinding.notification.setTextColor(
                         ContextCompat.getColor(
                             applicationContext,
-                            R.color.colorFailed
+                            R.color.colorRed
                         )
                     )
                     activityMainBinding.notification.text = Configuration.USER_FAILED_LICENCE
@@ -333,7 +338,7 @@ class MainActivity : AppCompatActivity() {
                     activityMainBinding.notification.setTextColor(
                         ContextCompat.getColor(
                             applicationContext,
-                            R.color.colorFailed
+                            R.color.colorRed
                         )
                     )
                     activityMainBinding.notification.text = Configuration.USER_FAILED_LOGIN
@@ -342,7 +347,7 @@ class MainActivity : AppCompatActivity() {
                     activityMainBinding.notification.setTextColor(
                         ContextCompat.getColor(
                             applicationContext,
-                            R.color.colorFailed
+                            R.color.colorRed
                         )
                     )
                     activityMainBinding.notification.text = Configuration.USER_FAILED_UUID
@@ -351,7 +356,7 @@ class MainActivity : AppCompatActivity() {
                     activityMainBinding.notification.setTextColor(
                         ContextCompat.getColor(
                             applicationContext,
-                            R.color.colorFailed
+                            R.color.colorRed
                         )
                     )
                     activityMainBinding.notification.text = Configuration.NETWORK_FAILED
@@ -360,7 +365,7 @@ class MainActivity : AppCompatActivity() {
                     activityMainBinding.notification.setTextColor(
                         ContextCompat.getColor(
                             applicationContext,
-                            R.color.colorFailed
+                            R.color.colorRed
                         )
                     )
                     activityMainBinding.notification.text = Configuration.UNHANDLED_EXCEPTION

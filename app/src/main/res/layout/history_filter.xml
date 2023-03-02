@@ -24,7 +24,7 @@
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="6dp"
-            android:background="@color/colorLine" />
+            android:background="@color/colorGray" />
 
         <Button
             android:id="@+id/button_delete_history_filter"
@@ -45,7 +45,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
-        android:background="@color/colorLine" />
+        android:background="@color/colorGray" />
 </TableLayout>
 
 

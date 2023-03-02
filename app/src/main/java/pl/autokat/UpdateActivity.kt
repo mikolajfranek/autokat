@@ -313,7 +313,7 @@ class UpdateActivity : AppCompatActivity() {
             when (processStep) {
                 ProcessStep.NETWORK_FAILED -> {
                     activityUpdateBinding.notification.setTextColor(
-                        ContextCompat.getColor(applicationContext, R.color.colorFailed)
+                        ContextCompat.getColor(applicationContext, R.color.colorRed)
                     )
                     activityUpdateBinding.notification.text = Configuration.NETWORK_FAILED
                 }
@@ -321,7 +321,7 @@ class UpdateActivity : AppCompatActivity() {
                     activityUpdateBinding.notification.setTextColor(
                         ContextCompat.getColor(
                             applicationContext,
-                            R.color.colorFailed
+                            R.color.colorRed
                         )
                     )
                     activityUpdateBinding.notification.text = Configuration.UPDATE_FAILED

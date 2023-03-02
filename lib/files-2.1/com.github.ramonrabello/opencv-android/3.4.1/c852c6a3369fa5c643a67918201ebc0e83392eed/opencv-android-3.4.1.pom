@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.github.ramonrabello</groupId>
+  <artifactId>opencv-android</artifactId>
+  <version>3.4.1</version>
+  <packaging>aar</packaging>
+  <name>ramonrabello/opencv-android</name>
+  <description>OpenCV for Android bundle version to be used as .aar or via Gradle</description>
+  <url>https://github.com/ramonrabello/opencv-android</url>
+  <inceptionYear>2018</inceptionYear>
+  <developers>
+    <developer>
+      <id>ramonrabello</id>
+      <name>Ramon Ribeiro Rabello</name>
+      <email>ramon.rabello@gmail.com</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git://github.com/ramonrabello/opencv-android.git</connection>
+    <developerConnection>scm:git://github.com/ramonrabello/opencv-android.git</developerConnection>
+    <url>git://github.com/ramonrabello/opencv-android.git</url>
+  </scm>
+</project>

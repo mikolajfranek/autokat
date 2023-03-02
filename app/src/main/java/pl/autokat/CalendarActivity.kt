@@ -117,7 +117,7 @@ class CalendarActivity : AppCompatActivity() {
                                 textView.setTextColor(
                                     ContextCompat.getColor(
                                         applicationContext,
-                                        R.color.colorFailed
+                                        R.color.colorRed
                                     )
                                 )
                             }
