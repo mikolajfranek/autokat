@@ -185,12 +185,6 @@ class MainActivity : AppCompatActivity() {
             if (Spreadsheet.isExpiredLicenceOfCompany(true) == true) {
                 return ProcessStep.COMPANY_ELAPSED_LICENCE
             }
-            if (SharedPreference.getKey(SharedPreference.LICENCE_DATE_OF_END).isEmpty() == false) {
-                if (Checker.checkTimeOnPhone(TimeChecking.CHECKING_LICENCE) == false) {
-                    return ProcessStep.USER_ELAPSED_DATE_LICENCE
-                }
-                return ProcessStep.SUCCESS
-            }
             return ProcessStep.NONE
         }
 

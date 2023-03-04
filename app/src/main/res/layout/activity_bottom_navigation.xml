@@ -7,6 +7,15 @@
     android:orientation="vertical"
     tools:context=".BottomNavigationActivity">
 
+    <TextView
+        android:id="@+id/fragment_waiting"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:textColor="@color/colorUser"
+        android:visibility="visible" />
+
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
@@ -20,6 +29,7 @@
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
         android:background="@color/colorUser"
+        android:visibility="gone"
         app:itemIconTint="@drawable/bottom_nav_icon_text_color_selector"
         app:itemTextColor="@drawable/bottom_nav_icon_text_color_selector"
         app:labelVisibilityMode="labeled"

@@ -76,7 +76,7 @@
         android:gravity="center"
         android:text="@string/activity_result_trwa_pobieranie_danych"
         android:textColor="@color/colorUser"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <TextView
         android:id="@+id/catalyst_empty_list"

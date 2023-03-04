@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
-import org.json.JSONArray
 import pl.autokat.components.*
 import pl.autokat.components.Formatter
 import pl.autokat.databinding.CatalystBinding
@@ -390,48 +389,6 @@ class ResultsFragment : Fragment() {
             isAvailableUpdateCatalyst = colorIconUpdateCatalyst
         }
 
-        private fun updateUserInformation(): ProcessStep {
-            val user: JSONArray =
-                Spreadsheet.getDataLogin(SharedPreference.getKey(SharedPreference.LOGIN))
-                    ?: return ProcessStep.USER_ELAPSED_DATE_LICENCE
-            if (Checker.checkTimeIsGreaterThanNow(
-                    user.getString(Configuration.SPREADSHEET_USERS_LICENCE)
-                ) == false
-            ) {
-                return ProcessStep.USER_ELAPSED_DATE_LICENCE
-            }
-            SharedPreference.setKey(
-                SharedPreference.LICENCE_DATE_OF_END,
-                user.getString(Configuration.SPREADSHEET_USERS_LICENCE)
-            )
-            SharedPreference.setKey(
-                SharedPreference.DISCOUNT,
-                Parser.parseStringToInt(user.getString(Configuration.SPREADSHEET_USERS_DISCOUNT))
-                    .toString()
-            )
-            SharedPreference.setKey(
-                SharedPreference.VISIBILITY,
-                Parser.parseStringBooleanToInt(user.getString(Configuration.SPREADSHEET_USERS_VISIBILITY))
-                    .toString()
-            )
-            SharedPreference.setKey(
-                SharedPreference.MINUS_PLATINUM,
-                Parser.parseStringToInt(user.getString(Configuration.SPREADSHEET_USERS_MINUS_PLATINUM))
-                    .toString()
-            )
-            SharedPreference.setKey(
-                SharedPreference.MINUS_PALLADIUM,
-                Parser.parseStringToInt(user.getString(Configuration.SPREADSHEET_USERS_MINUS_PALLADIUM))
-                    .toString()
-            )
-            SharedPreference.setKey(
-                SharedPreference.MINUS_RHODIUM,
-                Parser.parseStringToInt(user.getString(Configuration.SPREADSHEET_USERS_MINUS_RHODIUM))
-                    .toString()
-            )
-            return ProcessStep.NONE
-        }
-
         private fun runWorkerDownloadThumbnail() {
             if (Configuration.workerDownloadThumbnail.compareAndSet(false, true)) {
                 val workRequest: WorkRequest =
@@ -453,13 +410,6 @@ class ResultsFragment : Fragment() {
         //endregion
 
         //region methods used in onPostExecute
-        private fun handleElapsedLicence(processStep: ProcessStep) {
-            if (processStep == ProcessStep.USER_ELAPSED_DATE_LICENCE || processStep == ProcessStep.COMPANY_ELAPSED_LICENCE) {
-                SharedPreference.setKey(SharedPreference.LICENCE_DATE_OF_END, "")
-                openMainActivity()
-            }
-        }
-
         private fun setVisibility() {
             if (isTableCatalystEmpty) {
                 fragmentResultBinding.catalystWaiting.visibility = View.GONE
@@ -515,26 +465,18 @@ class ResultsFragment : Fragment() {
         }
 
         private fun doInBackground(): ProcessStep {
-            try {
-                if (Spreadsheet.isExpiredLicenceOfCompany(false) == true) {
-                    return ProcessStep.COMPANY_ELAPSED_LICENCE
-                }
+            return try {
                 getCourses()
                 checkCountCatalyst()
-                val processStep = updateUserInformation()
-                if (processStep != ProcessStep.NONE) {
-                    return processStep
-                }
                 runWorkerDownloadThumbnail()
                 runWorkerCopyData()
-                return ProcessStep.SUCCESS
+                ProcessStep.SUCCESS
             } catch (e: Exception) {
-                return ProcessStep.UNHANDLED_EXCEPTION
+                ProcessStep.UNHANDLED_EXCEPTION
             }
         }
 
         private fun onPostExecute(processStep: ProcessStep) {
-            handleElapsedLicence(processStep)
             setVisibility()
             setColorIconUpdateCatalyst()
             setColorIconUpdateCourses()
