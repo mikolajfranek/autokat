@@ -407,12 +407,12 @@ class ResultActivity : AppCompatActivity() {
         private fun updateUserInformation(): ProcessStep {
             val user: JSONArray =
                 Spreadsheet.getDataLogin(SharedPreference.getKey(SharedPreference.LOGIN))
-                    ?: return ProcessStep.USER_ELAPSED_DATE_LICENCE
+                    ?: return ProcessStep.ELAPSED_DATE_LICENCE
             if (Checker.checkTimeIsGreaterThanNow(
                     user.getString(Configuration.SPREADSHEET_USERS_LICENCE)
                 ) == false
             ) {
-                return ProcessStep.USER_ELAPSED_DATE_LICENCE
+                return ProcessStep.ELAPSED_DATE_LICENCE
             }
             SharedPreference.setKey(
                 SharedPreference.LICENCE_DATE_OF_END,
@@ -467,7 +467,7 @@ class ResultActivity : AppCompatActivity() {
 
         //region methods used in onPostExecute
         private fun handleElapsedLicence(processStep: ProcessStep) {
-            if (processStep == ProcessStep.USER_ELAPSED_DATE_LICENCE || processStep == ProcessStep.COMPANY_ELAPSED_LICENCE) {
+            if (processStep == ProcessStep.ELAPSED_DATE_LICENCE || processStep == ProcessStep.COMPANY_ELAPSED_LICENCE) {
                 SharedPreference.setKey(SharedPreference.LICENCE_DATE_OF_END, "")
                 openMainActivity()
             }

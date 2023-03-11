@@ -22,6 +22,11 @@ import java.net.UnknownHostException
 
 /**
  * describe happy path, conditions, the most important information
+ *
+ * przekierowania do widoku:
+ * z BottomNavigationActivity -> gdy dla firmy się skończyła licencja, lub zapisana licencja wygasła (shared preferences)
+ *
+ *
  */
 class MainActivity : AppCompatActivity() {
 
@@ -191,7 +196,7 @@ class MainActivity : AppCompatActivity() {
         private fun checkTimeOnPhoneWithTimeOnTheInternet(): ProcessStep {
             if (Checker.checkTimeOnPhone(TimeChecking.NOW_GREATER_THAN_TIME_FROM_INTERNET) == false
             ) {
-                ProcessStep.USER_ELAPSED_DATE_LICENCE
+                ProcessStep.ELAPSED_DATE_LICENCE
             }
             return ProcessStep.NONE
         }
@@ -200,7 +205,7 @@ class MainActivity : AppCompatActivity() {
             val licenceDate = user.getString(Configuration.SPREADSHEET_USERS_LICENCE)
             if (licenceDate.isEmpty() || Checker.checkTimeIsGreaterThanNow(licenceDate) == false
             ) {
-                return ProcessStep.USER_ELAPSED_DATE_LICENCE
+                return ProcessStep.ELAPSED_DATE_LICENCE
             }
             return ProcessStep.NONE
         }
@@ -312,7 +317,7 @@ class MainActivity : AppCompatActivity() {
                     activityMainBinding.notification.text = Configuration.COMPANY_FAILED_LICENCE
                 }
 
-                ProcessStep.USER_ELAPSED_DATE_LICENCE -> {
+                ProcessStep.ELAPSED_DATE_LICENCE -> {
                     activityMainBinding.notification.setTextColor(
                         ContextCompat.getColor(
                             applicationContext,
