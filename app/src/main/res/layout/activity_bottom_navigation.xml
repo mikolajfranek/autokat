@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:fontFamily="sans-serif"
         android:gravity="center"
-        android:textColor="@color/colorUser"
+        android:textColor="@color/colorGray"
         android:visibility="visible" />
 
     <FrameLayout
