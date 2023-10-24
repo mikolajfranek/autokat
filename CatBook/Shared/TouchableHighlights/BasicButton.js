@@ -21,7 +21,8 @@ export default function render() {
         <View style={styles.kontener}>
             <TouchableHighlight
                 onPressIn={_onPressIn}
-                onPressOut={_onPressOut}>
+                onPressOut={_onPressOut}
+                style={styles.dotyk}>
                 <View style={styles.przycisk}>
                     <Text style={styles.witaj}>
                         {pressing ? 'Klik' : 'Naciśnij'}
@@ -43,6 +44,10 @@ const styles = StyleSheet.create({
         height: 100,
         width: 100,
         justifyContent: 'center',
+        overflow: 'hidden',
+    },
+    dotyk: {
+        borderRadius: 100
     },
     witaj: {
         fontSize: 20,
