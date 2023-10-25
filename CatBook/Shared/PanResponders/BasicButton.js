@@ -39,10 +39,11 @@ export default function render() {
         setMounted(true); //aaa
         _zaktualizujPozycje();
         let ignore = false;
-        _startFetching();
+        _startFetching(); //fire and forget
+        console.log('ccc');
         //componentDidMount
         return () => {
-            console.log('ccc');
+            console.log('ddd');
             ignore = true;
             //componentWillUnmount
         };
