@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet, FlatList } from "react-native";
 import UICatalyst from './Catalyst';
 import ModelCatalyst from './../Models/Catalyst';
+import Spreadsheet from '../Data/Spreadsheet';
 
 function _renderItem({ item }) {
     return <UICatalyst catalyst={item.uicontent} />
+}
+
+function _addKey(items) {
+    return items.map(item => {
+        return Object.assign(item, { key: item.id });
+    });
 }
 
 function _downloadList() {
@@ -45,14 +52,15 @@ function _downloadList() {
         null
     );
     const list = [
-        { key: 1, uicontent: cat1 },
-        { key: 2, uicontent: cat2 },
-        { key: 3, uicontent: cat3 }
+        { id: 1, uicontent: cat1 },
+        { id: 2, uicontent: cat2 },
+        { id: 3, uicontent: cat3 }
     ];
-    return list;
+    return _addKey(list);
 }
 
 export default function render() {
+    var katalizatory = Spreadsheet.getCatalysts();
     var list = _downloadList();
     return (
         <FlatList
