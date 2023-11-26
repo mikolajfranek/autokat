@@ -7,7 +7,7 @@ import {
 import KoloPrzycisk from './Shared/TouchableHighlights/BasicButton';
 import KoloPrzesuwajace from './Shared/PanResponders/BasicButton';
 import UICatalystFlatList from './Business/UI/CatalystFlatList';
-import Button from './Backend/Button/Button'
+import Przycisk from './Backend/UI/Button';
 
 const hide = false;
 
@@ -19,8 +19,9 @@ export default function render() {
       {hide ? <KoloPrzesuwajace /> : ''}
       {hide ? <Text>Hello world!</Text> : ''}
       {hide ? <UICatalystFlatList /> : ''}
-      <Button 
-        label={"hejo"}
+      <Text>---</Text>
+      <Przycisk 
+        label={"hejooo"}
         onPress={null}
         style={null}
       />
