@@ -28,8 +28,6 @@ class SharedPreference {
         const val CURRENT_TIMESTAMP: String = "CurrentTimestamp"
         const val ACCESS_TOKEN: String = "AccessToken"
         const val ACCESS_TOKEN_TIMESTAMP: String = "AccessTokenTimestamp"
-        const val ACCESS_TOKEN_APK: String = "AccessTokenApk"
-        const val ACCESS_TOKEN_APK_TIMESTAMP: String = "AccessTokenApkTimestamp"
 
         /* user */
         const val LOGIN: String = "Login"

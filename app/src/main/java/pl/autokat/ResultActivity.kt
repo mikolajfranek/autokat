@@ -33,7 +33,6 @@ import pl.autokat.enums.ScrollRefresh
 import pl.autokat.enums.TimeChecking
 import pl.autokat.models.ModelCatalyst
 import pl.autokat.models.ModelHistoryFilter
-import pl.autokat.workers.WorkerCopyData
 import pl.autokat.workers.WorkerDownloadThumbnail
 import java.time.LocalDate
 import java.util.*
@@ -451,21 +450,11 @@ class ResultActivity : AppCompatActivity() {
                 WorkManager.getInstance(applicationContext).enqueue(workRequest)
             }
         }
-
-        private fun runWorkerCopyData() {
-            if (Configuration.PROGRAM_MODE == ProgramMode.COMPANY) {
-                if (Configuration.workerCopyData.compareAndSet(false, true)) {
-                    val workRequest: WorkRequest =
-                        OneTimeWorkRequestBuilder<WorkerCopyData>().build()
-                    WorkManager.getInstance(applicationContext).enqueue(workRequest)
-                }
-            }
-        }
         //endregion
 
         //region methods used in onPostExecute
         private fun handleElapsedLicence(processStep: ProcessStep) {
-            if (processStep == ProcessStep.USER_ELAPSED_DATE_LICENCE || processStep == ProcessStep.COMPANY_ELAPSED_LICENCE) {
+            if (processStep == ProcessStep.USER_ELAPSED_DATE_LICENCE) {
                 SharedPreference.setKey(SharedPreference.LICENCE_DATE_OF_END, "")
                 openMainActivity()
             }
@@ -545,17 +534,22 @@ class ResultActivity : AppCompatActivity() {
 
         private fun doInBackground(): ProcessStep {
             try {
-                if (Spreadsheet.isExpiredLicenceOfCompany(false) == true) {
-                    return ProcessStep.COMPANY_ELAPSED_LICENCE
+                runWorkerDownloadThumbnail()
+                //kitco
+                var failed = false
+                try{
+                    //getCourses()
+                } catch (e: Exception) {
+                    failed = true
                 }
-                getCourses()
+                //google
                 checkCountCatalyst()
                 val processStep = updateUserInformation()
                 if (processStep != ProcessStep.NONE) {
                     return processStep
                 }
-                runWorkerDownloadThumbnail()
-                runWorkerCopyData()
+                if (failed == true)
+                    return ProcessStep.UNHANDLED_EXCEPTION
                 return ProcessStep.SUCCESS
             } catch (e: Exception) {
                 return ProcessStep.UNHANDLED_EXCEPTION

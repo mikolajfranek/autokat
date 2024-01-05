@@ -215,9 +215,6 @@ class MainActivity : AppCompatActivity() {
 
         //region methods used in doInBackground
         private fun checkLicence(): ProcessStep {
-            if (Spreadsheet.isExpiredLicenceOfCompany(true) == true) {
-                return ProcessStep.COMPANY_ELAPSED_LICENCE
-            }
             if (SharedPreference.getKey(SharedPreference.LICENCE_DATE_OF_END).isEmpty() == false) {
                 if (Checker.checkTimeOnPhone("", TimeChecking.CHECKING_LICENCE) == false) {
                     return ProcessStep.USER_ELAPSED_DATE_LICENCE
@@ -335,10 +332,6 @@ class MainActivity : AppCompatActivity() {
                 ProcessStep.USER_NEVER_LOGGED -> {
                     activityMainBinding.notification.setTextColor(Configuration.COLOR_SUCCESS)
                     activityMainBinding.notification.text = Configuration.USER_NEVER_LOGGED
-                }
-                ProcessStep.COMPANY_ELAPSED_LICENCE -> {
-                    activityMainBinding.notification.setTextColor(Configuration.COLOR_FAILED)
-                    activityMainBinding.notification.text = Configuration.COMPANY_FAILED_LICENCE
                 }
                 ProcessStep.USER_ELAPSED_DATE_LICENCE -> {
                     activityMainBinding.notification.setTextColor(Configuration.COLOR_FAILED)

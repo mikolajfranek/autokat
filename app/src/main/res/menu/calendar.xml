@@ -3,14 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <item
-        android:id="@+id/toolbar_list_calendar_download_historical_courses"
-        android:icon="@mipmap/ic_action_download_courses"
-        android:orderInCategory="100"
-        android:title="@string/menu_pobierz_kursy"
-        android:visible="false"
-        app:showAsAction="ifRoom"
-        tools:visible="true" />
-    <item
         android:id="@+id/toolbar_list_calendar_choose"
         android:icon="@drawable/choose"
         android:orderInCategory="200"

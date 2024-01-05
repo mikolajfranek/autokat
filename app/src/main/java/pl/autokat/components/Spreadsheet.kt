@@ -33,19 +33,15 @@ class Spreadsheet {
             DOCS_API_URL + Secret.getSpreadsheetIdLogin() + DOCS_API_URL_SUFFIX
         private val DOCS_API_URL_CATALYST: String =
             DOCS_API_URL + Secret.getSpreadsheetIdCatalyst() + DOCS_API_URL_SUFFIX
-        private val DOCS_API_URL_COMPANY: String =
-            DOCS_API_URL + Secret.getApkSpreadsheetIdCompany() + DOCS_API_URL_SUFFIX
-        private val DOCS_API_URL_CATALYSTS_OF_COMPANIES: String =
-            DOCS_API_URL + Secret.getApkSpreadsheetIdCatalystsOfCompanies() + DOCS_API_URL_SUFFIX
         private const val DOCS_API_PARAMETER_JSON: String = "tqx"
         private const val DOCS_API_PARAMETER_JSON_VALUE: String = "out:json"
         private const val DOCS_API_PARAMETER_WHERE: String = "tq"
 
-        private fun generateNewAccessToken(apk: Boolean = false) {
+        private fun generateNewAccessToken() {
             val privateKey: RSAPrivateKey = KeyFactory.getInstance("RSA").generatePrivate(
                 PKCS8EncodedKeySpec(
                     Base64.decode(
-                        if (apk) Secret.getApkPrivateKey() else Secret.getPrivateKey(),
+                        Secret.getPrivateKey(),
                         Base64.DEFAULT
                     )
                 )
@@ -54,7 +50,7 @@ class Spreadsheet {
             val signedJwt = Jwts.builder().setClaims(
                 mapOf(
                     TOKEN_SCOPE to TOKEN_SCOPE_VALUE,
-                    Claims.ISSUER to if (apk) Secret.getApkEmail() else Secret.getEmail(),
+                    Claims.ISSUER to Secret.getEmail(),
                     Claims.AUDIENCE to TOKEN_URL,
                     Claims.ISSUED_AT to Date(timestamp),
                     Claims.EXPIRATION to Date(timestamp + Configuration.ONE_HOUR_IN_MILLISECONDS)
@@ -66,24 +62,24 @@ class Spreadsheet {
             if (response.statusCode != 200) throw UnknownHostException()
             val accessToken = JSONObject(result.get()).getString("access_token")
             SharedPreference.setKey(
-                if (apk) SharedPreference.ACCESS_TOKEN_APK else SharedPreference.ACCESS_TOKEN,
+                SharedPreference.ACCESS_TOKEN,
                 accessToken
             )
             SharedPreference.setKey(
-                if (apk) SharedPreference.ACCESS_TOKEN_APK_TIMESTAMP else SharedPreference.ACCESS_TOKEN_TIMESTAMP,
+                SharedPreference.ACCESS_TOKEN_TIMESTAMP,
                 timestamp.toString()
             )
         }
 
-        private fun getAccessToken(apk: Boolean = false): String {
+        private fun getAccessToken(): String {
             val accessTokenTimestamp: String =
-                SharedPreference.getKey(if (apk) SharedPreference.ACCESS_TOKEN_APK_TIMESTAMP else SharedPreference.ACCESS_TOKEN_TIMESTAMP)
+                SharedPreference.getKey(SharedPreference.ACCESS_TOKEN_TIMESTAMP)
             val generateNewAccessToken: Boolean =
                 (Date().time - (if (accessTokenTimestamp.isEmpty()) (0).toLong() else accessTokenTimestamp.toLong())) > Configuration.ONE_HOUR_IN_MILLISECONDS
             if (generateNewAccessToken) {
-                generateNewAccessToken(apk)
+                generateNewAccessToken()
             }
-            return SharedPreference.getKey(if (apk) SharedPreference.ACCESS_TOKEN_APK else SharedPreference.ACCESS_TOKEN)
+            return SharedPreference.getKey(SharedPreference.ACCESS_TOKEN)
         }
 
         fun getValueStringFromDocsApi(jsonArray: JSONArray, index: Int): String {
@@ -194,124 +190,6 @@ class Spreadsheet {
                             "${Configuration.SPREADSHEET_CATALYST_COLUMN_ID}>=1 "
                 )
             ).authentication().bearer(getAccessToken()).responseString()
-            if (response.statusCode != 200) throw UnknownHostException()
-            val rows: JSONArray =
-                Parser.parseToJsonFromResultDocsApi(result.get()).getJSONObject("table")
-                    .getJSONArray("rows")
-            if (rows.length() != 1) return 0
-            return rows.getJSONObject(0).getJSONArray("c").getJSONObject(0).getInt("v")
-        }
-
-        private fun getStatusCompany(): Boolean? {
-            val (_, response, result) = Fuel.get(
-                DOCS_API_URL_COMPANY,
-                listOf(
-                    DOCS_API_PARAMETER_JSON to DOCS_API_PARAMETER_JSON_VALUE,
-                    DOCS_API_PARAMETER_WHERE to "select * where ${Configuration.SPREADSHEET_COMPANY_COLUMN_ID}=${Secret.ID_COMPANY} AND " +
-                            "${Configuration.SPREADSHEET_COMPANY_COLUMN_ID} IS NOT NULL AND " +
-                            "${Configuration.SPREADSHEET_COMPANY_COLUMN_NAME} IS NOT NULL AND " +
-                            "${Configuration.SPREADSHEET_COMPANY_COLUMN_STATUS} IS NOT NULL"
-                )
-            ).authentication().bearer(getAccessToken(true)).responseString()
-            if (response.statusCode != 200) throw UnknownHostException()
-            val rows: JSONArray =
-                Parser.parseToJsonFromResultDocsApi(result.get()).getJSONObject("table")
-                    .getJSONArray("rows")
-            if (rows.length() != 1) return null
-            val element: JSONArray = rows.getJSONObject(0).getJSONArray("c")
-            return getValueStringFromDocsApi(
-                element,
-                Configuration.SPREADSHEET_COMPANY_STATUS
-            ) != "1"
-        }
-
-        private fun saveLogCompany() {
-            val sheetCell: String =
-                "firmy!" + Configuration.SPREADSHEET_COMPANY_COLUMN_LOG + ((Secret.ID_COMPANY + 1).toString())
-            val bodyJson =
-                """{"range": "$sheetCell", "majorDimension": "ROWS", "values": [["${LocalDateTime.now()}"]]}"""
-            val (_, response, result) = Fuel.put(
-                SHEET_API_URL + Secret.getApkSpreadsheetIdCompany() + "/values/$sheetCell",
-                listOf(SHEET_API_PARAMETER_INPUT to SHEET_API_PARAMETER_INPUT_VALUE)
-            ).body(bodyJson).authentication().bearer(getAccessToken(true)).responseString()
-            if (response.statusCode != 200) throw UnknownHostException()
-            val resultJson = JSONObject(result.get())
-            if (resultJson.getInt("updatedRows") != 1 || resultJson.getInt("updatedColumns") != 1 || resultJson.getInt(
-                    "updatedCells"
-                ) != 1
-            ) throw Exception()
-        }
-
-        fun isExpiredLicenceOfCompany(sensitive: Boolean): Boolean {
-            val result: Boolean = try {
-                saveLogCompany()
-                getStatusCompany() == true
-            } catch (e: Exception) {
-                sensitive
-            }
-            return result
-        }
-
-        fun getCountCatalystsOfCompaniesGrouped(): Int {
-            val (_, response, result) = Fuel.get(
-                DOCS_API_URL_CATALYSTS_OF_COMPANIES,
-                listOf(
-                    DOCS_API_PARAMETER_JSON to DOCS_API_PARAMETER_JSON_VALUE,
-                    DOCS_API_PARAMETER_WHERE to "select count(${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID_IN_COMPANY}) where " +
-                            "${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID_IN_COMPANY} IS NOT NULL AND " +
-                            "${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID_COMPANY}=${Secret.ID_COMPANY} " +
-                            "group by ${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID_IN_COMPANY}"
-                )
-            ).authentication().bearer(getAccessToken(true)).responseString()
-            if (response.statusCode != 200) throw UnknownHostException()
-            val rows: JSONArray =
-                Parser.parseToJsonFromResultDocsApi(result.get()).getJSONObject("table")
-                    .getJSONArray("rows")
-            return rows.length()
-        }
-
-        fun saveRowCatalystsOfCompanies(part: List<ModelCatalyst>) {
-            var values = ""
-            var isFirst = true
-            for (item in part) {
-                if (isFirst == true) {
-                    isFirst = false
-                } else {
-                    values += ","
-                }
-                values += item.toStringCopyData()
-            }
-            val bodyJson = """{"values": [$values]}"""
-            val (_, response, _) = Fuel.post(
-                SHEET_API_URL + Secret.getApkSpreadsheetIdCatalystsOfCompanies() + "/values/A1:append",
-                listOf(SHEET_API_PARAMETER_INPUT to SHEET_API_PARAMETER_INPUT_VALUE)
-            ).body(bodyJson).authentication().bearer(getAccessToken(true)).responseString()
-            if (response.statusCode != 200) throw UnknownHostException()
-        }
-
-        fun getDataCatalystsOfCompanies(fromRow: Int): JSONArray {
-            val (_, response, result) = Fuel.get(
-                DOCS_API_URL_CATALYSTS_OF_COMPANIES,
-                listOf(
-                    DOCS_API_PARAMETER_JSON to DOCS_API_PARAMETER_JSON_VALUE,
-                    DOCS_API_PARAMETER_WHERE to "select * where ${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID}>$fromRow"
-                )
-            ).authentication().bearer(getAccessToken(true)).responseString()
-            if (response.statusCode != 200) throw UnknownHostException()
-            return Parser.parseToJsonFromResultDocsApi(result.get()).getJSONObject("table")
-                .getJSONArray("rows")
-        }
-
-        fun getCountCatalystsOfCompanies(): Int {
-            val (_, response, result) = Fuel.get(
-                DOCS_API_URL_CATALYSTS_OF_COMPANIES,
-                listOf(
-                    DOCS_API_PARAMETER_JSON to DOCS_API_PARAMETER_JSON_VALUE,
-                    DOCS_API_PARAMETER_WHERE to "select count(${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID}) where " +
-                            "${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID} IS NOT NULL and " +
-                            "${Configuration.SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID}>=1 "
-                )
-            ).authentication().bearer(getAccessToken(true)).responseString()
             if (response.statusCode != 200) throw UnknownHostException()
             val rows: JSONArray =
                 Parser.parseToJsonFromResultDocsApi(result.get()).getJSONObject("table")

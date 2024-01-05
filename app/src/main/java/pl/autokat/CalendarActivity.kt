@@ -35,19 +35,12 @@ class CalendarActivity : AppCompatActivity() {
 
     private lateinit var activityCalendarBinding: ActivityCalendarBinding
     private lateinit var database: Database
-    private var menuItemDownloadCourses: MenuItem? = null
     private var menuItemCheck: MenuItem? = null
     private var selectedDate: LocalDate? = null
     private var selectedTextView: TextView? = null
     private var mapCoursesOfYearMonths = HashMap<String, HashMap<String, ModelCourse>>()
 
     //region methods used in override
-    private fun downloadHistoricalCourses(): Boolean {
-        selectedDate ?: return false
-        Thread(RunnableUpdateCourses(selectedDate!!)).start()
-        return true
-    }
-
     private fun chooseDay(): Boolean {
         selectedDate ?: return false
         val keyYearMonth = selectedDate!!.yearMonth.toString()
@@ -195,16 +188,12 @@ class CalendarActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.calendar, menu)
-        menuItemDownloadCourses = menu.getItem(menu.size() - 2)
         menuItemCheck = menu.getItem(menu.size() - 1)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.toolbar_list_calendar_download_historical_courses -> {
-                return downloadHistoricalCourses()
-            }
             R.id.toolbar_list_calendar_choose -> {
                 return chooseDay()
             }
@@ -224,7 +213,6 @@ class CalendarActivity : AppCompatActivity() {
 
         //region methods of init
         private fun resetView() {
-            menuItemDownloadCourses!!.isVisible = false
             menuItemCheck!!.isVisible = false
             activityCalendarBinding.footer.visibility = View.GONE
             activityCalendarBinding.footerActualDate.text = ""
@@ -249,7 +237,6 @@ class CalendarActivity : AppCompatActivity() {
                     activityCalendarBinding.calendarView.notifyDateChanged(oldDate)
                 }
             }
-            menuItemDownloadCourses!!.isVisible = day.date < LocalDate.now()
         }
 
         private fun markSelectedDate() {
@@ -303,93 +290,6 @@ class CalendarActivity : AppCompatActivity() {
     inner class MonthViewContainer(view: View) : ViewContainer(view) {
 
         val textView = CalendarHeaderBinding.bind(view).textView
-    }
-
-    inner class RunnableUpdateCourses(dateInput: LocalDate) : Runnable {
-
-        private var date: LocalDate = dateInput
-
-        //region methods of run
-        private fun onPreExecute() {
-            UserInterface.changeStatusLayout(activityCalendarBinding.linearLayout, false)
-            Toast.makeText(applicationContext, Configuration.UPDATE_WAIT, Toast.LENGTH_SHORT).show()
-        }
-
-        private fun doInBackground(): ProcessStep {
-            return try {
-                val dataPathTessBaseAPI = Assetser.getPathInternal(applicationContext)
-                Course.getValues(
-                    database,
-                    false,
-                    date,
-                    dataPathTessBaseAPI,
-                    true
-                )
-                ProcessStep.SUCCESS
-            } catch (e: NoneCoursesException) {
-                ProcessStep.NONE_COURSES
-            } catch (e: UnknownHostException) {
-                ProcessStep.NETWORK_FAILED
-            } catch (e: Exception) {
-                ProcessStep.UNHANDLED_EXCEPTION
-            }
-        }
-
-        private fun onPostExecute(processStep: ProcessStep) {
-            when (processStep) {
-                ProcessStep.NETWORK_FAILED -> {
-                    Toast.makeText(
-                        applicationContext,
-                        Configuration.NETWORK_FAILED,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-                ProcessStep.NONE_COURSES -> {
-                    Toast.makeText(
-                        applicationContext,
-                        Configuration.COURSES_NONE,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-                ProcessStep.SUCCESS -> {
-                    val keyYearMonth = date.yearMonth.toString()
-                    val setOfYearMonth = hashSetOf(keyYearMonth)
-                    val valueOfDatabase =
-                        database.getCoursesOfYearMonths(setOfYearMonth)[keyYearMonth]
-                    if (valueOfDatabase?.isEmpty() == false) {
-                        if (mapCoursesOfYearMonths.contains(keyYearMonth))
-                            mapCoursesOfYearMonths.remove(keyYearMonth)
-                        mapCoursesOfYearMonths[keyYearMonth] = valueOfDatabase
-                    }
-                    selectedDate = null
-                    selectedTextView?.performClick()
-                    Toast.makeText(
-                        applicationContext,
-                        Configuration.UPDATE_SUCCESS,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-                else -> {
-                    Toast.makeText(
-                        applicationContext,
-                        Configuration.UPDATE_FAILED,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-            UserInterface.changeStatusLayout(activityCalendarBinding.linearLayout, true)
-        }
-        //endregion
-
-        override fun run() {
-            runOnUiThread {
-                onPreExecute()
-            }
-            val processStep: ProcessStep = doInBackground()
-            runOnUiThread {
-                onPostExecute(processStep)
-            }
-        }
     }
     //endregion
 }

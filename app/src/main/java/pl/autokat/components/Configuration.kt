@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 class Configuration {
     companion object {
-        const val PRODUCTION: Boolean = false
+        const val PRODUCTION: Boolean = true
         val PROGRAM_MODE: ProgramMode = ProgramMode.COMPANY
         const val VERSION_APK: String = "1.0.8"
         const val DATABASE_VERSION_1_0_6: Int = 4
@@ -15,12 +15,6 @@ class Configuration {
         const val DATABASE_NAME_OF_FILE: String = "autokat.db"
         const val DATABASE_FILE_PATH_ASSETS: String = "databases/$DATABASE_NAME_OF_FILE"
         const val OZ_VALUE: Double = 31.1034768
-
-        /*
-        TODO
-         - podczas wątku (blokowanie GUI) nie powinno również działąć na przyciskach z menu?
-         - otworzenie aplikacji (COMPANY) nie powinno otwierać activity result jako pierwszego?
-         */
 
         @Volatile
         var workerDownloadThumbnail: AtomicBoolean = AtomicBoolean(false)
