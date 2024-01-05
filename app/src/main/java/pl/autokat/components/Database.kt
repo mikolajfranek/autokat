@@ -18,13 +18,12 @@ import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
 
-class Database(context: Context) : SQLiteAssetHelper(
+class Database(private val context: Context) : SQLiteAssetHelper(
     context,
     Configuration.DATABASE_NAME_OF_FILE,
     null,
     Configuration.DATABASE_VERSION
 ) {
-    private val context: Context = context
     private val transformation: String = "BLOWFISH/ECB/PKCS5Padding"
 
     //region upgrade, update
@@ -281,42 +280,6 @@ class Database(context: Context) : SQLiteAssetHelper(
                 ).toFloat()
             )
             result.add(modelCatalyst)
-        }
-        return result
-    }
-
-    @SuppressLint("Range")
-    fun getDataCatalyst(idInput: Int): ArrayList<ModelCatalyst> {
-        val result: ArrayList<ModelCatalyst>
-        var cursor: Cursor? = null
-        try {
-            val fields = arrayOf(
-                Configuration.DATABASE_CATALYST_ID,
-                Configuration.DATABASE_CATALYST_ID_PICTURE,
-                Configuration.DATABASE_CATALYST_URL_PICTURE,
-                Configuration.DATABASE_CATALYST_NAME,
-                Configuration.DATABASE_CATALYST_BRAND,
-                Configuration.DATABASE_CATALYST_PLATINUM,
-                Configuration.DATABASE_CATALYST_PALLADIUM,
-                Configuration.DATABASE_CATALYST_RHODIUM,
-                Configuration.DATABASE_CATALYST_TYPE,
-                Configuration.DATABASE_CATALYST_WEIGHT
-            )
-            val queryBuilder = SQLiteQueryBuilder()
-            queryBuilder.tables = Configuration.DATABASE_TABLE_CATALYST
-            cursor = queryBuilder.query(
-                readableDatabase,
-                fields,
-                Configuration.DATABASE_CATALYST_ID + "> $idInput",
-                null,
-                null,
-                null,
-                null
-            )
-            val withBlob = fields.contains(Configuration.DATABASE_CATALYST_THUMBNAIL)
-            result = getCatalystFromCursor(cursor, withBlob)
-        } finally {
-            cursor?.close()
         }
         return result
     }
