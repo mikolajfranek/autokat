@@ -28,7 +28,6 @@ import pl.autokat.databinding.ActivityResultBinding
 import pl.autokat.databinding.CatalystBinding
 import pl.autokat.databinding.HistoryFilterBinding
 import pl.autokat.enums.ProcessStep
-import pl.autokat.enums.ProgramMode
 import pl.autokat.enums.ScrollRefresh
 import pl.autokat.enums.TimeChecking
 import pl.autokat.models.ModelCatalyst
@@ -97,15 +96,13 @@ class ResultActivity : AppCompatActivity() {
                     val visibilityCatalyst: Boolean =
                         SharedPreference.getKey(SharedPreference.VISIBILITY).toInt() == 1
                     catalystBinding.thumbnail.setImageBitmap(itemCatalyst.thumbnail)
-                    if (Configuration.PROGRAM_MODE == ProgramMode.COMPANY) {
-                        catalystBinding.thumbnail.setOnLongClickListener {
-                            Toast.makeText(
-                                applicationContext,
-                                itemCatalyst.idPicture,
-                                Toast.LENGTH_LONG
-                            ).show()
-                            true
-                        }
+                    catalystBinding.thumbnail.setOnLongClickListener {
+                        Toast.makeText(
+                            applicationContext,
+                            itemCatalyst.idPicture,
+                            Toast.LENGTH_LONG
+                        ).show()
+                        true
                     }
                     catalystBinding.thumbnail.setOnClickListener {
                         val intent = Intent(applicationContext, PictureActivity::class.java)
@@ -287,9 +284,6 @@ class ResultActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menuInput: Menu): Boolean {
         menuInflater.inflate(R.menu.result, menuInput)
-        if (Configuration.PROGRAM_MODE == ProgramMode.CLIENT) {
-            menuInput.get(menuInput.size() - 1).isVisible = false
-        }
         menu = menuInput
         return super.onCreateOptionsMenu(menuInput)
     }

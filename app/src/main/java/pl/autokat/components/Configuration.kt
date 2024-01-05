@@ -1,13 +1,11 @@
 package pl.autokat.components
 
 import android.graphics.Color
-import pl.autokat.enums.ProgramMode
 import java.util.concurrent.atomic.AtomicBoolean
 
 class Configuration {
     companion object {
         const val PRODUCTION: Boolean = false
-        val PROGRAM_MODE: ProgramMode = ProgramMode.COMPANY
         const val VERSION_APK: String = "1.0.8"
         const val DATABASE_VERSION_1_0_6: Int = 4
         const val DATABASE_VERSION_NEXT: Int = 5

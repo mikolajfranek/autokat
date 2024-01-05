@@ -18,7 +18,6 @@ import org.json.JSONArray
 import pl.autokat.components.*
 import pl.autokat.databinding.ActivityMainBinding
 import pl.autokat.enums.ProcessStep
-import pl.autokat.enums.ProgramMode
 import pl.autokat.enums.TimeChecking
 import java.net.UnknownHostException
 
@@ -106,9 +105,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menuInput: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menuInput)
-        if (Configuration.PROGRAM_MODE == ProgramMode.CLIENT) {
-            menuInput.get(menuInput.size() - 1).isVisible = false
-        }
         return super.onCreateOptionsMenu(menuInput)
     }
 
