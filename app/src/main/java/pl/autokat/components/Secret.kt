@@ -51,46 +51,5 @@ class Secret {
             return this.EMAIL_DEV
         }
         //endregion
-
-        //region apk
-        const val ID_COMPANY = 1
-
-        private const val APK_SPREADSHEET_ID_COMPANY: String =
-            ""
-        private const val APK_SPREADSHEET_ID_COMPANY_DEV: String =
-            ""
-
-        fun getApkSpreadsheetIdCompany(): String {
-            if (Configuration.PRODUCTION) {
-                return this.APK_SPREADSHEET_ID_COMPANY
-            }
-            return this.APK_SPREADSHEET_ID_COMPANY_DEV
-        }
-
-        private const val APK_PRIVATE_KEY: String =
-            ""
-        private const val APK_PRIVATE_KEY_DEV: String =
-            ""
-
-        fun getApkPrivateKey(): String {
-            if (Configuration.PRODUCTION) {
-                return this.APK_PRIVATE_KEY
-            }
-            return this.APK_PRIVATE_KEY_DEV
-        }
-
-        private const val APK_EMAIL: String =
-            ""
-        private const val APK_EMAIL_DEV: String =
-            ""
-
-        fun getApkEmail(): String {
-            if (Configuration.PRODUCTION) {
-                return this.APK_EMAIL
-            }
-            return this.APK_EMAIL_DEV
-        }
-
-        //endregion
     }
 }

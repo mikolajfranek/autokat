@@ -19,9 +19,6 @@ class Configuration {
         @Volatile
         var workerDownloadThumbnail: AtomicBoolean = AtomicBoolean(false)
 
-        @Volatile
-        var workerCopyData: AtomicBoolean = AtomicBoolean(false)
-
         val COLOR_WHITE: Int = Color.parseColor("#FFFFFF")
         val COLOR_FAILED: Int = Color.parseColor("#EF4836")
         val COLOR_SUCCESS: Int = Color.parseColor("#363636")
@@ -34,7 +31,6 @@ class Configuration {
         const val USER_NEVER_LOGGED: String = "Wprowadź nazwę użytkownika"
         const val USER_WAIT_AUTHENTICATING: String = "Trwa uwierzytelnianie…"
         const val USER_FAILED_LICENCE: String = "Brak licencji"
-        const val COMPANY_FAILED_LICENCE: String = "Brak licencji firmy"
         const val USER_FAILED_LOGIN: String = "Błędna nazwa użytkownika"
         const val USER_FAILED_UUID: String = "Błędne urządzenie"
         const val UPDATE_WAIT: String = "Trwa aktualizacja…"
@@ -50,7 +46,6 @@ class Configuration {
         const val HISTORY_FILTER_DELETED: String = "Pomyślnie usunięto nazwę do filtrowania"
         const val HISTORY_FILTER_CANNOT_SAVE_EMPTY: String = "Nie można zapisać pustej wartości"
         const val COURSES_REFRESH: String = "Odśwież wartości kursów"
-        const val COURSES_NONE: String = "Brak wartości kursów dla danego dnia"
 
         //region spreadsheet columns users
         const val SPREADSHEET_USERS_ID: Int = 0
@@ -98,44 +93,6 @@ class Configuration {
         const val SPREADSHEET_CATALYST_COLUMN_URL_PICTURE: String = "J"
         //endregion
 
-        //region spreadsheet columns company
-        const val SPREADSHEET_COMPANY_ID: Int = 0
-        const val SPREADSHEET_COMPANY_NAME: Int = 1
-        const val SPREADSHEET_COMPANY_LOG: Int = 2
-        const val SPREADSHEET_COMPANY_STATUS: Int = 3
-
-        const val SPREADSHEET_COMPANY_COLUMN_ID: String = "A"
-        const val SPREADSHEET_COMPANY_COLUMN_NAME: String = "B"
-        const val SPREADSHEET_COMPANY_COLUMN_LOG: String = "C"
-        const val SPREADSHEET_COMPANY_COLUMN_STATUS: String = "D"
-        //endregion
-
-        //region spreadsheet columns catalysts of companies
-        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_ID: Int = 0
-        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_ID_IN_COMPANY: Int = 1
-        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_ID_COMPANY: Int = 2
-        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_NAME: Int = 3
-        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_BRAND: Int = 4
-        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_WEIGHT: Int = 5
-        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_PLATINUM: Int = 6
-        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_PALLADIUM: Int = 7
-        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_RHODIUM: Int = 8
-        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_TYPE: Int = 9
-        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_URL_PICTURE: Int = 10
-
-        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID: String = "A"
-        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID_IN_COMPANY: String = "B"
-        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_ID_COMPANY: String = "C"
-        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_NAME: String = "D"
-        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_BRAND: String = "E"
-        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_WEIGHT: String = "F"
-        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_PLATINUM: String = "G"
-        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_PALLADIUM: String = "H"
-        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_RHODIUM: String = "I"
-        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_TYPE: String = "J"
-        const val SPREADSHEET_CATALYSTS_OF_COMPANIES_COLUMN_URL_PICTURE: String = "K"
-        //endregion
-
         //region database columns catalyst
         const val DATABASE_TABLE_CATALYST = "catalyst"
         const val DATABASE_CATALYST_ID = "id"
@@ -151,24 +108,6 @@ class Configuration {
         const val DATABASE_CATALYST_WEIGHT = "weight"
         const val DATABASE_CATALYST_TEMP_HITCOUNT = "hitcount"
         //endregion"name"
-
-        //region database columns catalyst client
-        const val DATABASE_TABLE_CATALYST_CLIENT = "catalyst_client"
-        const val DATABASE_CATALYST_CLIENT_ID = "id"
-        const val DATABASE_CATALYST_CLIENT_ID_IN_COMPANY = "id_in_company"
-        const val DATABASE_CATALYST_CLIENT_ID_COMPANY = "id_company"
-        const val DATABASE_CATALYST_CLIENT_URL_PICTURE = "url_picture"
-        const val DATABASE_CATALYST_CLIENT_THUMBNAIL = "thumbnail"
-        const val DATABASE_CATALYST_CLIENT_NAME = "name"
-        const val DATABASE_CATALYST_CLIENT_BRAND = "brand"
-        const val DATABASE_CATALYST_CLIENT_PLATINUM = "platinum"
-        const val DATABASE_CATALYST_CLIENT_PALLADIUM = "palladium"
-        const val DATABASE_CATALYST_CLIENT_RHODIUM = "rhodium"
-        const val DATABASE_CATALYST_CLIENT_TYPE = "type"
-        const val DATABASE_CATALYST_CLIENT_WEIGHT = "weight"
-        const val DATABASE_CATALYST_CLIENT_DUPLICATE = "duplicate"
-        const val DATABASE_CATALYST_CLIENT_TEMP_HITCOUNT = "hitcount"
-        //endregion
 
         //region database columns history filter
         const val DATABASE_TABLE_HISTORY_FILTER = "history_filter"

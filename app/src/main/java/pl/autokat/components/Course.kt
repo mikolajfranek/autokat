@@ -5,7 +5,6 @@ import com.kizitonwose.calendarview.utils.yearMonth
 import org.json.JSONObject
 import pl.autokat.enums.Currency
 import pl.autokat.enums.Metal
-import pl.autokat.exceptions.NoneCoursesException
 import pl.autokat.models.ModelCourse
 import java.net.UnknownHostException
 import java.time.LocalDate
@@ -17,13 +16,7 @@ class Course {
             "https://api.nbp.pl/api/exchangerates/rates/a/usd"
         private const val MY_CATALYST_VALUES_URL_EUR_PLN =
             "https://api.nbp.pl/api/exchangerates/rates/a/eur"
-        private const val MY_CATALYST_VALUES_URL_CATALYST_PLATINUM =
-            "https://proxy.kitco.com/getPM?symbol=PT&unit=gram&currency=USD"
-        private const val MY_CATALYST_VALUES_URL_CATALYST_PALLADIUM =
-            "https://proxy.kitco.com/getPM?symbol=PD&unit=gram&currency=USD"
-        private const val MY_CATALYST_VALUES_URL_CATALYST_RHODIUM =
-            "https://proxy.kitco.com/getPM?symbol=RH&unit=gram&currency=USD"
-        private const val MY_CATALYST_VALUES_HEADER_ORIGIN = "https://www.kitco.com"
+        private const val MY_CATALYST_VALUES_URL_CATALYST = "https://kitco-gcdn-prod.stellate.sh"
 
         private fun getUrlNBP(currency: Currency, date: LocalDate?): String {
             val basicURL = when (currency) {
@@ -45,8 +38,7 @@ class Course {
 
         private fun getCourse(
             currency: Currency,
-            savingToSharedPreferences: Boolean,
-            dateHistorical: LocalDate? = null
+            savingToSharedPreferences: Boolean
         ): Pair<String, String> {
             val (_, response, result) = Fuel.get(
                 getUrlNBP(
@@ -78,33 +70,19 @@ class Course {
 
         private fun getCourse(
             metal: Metal,
-            savingToSharedPreferences: Boolean,
-            dateHistorical: LocalDate = LocalDate.now(),
-            dataPathTessBaseAPI: String = ""
+            savingToSharedPreferences: Boolean
         ): Pair<String, String> {
-            var value = ""
-            var valueDate = ""
-            val (_, response, result) = when (metal) {
-                Metal.PLATINUM -> {
-                    Fuel.get(MY_CATALYST_VALUES_URL_CATALYST_PLATINUM)
-                        .header(mapOf("Origin" to MY_CATALYST_VALUES_HEADER_ORIGIN))
-                        .responseString()
-                }
-                Metal.PALLADIUM -> {
-                    Fuel.get(MY_CATALYST_VALUES_URL_CATALYST_PALLADIUM)
-                        .header(mapOf("Origin" to MY_CATALYST_VALUES_HEADER_ORIGIN))
-                        .responseString()
-                }
-                Metal.RHODIUM -> {
-                    Fuel.get(MY_CATALYST_VALUES_URL_CATALYST_RHODIUM)
-                        .header(mapOf("Origin" to MY_CATALYST_VALUES_HEADER_ORIGIN))
-                        .responseString()
-                }
-            }
+            val timestamp = Date().time.div(1000).toString()
+            val metalString = metal.toString().lowercase()
+            val metalSymbol = metal.getSymbol()
+            val (_, response, result) =  Fuel.post(MY_CATALYST_VALUES_URL_CATALYST)
+                .header(mapOf("Content-Type" to "application/json; charset=utf-8"))
+                .body("{\"query\":\"fragment MetalFragment on Metal { symbol currency results { ...MetalQuoteFragment } } fragment MetalQuoteFragment on Quote { mid unit } query AllMetalsQuote(\$currency: String!, \$timestamp: Int) { $metalString: GetMetalQuote( symbol: \\\"$metalSymbol\\\" timestamp: \$timestamp currency: \$currency ) { ...MetalFragment } }\",\"variables\":{\"timestamp\":$timestamp,\"currency\":\"USD\"}}")
+                .responseString()
             if (response.statusCode != 200) throw UnknownHostException()
-            val content: List<String> = result.get().split(',')
-            value = content[4].replace(',', '.')
-            valueDate = content[3].split(' ')[0]
+            val obj: JSONObject = JSONObject(result.get()).getJSONObject("data").getJSONObject(metalString).getJSONArray("results").getJSONObject(0)
+            val value = obj.getDouble("mid").div(Configuration.OZ_VALUE).toString() .replace(',', '.')
+            val valueDate = LocalDate.now().toString()
             if (savingToSharedPreferences) {
                 when (metal) {
                     Metal.PLATINUM -> {
@@ -127,36 +105,27 @@ class Course {
         @Suppress("ReplaceCallWithBinaryOperator")
         fun getValues(
             database: Database,
-            savingToSharedPreferences: Boolean = isCoursesSelected() == false,
-            dateHistorical: LocalDate = LocalDate.now(),
-            dataPathTessBaseAPI: String = ""
+            savingToSharedPreferences: Boolean = isCoursesSelected() == false
         ) {
             val (usdPln, usdDate) = getCourse(
                 Currency.USD,
-                savingToSharedPreferences,
-                dateHistorical
+                savingToSharedPreferences
             )
             val (eurPln, eurDate) = getCourse(
-                Currency.EUR, savingToSharedPreferences,
-                dateHistorical
+                Currency.EUR,
+                savingToSharedPreferences
             )
             val (platinum, platinumDate) = getCourse(
                 Metal.PLATINUM,
                 savingToSharedPreferences,
-                dateHistorical,
-                dataPathTessBaseAPI
             )
             val (palladium, palladiumDate) = getCourse(
                 Metal.PALLADIUM,
-                savingToSharedPreferences,
-                dateHistorical,
-                dataPathTessBaseAPI
+                savingToSharedPreferences
             )
             val (rhodium, rhodiumDate) = getCourse(
                 Metal.RHODIUM,
-                savingToSharedPreferences,
-                dateHistorical,
-                dataPathTessBaseAPI
+                savingToSharedPreferences
             )
             if (usdDate.equals(eurDate) && eurDate.equals(platinumDate) && platinumDate.equals(
                     palladiumDate

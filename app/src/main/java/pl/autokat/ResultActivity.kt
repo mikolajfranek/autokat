@@ -538,7 +538,7 @@ class ResultActivity : AppCompatActivity() {
                 //kitco
                 var failed = false
                 try{
-                    //getCourses()
+                    getCourses()
                 } catch (e: Exception) {
                     failed = true
                 }
