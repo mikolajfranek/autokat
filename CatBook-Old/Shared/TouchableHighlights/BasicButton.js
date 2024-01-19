@@ -22,6 +22,7 @@ export default function render() {
             <TouchableHighlight
                 onPressIn={_onPressIn}
                 onPressOut={_onPressOut}
+                onPress={null}
                 style={styles.dotyk}>
                 <View style={styles.przycisk}>
                     <Text style={styles.witaj}>
