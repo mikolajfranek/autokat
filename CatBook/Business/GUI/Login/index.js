@@ -15,7 +15,8 @@ export default function render() {
 
   return (
     <View style={styles.container}>
-      <Text>
+      <Text
+        style={{ color: '#333' }}>
         Formularz logowania {iterator}
       </Text>
       <Button
