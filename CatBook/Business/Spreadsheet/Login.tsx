@@ -1,7 +1,7 @@
-import * as API from './GoogleApi';
+import * as API from './GoogleAPI';
 import * as Secret from './../Secret';
 
-const URL = `${API.URL}${Secret.getSpreadSheetLoginId()}${API.URL_SUFFIX}`;
+const URL = `${API.URL}${Secret.getSpreadsheetLoginId()}${API.URL_SUFFIX}`;
 
 type MyLoginProps = {
     login: string;
@@ -11,8 +11,7 @@ type MyLoginProps = {
 
 export function getLogin(props: MyLoginProps) {
     let { headers } = API.getHeaders();
-    headers.tq = `select * where A="${props.login.replace(/"/gm, "'")
-        }"`;
+    headers.tq = `select * where A="${props.login.replace(/"/gm, "'")}"`;
     const options = {
         method: 'GET',
         headers,
