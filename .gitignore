@@ -155,4 +155,5 @@ package-lock.json
 
 # CircleCI
 .circleci/generated_config.yml
-CatBook/Business/Data/Secret.js
+CatBook/Business/main-nova-412011-f3a44323b34c.json
+CatBook/Business/Secret.tsx

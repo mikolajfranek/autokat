@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import styles from "./style";
 import Button from '../../../Backend/GUI/MyButton';
+import * as Spreadsheet from './../../Spreadsheet/Login';
 
 enum StateOfLogin {
   NeedLogin,
@@ -24,7 +25,9 @@ export default function render() {
   function pressLogin() {
     switch (state) {
       case StateOfLogin.NeedLogin: {
-        //TODO
+        Spreadsheet.getLogin({
+          login: inputLogin,
+        });
         setState(StateOfLogin.NeedCompany);
         break;
       }
@@ -36,6 +39,7 @@ export default function render() {
       case StateOfLogin.NeedPassword: {
         //TODO
         setInfoMessage("Trwa logowanie...")
+       
         setState(StateOfLogin.Loged);
         break;
       }
