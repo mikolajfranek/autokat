@@ -39,7 +39,7 @@ export default function render() {
       case StateOfLogin.NeedPassword: {
         //TODO
         setInfoMessage("Trwa logowanie...")
-       
+
         setState(StateOfLogin.Loged);
         break;
       }

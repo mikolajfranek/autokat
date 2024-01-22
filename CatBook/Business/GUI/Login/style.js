@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import * as GlobalStyle from './../../../global_style';
 
 const styles = StyleSheet.create({
     container: {
@@ -8,20 +9,20 @@ const styles = StyleSheet.create({
     },
     textInput: {
         borderWidth: 1,
-        borderColor: '#363636',
+        borderColor: GlobalStyle.baseColor,
         borderRadius: 15,
         padding: 2,
         height: 40,
         width: 300,
-        fontSize: 20,
+        fontSize: GlobalStyle.baseFontSize,
         margin: 10,
         textAlign: 'center',
-        color: '#363636',
+        color: GlobalStyle.baseColorText,
     },
     text: {
-        fontSize: 15,
+        fontSize: (GlobalStyle.baseFontSize - 5),
         marginBottom: 10,
-        color: '#363636',
+        color: GlobalStyle.baseColorText,
     }
 });
 

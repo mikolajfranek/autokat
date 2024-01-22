@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import * as GlobalStyle from './../../../global_style';
 
 const styles = StyleSheet.create({
     touchable: {
@@ -7,14 +8,14 @@ const styles = StyleSheet.create({
     button: {
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#363636',
+        backgroundColor: GlobalStyle.baseColor,
         borderRadius: 15,
     },
     text: {
         textAlign: 'center',
-        color: '#ccc',
+        color: GlobalStyle.baseColorText,
         margin: 15,
-        fontSize: 20,
+        fontSize: GlobalStyle.baseFontSize,
     },
 });
 

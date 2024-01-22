@@ -1,11 +1,12 @@
 import {
   StyleSheet,
 } from 'react-native';
+import * as GlobalStyle from './global_style';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ccc',
+    backgroundColor: GlobalStyle.baseColorWhite,
   },
   welcome: {
     flex: 1,
@@ -13,9 +14,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   text: {
-    fontSize: 20,
+    fontSize: GlobalStyle.baseFontSize,
     margin: 10,
-    color: '#363636',
+    color: GlobalStyle.baseColorText,
   },
 });
 
