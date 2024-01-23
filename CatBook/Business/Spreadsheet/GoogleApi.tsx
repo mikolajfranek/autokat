@@ -1,5 +1,5 @@
 import * as Secret from '../Secret';
-import KJUR from 'jsrsasign';
+import { KJUR } from 'jsrsasign';
 import UserDevAPI from './../main-nova-412011-f3a44323b34c.json';
 
 export const URL = "https://docs.google.com/a/google.com/spreadsheets/d/";
@@ -51,7 +51,7 @@ async function getToken() {
         eaders: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
-         }
+        }
     };
     return await fetch(UserDevAPI.token_uri, options)
         .then(response => {
