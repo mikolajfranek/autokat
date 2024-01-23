@@ -18,6 +18,7 @@ export async function getHeaders() {
 
 async function getBearerToken() {
     var token = await getToken();
+    debugger;
     return token;
 }
 

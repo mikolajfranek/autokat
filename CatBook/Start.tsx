@@ -8,8 +8,8 @@ import styles from "./style";
 import Login from './Business/GUI/Login';
 
 const message = Platform.select({
-  ios: 'Hello world in IOS',
-  android: 'Hello world in Android'
+  ios: `Hello world in IOS ${Platform.Version}`,
+  android: `Hello world in Android ${Platform.Version}`,
 });
 
 export default function render(): React.JSX.Element {
