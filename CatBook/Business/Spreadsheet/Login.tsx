@@ -9,26 +9,24 @@ type MyLoginProps = {
     password?: string;
 };
 
-export function getLogin(props: MyLoginProps) {
-    let { headers } = API.getHeaders();
+export async function getLogin(props: MyLoginProps) {
+    let { headers } = await API.getHeaders();
     headers.tq = `select * where A="${props.login.replace(/"/gm, "'")}"`;
     const options = {
         method: 'GET',
         headers,
     };
-    const result = fetch(URL, options)
+    return fetch(URL, options)
         .then(response => {
-            console.log(response);
             if (response.status != 200)
                 throw new Error();
-            response.json()
+            return response.text();
         })
         .then(responseJSON => {
-            console.log('is ookkkk');
-            return responseJSON;
+            var data = JSON.parse(responseJSON.match(/{.*}/gm)[0]);
+            console.log(data);
+            return data;
         }).catch(error => {
             console.error(error);
         });
-
-    return "";
 }

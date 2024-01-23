@@ -1,69 +1,68 @@
 import * as Secret from './../Secret';
+import KJUR from 'jsrsasign';
+import UserDevAPI from './../main-nova-412011-f3a44323b34c.json';
 
 export const URL = "https://docs.google.com/a/google.com/spreadsheets/d/";
 export const URL_SUFFIX = "/gviz/tq";
 
-export function getHeaders() {
+export async function getHeaders() {
     return {
         headers: {
             'Content-type': 'application/json',
-            'Authorization': `Bearer ${getBearerToken()}`,
+            'Authorization': `Bearer ${await getBearerToken()}`,
             'tqx': 'out:json',
             'tq': 'ASSIGN QUERY HERE',
         }
     }
 }
 
-function getBearerToken() {
-
-    getToken();
-
-    return null;
+async function getBearerToken() {
+    var token = await getToken();
+    return token;
 }
 
 async function getToken() {
-    const alg = 'RS256'
-    const pkcs8 = Secret.getPrivateKey();
-  
+    var pkcs8 = Secret.getPrivateKey();
+    // Header
+    var oHeader = { alg: 'RS256', typ: 'JWT' };
+    // Payload
+    var tNow = KJUR.jws.IntDate.get('now');
+    var tEnd = KJUR.jws.IntDate.get('now + 1hour');
+    var oPayload = {
+        scope: "https://www.googleapis.com/auth/spreadsheets",
+        iss: UserDevAPI.client_email,
+        aud: UserDevAPI.token_uri,
+        iat: tNow,
+        exp: tEnd,
+    };
+    // Sign JWT
+    var sHeader = JSON.stringify(oHeader);
+    var sPayload = JSON.stringify(oPayload);
+    var sJWT = KJUR.jws.JWS.sign("RS256", sHeader, sPayload, pkcs8);
+    //Send
+    const bodyJson =
+    {
+        "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+        "assertion": sJWT
+    };
+    const options = {
+        method: 'POST',
+        body: JSON.stringify(bodyJson),
+        eaders: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+         }
+    };
+    return await fetch(UserDevAPI.token_uri, options)
+        .then(response => {
+            if (response.status != 200)
+                throw new Error();
+            return response.json();
+        })
+        .then(responseJSON => {
+            return responseJSON.access_token;
+        }).catch(error => {
+            console.error(error);
+        });
 
-    /*
-    const jwt = await new jose.SignJWT({ 'urn:example:claim': true })
-        .setProtectedHeader({ alg })
-        .setIssuedAt()
-        .setIssuer('urn:example:issuer')
-        .setAudience('urn:example:audience')
-        .setExpirationTime('2h')
-        .sign(privateKey)
-*/
-
-    /*
-        val privateKey: RSAPrivateKey = KeyFactory.getInstance("RSA").generatePrivate(
-            PKCS8EncodedKeySpec(
-                Base64.decode(
-                    if (apk) Secret.getApkPrivateKey() else Secret.getPrivateKey(),
-            Base64.DEFAULT
-                )
-            )
-        ) as RSAPrivateKey
-        val timestamp: Long = Date().time
-    
-        val signedJwt = Jwts.builder().setClaims(
-                mapOf(
-                    TOKEN_SCOPE to TOKEN_SCOPE_VALUE,
-                    Claims.ISSUER to if (apk) Secret.getApkEmail() else Secret.getEmail(),
-                        Claims.AUDIENCE to TOKEN_URL,
-                            Claims.ISSUED_AT to Date(timestamp),
-                                Claims.EXPIRATION to Date(timestamp + Configuration.ONE_HOUR_IN_MILLISECONDS)
-            )
-        ).signWith(privateKey, SignatureAlgorithm.RS256).compact()
-        
-        
-        
-        val bodyJson =
-            """{"grant_type":"urn: ietf: params: oauth: grant - type: jwt - bearer","assertion" : "$signedJwt"}"""
-        val(_, response, result) = Fuel.post(TOKEN_URL).body(bodyJson).responseString()
-        if (response.statusCode != 200) throw UnknownHostException()
-    */
-
-    return null;
 }
