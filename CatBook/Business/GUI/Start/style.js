@@ -11,11 +11,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  text: {
-    fontSize: GlobalStyle.baseFontSize,
-    margin: 10,
-    color: GlobalStyle.baseColorText,
-  },
 });
 
 export default styles;

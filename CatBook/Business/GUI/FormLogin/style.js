@@ -14,16 +14,11 @@ const styles = StyleSheet.create({
         padding: 2,
         height: 40,
         width: 300,
-        fontSize: GlobalStyle.baseFontSize,
+        fontSize: 20,
         margin: 10,
         textAlign: 'center',
         color: GlobalStyle.baseColorText,
     },
-    text: {
-        fontSize: (GlobalStyle.baseFontSize - 5),
-        marginBottom: 10,
-        color: GlobalStyle.baseColorText,
-    }
 });
 
 export default styles;

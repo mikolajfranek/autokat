@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import {
-  Text,
   TextInput,
   View,
 } from 'react-native';
 import styles from './style';
-import Button from '../../../Backend/GUI/MyButton';
+import Button from '../../../Backend/GUI/Buttons/MyBaseButtonViewTouchableHighlight';
 import * as Spreadsheet from '../../Spreadsheet/Login';
+import MyBaseText from '../../../Backend/GUI/Texts/MyBaseText';
+import * as GlobalStyle from '../business_style';
 
 enum StateOfLogin {
   NeedLogin,
@@ -79,17 +80,18 @@ export default function render(): React.JSX.Element {
       />
       {textInputCompany}
       {textInputPass}
-      <Text style={styles.text}>
+      <MyBaseText>
         {infoMessage}
-      </Text>
+      </MyBaseText>
       <Button
         onPress={pressLogin}
-        label='Zaloguj się'
-        styleButton={{
-          backgroundColor: '#363636',
+        styleView={{
           width: 200,
-        }}
-      />
+        }}>
+        <MyBaseText styleText={{ color: GlobalStyle.baseColorWhite, margin: 15 }}>
+          Zaloguj się
+        </MyBaseText>
+      </Button>
     </View>
   );
 }
