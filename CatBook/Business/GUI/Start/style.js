@@ -1,6 +1,4 @@
-import {
-  StyleSheet,
-} from 'react-native';
+import { StyleSheet } from 'react-native';
 import * as GlobalStyle from '../business_style';
 
 const styles = StyleSheet.create({

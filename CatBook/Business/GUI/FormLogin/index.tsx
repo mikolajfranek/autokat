@@ -4,7 +4,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import styles from "./style";
+import styles from './style';
 import Button from '../../../Backend/GUI/MyButton';
 import * as Spreadsheet from '../../Spreadsheet/Login';
 
@@ -15,12 +15,12 @@ enum StateOfLogin {
   Loged,
 };
 
-export default function render() {
+export default function render(): React.JSX.Element {
   const [state, setState] = useState(StateOfLogin.NeedLogin);
-  const [inputLogin, setInputLogin] = useState("");
-  const [inputCompany, setInputCompany] = useState("");
-  const [inputPass, setInputPass] = useState("");
-  const [infoMessage, setInfoMessage] = useState("");
+  const [inputLogin, setInputLogin] = useState('');
+  const [inputCompany, setInputCompany] = useState('');
+  const [inputPass, setInputPass] = useState('');
+  const [infoMessage, setInfoMessage] = useState('');
 
   function pressLogin() {
     switch (state) {
@@ -38,7 +38,7 @@ export default function render() {
       }
       case StateOfLogin.NeedPassword: {
         //TODO
-        setInfoMessage("Trwa logowanie...")
+        setInfoMessage('Trwa logowanie...')
 
         setState(StateOfLogin.Loged);
         break;
@@ -51,7 +51,7 @@ export default function render() {
     textInputCompany = (
       <TextInput
         style={styles.textInput}
-        placeholder="Firma:"
+        placeholder='Firma:'
         onChangeText={newText => setInputCompany(newText)}
         defaultValue={inputCompany}
       />
@@ -62,7 +62,7 @@ export default function render() {
     textInputPass = (
       <TextInput
         style={styles.textInput}
-        placeholder="Hasło:"
+        placeholder='Hasło:'
         onChangeText={newText => setInputPass(newText)}
         defaultValue={inputPass}
         secureTextEntry={true}
@@ -73,7 +73,7 @@ export default function render() {
     <View style={styles.container}>
       <TextInput
         style={styles.textInput}
-        placeholder="Login:"
+        placeholder='Login:'
         onChangeText={newText => setInputLogin(newText)}
         defaultValue={inputLogin}
       />
@@ -84,7 +84,7 @@ export default function render() {
       </Text>
       <Button
         onPress={pressLogin}
-        label="Zaloguj się"
+        label='Zaloguj się'
         styleButton={{
           backgroundColor: '#363636',
           width: 200,

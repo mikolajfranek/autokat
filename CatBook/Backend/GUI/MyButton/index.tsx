@@ -1,6 +1,6 @@
-import React from "react";
-import { Text, View, TouchableHighlight, StyleProp, ViewStyle, GestureResponderEvent, TextStyle } from "react-native";
-import styles from "./style";
+import React from 'react';
+import { Text, View, TouchableHighlight, StyleProp, ViewStyle, GestureResponderEvent, TextStyle } from 'react-native';
+import styles from './style';
 
 type MyButtonProps = {
     onPress: ((event: GestureResponderEvent) => void) | undefined;

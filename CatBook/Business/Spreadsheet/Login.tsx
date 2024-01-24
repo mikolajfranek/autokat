@@ -11,7 +11,7 @@ type MyLoginProps = {
 
 export async function getLogin(props: MyLoginProps) {
     let { headers } = await API.getHeaders();
-    headers.tq = `select * where A="${props.login.replace(/"/gm, "'")}"`;
+    headers.tq = `select * where A='${props.login.replace(/'/gm, '')}'`;
     const options = {
         method: 'GET',
         headers,

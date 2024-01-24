@@ -4,7 +4,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import styles from "./style";
+import styles from './style';
 import Login from '../FormLogin';
 
 const message = Platform.select({

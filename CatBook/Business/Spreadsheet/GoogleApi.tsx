@@ -2,8 +2,8 @@ import * as Secret from '../Secret';
 import { KJUR } from 'jsrsasign';
 import UserDevAPI from './../main-nova-412011-f3a44323b34c.json';
 
-export const URL = "https://docs.google.com/a/google.com/spreadsheets/d/";
-export const URL_SUFFIX = "/gviz/tq";
+export const URL = 'https://docs.google.com/a/google.com/spreadsheets/d/';
+export const URL_SUFFIX = '/gviz/tq';
 
 export async function getHeaders() {
     return {
@@ -30,7 +30,7 @@ async function getToken() {
     var tNow = KJUR.jws.IntDate.get('now');
     var tEnd = KJUR.jws.IntDate.get('now + 1hour');
     var oPayload = {
-        scope: "https://www.googleapis.com/auth/spreadsheets",
+        scope: 'https://www.googleapis.com/auth/spreadsheets',
         iss: UserDevAPI.client_email,
         aud: UserDevAPI.token_uri,
         iat: tNow,
@@ -39,12 +39,12 @@ async function getToken() {
     // Sign JWT
     var sHeader = JSON.stringify(oHeader);
     var sPayload = JSON.stringify(oPayload);
-    var sJWT = KJUR.jws.JWS.sign("RS256", sHeader, sPayload, pkcs8);
+    var sJWT = KJUR.jws.JWS.sign('RS256', sHeader, sPayload, pkcs8);
     //Send
     const bodyJson =
     {
-        "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
-        "assertion": sJWT
+        'grant_type': 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+        'assertion': sJWT
     };
     const options = {
         method: 'POST',
