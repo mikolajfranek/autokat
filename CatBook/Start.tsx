@@ -5,7 +5,7 @@ import {
   View,
 } from 'react-native';
 import styles from "./style";
-import Login from './Business/GUI/Login';
+import Login from './Business/GUI/FormLogin';
 
 const message = Platform.select({
   ios: `Hello world in IOS ${Platform.Version}`,

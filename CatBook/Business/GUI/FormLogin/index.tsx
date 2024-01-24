@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import styles from "./style";
 import Button from '../../../Backend/GUI/MyButton';
-import * as Spreadsheet from './../../Spreadsheet/Login';
+import * as Spreadsheet from '../../Spreadsheet/Login';
 
 enum StateOfLogin {
   NeedLogin,
