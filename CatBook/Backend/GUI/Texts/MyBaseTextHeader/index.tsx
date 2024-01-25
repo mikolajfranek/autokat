@@ -1,7 +1,6 @@
 import React, { PropsWithChildren } from 'react';
-import { StyleProp, TextStyle } from 'react-native';
+import { StyleProp, Text, TextStyle } from 'react-native';
 import styles from './style';
-import MyBaseText from '../MyBaseText';
 
 type MyHeaderTextProps = {
     styleText?: StyleProp<TextStyle>;
@@ -9,8 +8,8 @@ type MyHeaderTextProps = {
 
 export default function render(props: PropsWithChildren<MyHeaderTextProps>) {
     return (
-        <MyBaseText styleText={[styles.text, props.styleText]}>
+        <Text style={[styles.text, props.styleText]}>
             {props.children}
-        </MyBaseText>
+        </Text>
     );
 }

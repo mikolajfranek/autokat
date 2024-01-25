@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import * as GlobalStyle from '../business_style';
+import * as BusinessStyle from '../business_style';
 
 const styles = StyleSheet.create({
     container: {
@@ -9,15 +9,14 @@ const styles = StyleSheet.create({
     },
     textInput: {
         borderWidth: 1,
-        borderColor: GlobalStyle.baseColor,
+        borderColor: BusinessStyle.colorDark,
         borderRadius: 15,
         padding: 2,
         height: 40,
-        width: 300,
         fontSize: 20,
         margin: 10,
         textAlign: 'center',
-        color: GlobalStyle.baseColorText,
+        color: BusinessStyle.colorDark,
     },
 });
 

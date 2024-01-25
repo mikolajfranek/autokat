@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
-import {
-  TextInput,
-  View,
-} from 'react-native';
+import { TextInput, View } from 'react-native';
 import styles from './style';
 import Button from '../../../Backend/GUI/Buttons/MyBaseButtonViewTouchableHighlight';
 import * as Spreadsheet from '../../Spreadsheet/Login';
 import MyBaseText from '../../../Backend/GUI/Texts/MyBaseText';
-import * as GlobalStyle from '../business_style';
+import * as BusinessStyle from '../business_style';
 
-enum StateOfLogin {
+enum FormLoginStatus {
   NeedLogin,
   NeedCompany,
   NeedPassword,
@@ -17,38 +14,40 @@ enum StateOfLogin {
 };
 
 export default function render(): React.JSX.Element {
-  const [state, setState] = useState(StateOfLogin.NeedLogin);
+  const [status, setStatus] = useState(FormLoginStatus.NeedLogin);
   const [inputLogin, setInputLogin] = useState('');
   const [inputCompany, setInputCompany] = useState('');
   const [inputPass, setInputPass] = useState('');
   const [infoMessage, setInfoMessage] = useState('');
 
   function pressLogin() {
-    switch (state) {
-      case StateOfLogin.NeedLogin: {
+    switch (status) {
+      case FormLoginStatus.NeedLogin: {
+        //TODO
         Spreadsheet.getLogin({
           login: inputLogin,
         });
-        setState(StateOfLogin.NeedCompany);
+        setStatus(FormLoginStatus.NeedCompany);
         break;
       }
-      case StateOfLogin.NeedCompany: {
+      case FormLoginStatus.NeedCompany: {
         //TODO
-        setState(StateOfLogin.NeedPassword);
+        setStatus(FormLoginStatus.NeedPassword);
         break;
       }
-      case StateOfLogin.NeedPassword: {
+      case FormLoginStatus.NeedPassword: {
         //TODO
-        setInfoMessage('Trwa logowanie...')
-
-        setState(StateOfLogin.Loged);
+        setStatus(FormLoginStatus.Loged);
         break;
       }
     }
+    if (status == FormLoginStatus.Loged) {
+      //TODO
+      setInfoMessage('Trwa logowanie...')
+    }
   }
-
   let textInputCompany = null;
-  if (state >= StateOfLogin.NeedCompany) {
+  if (status >= FormLoginStatus.NeedCompany) {
     textInputCompany = (
       <TextInput
         style={styles.textInput}
@@ -59,7 +58,7 @@ export default function render(): React.JSX.Element {
     );
   }
   let textInputPass = null;
-  if (state >= StateOfLogin.NeedPassword) {
+  if (status >= FormLoginStatus.NeedPassword) {
     textInputPass = (
       <TextInput
         style={styles.textInput}
@@ -83,12 +82,8 @@ export default function render(): React.JSX.Element {
       <MyBaseText>
         {infoMessage}
       </MyBaseText>
-      <Button
-        onPress={pressLogin}
-        styleView={{
-          width: 200,
-        }}>
-        <MyBaseText styleText={{ color: GlobalStyle.baseColorWhite, margin: 15 }}>
+      <Button onPress={pressLogin}>
+        <MyBaseText styleText={{ color: BusinessStyle.colorWhite, margin: 15 }}>
           Zaloguj się
         </MyBaseText>
       </Button>

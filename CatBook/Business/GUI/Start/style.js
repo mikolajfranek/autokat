@@ -1,10 +1,10 @@
 import { StyleSheet } from 'react-native';
-import * as GlobalStyle from '../business_style';
+import * as BusinessStyle from '../business_style';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: GlobalStyle.baseColorWhite,
+    backgroundColor: BusinessStyle.colorWhite,
   },
   welcome: {
     flex: 1,

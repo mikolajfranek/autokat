@@ -1,14 +1,14 @@
 import { StyleSheet } from 'react-native';
-import * as GlobalStyle from '../../backend_style';
+import * as BackendStyle from '../../backend_style';
 
 const styles = StyleSheet.create({
     touchable: {
         borderRadius: 15,
     },
-    button: {
+    view: {
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: GlobalStyle.baseColor,
+        backgroundColor: BackendStyle.colorPrimary,
         borderRadius: 15,
     },
 });
