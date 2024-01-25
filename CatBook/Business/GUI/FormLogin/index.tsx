@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { TextInput, View } from 'react-native';
 import styles from './style';
 import Button from '../../../Backend/GUI/Buttons/MyBaseButtonViewTouchableHighlight';
@@ -18,11 +18,29 @@ export default function render(): React.JSX.Element {
   const [inputLogin, setInputLogin] = useState('');
   const [inputCompany, setInputCompany] = useState('');
   const [inputPass, setInputPass] = useState('');
-  const [infoMessage, setInfoMessage] = useState('');
+  const [info, setInfo] = useState('');
+
+//TODO ----- 
+
+
+
+  const firstTime = useRef(true);
+  useEffect(() => {
+    if (!firstTime.current) {
+      // Run the effect.
+    } else {
+      firstTime.current = false;
+    }
+  }, [status]);
 
   function pressLogin() {
+
     switch (status) {
       case FormLoginStatus.NeedLogin: {
+
+        setStatus(FormLoginStatus.NeedCompany);
+
+        return;
         //TODO
         Spreadsheet.getLogin({
           login: inputLogin,
@@ -43,9 +61,10 @@ export default function render(): React.JSX.Element {
     }
     if (status == FormLoginStatus.Loged) {
       //TODO
-      setInfoMessage('Trwa logowanie...')
+      setInfo('Trwa logowanie...')
     }
   }
+
   let textInputCompany = null;
   if (status >= FormLoginStatus.NeedCompany) {
     textInputCompany = (
@@ -80,7 +99,7 @@ export default function render(): React.JSX.Element {
       {textInputCompany}
       {textInputPass}
       <MyBaseText>
-        {infoMessage}
+        {info}
       </MyBaseText>
       <Button onPress={pressLogin}>
         <MyBaseText styleText={{ color: BusinessStyle.colorWhite, margin: 15 }}>

@@ -1,14 +1,18 @@
 import { StyleSheet, Dimensions } from 'react-native';
 let { width } = Dimensions.get('window');
-const scaleFactor = { Small: 1.0 / 20, Medium: 1.0 / 15, Large: 1.0 / 10 };
+const scaleFactor = {
+    _1of20: 1.0 / 20,
+    _1of15: 1.0 / 15,
+    _1of10: 1.0 / 10
+};
 
 export const styles = StyleSheet.create({
     baseFont: {
-        fontSize: width * scaleFactor.Small,
+        fontSize: width * scaleFactor._1of20,
         color: colorText,
     },
     baseFontHeader: {
-        fontSize: width * scaleFactor.Medium,
+        fontSize: width * scaleFactor._1of15,
         color: colorText,
     },
 });
