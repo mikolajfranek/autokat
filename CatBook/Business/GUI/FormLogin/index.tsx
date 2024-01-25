@@ -20,7 +20,15 @@ export default function render(): React.JSX.Element {
   const [inputPass, setInputPass] = useState('');
   const [info, setInfo] = useState('');
 
-//TODO ----- 
+
+  //TODO ----- 
+  //useEffect
+  //useLayoutEffect
+  //move inputtext to general
+  //clean view
+  //set only portrait view without rotate
+  //read
+  //deploy
 
 
 

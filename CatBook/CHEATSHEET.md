@@ -12,3 +12,13 @@
 
 ## useRef
 - remember some information and do not trigger new renders
+
+
+//--------
+## effects
+- effects run at the end of a commit after the screen updates
+
+## useEffect
+delays a piece of code from running until that render is reflected on the screen
+
+React will call your cleanup function each time before the Effect runs again, and one final time when the component unmounts (gets removed)
