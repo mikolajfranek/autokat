@@ -1,5 +1,5 @@
 import * as API from './GoogleAPI';
-import * as Secret from './../Secret';
+import * as Secret from '../Secret';
 
 const URL = `${API.URL}${Secret.getSpreadsheetLoginId()}${API.URL_SUFFIX}`;
 

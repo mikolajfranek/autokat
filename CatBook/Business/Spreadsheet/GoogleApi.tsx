@@ -1,6 +1,6 @@
 import * as Secret from '../Secret';
 import { KJUR } from 'jsrsasign';
-import UserDevAPI from './../main-nova-412011-f3a44323b34c.json';
+import UserDevAPI from '../main-nova-412011-f3a44323b34c.json';
 
 export const URL = 'https://docs.google.com/a/google.com/spreadsheets/d/';
 export const URL_SUFFIX = '/gviz/tq';
