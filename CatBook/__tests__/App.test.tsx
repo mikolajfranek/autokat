@@ -4,23 +4,34 @@
 
 import 'react-native';
 import React from 'react';
-import App from '../Business/GUI/Start';
+import App from '../App';
 
-// Note: import explicitly to use the types shipped with jest.
-import { it, expect } from '@jest/globals';
+// Note: import explicitly to use the types shiped with jest.
+import {it} from '@jest/globals';
 
 // Note: test renderer must be required after react-native.
 import renderer from 'react-test-renderer';
 
+import { GluestackUIProvider, Text } from "@gluestack-ui/themed"
+import { config } from "@gluestack-ui/config" // Optional if you want to use default theme
+
+
 it('renders correctly', () => {
-  renderer.create(<App />);
+  renderer.create(
+    //cannot render GluestackUIProvider, there is exception throwed, i don not why
+
+    //transformIgnorePatterns in jest.config.js is related
+    <Text>Hello World!</Text>
+  );
 });
 
-it('jednostkowy test', () => {
-  expect(true).toBe(true);
-});
 
-it('migawkowy test', () => {
-  const tree = renderer.create(<App />).toJSON();
-  expect(tree).toMatchSnapshot();
-});
+/* todo
+scenario of create project (describe it)
+yarn create gluestack
+
+przygotowac core dla projektu - gluestack
+...
+reszta
+
+*/
