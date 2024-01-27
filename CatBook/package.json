@@ -1,6 +1,6 @@
 {
-  "name": "reactNativeApp",
-  "version": "1.0.0",
+  "name": "CatBook",
+  "version": "3.0.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -10,15 +10,15 @@
     "test": "jest"
   },
   "dependencies": {
-    "@expo/html-elements": "latest",
-    "@gluestack-style/react": "^1.0.43",
-    "@gluestack-ui/config": "^1.1.1",
-    "@gluestack-ui/themed": "^1.1.0",
+    "@gluestack-style/react": "latest",
+    "@gluestack-ui/themed": "latest",
+    "@gluestack-ui/config": "latest",
     "@legendapp/motion": "latest",
+    "@expo/html-elements": "latest",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.73.2",
-    "react-native-svg": "13.4.0"
+    "react-native-svg": "14.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",

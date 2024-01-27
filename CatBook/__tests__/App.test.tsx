@@ -12,26 +12,6 @@ import {it} from '@jest/globals';
 // Note: test renderer must be required after react-native.
 import renderer from 'react-test-renderer';
 
-import { GluestackUIProvider, Text } from "@gluestack-ui/themed"
-import { config } from "@gluestack-ui/config" // Optional if you want to use default theme
-
-
 it('renders correctly', () => {
-  renderer.create(
-    //cannot render GluestackUIProvider, there is exception throwed, i don not why
-
-    //transformIgnorePatterns in jest.config.js is related
-    <Text>Hello World!</Text>
-  );
+  renderer.create(<App />);
 });
-
-
-/* todo
-scenario of create project (describe it)
-yarn create gluestack
-
-przygotowac core dla projektu - gluestack
-...
-reszta
-
-*/

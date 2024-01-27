@@ -1,4 +1,4 @@
-import * as Secret from '../Secret';
+import * as Secret from '../../../../CatBook/Business/Secret';
 import { KJUR } from 'jsrsasign';
 import UserDevAPI from '../main-nova-412011-f3a44323b34c.json';
 
