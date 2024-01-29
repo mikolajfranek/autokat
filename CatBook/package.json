@@ -1,28 +1,31 @@
 {
-  "name": "reactNativeApp",
-  "version": "1.0.0",
+  "name": "CatBook",
+  "version": "3.0.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "flow": "flow"
   },
   "dependencies": {
-    "@gluestack-style/react": "latest",
-    "@gluestack-ui/themed": "latest",
-    "@gluestack-ui/config": "latest",
-    "@legendapp/motion": "latest",
     "@expo/html-elements": "latest",
+    "@gluestack-style/react": "latest",
+    "@gluestack-ui/config": "latest",
+    "@gluestack-ui/themed": "latest",
+    "@legendapp/motion": "latest",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.73.2",
     "react-native-svg": "14.1.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.23.9",
     "@babel/core": "^7.23.9",
     "@babel/preset-env": "^7.23.9",
+    "@babel/preset-flow": "^7.23.3",
     "@babel/runtime": "^7.23.9",
     "@react-native/eslint-config": "^0.73.2",
     "@react-native/metro-config": "^0.73.3",
@@ -31,6 +34,7 @@
     "@types/react-test-renderer": "^18.0.7",
     "babel-jest": "^29.7.0",
     "eslint": "^8.56.0",
+    "flow-bin": "^0.227.0",
     "jest": "^29.7.0",
     "metro-react-native-babel-preset": "0.77.0",
     "prettier": "^3.2.4",
