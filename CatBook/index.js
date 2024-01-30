@@ -5,7 +5,7 @@
 import { AppRegistry } from 'react-native';
 import App from './Business';
 import { name as appName } from './app.json';
-import { store } from './app/store';
+import { store } from './Business/store';
 import { Provider } from 'react-redux';
 import { GluestackUIProvider } from '@gluestack-ui/themed';
 import { config } from '@gluestack-ui/config';
