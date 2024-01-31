@@ -7,13 +7,10 @@ import App from './Business';
 import { name as appName } from './app.json';
 import { store } from './Business/store';
 import { Provider } from 'react-redux';
-import { GluestackUIProvider } from '@gluestack-ui/themed';
-import { config } from '@gluestack-ui/config';
+import React from 'react';
 
-AppRegistry.registerComponent(appName, () => {
+AppRegistry.registerComponent(appName, () => () => (
     <Provider store={store}>
-        <GluestackUIProvider config={config}>
-            <App />
-        </GluestackUIProvider>
+        <App />
     </Provider>
-});
+));

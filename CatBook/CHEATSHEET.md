@@ -35,3 +35,16 @@ Each Effect “captures” the text value from its corresponding render.  It doe
 
 
 Each render has its own Effects 
+
+## navidation
+# params
+Params are like options for a screen. They should only contain information to configure what's displayed in the screen. Avoid passing the full data which will be displayed on the screen itself (e.g. pass a user id instead of user object). Also avoid passing data which is used by multiple screens, such data should be in a global store. 
+
+You can also think of the route object like a URL. If your screen had a URL, what should be in the URL? Params shouldn't contain data that you think should not be in the URL
+
+Some examples of what should be in params are:
+
+    IDs like user id, item id etc., e.g. navigation.navigate('Profile', { userId: 'Jane' })
+    Params for sorting, filtering data etc. when you have a list of items, e.g. navigation.navigate('Feeds', { sortBy: 'latest' })
+    Timestamps, page numbers or cursors for pagination, e.g. navigation.navigate('Chat', { beforeTime: 1603897152675 })
+    Data to fill inputs on a screen to compose something, e.g. navigation.navigate('ComposeTweet', { title: 'Hello world!' })

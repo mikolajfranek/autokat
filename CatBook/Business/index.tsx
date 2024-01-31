@@ -1,23 +1,41 @@
-import React from 'react';
-import {
-    Platform,
 
-} from 'react-native';
+import * as React from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import HomeScreen from './features/HomeScreen';
+import SettingsScreen from './features/SettingsScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import { Button, Text, View } from 'react-native';
 
 
-import { View, Text } from '@gluestack-ui/themed';
+const Tab = createBottomTabNavigator();
 
-const message = Platform.select({
-    ios: `Hello world in IOS ${Platform.Version}`,
-    android: `Hello world in Android ${Platform.Version}`,
-});
 
-export default function render(): React.JSX.Element {
+export default function MyTabs() {
+
+    function ModalScreen({ navigation }) {
+        return (
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ fontSize: 30 }}>This is a modal!</Text>
+                <Button onPress={() => navigation.goBack()} title="Dismiss" />
+            </View>
+        );
+    }
+
     return (
-        <View>
-            <Text>
-                {message}
-            </Text>
-        </View>
+        <NavigationContainer>
+            <Tab.Navigator
+                screenOptions={{
+
+                    headerShown: false
+                }
+                }
+                initialRouteName="Home">
+
+
+                <Tab.Screen name="Home" component={HomeScreen} />
+                <Tab.Screen name="Settings" component={SettingsScreen} />
+
+            </Tab.Navigator>
+        </NavigationContainer>
     );
 }
