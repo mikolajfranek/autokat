@@ -23,18 +23,9 @@ export default function MyTabs() {
 
     return (
         <NavigationContainer>
-            <Tab.Navigator
-                screenOptions={{
-
-                    headerShown: false
-                }
-                }
-                initialRouteName="Home">
-
-
+            <Tab.Navigator initialRouteName="Home" screenOptions={{headerShown: false}}>
                 <Tab.Screen name="Home" component={HomeScreen} />
                 <Tab.Screen name="Settings" component={SettingsScreen} />
-
             </Tab.Navigator>
         </NavigationContainer>
     );

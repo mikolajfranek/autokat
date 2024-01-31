@@ -141,11 +141,10 @@ function CreatePostScreen3({ navigation, route }) {
 
 function ModalScreen({ navigation }) {
     return (
-        <View style={{ height: 100,  alignItems: 'center', justifyContent: 'center' }}>
+        <View style={{ flex: 1, backgroundColor: 'gray', opacity: 0.8, alignItems: 'center', justifyContent: 'center' }}>
             <Text style={{ fontSize: 30 }}>This is a modal!</Text>
             <Button onPress={() => navigation.goBack()} title="Dismiss" />
         </View>
-        
     );
 }
 
@@ -171,13 +170,9 @@ export default function Render({ navigation, route }) {
                     component={CreatePostScreen3} />
             </Stack.Group>
 
-            <Stack.Group screenOptions={{ presentation: 'modal', headerShown: false }}>
+            <Stack.Group screenOptions={{ presentation: 'transparentModal',   headerShown: false }}>
                 <Stack.Screen name="MyModal" component={ModalScreen} />
             </Stack.Group>
-
-
-
-
         </Stack.Navigator>
     );
 }
