@@ -67,3 +67,6 @@ Some examples of what should be in params are:
     You can only write "mutating" logic in Redux Toolkit's createSlice and createReducer because they use Immer inside! If you write mutating logic in reducers without Immer, it will mutate the state and cause bugs!
 
     NO. Global state that is needed across the app should go in the Redux store. State that's only needed in one place should be kept in component state.
+
+
+    If you're on a Mac and developing for iOS, you need to install the pods (via Cocoapods) to complete the linking.(npx pod-install ios)
