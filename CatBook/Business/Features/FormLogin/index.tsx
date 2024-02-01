@@ -7,7 +7,7 @@ export default function App({ navigation }): React.JSX.Element {
             <Text>
                 Form Login
             </Text>
-            <Button onPress={() => navigation.navigate('BaseModal')} title='Open BaseModal' />
+            <Button onPress={() => navigation.push('BaseModal')} title='Push BaseModal' />
         </View>
     );
 }

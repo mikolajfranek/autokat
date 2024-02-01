@@ -7,7 +7,8 @@ export default function App({ navigation }): React.JSX.Element {
             <Text>
                 BaseModal
             </Text>
-            <Button onPress={() => navigation.goBack()} title="Dismiss" />
+            <Button onPress={() => navigation.goBack()} title="Dismiss goBack" />
+            <Button onPress={() => navigation.popToTop()} title="Dismiss popToTop" />
         </View>
     );
 }

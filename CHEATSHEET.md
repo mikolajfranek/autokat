@@ -70,3 +70,5 @@ Some examples of what should be in params are:
 
 
     If you're on a Mac and developing for iOS, you need to install the pods (via Cocoapods) to complete the linking.(npx pod-install ios)
+
+    When you call navigate it first tries to find an existing route with that name, and only pushes a new route if there isn't yet one on the stack.
