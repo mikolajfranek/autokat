@@ -5,9 +5,9 @@ export default function App({ navigation }): React.JSX.Element {
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <Text>
-                Form Login
+                BaseModal
             </Text>
-            <Button onPress={() => navigation.navigate('BaseModal')} title='Open BaseModal' />
+            <Button onPress={() => navigation.goBack()} title="Dismiss" />
         </View>
     );
 }
