@@ -1,10 +1,16 @@
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NativeStackScreenProps, createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import FormLogin from './Features/FormLogin';
 import BaseModal from './Features/Modals/BaseModal';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
+type RootStackParamList = {
+  FormLogin: undefined;
+};
+
+export type Props = NativeStackScreenProps<RootStackParamList, 'FormLogin'>;
 
 export default function App(): React.JSX.Element {
   return (
