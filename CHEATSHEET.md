@@ -48,3 +48,22 @@ Some examples of what should be in params are:
     Params for sorting, filtering data etc. when you have a list of items, e.g. navigation.navigate('Feeds', { sortBy: 'latest' })
     Timestamps, page numbers or cursors for pagination, e.g. navigation.navigate('Chat', { beforeTime: 1603897152675 })
     Data to fill inputs on a screen to compose something, e.g. navigation.navigate('ComposeTweet', { title: 'Hello world!' })
+
+
+    Redux is a pattern and library for managing and updating application state, using events called "actions"
+
+    The only way to update the state is to call store.dispatch() and pass in an action object.
+
+    The store calls the root reducer once, and saves the return value as its initial state
+    
+    When the UI is first rendered, UI components access the current state of the Redux store, and use that data to decide what to render. They also subscribe to any future store updates so they can know if the state has changed.
+
+    The store runs the reducer function again with the previous state and the current action, and saves the return value as the new state
+
+    The store notifies all parts of the UI that are subscribed that the store has been updated
+
+    A "slice" is a collection of Redux reducer logic and actions for a single feature in your app,
+
+    You can only write "mutating" logic in Redux Toolkit's createSlice and createReducer because they use Immer inside! If you write mutating logic in reducers without Immer, it will mutate the state and cause bugs!
+
+    NO. Global state that is needed across the app should go in the Redux store. State that's only needed in one place should be kept in component state.

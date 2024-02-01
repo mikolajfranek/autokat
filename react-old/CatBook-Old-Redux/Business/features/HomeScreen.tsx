@@ -2,6 +2,7 @@ import React from "react";
 import { Button, View, Text, TextInput } from 'react-native';
 import { NavigationContainer, useFocusEffect } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Counter } from "./counter/Counter";
 const Stack = createNativeStackNavigator();
 
 function HomeScreen({ navigation, route }) {
@@ -41,6 +42,8 @@ function HomeScreen({ navigation, route }) {
                 onPress={() => navigation.navigate('MyModal')}
                 title="Open Modal"
             />
+
+            <Counter/>
         </View>
     );
 }
