@@ -9,6 +9,7 @@ export default function App({ navigation }: PropsOfFormLogin): React.JSX.Element
                 Form Login
             </Text>
             <Button onPress={() => navigation.push('BaseModal')} title='Push BaseModal' />
+            <Button onPress={() => navigation.navigate('MainTab')} title='Navigate MainTab' />
         </View>
     );
 }
