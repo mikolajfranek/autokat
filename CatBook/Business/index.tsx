@@ -6,6 +6,9 @@ import BaseModal from './Features/Modals/BaseModal';
 import MainTab from './Features/MainTab';
 import { useAppSelector } from './hooks';
 
+//TODO
+//- create and test app on ios (build jks?) for tests
+
 //Stack
 const Stack = createStackNavigator<RootStackParamList>();
 type RootStackParamList = {
