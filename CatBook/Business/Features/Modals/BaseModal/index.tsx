@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button, Text, View } from 'react-native';
-import { Props } from '../../..';
+import { PropsOfBaseModal } from '../../..';
 
-export default function App({ navigation } : Props ): React.JSX.Element {
+export default function App({ navigation }: PropsOfBaseModal): React.JSX.Element {
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <Text>

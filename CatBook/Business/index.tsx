@@ -8,14 +8,17 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 type RootStackParamList = {
   FormLogin: undefined;
+  BaseModal: { message: string } | undefined;
 };
 
-export type Props = NativeStackScreenProps<RootStackParamList, 'FormLogin'>;
+export type PropsOfFormLogin = NativeStackScreenProps<RootStackParamList, 'FormLogin', 'MainStack'>;
+export type PropsOfBaseModal = NativeStackScreenProps<RootStackParamList, 'BaseModal', 'MainStack'>;
 
 export default function App(): React.JSX.Element {
   return (
     <NavigationContainer>
       <Stack.Navigator
+        id='MainStack'
         initialRouteName="FormLogin"
         screenOptions={{
           headerStyle: { backgroundColor: 'lightblue' },
@@ -33,7 +36,9 @@ export default function App(): React.JSX.Element {
           }}>
           <Stack.Screen
             name="BaseModal"
-            component={BaseModal} />
+            component={BaseModal}
+            initialParams={{ message: "abc" }}
+          />
         </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>
