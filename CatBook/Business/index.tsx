@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import FormLogin from './Features/FormLogin';
 import BaseModal from './Features/Modals/BaseModal';
 import MainTab from './Features/MainTab';
+import { useAppSelector } from './hooks';
 
 //Stack
 const Stack = createStackNavigator<RootStackParamList>();
@@ -16,9 +17,8 @@ export type PropsOfFormLogin = StackScreenProps<RootStackParamList, 'FormLogin',
 export type PropsOfBaseModal = StackScreenProps<RootStackParamList, 'BaseModal', 'MainStack'>;
 
 export default function App(): React.JSX.Element {
-  //get from store
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+  const hasLicense = useAppSelector((state) => state.user.license)
+  
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -28,7 +28,7 @@ export default function App(): React.JSX.Element {
           headerStyle: { backgroundColor: 'lightblue' },
         }}>
 
-        {isLoggedIn ? (
+        {hasLicense ? (
           // Screens for logged in users
           <Stack.Group>
             <Stack.Screen
