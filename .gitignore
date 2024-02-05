@@ -157,3 +157,5 @@ package-lock.json
 .circleci/generated_config.yml
 CatBook/Business/lyrical-ring-412422-5e3581355fd5.json
 CatBook/Business/Secret.tsx
+CatBook/android/app/release/app-release.apk
+CatBook/android/app/release/output-metadata.json
