@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Text, View } from 'react-native';
 import { PropsOfFormLogin } from '../..';
 import { useAppDispatch } from '../../hooks';
-import { loginAction } from '../../Slices/UserSlice';
+import { actionLoginUser, reducerLoginUser } from '../../Slices/UserSlice';
 
 
 export default function App({ navigation }: PropsOfFormLogin): React.JSX.Element {
@@ -14,7 +14,14 @@ export default function App({ navigation }: PropsOfFormLogin): React.JSX.Element
                 Form Login
             </Text>
             <Button onPress={() => navigation.push('BaseModal')} title='Push BaseModal' />
-            <Button onPress={() => dispatch(loginAction())} title='Navigate MainTab' />
+            <Button onPress={() => {
+                dispatch(actionLoginUser()); //async
+                dispatch(reducerLoginUser());
+
+                //in other case use navigate, after properly before actions...of async
+                //navigation.navigate('MainTab');
+
+            }} title='Navigate MainTab' />
         </View>
     );
 }

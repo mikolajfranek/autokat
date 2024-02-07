@@ -26,7 +26,6 @@ export default function App(): React.JSX.Element {
     <NavigationContainer>
       <Stack.Navigator
         id='MainStack'
-        initialRouteName="FormLogin"
         screenOptions={{
           headerStyle: { backgroundColor: 'lightblue' },
         }}>

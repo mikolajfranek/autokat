@@ -16,7 +16,7 @@ export default function App({ navigation }): React.JSX.Element {
 
             let license = "";
             if (license == "") {
-                navigation.navigate('FormLogin');
+                //navigation.navigate('FormLogin');
             }
 
             return () => {
