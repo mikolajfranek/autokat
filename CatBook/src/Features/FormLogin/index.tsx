@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Text, View } from 'react-native';
 import { PropsOfFormLogin } from '../..';
 import { useAppDispatch } from '../../hooks';
-import { actionLoginUser, reducerLoginUser } from '../../Slices/UserSlice';
+import { loginUser } from '../../Slices/UserSlice';
 
 
 export default function App({ navigation }: PropsOfFormLogin): React.JSX.Element {
@@ -15,8 +15,7 @@ export default function App({ navigation }: PropsOfFormLogin): React.JSX.Element
             </Text>
             <Button onPress={() => navigation.push('BaseModal')} title='Push BaseModal' />
             <Button onPress={() => {
-                dispatch(actionLoginUser()); //async
-                dispatch(reducerLoginUser());
+                dispatch(loginUser()); //async
 
                 //in other case use navigate, after properly before actions...of async
                 //navigation.navigate('MainTab');

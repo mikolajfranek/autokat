@@ -5,6 +5,7 @@ import FormLogin from './Features/FormLogin';
 import BaseModal from './Features/Modals/BaseModal';
 import MainTab from './Features/MainTab';
 import { useAppSelector } from './hooks';
+import { database } from './Database/DBA';
 
 //TODO
 //- create and test app on ios (build jks?) for tests
@@ -21,7 +22,7 @@ export type PropsOfBaseModal = StackScreenProps<RootStackParamList, 'BaseModal',
 
 export default function App(): React.JSX.Element {
   const hasLicense = useAppSelector((state) => state.user.license)
-  
+
   return (
     <NavigationContainer>
       <Stack.Navigator
