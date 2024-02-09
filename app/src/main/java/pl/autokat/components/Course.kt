@@ -77,11 +77,11 @@ class Course {
             val metalSymbol = metal.getSymbol()
             val (_, response, result) =  Fuel.post(MY_CATALYST_VALUES_URL_CATALYST)
                 .header(mapOf("Content-Type" to "application/json; charset=utf-8"))
-                .body("{\"query\":\"fragment MetalFragment on Metal { symbol currency results { ...MetalQuoteFragment } } fragment MetalQuoteFragment on Quote { mid unit } query AllMetalsQuote(\$currency: String!, \$timestamp: Int) { $metalString: GetMetalQuote( symbol: \\\"$metalSymbol\\\" timestamp: \$timestamp currency: \$currency ) { ...MetalFragment } }\",\"variables\":{\"timestamp\":$timestamp,\"currency\":\"USD\"}}")
+                .body("{\"query\":\"fragment MetalFragment on Metal { symbol currency results { ...MetalQuoteFragment } } fragment MetalQuoteFragment on Quote { bid unit } query AllMetalsQuote(\$currency: String!, \$timestamp: Int) { $metalString: GetMetalQuote( symbol: \\\"$metalSymbol\\\" timestamp: \$timestamp currency: \$currency ) { ...MetalFragment } }\",\"variables\":{\"timestamp\":$timestamp,\"currency\":\"USD\"}}")
                 .responseString()
             if (response.statusCode != 200) throw UnknownHostException()
             val obj: JSONObject = JSONObject(result.get()).getJSONObject("data").getJSONObject(metalString).getJSONArray("results").getJSONObject(0)
-            val value = obj.getDouble("mid").div(Configuration.OZ_VALUE).toString() .replace(',', '.')
+            val value = obj.getDouble("bid").div(Configuration.OZ_VALUE).toString() .replace(',', '.')
             val valueDate = LocalDate.now().toString()
             if (savingToSharedPreferences) {
                 when (metal) {
