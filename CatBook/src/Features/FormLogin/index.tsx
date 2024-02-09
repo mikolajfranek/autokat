@@ -48,6 +48,7 @@ export default function App({ navigation }: PropsOfForm_Logowanie): React.JSX.El
             <TextInput
                 style={styles.textInput}
                 placeholder='Firma:'
+                placeholderTextColor={StyleBusiness.colorPrimary}
                 onChangeText={newText => setInputCompany(newText)}
                 defaultValue={inputCompany}
             />
@@ -59,6 +60,7 @@ export default function App({ navigation }: PropsOfForm_Logowanie): React.JSX.El
             <TextInput
                 style={styles.textInput}
                 placeholder='Hasło:'
+                placeholderTextColor={StyleBusiness.colorPrimary}
                 onChangeText={newText => setInputPass(newText)}
                 defaultValue={inputPass}
                 secureTextEntry={true}
@@ -90,6 +92,7 @@ export default function App({ navigation }: PropsOfForm_Logowanie): React.JSX.El
                 <TextInput
                     style={styles.textInput}
                     placeholder='Login:'
+                    placeholderTextColor={StyleBusiness.colorPrimary}
                     onChangeText={newText => setInputLogin(newText)}
                     defaultValue={inputLogin}
                 />
