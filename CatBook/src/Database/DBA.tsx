@@ -1,4 +1,3 @@
-import { Platform } from 'react-native'
 import { Database } from '@nozbe/watermelondb'
 import SQLiteAdapter from '@nozbe/watermelondb/adapters/sqlite'
 
@@ -7,9 +6,7 @@ import migrations from './Migrations'
 import Course from './Models/Course'
 import Filter from './Models/Filter'
 import Catalyst from './Models/Catalyst'
-// import Post from './model/Post' // ⬅️ You'll import your Models here
 
-// First, create the adapter to the underlying database:
 const adapter = new SQLiteAdapter({
   schema,
   // (You might want to comment it out for development purposes -- see Migrations documentation)

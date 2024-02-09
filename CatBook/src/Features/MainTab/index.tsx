@@ -1,38 +1,26 @@
 import React from 'react';
-import Courses from '../Courses';
-import ListOfCatalysts from '../ListOfCatalysts';
-import Settings from '../Settings';
+import Kursy from '../Kursy';
+import Katalizatory from '../Katalizatory';
+import Ustawienia from '../Ustawienia';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useFocusEffect } from '@react-navigation/native';
+import * as StyleBusiness from '../../style_business';
 
-//Tab
 const Tab = createBottomTabNavigator();
 
-export default function App({ navigation }): React.JSX.Element {
-    useFocusEffect(
-        React.useCallback(() => {
-            // Do something when the screen is focused
-            console.log("focus....");
-
-            let license = "";
-            if (license == "") {
-                //navigation.navigate('FormLogin');
-            }
-
-            return () => {
-                // Do something when the screen is unfocused
-                console.log("clean....");
-                // Useful for cleanup functions
-            };
-        }, []));
-
+export default function App(): React.JSX.Element {
     return (
         <Tab.Navigator
-            id='MainTab'
-            initialRouteName="ListOfCatalysts">
-            <Tab.Screen name="ListOfCatalysts" component={ListOfCatalysts} />
-            <Tab.Screen name="Courses" component={Courses} />
-            <Tab.Screen name="Settings" component={Settings} />
+            id='CatBook'
+            initialRouteName="Katalizatory"
+            screenOptions={{
+                headerShown: false,
+                tabBarInactiveTintColor: StyleBusiness.colorWhite,
+                tabBarActiveTintColor: StyleBusiness.colorSucess,
+                tabBarStyle: { backgroundColor: StyleBusiness.colorPrimary },
+            }}>
+            <Tab.Screen name="Katalizatory" component={Katalizatory} />
+            <Tab.Screen name="Kursy" component={Kursy} />
+            <Tab.Screen name="Ustawienia" component={Ustawienia} />
         </Tab.Navigator>
     );
 }

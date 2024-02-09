@@ -1,104 +1,108 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { database } from '../Database/DBA';
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { database } from "../Database/DBA";
+import * as API from "../Spreadsheet/Login";
+import { UserStates } from "../Enums/UserStates";
+import { OperationStates } from "../Enums/OperationStates";
 
 export interface UserState {
-    license: boolean;
-    status: 'idle' | 'loading' | 'failed';
+    state: UserStates;
+    operationState: OperationStates;
 }
 
 const initialState: UserState = {
-    status: 'idle',
-    license: false,
+    state: UserStates.NOT_LOGGED,
+    operationState: OperationStates.IDLE,
 }
 
-//The most common reason to use middleware is to allow different kinds of async logic to interact with the store. 
+export const autoLogin = createAsyncThunk(
+    "user/autoLogin",
+    async () => {
+        var license = await database.localStorage.get("license");
+        console.log(license);
+        if (license == undefined)
+            return false;
+        return true;
+    }
+);
 
+export const login = createAsyncThunk<boolean, {
+    loginInput: string,
+    companyInput: string,
+    passInput: string,
+    processInput: boolean
+}>(
+    "user/login",
+    async (data) => {
+        let { loginInput, companyInput, passInput, processInput } = data;
+        var license = await API.getUser(loginInput, companyInput, passInput);
+        if (license.data == false)
+            return false;
+        if(processInput)
+            await database.localStorage.set("license", "TODO");
+        return true;
+    }
+);
 
-//Any asynchronicity has to happen outside the store.
+export const logout = createAsyncThunk(
+    "user/logout",
+    async () => {
+        await database.localStorage.remove("license");
+        return false;
+    }
+);
+
 export const slice = createSlice({
-    name: 'user',
+    name: "user",
     initialState,
     // The `reducers` field lets us define reducers and generate associated actions
-    //reducers - opisuje jak zmienia sie stan aplikacji w odpowiedzi na akcje
-    //wynik reduktora zalezy TYLKO od parametrow wejsciowych
-    //nie wykorzystuj math.random w reduktorze - reduktor to przewidywalnossc stanow
-    //action - to co się dzieje z aplikacją
     reducers: {
-
-
-        logout: (state) => {
-            state.license = false;
+        //TODO - add reducers
+        reducerName: (state) => {
+            //TODO - return React.JSX.Element?
         },
-
-        //zwraca element dziedziczacy z JSX.ELEMENT;
-        kreator: (state) => {
-            //return new Element(nazwa);
-        },
-
     },
     extraReducers: (builder) => {
-        // Add reducers for additional action types here, and handle loading state as needed
         builder
-            .addCase(loginUser.pending, (state) => {
-                state.status = 'loading';
+            .addCase(autoLogin.pending, (state) => {
+                state.operationState = OperationStates.LOADING;
             })
-            .addCase(loginUser.fulfilled, (state, action) => {
-                state.status = 'idle';
-                state.license = action.payload;
+            .addCase(autoLogin.fulfilled, (state, action) => {
+                state.operationState = OperationStates.IDLE;
+                if (action.payload) {
+                    state.state = UserStates.LOGGED;
+                }
             })
-            .addCase(loginUser.rejected, (state) => {
-                state.status = 'failed';
+            .addCase(autoLogin.rejected, (state) => {
+                state.operationState = OperationStates.FAILED;
             });
 
-        // Add reducers for additional action types here, and handle loading state as needed
         builder
-            .addCase(logoutUser.pending, (state) => {
-                state.status = 'loading';
+            .addCase(login.pending, (state) => {
+                state.operationState = OperationStates.LOADING;
             })
-            .addCase(logoutUser.fulfilled, (state, action) => {
-                state.status = 'idle';
-                state.license = false;
+            .addCase(login.fulfilled, (state, action) => {
+                state.operationState = OperationStates.IDLE;
+                if (action.payload == false) {
+                    state.operationState = OperationStates.FAILED;
+                } else if (state.state == UserStates.NOT_LOGGED) {
+                    state.state = UserStates.NOT_LOGGED_NEED_COMPANY;
+                } else if (state.state == UserStates.NOT_LOGGED_NEED_COMPANY) {
+                    state.state = UserStates.NOT_LOGGED_NEED_PASS;
+                } else {
+                    state.state = UserStates.LOGGED;
+                }
             })
-            .addCase(logoutUser.rejected, (state) => {
-                state.status = 'failed';
+            .addCase(login.rejected, (state) => {
+                state.operationState = OperationStates.FAILED;
+            });
+
+        builder
+            .addCase(logout.fulfilled, (state, action) => {
+                state.state = action.payload ? UserStates.NOT_LOGGED : UserStates.NOT_LOGGED;
             });
     },
 });
 
-
-
-// payload creator callback that does the actual async logic and returns a promise with the result. 
-function apiLoginUser() {
-    return new Promise<{ data: boolean }>((resolve) =>
-        setTimeout(() => resolve({ data: true }), 500)
-    );
-}
-
-export const loginUser = createAsyncThunk(
-    'user/loginUserBlaBla',
-    async () => {
-        const response = await apiLoginUser();
-        if (response.data)
-            await database.localStorage.set("license", new Date().getTime());
-        // The value we return becomes the `fulfilled` action payload
-        //throw Error();
-        return response.data;
-    }
-);
-
-export const logoutUser = createAsyncThunk(
-    'user/logoutnUserBlaBla',
-    async () => {
-        await database.localStorage.remove("license");
-        
-    }
-);
-
-
-
-
-
-export const { logout } = slice.actions;
-
+export const { } = slice.actions;
 
 export default slice.reducer

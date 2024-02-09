@@ -1,60 +1,59 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { StackScreenProps, createStackNavigator } from '@react-navigation/stack';
-import React, { useState } from 'react';
-import FormLogin from './Features/FormLogin';
-import BaseModal from './Features/Modals/BaseModal';
-import MainTab from './Features/MainTab';
-import { useAppSelector } from './hooks';
-import { database } from './Database/DBA';
+import { StackScreenProps, createStackNavigator } from "@react-navigation/stack";
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { useAppSelector } from "./hooks";
+import * as StyleBusiness from "./style_business";
+import Tab_Aplikacja from "./Features/MainTab";
+import Form_Logowanie from "./Features/FormLogin";
+import Modal_OAplikacji from "./Features/Modals/OAplikacji";
+import { UserStates } from "./Enums/UserStates";
 
-//TODO
-//- create and test app on ios (build jks?) for tests
-
-//Stack
 const Stack = createStackNavigator<RootStackParamList>();
+
 type RootStackParamList = {
-  FormLogin: undefined;
-  BaseModal: { message: string } | undefined;
-  MainTab: undefined;
+  Tab_Aplikacja: undefined;
+  Form_Logowanie: undefined;
+  Modal_OAplikacji: undefined;
 };
-export type PropsOfFormLogin = StackScreenProps<RootStackParamList, 'FormLogin', 'MainStack'>;
-export type PropsOfBaseModal = StackScreenProps<RootStackParamList, 'BaseModal', 'MainStack'>;
+export type PropsOfTab_Aplikacja = StackScreenProps<RootStackParamList, "Tab_Aplikacja", "Stack_Aplikacja">;
+export type PropsOfForm_Logowanie = StackScreenProps<RootStackParamList, "Form_Logowanie", "Stack_Aplikacja">;
+export type PropsOfModal_OAplikacji = StackScreenProps<RootStackParamList, "Modal_OAplikacji", "Stack_Aplikacja">;
 
 export default function App(): React.JSX.Element {
-  const hasLicense = useAppSelector((state) => state.user.license)
-
+  const state = useAppSelector((state) => state.user.state)
   return (
     <NavigationContainer>
       <Stack.Navigator
-        id='MainStack'
+        id="Stack_Aplikacja"
         screenOptions={{
-          headerStyle: { backgroundColor: 'lightblue' },
+          headerStyle: { backgroundColor: StyleBusiness.colorPrimary },
+          headerTitleStyle: { color: StyleBusiness.colorWhite },
+          headerTintColor: StyleBusiness.colorWhite,
+          cardStyle: { backgroundColor: StyleBusiness.colorWhite }
         }}>
-
-        {hasLicense ? (
+        {state === UserStates.LOGGED ? (
           // Screens for logged in users
           <Stack.Group>
             <Stack.Screen
-              name="MainTab"
-              component={MainTab}
-              options={{ title: 'MainTab' }} />
+              name="Tab_Aplikacja"
+              component={Tab_Aplikacja}
+              options={{ title: "CatBook" }} />
           </Stack.Group>
         ) : (
           // Auth screens
           <Stack.Group>
             <Stack.Screen
-              name="FormLogin"
-              component={FormLogin}
-              options={{ title: 'Formularz logowania' }} />
+              name="Form_Logowanie"
+              component={Form_Logowanie}
+              options={{ title: "Formularz logowania" }} />
           </Stack.Group>
         )}
-
         {/* Common modal screens */}
-        <Stack.Group screenOptions={{ presentation: 'modal' }}>
+        <Stack.Group screenOptions={{ presentation: "modal" }}>
           <Stack.Screen
-            name="BaseModal"
-            component={BaseModal}
-            initialParams={{ message: "abc" }}
+            name="Modal_OAplikacji"
+            options={{ headerTitle: "O aplikacji" }}
+            component={Modal_OAplikacji}
           />
         </Stack.Group>
       </Stack.Navigator>
