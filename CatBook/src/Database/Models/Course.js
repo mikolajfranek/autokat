@@ -1,15 +1,15 @@
 import { Model } from '@nozbe/watermelondb';
-import { date, readonly, field } from '@nozbe/watermelondb/decorators';
+import { date, readonly, text } from '@nozbe/watermelondb/decorators';
 
 export default class Course extends Model {
     static table = 'courses';
 
     @readonly @date('created_at') createdAt;
-    @field('platinum') platinum;
-    @field('palladium') palladium;
-    @field('rhodium') rhodium;
-    @field('eur_pln') eurPln;
-    @field('usd_pln') usdPln;
+    @text('platinum') platinum;
+    @text('palladium') palladium;
+    @text('rhodium') rhodium;
+    @text('eur_pln') eurPln;
+    @text('usd_pln') usdPln;
 
     get isRecentlyCreated() {
         // in the last 4 hours
