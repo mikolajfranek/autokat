@@ -1,15 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
+  Button,
   Text,
   View,
 } from 'react-native';
+import { database } from './Database/DBA';
 
 export default function App(): React.JSX.Element {
+  const [amount, setAmount] = useState('');
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>
-        Hello world!
+        Hello world! {amount}
       </Text>
+      <Button
+        onPress={async () => {
+          var increment = Number(await database.localStorage.get("increment"));
+          increment = (increment ? increment : 0) + 1;
+          await database.localStorage.set("increment", increment);
+          setAmount(increment.toString());
+        }}
+        title='Kliknij mnie'
+      />
     </View>
   );
 }
