@@ -6,6 +6,21 @@ import {
 } from 'react-native';
 import { database } from './Database/DBA';
 
+export interface PromiseParams {
+  result: boolean;
+}
+
+function getPromise(): Promise<PromiseParams> {
+  return new Promise<PromiseParams>((resolve) =>
+    setTimeout(() => {
+      resolve(
+        {
+          result: true
+        });
+    }, 4000)
+  );
+}
+
 export default function App(): React.JSX.Element {
   const [amount, setAmount] = useState('');
   return (
@@ -15,6 +30,7 @@ export default function App(): React.JSX.Element {
       </Text>
       <Button
         onPress={async () => {
+          await getPromise();
           var increment = Number(await database.localStorage.get("increment"));
           increment = (increment ? increment : 0) + 1;
           await database.localStorage.set("increment", increment);
