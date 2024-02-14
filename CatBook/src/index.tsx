@@ -36,7 +36,7 @@ export default function App(): React.JSX.Element {
           await database.localStorage.set("increment", increment);
           setAmount(increment.toString());
         }}
-        title='Kliknij mnie'
+        title='Kliknij mnie dwa razy!!!'
       />
     </View>
   );
