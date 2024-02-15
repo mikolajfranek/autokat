@@ -1,9 +1,9 @@
 import React, { PropsWithChildren, useState } from "react";
-import { View, StyleProp, ViewStyle, GestureResponderEvent, TouchableHighlight } from "react-native";
+import { View, StyleProp, ViewStyle, TouchableHighlight } from "react-native";
 import styles from "./style";
 
 type MyButtonProps = {
-    onPress: ((event: GestureResponderEvent) => Promise<void>);
+    onPress: (() => Promise<void>);
     styleTouchableHighlight?: StyleProp<ViewStyle>;
     styleView?: StyleProp<ViewStyle>;
 };
@@ -14,10 +14,10 @@ export default function render(props: PropsWithChildren<MyButtonProps>) {
         <TouchableHighlight
             style={[styles.touchable, props.styleTouchableHighlight]}
             disabled={isDisabled}
-            onPress={async (event) => {
+            onPress={async () => {
                 setDisabled(true);
                 try {
-                    await props.onPress(event);
+                    await props.onPress();
                 } finally {
                     setDisabled(false);
                 }
