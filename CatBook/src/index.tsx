@@ -52,6 +52,16 @@ export default function App(): React.JSX.Element {
         title={'Zaloguj się - dispatch'}
         onPress={() => dispatch(loginAsync())}
       />
+      <Button
+        title={'Zaloguj się - dispatch'}
+        onPress={() => dispatch(loginAsync()).unwrap()
+          .then((originalPromiseResult) => {
+            // handle result here
+          })
+          .catch((rejectedValueOrSerializedError) => {
+            // handle error here
+          })}
+      />
     </View>
   );
 }
