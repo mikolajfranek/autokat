@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import User from './Slices/User';
 import { apiSheet } from './APISheet';
 import { apiMetal } from './APIMetal';
+import { apiExchange } from './APIExchange';
 
 export const store = configureStore({
   reducer: {
     user: User,
     [apiSheet.reducerPath]: apiSheet.reducer,
-    [apiMetal.reducerPath]: apiMetal.reducer
+    [apiMetal.reducerPath]: apiMetal.reducer,
+    [apiExchange.reducerPath]: apiExchange.reducer
   },
   devTools: process.env.NODE_ENV !== 'production',
 
@@ -17,6 +19,7 @@ export const store = configureStore({
     getDefaultMiddleware()
       .concat(apiSheet.middleware)
       .concat(apiMetal.middleware)
+      .concat(apiExchange.middleware)
 });
 
 export type AppDispatch = typeof store.dispatch;
