@@ -12,16 +12,18 @@ export const apiExchange = createApi({
     reducerPath: 'apiExchange',
     baseQuery: fetchBaseQuery({ baseUrl: 'https://api.nbp.pl' }),
     endpoints: builder => ({
-        getUSD: builder.query<APIResponse, void>({
-            query: () => {
-                //
+        //TODO jak uzyskac domyslna wartosc parametru?
+        getUSD: builder.query<APIResponse, { dataKursu: Date }>({
+            query: (arg) => {
+                const { dataKursu } = arg;
+                const dataString = dataKursu.toLocaleDateString('en-CA');
                 return {
-                    url: '/api/exchangerates/rates/a/usd?format=json'
+                    url: `/api/exchangerates/rates/a/usd/${dataString}?format=json`
                 };
             }
         }),
         getEUR: builder.query<APIResponse, void>({
-            query: () => {
+            query: (arg) => {
                 //
                 return {
                     url: '/api/exchangerates/rates/a/eur?format=json'

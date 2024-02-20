@@ -10,6 +10,7 @@ import { loginAsync } from './Slices/User';
 import MyBaseButtonViewTouchableHighlight from './GUI/Atoms/Buttons/MyBaseButtonViewTouchableHighlight';
 import MyBaseText from './GUI/Atoms/Texts/MyBaseText';
 import { colorTextWhite } from './GUI/gui_style';
+import { useGetUSDQuery } from './APIExchange';
 
 export interface PromiseParams {
   result: boolean;
@@ -29,9 +30,29 @@ function getPromise(): Promise<PromiseParams> {
 export default function App(): React.JSX.Element {
   const [amount, setAmount] = useState('');
   const dispatch = useAppDispatch();
+  const {
+    data: dataUSD,
+    isSuccess: isSuccessUSD
+  } = useGetUSDQuery();
+  let usdElement = null;
+  if (isSuccessUSD) {
+    usdElement = <Text>{dataUSD.rates[0].mid} USD</Text>
+  }
+
+  const {
+    data: dataEUR,
+    isSuccess: isSuccessEUR
+  } = useGetUSDQuery();
+  let eurElement = null;
+  if (isSuccessEUR) {
+    eurElement = <Text>{dataEUR.rates[0].mid} USD</Text>
+  }
+
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      {usdElement}
+      {eurElement}
       <Text>
         Hello world! {amount}
       </Text>
