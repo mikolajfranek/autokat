@@ -11,6 +11,8 @@ import MyBaseButtonViewTouchableHighlight from './GUI/Atoms/Buttons/MyBaseButton
 import MyBaseText from './GUI/Atoms/Texts/MyBaseText';
 import { colorTextWhite } from './GUI/gui_style';
 import { useGetEURQuery, useGetUSDQuery } from './APIExchange';
+import { useGetCoursesQuery } from './APIMetal';
+import { Metal } from './Enums/Metal';
 
 export interface PromiseParams {
   result: boolean;
@@ -33,7 +35,7 @@ export default function App(): React.JSX.Element {
   const {
     data: dataUSD,
     isSuccess: isSuccessUSD
-  } = useGetUSDQuery({ dataKursu: new Date(Date.now() - 86400000).toLocaleDateString('sv-SE') });
+  } = useGetUSDQuery();
   let usdElement = null;
   if (isSuccessUSD) {
     usdElement = <Text>{dataUSD.rates[0].effectiveDate} {dataUSD.rates[0].mid} USD</Text>
@@ -45,14 +47,33 @@ export default function App(): React.JSX.Element {
   } = useGetEURQuery();
   let eurElement = null;
   if (isSuccessEUR) {
-    eurElement = <Text>{dataEUR.rates[0].mid} EUR</Text>
+    eurElement = <Text>{dataEUR.rates[0].effectiveDate} {dataEUR.rates[0].mid} EUR</Text>
   }
+
+  const OZ_VALUE = '31.1034768';
+  const {
+    data: dataMetalPlatinum,
+    isSuccess: isSuccessMetalPlatinum,
+    isError,
+    error
+  } = useGetCoursesQuery();
+  let platinumElement = null;
+  if (isSuccessMetalPlatinum) {
+    platinumElement = <Text>{dataMetalPlatinum.data.platinum.results[0].bid / OZ_VALUE} platinum USD/gram</Text>
+  } else if (isError) {
+    platinumElement = <Text>{JSON.stringify(error)}</Text>;
+  }
+
+
+
+  //TODO apiMetal
 
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       {usdElement}
       {eurElement}
+      {platinumElement}
       <Text>
         Hello world! {amount}
       </Text>
