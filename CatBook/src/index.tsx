@@ -10,7 +10,7 @@ import { loginAsync } from './Slices/User';
 import MyBaseButtonViewTouchableHighlight from './GUI/Atoms/Buttons/MyBaseButtonViewTouchableHighlight';
 import MyBaseText from './GUI/Atoms/Texts/MyBaseText';
 import { colorTextWhite } from './GUI/gui_style';
-import { useGetUSDQuery } from './APIExchange';
+import { useGetEURQuery, useGetUSDQuery } from './APIExchange';
 
 export interface PromiseParams {
   result: boolean;
@@ -33,19 +33,19 @@ export default function App(): React.JSX.Element {
   const {
     data: dataUSD,
     isSuccess: isSuccessUSD
-  } = useGetUSDQuery();
+  } = useGetUSDQuery({ dataKursu: new Date(Date.now() - 86400000).toLocaleDateString('sv-SE') });
   let usdElement = null;
   if (isSuccessUSD) {
-    usdElement = <Text>{dataUSD.rates[0].mid} USD</Text>
+    usdElement = <Text>{dataUSD.rates[0].effectiveDate} {dataUSD.rates[0].mid} USD</Text>
   }
 
   const {
     data: dataEUR,
     isSuccess: isSuccessEUR
-  } = useGetUSDQuery();
+  } = useGetEURQuery();
   let eurElement = null;
   if (isSuccessEUR) {
-    eurElement = <Text>{dataEUR.rates[0].mid} USD</Text>
+    eurElement = <Text>{dataEUR.rates[0].mid} EUR</Text>
   }
 
 

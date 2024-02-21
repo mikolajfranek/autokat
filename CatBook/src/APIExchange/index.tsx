@@ -8,25 +8,27 @@ type APIResponse = {
     rates: Rates[]
 };
 
+type APIParams = {
+    dataKursu: string
+};
+
 export const apiExchange = createApi({
     reducerPath: 'apiExchange',
     baseQuery: fetchBaseQuery({ baseUrl: 'https://api.nbp.pl' }),
     endpoints: builder => ({
-        //TODO jak uzyskac domyslna wartosc parametru?
-        getUSD: builder.query<APIResponse, { dataKursu: Date }>({
-            query: (arg) => {
+        getUSD: builder.query<APIResponse, APIParams | void>({
+            query: (arg: APIParams = { dataKursu: new Date().toLocaleDateString('sv-SE') }) => {
                 const { dataKursu } = arg;
-                const dataString = dataKursu.toLocaleDateString('en-CA');
                 return {
-                    url: `/api/exchangerates/rates/a/usd/${dataString}?format=json`
+                    url: `/api/exchangerates/rates/a/usd/${dataKursu}?format=json`
                 };
             }
         }),
-        getEUR: builder.query<APIResponse, void>({
-            query: (arg) => {
-                //
+        getEUR: builder.query<APIResponse, APIParams | void>({
+            query: (arg: APIParams = { dataKursu: new Date().toLocaleDateString('sv-SE') }) => {
+                const { dataKursu } = arg;
                 return {
-                    url: '/api/exchangerates/rates/a/eur?format=json'
+                    url: `/api/exchangerates/rates/a/eur/${dataKursu}?format=json`
                 };
             }
         })
