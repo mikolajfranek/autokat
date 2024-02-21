@@ -12,7 +12,8 @@ import MyBaseText from './GUI/Atoms/Texts/MyBaseText';
 import { colorTextWhite } from './GUI/gui_style';
 import { useGetEURQuery, useGetUSDQuery } from './APIExchange';
 import { useGetCoursesQuery } from './APIMetal';
-import { Metal } from './Enums/Metal';
+import { useGetLoginQuery } from './APISheet';
+import { getSpreadsheetLoginId } from './APISheet/Secret';
 
 export interface PromiseParams {
   result: boolean;
@@ -52,25 +53,41 @@ export default function App(): React.JSX.Element {
 
   const OZ_VALUE = '31.1034768';
   const {
-    data: dataMetalPlatinum,
-    isSuccess: isSuccessMetalPlatinum,
-    isError,
-    error
+    data: dataMetals,
+    isSuccess: isSuccessMetals
   } = useGetCoursesQuery();
   let platinumElement = null;
-  if (isSuccessMetalPlatinum) {
-    platinumElement = <Text>{dataMetalPlatinum.data.platinum.results[0].bid / OZ_VALUE} platinum USD/gram</Text>
-  } else if (isError) {
-    platinumElement = <Text>{JSON.stringify(error)}</Text>;
+  if (isSuccessMetals) {
+    platinumElement = <Text>{dataMetals.data.platinum.results[0].bid / OZ_VALUE} platinum USD/gram</Text>
   }
 
-
-
-  //TODO apiMetal
+  //TODO apiSheet
+  const {
+    data: dataTableLogin,
+    isSuccess: isSuccessTableLogin,
+    isError,
+    error
+  } = useGetLoginQuery(
+    {
+      spreadsheetId: getSpreadsheetLoginId(),
+      authParams: {
+        mail: 'mikolaj.franek95@gmail.com',
+        serialID: ''
+      }
+    }
+  );
+  let loginElement = null;
+  if (isSuccessTableLogin) {
+    loginElement = <Text>{dataTableLogin}</Text>;
+  } else if (isError) {
+    console.log(error);
+    loginElement = <Text>{JSON.stringify(error)}</Text>;
+  }
 
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      {loginElement}
       {usdElement}
       {eurElement}
       {platinumElement}

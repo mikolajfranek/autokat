@@ -1,6 +1,6 @@
-import * as Secret from '../../../../CatBook/Business/Secret';
+import * as Secret from '../Secret';
 import { KJUR } from 'jsrsasign';
-import UserDevAPI from '../main-nova-412011-f3a44323b34c.json';
+import UserDevAPI from '../lyrical-ring-412422-5e3581355fd5.json';
 
 export const URL = 'https://docs.google.com/a/google.com/spreadsheets/d/';
 export const URL_SUFFIX = '/gviz/tq';
@@ -16,9 +16,9 @@ export async function getHeaders() {
     }
 }
 
-async function getBearerToken() {
+export async function getBearerToken() {
     var token = await getToken();
-    debugger;
+    //debugger;
     return token;
 }
 
