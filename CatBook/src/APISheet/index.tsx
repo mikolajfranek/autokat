@@ -1,8 +1,17 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { getBearerToken } from './Spreadsheet/GoogleAPI';
+import { APISheetColumnOfTableLogin } from '../Enums/APISheetColumnOfTableLogin';
 
 type APIResponse = {
-    data: string
+    table: {
+        rows: {
+            c: {
+                [key in APISheetColumnOfTableLogin]: {
+                    v: string
+                }
+            }
+        }[]
+    }
 };
 
 type AuthParams = {
@@ -17,6 +26,10 @@ type APIParamsTableLogin = {
     authParams: AuthParams
 };
 
+function parseToJSON(input: string): APIResponse {
+    return JSON.parse(input.match(/{.*}/gm)![0]);
+}
+
 export const apiSheet = createApi({
     reducerPath: 'apiSheet',
     baseQuery: fetchBaseQuery({
@@ -30,21 +43,17 @@ export const apiSheet = createApi({
             return headers;
         },
     }),
+
     endpoints: builder => ({
         getLogin: builder.query<APIResponse, APIParamsTableLogin>({
             query: (arg) => {
                 return {
+                    responseHandler: "text",
                     url: `${arg.spreadsheetId}/gviz/tq`,
-                    headers: { tq: `select * where A='${arg.authParams.mail}'` }
+                    params: { tq: `select * where A='${arg.authParams.mail}'` }
                 }
-            }, 
-
-            transformResponse: (response: string, meta, arg) => {
-                var data = JSON.parse(response.match(/{.*}/gm)[0]);
-                console.log('----');
-                console.log(data);
-                return data;
-            }
+            },
+            transformResponse: (response: string) => parseToJSON(response)
         })
     })
 })

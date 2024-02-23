@@ -14,6 +14,7 @@ import { useGetEURQuery, useGetUSDQuery } from './APIExchange';
 import { useGetCoursesQuery } from './APIMetal';
 import { useGetLoginQuery } from './APISheet';
 import { getSpreadsheetLoginId } from './APISheet/Secret';
+import { APISheetColumnOfTableLogin } from './Enums/APISheetColumnOfTableLogin';
 
 export interface PromiseParams {
   result: boolean;
@@ -78,7 +79,8 @@ export default function App(): React.JSX.Element {
   );
   let loginElement = null;
   if (isSuccessTableLogin) {
-    loginElement = <Text>{dataTableLogin}</Text>;
+    console.log(dataTableLogin.table.rows[0])
+    loginElement = <Text>{dataTableLogin.table.rows[0].c[APISheetColumnOfTableLogin.password].v}</Text>;
   } else if (isError) {
     console.log(error);
     loginElement = <Text>{JSON.stringify(error)}</Text>;
