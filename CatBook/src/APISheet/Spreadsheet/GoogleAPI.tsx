@@ -46,6 +46,7 @@ async function getToken() {
         'grant_type': 'urn:ietf:params:oauth:grant-type:jwt-bearer',
         'assertion': sJWT
     };
+    console.log(sJWT);
     const options = {
         method: 'POST',
         body: JSON.stringify(bodyJson),
