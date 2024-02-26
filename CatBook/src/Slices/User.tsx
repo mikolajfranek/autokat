@@ -3,10 +3,12 @@ import { database } from "../Database/DBA";
 
 export interface UserState {
     islogged: boolean;
+    bearerToken: string;
 }
 
 const initialState: UserState = {
-    islogged: false
+    islogged: false,
+    bearerToken: ""
 }
 
 export const loginAsync = createAsyncThunk<boolean>(

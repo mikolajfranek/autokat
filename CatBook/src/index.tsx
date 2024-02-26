@@ -12,8 +12,8 @@ import MyBaseText from './GUI/Atoms/Texts/MyBaseText';
 import { colorTextWhite } from './GUI/gui_style';
 import { useGetEURQuery, useGetUSDQuery } from './APIExchange';
 import { useGetCoursesQuery } from './APIMetal';
-import { useGetLoginQuery } from './APISheet';
-import { getSpreadsheetLoginId } from './APISheet/Secret';
+import { useGetLoginQuery } from './APIDocsGoogle';
+import { getSpreadsheetLoginId } from './APIDocsGoogle/Secret';
 import { APISheetColumnOfTableLogin } from './Enums/APISheetColumnOfTableLogin';
 
 export interface PromiseParams {
