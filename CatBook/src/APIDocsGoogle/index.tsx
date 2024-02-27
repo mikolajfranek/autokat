@@ -24,7 +24,7 @@ type AuthParams = {
     serialID: string,
 };
 
-type APIParamsTableLogin = {
+type APIParams = {
     spreadsheetId: string,
     authParams: AuthParams
 };
@@ -37,8 +37,10 @@ const baseQuery = fetchBaseQuery({
     baseUrl: 'https://docs.google.com/a/google.com/spreadsheets/d',
     prepareHeaders: async (headers, { getState }) => {
         let token = "";
-        token = (getState() as RootState).user.bearerToken;
+        token = (getState() as RootState).auth.bearerToken;
         //try catch?
+        //not connected?
+        //
         if (!token)
             token = await getLocalStorage(LocalStorageKeys.bearerToken);
         if (!token)
@@ -72,11 +74,11 @@ const baseQueryWithReauth: BaseQueryFn<
     return result
 }
 
-export const apiSheet = createApi({
+export const apiDocsGoogle = createApi({
     reducerPath: 'apiDocsGoogle',
     baseQuery: baseQueryWithReauth,
     endpoints: builder => ({
-        getLogin: builder.query<APIResponse, APIParamsTableLogin>({
+        getLogin: builder.query<APIResponse, APIParams>({
             query: (arg) => {
                 return {
                     responseHandler: "text",
@@ -89,4 +91,4 @@ export const apiSheet = createApi({
     })
 })
 
-export const { useGetLoginQuery } = apiSheet
+export const { useGetLoginQuery } = apiDocsGoogle
