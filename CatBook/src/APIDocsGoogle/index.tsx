@@ -45,6 +45,10 @@ const baseQuery = fetchBaseQuery({
             token = await getLocalStorage(LocalStorageKeys.bearerToken);
         if (!token)
             token = await getBearerToken();
+        //TODO or do as mutarion, and await 
+        //useGetTokenQuery
+
+
         headers.set('Authorization', `Bearer ${token}`);
         headers.set('tqx', 'out:json');
         return headers;

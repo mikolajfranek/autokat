@@ -12,6 +12,7 @@ const adapter = new SQLiteAdapter({
   migrations,
   jsi: true,
   onSetUpError: error => {
+    //TODO
     // Database failed to load -- offer the user to reload the app or log out
   }
 })

@@ -16,6 +16,8 @@ import { useGetLoginQuery } from './APIDocsGoogle';
 import { getSpreadsheetLoginId } from './APIDocsGoogle/Secret';
 import { APISheetColumnOfTableLogin } from './Enums/APISheetColumnOfTableLogin';
 
+export const IS_PRODUCTION = false;
+
 export interface PromiseParams {
   result: boolean;
 }

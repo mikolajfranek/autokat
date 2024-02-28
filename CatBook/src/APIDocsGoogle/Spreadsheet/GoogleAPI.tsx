@@ -55,7 +55,11 @@ async function getToken() {
             'Content-Type': 'application/json'
         }
     };
-    return await fetch(UserDevAPI.token_uri, options)
+
+
+    return await fetch(
+        UserDevAPI.token_uri,
+         options)
         .then(response => {
             if (response.status != 200)
                 throw new Error();
