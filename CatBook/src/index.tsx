@@ -11,7 +11,7 @@ import MyBaseButtonViewTouchableHighlight from './GUI/Atoms/Buttons/MyBaseButton
 import MyBaseText from './GUI/Atoms/Texts/MyBaseText';
 import { colorTextWhite } from './GUI/gui_style';
 import { useGetExchangeQuery } from './APIExchange';
-import { useGetCoursesQuery } from './APIMetal';
+import { useGetMetalsQuery } from './APIMetal';
 import { useGetLoginQuery } from './APIDocsGoogle';
 import { getSpreadsheetLoginId } from './APIDocsGoogle/Secret';
 import { APISheetColumnOfTableLogin } from './Enums/APISheetColumnOfTableLogin';
@@ -59,7 +59,7 @@ export default function App(): React.JSX.Element {
   const {
     data: dataMetals,
     isSuccess: isSuccessMetals
-  } = useGetCoursesQuery();
+  } = useGetMetalsQuery();
   let platinumElement = null;
   if (isSuccessMetals) {
     platinumElement = <Text>{dataMetals.data.platinum.results[0].bid / OZ_VALUE} platinum USD/gram</Text>

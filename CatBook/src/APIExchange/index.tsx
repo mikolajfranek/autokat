@@ -3,7 +3,8 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 type Rates = {
     mid: string,
     effectiveDate: string
-}
+};
+
 type APIResponse = {
     rates: Rates[]
 };
@@ -26,8 +27,8 @@ export const apiExchange = createApi({
                     url: `/api/exchangerates/rates/a/${currency}/${dataKursu.toLocaleDateString('sv-SE')}?format=json`
                 };
             }
-        }),
+        })
     })
-})
+});
 
-export const { useGetExchangeQuery } = apiExchange
+export const { useGetExchangeQuery } = apiExchange;

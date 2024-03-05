@@ -5,7 +5,7 @@ type Results = {
     results: {
         bid: string
     }[]
-}
+};
 
 type APIResponse = {
     data: {
@@ -17,7 +17,7 @@ export const apiMetal = createApi({
     reducerPath: 'apiMetal',
     baseQuery: fetchBaseQuery({ baseUrl: 'https://kitco-gcdn-prod.stellate.sh' }),
     endpoints: builder => ({
-        getCourses: builder.query<APIResponse, void>({
+        getMetals: builder.query<APIResponse, void>({
             query: () => {
                 const timestamp = Math.floor(Date.now() / 1000);
                 return {
@@ -29,11 +29,11 @@ export const apiMetal = createApi({
                             'currency': 'USD',
                             'timestamp': timestamp
                         }
-                    },
+                    }
                 };
             }
         })
     })
-})
+});
 
-export const { useGetCoursesQuery } = apiMetal
+export const { useGetMetalsQuery } = apiMetal;

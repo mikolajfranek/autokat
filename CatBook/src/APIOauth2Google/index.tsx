@@ -2,14 +2,14 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { KJUR } from 'jsrsasign';
 
 type APIResponse = {
-    access_token: string,
+    access_token: string
 };
 
 type APIParams = {
     private_key: string,
     scope: string,
     iss: string,
-    aud: string,
+    aud: string
 };
 
 export const apiOAuth2Google = createApi({
@@ -20,7 +20,7 @@ export const apiOAuth2Google = createApi({
             headers.set('Accept', 'application/json');
             headers.set('Content-Type', 'application/json');
             return headers;
-        },
+        }
     }),
     endpoints: builder => ({
         getToken: builder.query<APIResponse, APIParams>({
@@ -47,11 +47,11 @@ export const apiOAuth2Google = createApi({
                     body: {
                         grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
                         assertion: sJWT
-                    },
-                }
+                    }
+                };
             }
         })
     })
-})
+});
 
-export const { useGetTokenQuery } = apiOAuth2Google
+export const { useGetTokenQuery } = apiOAuth2Google;
