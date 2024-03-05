@@ -10,7 +10,7 @@ import { loginAsync } from './Slices/User';
 import MyBaseButtonViewTouchableHighlight from './GUI/Atoms/Buttons/MyBaseButtonViewTouchableHighlight';
 import MyBaseText from './GUI/Atoms/Texts/MyBaseText';
 import { colorTextWhite } from './GUI/gui_style';
-import { useGetEURQuery, useGetUSDQuery } from './APIExchange';
+import { useGetExchangeQuery } from './APIExchange';
 import { useGetCoursesQuery } from './APIMetal';
 import { useGetLoginQuery } from './APIDocsGoogle';
 import { getSpreadsheetLoginId } from './APIDocsGoogle/Secret';
@@ -39,7 +39,7 @@ export default function App(): React.JSX.Element {
   const {
     data: dataUSD,
     isSuccess: isSuccessUSD
-  } = useGetUSDQuery();
+  } = useGetExchangeQuery({ currency: 'usd' });
   let usdElement = null;
   if (isSuccessUSD) {
     usdElement = <Text>{dataUSD.rates[0].effectiveDate} {dataUSD.rates[0].mid} USD</Text>
@@ -47,8 +47,9 @@ export default function App(): React.JSX.Element {
 
   const {
     data: dataEUR,
+    refetch,
     isSuccess: isSuccessEUR
-  } = useGetEURQuery();
+  } = useGetExchangeQuery({ currency: 'eur' });
   let eurElement = null;
   if (isSuccessEUR) {
     eurElement = <Text>{dataEUR.rates[0].effectiveDate} {dataEUR.rates[0].mid} EUR</Text>
