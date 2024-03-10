@@ -10,7 +10,7 @@ import { loginAsync } from './Slices/User';
 import MyBaseButtonViewTouchableHighlight from './GUI/Atoms/Buttons/MyBaseButtonViewTouchableHighlight';
 import MyBaseText from './GUI/Atoms/Texts/MyBaseText';
 import { colorTextWhite } from './GUI/gui_style';
-import { useGetExchangeQuery } from './APIExchange';
+import { useGetExchangeMutation } from './APIExchange';
 import { useGetMetalsQuery } from './APIMetal';
 import { useGetLoginQuery } from './APIDocsGoogle';
 import { getSpreadsheetLoginId } from './APIDocsGoogle/Secret';
@@ -36,24 +36,23 @@ function getPromise(): Promise<PromiseParams> {
 export default function App(): React.JSX.Element {
   const [amount, setAmount] = useState('');
   const dispatch = useAppDispatch();
-  const {
-    data: dataUSD,
-    isSuccess: isSuccessUSD
-  } = useGetExchangeQuery({ currency: 'usd' });
-  let usdElement = null;
-  if (isSuccessUSD) {
-    usdElement = <Text>{dataUSD.rates[0].effectiveDate} {dataUSD.rates[0].mid} USD</Text>
-  }
+  // const [
+  //   getUSD, {
+  //     isSuccess: isSuccessUSD }
+  // ] = useGetExchangeMutation();
+  // const dataUSD = null;//getUSD({ currency: 'usd' });
+   let usdElement = null;
+  // if (isSuccessUSD) {
+  //   usdElement = <Text>{dataUSD.rates[0].effectiveDate} {dataUSD.rates[0].mid} USD</Text>
+  // }
 
-  const {
-    data: dataEUR,
-    refetch,
-    isSuccess: isSuccessEUR
-  } = useGetExchangeQuery({ currency: 'eur' });
+  //const [
+    //getEUR, { isSuccess: isSuccessEUR }] = useGetExchangeMutation();
+  //const dataEUR = null //getEUR({ currency: 'eur' });
   let eurElement = null;
-  if (isSuccessEUR) {
-    eurElement = <Text>{dataEUR.rates[0].effectiveDate} {dataEUR.rates[0].mid} EUR</Text>
-  }
+  //if (isSuccessEUR) {
+    //eurElement = <Text>{dataEUR.rates[0].effectiveDate} {dataEUR.rates[0].mid} EUR</Text>
+  //}
 
   const OZ_VALUE = '31.1034768';
   const {

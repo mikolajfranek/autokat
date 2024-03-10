@@ -1,6 +1,6 @@
 import * as Secret from '../Secret';
 import { KJUR } from 'jsrsasign';
-import UserDevAPI from '../lyrical-ring-412422-5e3581355fd5.json';
+import UserDevAPI from '../../APIOAuth2Google/lyrical-ring-412422-5e3581355fd5.json';
 
 export const URL = 'https://docs.google.com/a/google.com/spreadsheets/d/';
 export const URL_SUFFIX = '/gviz/tq';
@@ -23,7 +23,7 @@ export async function getBearerToken() {
 }
 
 async function getToken() {
-    var pkcs8 = Secret.getPrivateKey();
+    var pkcs8 = null; // Secret.getPrivateKey();
     // Header
     var oHeader = { alg: 'RS256', typ: 'JWT' };
     // Payload
