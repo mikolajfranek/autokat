@@ -41,17 +41,17 @@ export default function App(): React.JSX.Element {
   //     isSuccess: isSuccessUSD }
   // ] = useGetExchangeMutation();
   // const dataUSD = null;//getUSD({ currency: 'usd' });
-   let usdElement = null;
+  let usdElement = null;
   // if (isSuccessUSD) {
   //   usdElement = <Text>{dataUSD.rates[0].effectiveDate} {dataUSD.rates[0].mid} USD</Text>
   // }
 
-  //const [
-    //getEUR, { isSuccess: isSuccessEUR }] = useGetExchangeMutation();
-  //const dataEUR = null //getEUR({ currency: 'eur' });
+  const [
+    getEUR, { isSuccess: isSuccessEUR }] = useGetExchangeMutation();
+  const dataEUR = null;
   let eurElement = null;
   //if (isSuccessEUR) {
-    //eurElement = <Text>{dataEUR.rates[0].effectiveDate} {dataEUR.rates[0].mid} EUR</Text>
+  //eurElement = <Text>{dataEUR.rates[0].effectiveDate} {dataEUR.rates[0].mid} EUR</Text>
   //}
 
   const OZ_VALUE = '31.1034768';
@@ -98,6 +98,29 @@ export default function App(): React.JSX.Element {
       <Text>
         Hello world! {amount}
       </Text>
+
+      <MyBaseButtonViewTouchableHighlight
+        onPress={async () => {
+
+          try {
+            //var yesterday = new Date(Date.now() - 86400000*3);
+            //console.log(yesterday.toLocaleDateString('sv-SE'));
+            let data = await getEUR({ currency: 'eur' }).unwrap();
+            //console.log(data);
+            //console.log(data.rates[0].mid);
+            //console.log(data.rates[0].effectiveDate);
+          } catch (error) {
+            //TODO
+            console.error('rejected', error);
+          }
+        }}>
+        <MyBaseText
+          styleText={{ color: colorTextWhite }}>
+          Pobierz..
+        </MyBaseText>
+
+      </MyBaseButtonViewTouchableHighlight>
+
       <MyBaseButtonViewTouchableHighlight
         onPress={async () => {
           await getPromise();
