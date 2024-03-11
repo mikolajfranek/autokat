@@ -1,4 +1,4 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { KJUR } from 'jsrsasign';
 
 type APIResponse = {
@@ -23,7 +23,7 @@ export const apiOAuth2Google = createApi({
         }
     }),
     endpoints: builder => ({
-        getToken: builder.query<APIResponse, APIParams>({
+        getToken: builder.mutation<APIResponse, APIParams>({
             query: (arg) => {
                 // Header
                 var oHeader = { alg: 'RS256', typ: 'JWT' };
@@ -54,4 +54,4 @@ export const apiOAuth2Google = createApi({
     })
 });
 
-export const { useGetTokenQuery } = apiOAuth2Google;
+export const { useGetTokenMutation } = apiOAuth2Google;
