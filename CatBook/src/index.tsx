@@ -11,7 +11,7 @@ import MyBaseButtonViewTouchableHighlight from './GUI/Atoms/Buttons/MyBaseButton
 import MyBaseText from './GUI/Atoms/Texts/MyBaseText';
 import { colorTextWhite } from './GUI/gui_style';
 import { useGetExchangeMutation } from './APIExchange';
-import { useGetMetalsQuery } from './APIMetal';
+import { useGetMetalsMutation } from './APIMetal';
 import { useGetLoginQuery } from './APIDocsGoogle';
 import { getSpreadsheetLoginId } from './APIDocsGoogle/Secret';
 import { APISheetColumnOfTableLogin } from './Enums/APISheetColumnOfTableLogin';
@@ -54,15 +54,20 @@ export default function App(): React.JSX.Element {
   //eurElement = <Text>{dataEUR.rates[0].effectiveDate} {dataEUR.rates[0].mid} EUR</Text>
   //}
 
-  const OZ_VALUE = '31.1034768';
-  const {
-    data: dataMetals,
-    isSuccess: isSuccessMetals
-  } = useGetMetalsQuery();
+
+  const [
+    getMMeeeetal, { isLoading }] = useGetMetalsMutation();
+
+
+
+  const OZ_VALUE = 31.1034768;
+
   let platinumElement = null;
-  if (isSuccessMetals) {
-    platinumElement = <Text>{dataMetals.data.platinum.results[0].bid / OZ_VALUE} platinum USD/gram</Text>
-  }
+  //if (isSuccessMetals) {
+  //platinumElement = <Text>{dataMetals.data.platinum.results[0].bid / OZ_VALUE} platinum USD/gram</Text>
+  //}
+
+
 
   //TODO apiSheet
   const {
@@ -99,6 +104,25 @@ export default function App(): React.JSX.Element {
         Hello world! {amount}
       </Text>
 
+
+      <MyBaseButtonViewTouchableHighlight
+        onPress={async () => {
+
+          try {
+            let rrrr = await getMMeeeetal().unwrap();
+            console.log(`${rrrr.data.rhodium.results[0].bid / OZ_VALUE} platinum USD/gram`);
+          } catch (error) {
+            //TODO
+            console.error('rejected', error);
+          }
+        }}>
+        <MyBaseText
+          styleText={{ color: colorTextWhite }}>
+          Pobierz..metal
+        </MyBaseText>
+
+      </MyBaseButtonViewTouchableHighlight>
+
       <MyBaseButtonViewTouchableHighlight
         onPress={async () => {
 
@@ -116,7 +140,7 @@ export default function App(): React.JSX.Element {
         }}>
         <MyBaseText
           styleText={{ color: colorTextWhite }}>
-          Pobierz..
+          Pobierz..waluta
         </MyBaseText>
 
       </MyBaseButtonViewTouchableHighlight>

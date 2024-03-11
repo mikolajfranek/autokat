@@ -17,7 +17,7 @@ export const apiMetal = createApi({
     reducerPath: 'apiMetal',
     baseQuery: fetchBaseQuery({ baseUrl: 'https://kitco-gcdn-prod.stellate.sh' }),
     endpoints: builder => ({
-        getMetals: builder.query<APIResponse, void>({
+        getMetals: builder.mutation<APIResponse, void>({
             query: () => {
                 const timestamp = Math.floor(Date.now() / 1000);
                 return {
@@ -36,4 +36,4 @@ export const apiMetal = createApi({
     })
 });
 
-export const { useGetMetalsQuery } = apiMetal;
+export const { useGetMetalsMutation } = apiMetal;
