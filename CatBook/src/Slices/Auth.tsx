@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 
 export interface AuthState {
     bearerToken: string;
@@ -12,10 +12,12 @@ export const slice = createSlice({
     name: "auth",
     initialState,
     reducers: {
-        //
+        setBearerToken: (state, action: PayloadAction<string>) => {
+            state.bearerToken = action.payload;
+        }
     },
 });
 
-export const { } = slice.actions;
+export const { setBearerToken } = slice.actions;
 
 export default slice.reducer

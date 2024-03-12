@@ -13,7 +13,6 @@ import { colorTextWhite } from './GUI/gui_style';
 import { useGetExchangeMutation } from './APIExchange';
 import { useGetMetalsMutation } from './APIMetal';
 import { useGetLoginQuery } from './APIDocsGoogle';
-import { getSpreadsheetLoginId } from './APIDocsGoogle/Secret';
 import { APISheetColumnOfTableLogin } from './Enums/APISheetColumnOfTableLogin';
 
 export const IS_PRODUCTION = false;
@@ -75,15 +74,7 @@ export default function App(): React.JSX.Element {
     isSuccess: isSuccessTableLogin,
     isError,
     error
-  } = useGetLoginQuery(
-    {
-      spreadsheetId: getSpreadsheetLoginId(),
-      authParams: {
-        mail: 'mikolaj.franek95@gmail.com',
-        serialID: ''
-      }
-    }
-  );
+  } = useGetLoginQuery({})
   let loginElement = null;
   if (isSuccessTableLogin) {
     console.log(dataTableLogin.table.rows[0])
