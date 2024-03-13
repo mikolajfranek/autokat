@@ -3,10 +3,8 @@ import { APISheetColumnOfTableLogin } from '../Enums/APISheetColumnOfTableLogin'
 import type { RootState } from '../store';
 import { getLocalStorage, setLocalStorage } from '../Database/DBA';
 import { LocalStorageKeys } from '../Enums/LocalStorageKeys';
-import { useAppDispatch } from '../hooks';
-import { setBearerToken } from '../Slices/Auth';
-import { useGetTokenMutation } from '../APIOAuth2Google';
 import AuthData from './miki-916.json';
+import { getBearerToken } from './Spreadsheet/GoogleAPI';
 //import AuthData from './auto-kat.json';
 
 type APIResponse = {
@@ -39,8 +37,9 @@ const baseQuery = fetchBaseQuery({
             console.log(token);
             if (!token) {
                 token = await getLocalStorage(LocalStorageKeys.bearerToken);
-                const dispatch = useAppDispatch();
-                dispatch(setBearerToken(token));
+                //to nie powinno zadzialac?
+                //const dispatch = useAppDispatch();
+                //dispatch(setBearerToken(token));
             }
             console.log(token);
             headers.set('Authorization', `Bearer ${token}`);
@@ -61,23 +60,17 @@ const baseQueryWithReauth: BaseQueryFn<
     if (result.error && result.error.status === 401) {
         try {
 
-            /*
-  [Error: Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
-1. You might have mismatching versions of React and the renderer (such as React DOM)
-2. You might be breaking the Rules of Hooks
-3. You might have more than one copy of React in the same app
-See https://react.dev/link/invalid-hook-call for tips about how to debug and fix this problem.]
-            */
-            const [getToken] = useGetTokenMutation();
-            var resultToken = await getToken({
+
+
+            var resultToken = await getBearerToken({
                 aud: AuthData.token_uri,
                 iss: AuthData.client_email,
                 scope: 'https://www.googleapis.com/auth/spreadsheets',
                 private_key: AuthData.private_key
-            }).unwrap();
-            console.log(resultToken.access_token);
+            });
+            console.log(resultToken);
             console.log('---------4');
-            await setLocalStorage(LocalStorageKeys.bearerToken, resultToken.access_token);
+            await setLocalStorage(LocalStorageKeys.bearerToken, resultToken);
             result = await baseQuery(args, api, extraOptions);
         } catch (error) {
             console.log(error);

@@ -1,74 +1,51 @@
-import * as Secret from '../Secret';
 import { KJUR } from 'jsrsasign';
-import UserDevAPI from '../../APIOAuth2Google/lyrical-ring-412422-5e3581355fd5.json';
 
-export const URL = 'https://docs.google.com/a/google.com/spreadsheets/d/';
-export const URL_SUFFIX = '/gviz/tq';
+type APIResponse = {
+    access_token: string
+};
 
-export async function getHeaders() {
-    return {
-        headers: {
-            'Content-type': 'application/json',
-            'Authorization': `Bearer ${await getBearerToken()}`,
-            'tqx': 'out:json',
-            'tq': 'ASSIGN QUERY HERE',
-        }
-    }
-}
+type APIParams = {
+    private_key: string,
+    scope: string,
+    iss: string,
+    aud: string
+};
 
-export async function getBearerToken() {
-    var token = await getToken();
-    //debugger;
-    return token;
-}
-
-async function getToken() {
-    var pkcs8 = null; // Secret.getPrivateKey();
+export async function getBearerToken(arg: APIParams) {
     // Header
     var oHeader = { alg: 'RS256', typ: 'JWT' };
     // Payload
     var tNow = KJUR.jws.IntDate.get('now');
     var tEnd = KJUR.jws.IntDate.get('now + 1hour');
     var oPayload = {
-        scope: 'https://www.googleapis.com/auth/spreadsheets',
-        iss: UserDevAPI.client_email,
-        aud: UserDevAPI.token_uri,
+        scope: arg.scope,
+        iss: arg.iss,
+        aud: arg.aud,
         iat: tNow,
         exp: tEnd,
     };
     // Sign JWT
     var sHeader = JSON.stringify(oHeader);
     var sPayload = JSON.stringify(oPayload);
-    var sJWT = KJUR.jws.JWS.sign('RS256', sHeader, sPayload, pkcs8);
-    //Send
-    const bodyJson =
-    {
-        'grant_type': 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-        'assertion': sJWT
-    };
-    console.log(sJWT);
+    //private key jest zle wpisany w pliku - TODO
+    var sJWT = KJUR.jws.JWS.sign('RS256', sHeader, sPayload, arg.private_key);
+    // Send
     const options = {
         method: 'POST',
-        body: JSON.stringify(bodyJson),
-        eaders: {
+        body: JSON.stringify({
+            'grant_type': 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+            'assertion': sJWT
+        }),
+        headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         }
     };
-
-
-    return await fetch(
-        UserDevAPI.token_uri,
-         options)
+    return await fetch(arg.aud, options)
         .then(response => {
             if (response.status != 200)
                 throw new Error();
-            return response.json();
+            return response.json() as unknown as APIResponse;
         })
-        .then(responseJSON => {
-            return responseJSON.access_token;
-        }).catch(error => {
-            console.error(error);
-        });
-
+        .then(responseJSON => responseJSON.access_token);
 }
