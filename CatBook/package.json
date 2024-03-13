@@ -11,10 +11,13 @@
   },
   "dependencies": {
     "@nozbe/watermelondb": "^0.27.1",
+    "@react-navigation/native": "^6.1.16",
     "@reduxjs/toolkit": "^2.2.1",
     "jsrsasign": "^11.1.0",
     "react": "18.2.0",
     "react-native": "0.73.6",
+    "react-native-safe-area-context": "^4.9.0",
+    "react-native-screens": "^3.29.0",
     "react-redux": "^9.1.0"
   },
   "devDependencies": {
