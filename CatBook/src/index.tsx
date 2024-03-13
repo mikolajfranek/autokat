@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { useGetLoginQuery } from './APIGoogle/APIDocs';
 import { APISheetColumnOfTableLogin } from './Enums/APISheetColumnOfTableLogin';
+import { NavigationContainer } from '@react-navigation/native';
 
 export default function App(): React.JSX.Element {
   const {
@@ -23,10 +24,13 @@ export default function App(): React.JSX.Element {
   }
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center' }}>
-      <Text style={{ alignSelf: 'center' }} >
-        Hello CatBook
-      </Text>
-    </View>
+    <NavigationContainer>
+      {/* TODO */}
+      <View style={{ flex: 1, justifyContent: 'center' }}>
+        <Text style={{ alignSelf: 'center' }} >
+          Hello CatBook
+        </Text>
+      </View>
+    </NavigationContainer>
   );
 }
