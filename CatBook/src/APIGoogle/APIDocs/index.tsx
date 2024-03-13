@@ -1,10 +1,10 @@
 import { BaseQueryFn, FetchArgs, FetchBaseQueryError, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { APISheetColumnOfTableLogin } from '../Enums/APISheetColumnOfTableLogin';
-import { getLocalStorage, setLocalStorage } from '../Database/DBA';
-import { LocalStorageKeys } from '../Enums/LocalStorageKeys';
-import AuthData from './miki-916.json';
-//import AuthData from './auto-kat.json';
-import { getBearerToken } from './OAuth2Google';
+import { APISheetColumnOfTableLogin } from '../../Enums/APISheetColumnOfTableLogin';
+import { getLocalStorage, setLocalStorage } from '../../Database/DBA';
+import { LocalStorageKeys } from '../../Enums/LocalStorageKeys';
+import AuthData from '../miki-916.json';
+//import AuthData from '../auto-kat.json';
+import { getBearerToken } from '../OAuth2';
 
 type APIResponse = {
     table: {
@@ -64,8 +64,8 @@ const baseQueryWithReauth: BaseQueryFn<
     return result
 }
 
-export const apiDocsGoogle = createApi({
-    reducerPath: 'apiDocsGoogle',
+export const apiGoogleDocs = createApi({
+    reducerPath: 'apiGoogleDocs',
     baseQuery: baseQueryWithReauth,
     endpoints: builder => ({
         getLogin: builder.query<APIResponse, APIParams>({
@@ -73,7 +73,7 @@ export const apiDocsGoogle = createApi({
                 return {
                     responseHandler: 'text',
                     url: `${AuthData.spreadsheet_login}/gviz/tq`,
-                    params: { tq: `select * ` }
+                    params: { tq: `select * where B='${"m"}'` }
                 }
             },
             transformResponse: (response: string) => parseToJSON(response)
@@ -81,4 +81,4 @@ export const apiDocsGoogle = createApi({
     })
 })
 
-export const { useGetLoginQuery } = apiDocsGoogle
+export const { useGetLoginQuery } = apiGoogleDocs

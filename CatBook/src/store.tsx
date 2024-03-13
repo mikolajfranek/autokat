@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import User from './Slices/User';
-import { apiDocsGoogle } from './APIDocsGoogle';
+import { apiGoogleDocs } from './APIGoogle/APIDocs';
 import { apiExchange } from './APIExchange';
 import { apiMetal } from './APIMetal';
 import Auth from './Slices/Auth';
@@ -9,7 +9,7 @@ export const store = configureStore({
   reducer: {
     user: User,
     auth: Auth,
-    [apiDocsGoogle.reducerPath]: apiDocsGoogle.reducer,
+    [apiGoogleDocs.reducerPath]: apiGoogleDocs.reducer,
     [apiExchange.reducerPath]: apiExchange.reducer,
     [apiMetal.reducerPath]: apiMetal.reducer,
   },
@@ -19,7 +19,7 @@ export const store = configureStore({
   //in the store setup, and the API slice's middleware typically goes after those. 
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware()
-      .concat(apiDocsGoogle.middleware)
+      .concat(apiGoogleDocs.middleware)
       .concat(apiExchange.middleware)
       .concat(apiMetal.middleware)
 });

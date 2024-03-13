@@ -12,7 +12,7 @@ import MyBaseText from './GUI/Atoms/Texts/MyBaseText';
 import { colorTextWhite } from './GUI/gui_style';
 import { useGetExchangeMutation } from './APIExchange';
 import { useGetMetalsMutation } from './APIMetal';
-import { useGetLoginQuery } from './APIDocsGoogle';
+import { useGetLoginQuery } from './APIGoogle/APIDocs';
 import { APISheetColumnOfTableLogin } from './Enums/APISheetColumnOfTableLogin';
 import { LocalStorageKeys } from './Enums/LocalStorageKeys';
 
