@@ -27,7 +27,6 @@ export async function getBearerToken(arg: APIParams) {
     // Sign JWT
     var sHeader = JSON.stringify(oHeader);
     var sPayload = JSON.stringify(oPayload);
-    //private key jest zle wpisany w pliku - TODO
     var sJWT = KJUR.jws.JWS.sign('RS256', sHeader, sPayload, arg.private_key);
     // Send
     const options = {

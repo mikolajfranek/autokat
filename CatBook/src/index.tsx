@@ -4,7 +4,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import { database } from './Database/DBA';
+import { database, setLocalStorage } from './Database/DBA';
 import { useAppDispatch } from './hooks';
 import { loginAsync } from './Slices/User';
 import MyBaseButtonViewTouchableHighlight from './GUI/Atoms/Buttons/MyBaseButtonViewTouchableHighlight';
@@ -14,6 +14,7 @@ import { useGetExchangeMutation } from './APIExchange';
 import { useGetMetalsMutation } from './APIMetal';
 import { useGetLoginQuery } from './APIDocsGoogle';
 import { APISheetColumnOfTableLogin } from './Enums/APISheetColumnOfTableLogin';
+import { LocalStorageKeys } from './Enums/LocalStorageKeys';
 
 export const IS_PRODUCTION = false;
 
@@ -77,7 +78,7 @@ export default function App(): React.JSX.Element {
   } = useGetLoginQuery({})
   let loginElement = null;
   if (isSuccessTableLogin) {
-    console.log(dataTableLogin.table.rows[0])
+    console.log(JSON.stringify(dataTableLogin.table.rows))
     loginElement = <Text>{dataTableLogin.table.rows[0].c[APISheetColumnOfTableLogin.password].v}</Text>;
   } else if (isError) {
     console.log(error);
@@ -117,6 +118,7 @@ export default function App(): React.JSX.Element {
       <MyBaseButtonViewTouchableHighlight
         onPress={async () => {
 
+            await setLocalStorage(LocalStorageKeys.bearerToken, "");
           try {
             //var yesterday = new Date(Date.now() - 86400000*3);
             //console.log(yesterday.toLocaleDateString('sv-SE'));

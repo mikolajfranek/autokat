@@ -1,11 +1,10 @@
 import { BaseQueryFn, FetchArgs, FetchBaseQueryError, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { APISheetColumnOfTableLogin } from '../Enums/APISheetColumnOfTableLogin';
-import type { RootState } from '../store';
 import { getLocalStorage, setLocalStorage } from '../Database/DBA';
 import { LocalStorageKeys } from '../Enums/LocalStorageKeys';
 import AuthData from './miki-916.json';
-import { getBearerToken } from './Spreadsheet/GoogleAPI';
 //import AuthData from './auto-kat.json';
+import { getBearerToken } from './OAuth2Google';
 
 type APIResponse = {
     table: {
@@ -29,24 +28,15 @@ function parseToJSON(input: string): APIResponse {
 
 const baseQuery = fetchBaseQuery({
     baseUrl: 'https://docs.google.com/a/google.com/spreadsheets/d',
-    prepareHeaders: async (headers, { getState }) => {
+    prepareHeaders: async (headers, { }) => {
+        let token = "";
         try {
-            let token = "";
-            console.log(token);
-            token = (getState() as RootState).auth.bearerToken;
-            console.log(token);
-            if (!token) {
-                token = await getLocalStorage(LocalStorageKeys.bearerToken);
-                //to nie powinno zadzialac?
-                //const dispatch = useAppDispatch();
-                //dispatch(setBearerToken(token));
-            }
-            console.log(token);
-            headers.set('Authorization', `Bearer ${token}`);
-            headers.set('tqx', 'out:json');
+            token = await getLocalStorage(LocalStorageKeys.bearerToken);
         } catch (error) {
             //
         }
+        headers.set('Authorization', `Bearer ${token}`);
+        headers.set('tqx', 'out:json');
         return headers;
     }
 });
@@ -59,22 +49,15 @@ const baseQueryWithReauth: BaseQueryFn<
     let result = await baseQuery(args, api, extraOptions);
     if (result.error && result.error.status === 401) {
         try {
-
-
-
-            var resultToken = await getBearerToken({
+            var token = await getBearerToken({
                 aud: AuthData.token_uri,
                 iss: AuthData.client_email,
                 scope: 'https://www.googleapis.com/auth/spreadsheets',
                 private_key: AuthData.private_key
             });
-            console.log(resultToken);
-            console.log('---------4');
-            await setLocalStorage(LocalStorageKeys.bearerToken, resultToken);
+            await setLocalStorage(LocalStorageKeys.bearerToken, token);
             result = await baseQuery(args, api, extraOptions);
         } catch (error) {
-            console.log(error);
-            console.log('---------3');
             //
         }
     }
@@ -88,9 +71,9 @@ export const apiDocsGoogle = createApi({
         getLogin: builder.query<APIResponse, APIParams>({
             query: (arg) => {
                 return {
-                    responseHandler: "text",
+                    responseHandler: 'text',
                     url: `${AuthData.spreadsheet_login}/gviz/tq`,
-                    params: { tq: `select * where B='${"m"}'` }
+                    params: { tq: `select * ` }
                 }
             },
             transformResponse: (response: string) => parseToJSON(response)
