@@ -14,11 +14,10 @@ export const store = configureStore({
     [apiMetal.reducerPath]: apiMetal.reducer,
   },
   devTools: process.env.NODE_ENV !== 'production',
-
-  //We need to keep all of the existing standard middleware like redux-thunk 
-  //in the store setup, and the API slice's middleware typically goes after those. 
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware()
+      //We need to keep all of the existing standard middleware like redux-thunk 
+      //in the store setup, and the API slice's middleware typically goes after those. 
       .concat(apiGoogleDocs.middleware)
       .concat(apiExchange.middleware)
       .concat(apiMetal.middleware)
