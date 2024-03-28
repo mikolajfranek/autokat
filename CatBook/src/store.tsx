@@ -1,5 +1,4 @@
 import { configureStore } from '@reduxjs/toolkit';
-import User from './Slices/User';
 import { apiGoogleDocs } from './APIGoogle/APIDocs';
 import { apiExchange } from './APIExchange';
 import { apiMetal } from './APIMetal';
@@ -7,7 +6,6 @@ import Auth from './Slices/Auth';
 
 export const store = configureStore({
   reducer: {
-    user: User,
     auth: Auth,
     [apiGoogleDocs.reducerPath]: apiGoogleDocs.reducer,
     [apiExchange.reducerPath]: apiExchange.reducer,

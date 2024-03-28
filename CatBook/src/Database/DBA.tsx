@@ -5,7 +5,6 @@ import migrations from './Migrations';
 import Course from './Models/Course';
 import Filter from './Models/Filter';
 import Catalyst from './Models/Catalyst';
-import { LocalStorageKeys } from '../Enums/LocalStorageKeys';
 import { Alert } from 'react-native';
 
 const adapter = new SQLiteAdapter({
@@ -20,19 +19,11 @@ const adapter = new SQLiteAdapter({
       error.name,
       `${error.message}\n${error.stack}`);
   }
-})
-
-export async function getLocalStorage(key: LocalStorageKeys): Promise<string> {
-  return await database.localStorage.get(key.toString()) as string;
-}
-
-export async function setLocalStorage(key: LocalStorageKeys, value: string): Promise<void> {
-  return await database.localStorage.set(key.toString(), value);
-}
+});
 
 export const database = new Database({
   adapter,
   modelClasses: [
     Catalyst, Course, Filter
   ],
-})
+});

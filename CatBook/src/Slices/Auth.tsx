@@ -1,23 +1,29 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit"
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { LocalStorageKeys } from '../Enums/LocalStorageKeys';
+import { getLocalStorageBoolean, setLocalStorage } from '../LocalStorage';
 
 export interface AuthState {
-    bearerToken: string;
+    status: boolean;
 }
 
 const initialState: AuthState = {
-    bearerToken: ""
-}
+    status: getLocalStorageBoolean(LocalStorageKeys.authStatus)
+};
 
 export const slice = createSlice({
-    name: "auth",
+    name: 'auth',
     initialState,
     reducers: {
-        setBearerToken: (state, action: PayloadAction<string>) => {
-            state.bearerToken = action.payload;
+        setAuthStatus: (state, action: PayloadAction<boolean>) => {
+            let value = action.payload;
+            setLocalStorage(LocalStorageKeys.authStatus, value);
+            state.status = value;
         }
     },
 });
 
-export const { setBearerToken } = slice.actions;
+export const {
+    setAuthStatus
+} = slice.actions;
 
-export default slice.reducer
+export default slice.reducer;
