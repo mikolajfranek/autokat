@@ -6,14 +6,19 @@ import Course from './Models/Course';
 import Filter from './Models/Filter';
 import Catalyst from './Models/Catalyst';
 import { LocalStorageKeys } from '../Enums/LocalStorageKeys';
+import { Alert } from 'react-native';
 
 const adapter = new SQLiteAdapter({
   schema,
   migrations,
   jsi: true,
   onSetUpError: error => {
-    //TODO
-    // Database failed to load -- offer the user to reload the app or log out
+    Alert.alert(
+      'Błąd ładowania bazy danych',
+      'W celu rozwiązania problemu proszę o ponowne uruchomienie bądź zainstalowanie aplikacji - jeśli to nie pomoże proszę skontaktować się z deweloperem aplikacji.');
+    Alert.alert(
+      error.name,
+      `${error.message}\n${error.stack}`);
   }
 })
 
