@@ -12,7 +12,7 @@ export default function App(): React.JSX.Element {
                 Hello CatBook FormularzLogowania
             </Text>
             <Button
-                icon='camera'
+                icon='login'
                 onPress={async () => {
                     //TODO
                     dispatch(setAuthStatus(true));

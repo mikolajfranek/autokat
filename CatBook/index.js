@@ -10,8 +10,8 @@ const theme = {
     ...DefaultTheme,
     colors: {
         ...DefaultTheme.colors,
-        primary: 'tomato',
-        secondary: 'yellow',
+        primary: '#363636',
+        secondary: '#1e3a8a'
     },
 };
 
