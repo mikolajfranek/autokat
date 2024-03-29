@@ -12,8 +12,9 @@ export default function App(): React.JSX.Element {
                 Hello CatBook BottomTab
             </Text>
 
-            <Button icon={require('./chameleon.jpg')}>
-                Failed
+            <Button icon={require('./chameleon.jpg')}
+                theme={{ colors: { primary: undefined } }} >
+                Success too
             </Button>
 
             <Button
