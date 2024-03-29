@@ -2,7 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useAppSelector } from './hooks';
-import BottomTab from './GUI/BottomTab';
+import MaterialBottomTab from './GUI/MaterialBottomTab';
 import FormularzLogowania from './GUI/FormularzLogowania';
 import ModalTmp from './GUI/Modale/ModalTmp';
 
@@ -17,9 +17,9 @@ export default function App(): React.JSX.Element {
           authStatus
             ?
             <Stack.Screen
-              name="Screen_BottomTab"
-              component={BottomTab}
-              options={{ title: "BottomTab" }} />
+              name="Screen_MaterialBottomTab"
+              component={MaterialBottomTab}
+              options={{ title: "MaterialBottomTab" }} />
             :
             (
               <Stack.Screen
@@ -33,7 +33,7 @@ export default function App(): React.JSX.Element {
         <Stack.Group screenOptions={{ presentation: 'modal' }}>
           <Stack.Screen
             name="Modal_Tmp"
-            options={{ headerTitle: "ModalTmp", headerLeft: () => null }}
+            options={{ headerTitle: "ModalTmp" }}
             component={ModalTmp}
           />
         </Stack.Group>

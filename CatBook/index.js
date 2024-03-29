@@ -9,9 +9,7 @@ import { MD3DarkTheme as DefaultTheme, PaperProvider } from 'react-native-paper'
 const theme = {
     ...DefaultTheme,
     colors: {
-        ...DefaultTheme.colors,
-        primary: '#363636',
-        secondary: '#1e3a8a'
+        ...DefaultTheme.colors
     },
 };
 

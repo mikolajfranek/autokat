@@ -1,20 +1,21 @@
 import React from 'react';
-import { Image, Text, View } from 'react-native';
+import { Image, View } from 'react-native';
 import { setAuthStatus } from '../../Slices/Auth';
 import { useAppDispatch } from '../../hooks';
-import { Button } from 'react-native-paper';
+import { Button, Text } from 'react-native-paper';
 
 export default function App(): React.JSX.Element {
     const dispatch = useAppDispatch();
     return (
         <View style={{ flex: 1, justifyContent: 'center' }}>
             <Text style={{ alignSelf: 'center' }} >
-                Hello CatBook BottomTab
+                Hello CatBook Ustawienia
             </Text>
 
             <Button icon={require('./chameleon.jpg')}
                 theme={{ colors: { primary: undefined } }} >
-                Success too
+                Is black text
+                <Text>Success too</Text>
             </Button>
 
             <Button
