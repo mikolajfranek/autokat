@@ -3,27 +3,27 @@ import { LocalStorageKeys } from '../Enums/LocalStorageKeys';
 import { getLocalStorageBoolean, setLocalStorage } from '../LocalStorage';
 
 export interface AuthState {
-    status: boolean;
+    isAuthenticated: boolean;
 }
 
 const initialState: AuthState = {
-    status: getLocalStorageBoolean(LocalStorageKeys.authStatus)
+    isAuthenticated: getLocalStorageBoolean(LocalStorageKeys.isAuthenticated)
 };
 
 export const slice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        setAuthStatus: (state, action: PayloadAction<boolean>) => {
+        setAuthenticated: (state, action: PayloadAction<boolean>) => {
             let value = action.payload;
-            setLocalStorage(LocalStorageKeys.authStatus, value);
-            state.status = value;
+            setLocalStorage(LocalStorageKeys.isAuthenticated, value);
+            state.isAuthenticated = value;
         }
     },
 });
 
 export const {
-    setAuthStatus
+    setAuthenticated
 } = slice.actions;
 
 export default slice.reducer;

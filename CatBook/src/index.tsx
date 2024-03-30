@@ -1,5 +1,4 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useAppSelector } from './hooks';
 import MaterialBottomTab from './GUI/MaterialBottomTab';
@@ -9,35 +8,32 @@ import ModalTmp from './GUI/Modale/ModalTmp';
 const Stack = createStackNavigator();
 
 export default function App(): React.JSX.Element {
-  const authStatus = useAppSelector((state) => state.auth.status)
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated)
   return (
-    <NavigationContainer>
-      <Stack.Navigator id="Stack_Aplikacja">
-        {
-          authStatus
-            ?
-            <Stack.Screen
-              name="Screen_MaterialBottomTab"
-              component={MaterialBottomTab}
-              options={{ title: "MaterialBottomTab" }} />
-            :
-            (
-              <Stack.Screen
-                name="Screen_FormularzLogowania"
-                component={FormularzLogowania}
-                options={{ headerShown: false }}
-              />
-            )
-        }
-        {/* presentation: {modal, transparentModal, card}  */}
-        <Stack.Group screenOptions={{ presentation: 'modal' }}>
+    <Stack.Navigator id="Stack_Aplikacja">
+      {
+        isAuthenticated
+          ?
           <Stack.Screen
-            name="Modal_Tmp"
-            options={{ headerTitle: "ModalTmp" }}
-            component={ModalTmp}
-          />
-        </Stack.Group>
-      </Stack.Navigator>
-    </NavigationContainer>
+            name="Screen_MaterialBottomTab"
+            component={MaterialBottomTab}
+            options={{ title: "MaterialBottomTab" }} />
+          :
+          (
+            <Stack.Screen
+              name="Screen_FormularzLogowania"
+              component={FormularzLogowania}
+            />
+          )
+      }
+      {/* presentation: {modal, transparentModal, card}  */}
+      <Stack.Group screenOptions={{ presentation: 'modal' }}>
+        <Stack.Screen
+          name="Modal_Tmp"
+          options={{ headerTitle: "ModalTmp" }}
+          component={ModalTmp}
+        />
+      </Stack.Group>
+    </Stack.Navigator>
   );
 }

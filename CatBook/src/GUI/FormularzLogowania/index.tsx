@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 import { useAppDispatch } from '../../hooks';
-import { setAuthStatus } from '../../Slices/Auth';
+import { setAuthenticated } from '../../Slices/Auth';
 import { Button } from 'react-native-paper';
 
 export default function App(): React.JSX.Element {
@@ -15,7 +15,7 @@ export default function App(): React.JSX.Element {
                 icon='login'
                 onPress={async () => {
                     //TODO
-                    dispatch(setAuthStatus(true));
+                    dispatch(setAuthenticated(true));
                 }}>
                 Zaloguj się
             </Button>

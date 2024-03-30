@@ -1,3 +1,3 @@
 export enum LocalStorageKeys {
-    authStatus,
+    isAuthenticated, isThemeDark
 }

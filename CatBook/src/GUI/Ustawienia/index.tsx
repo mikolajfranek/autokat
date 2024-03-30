@@ -1,13 +1,22 @@
 import React from 'react';
 import { Image, View } from 'react-native';
-import { setAuthStatus } from '../../Slices/Auth';
+import { setAuthenticated } from '../../Slices/Auth';
 import { useAppDispatch } from '../../hooks';
-import { Button, Text } from 'react-native-paper';
+import { Button, Switch, Text } from 'react-native-paper';
+import { PreferencesContext } from '../../PreferencesContext';
 
 export default function App(): React.JSX.Element {
     const dispatch = useAppDispatch();
+    const { toggleTheme, isThemeDark } = React.useContext(PreferencesContext);
     return (
         <View style={{ flex: 1, justifyContent: 'center' }}>
+            <Switch
+                style={{ alignSelf: 'center' }}
+                color={'red'}
+                value={isThemeDark}
+                onValueChange={toggleTheme}
+            />
+
             <Text style={{ alignSelf: 'center' }} >
                 Hello CatBook Ustawienia
             </Text>
@@ -32,7 +41,7 @@ export default function App(): React.JSX.Element {
                 icon='logout'
                 onPress={async () => {
                     //TODO
-                    dispatch(setAuthStatus(false))
+                    dispatch(setAuthenticated(false))
                 }}>
                 Wyloguj się
             </Button>
