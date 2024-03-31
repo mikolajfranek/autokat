@@ -23,6 +23,7 @@ export default function App(): React.JSX.Element {
             <Stack.Screen
               name='Stack.Screen_FormularzLogowania'
               component={FormularzLogowania}
+              options={{ header: () => undefined }}
             />
           )
       }
@@ -30,7 +31,6 @@ export default function App(): React.JSX.Element {
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen
           name='Stack.Screen_ModalTmp'
-          options={{ headerTitle: 'ModalTmp' }}
           component={ModalTmp}
         />
       </Stack.Group>
