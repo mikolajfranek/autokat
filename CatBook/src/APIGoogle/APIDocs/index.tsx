@@ -6,7 +6,7 @@ import AuthData from '../miki-916.json';
 import { getBearerToken } from '../OAuth2';
 import { getLocalStorageString, setLocalStorage } from '../../LocalStorage';
 
-type APIResponse = {
+type APIResponseLogin = {
     table: {
         rows: {
             c: {
@@ -18,24 +18,18 @@ type APIResponse = {
     }
 };
 
-type APIParams = {
-
+type APIParamsLogin = {
+    login: string
 };
 
-function parseToJSON(input: string): APIResponse {
+function parseToJSON(input: string) {
     return JSON.parse(input.match(/{.*}/gm)![0]);
 }
 
 const baseQuery = fetchBaseQuery({
     baseUrl: 'https://docs.google.com/a/google.com/spreadsheets/d',
     prepareHeaders: async (headers, { }) => {
-        let token = '';
-        try {
-            token = await getLocalStorageString(LocalStorageKeys.bearerToken);
-        } catch (error) {
-            //
-        }
-        headers.set('Authorization', `Bearer ${token}`);
+        headers.set('Authorization', `Bearer ${getLocalStorageString(LocalStorageKeys.bearerToken)}`);
         headers.set('tqx', 'out:json');
         return headers;
     }
@@ -55,30 +49,42 @@ const baseQueryWithReauth: BaseQueryFn<
                 scope: 'https://www.googleapis.com/auth/spreadsheets',
                 private_key: AuthData.private_key
             });
-            await setLocalStorage(LocalStorageKeys.bearerToken, token);
+            setLocalStorage(LocalStorageKeys.bearerToken, token);
             result = await baseQuery(args, api, extraOptions);
         } catch (error) {
             //
         }
     }
-    return result
+    return result;
 };
 
 export const apiGoogleDocs = createApi({
     reducerPath: 'apiGoogleDocs',
     baseQuery: baseQueryWithReauth,
     endpoints: builder => ({
-        getLogin: builder.query<APIResponse, APIParams>({
+        getLogin: builder.mutation<APIResponseLogin, APIParamsLogin>({
             query: (arg) => {
                 return {
                     responseHandler: 'text',
                     url: `${AuthData.spreadsheet_login}/gviz/tq`,
-                    params: { tq: `select * where B='${'m'}'` }
+                    method: 'GET',
+                    params: {
+                        tq:
+                            `select * where ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.B_login].toString().substring(0, 1)}='${arg.login}' AND  
+                            ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.A_id].toString().substring(0, 1)} IS NOT NULL AND 
+                            ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.B_login].toString().substring(0, 1)} IS NOT NULL AND 
+                            ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.D_licence].toString().substring(0, 1)} IS NOT NULL AND 
+                            ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.E_discount].toString().substring(0, 1)} IS NOT NULL AND 
+                            ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.F_visibility].toString().substring(0, 1)} IS NOT NULL AND 
+                            ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.G_minusPlatinum].toString().substring(0, 1)} IS NOT NULL AND 
+                            ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.H_minusPalladium].toString().substring(0, 1)} IS NOT NULL AND 
+                            ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.I_minusRhodium].toString().substring(0, 1)} IS NOT NULL`
+                    }
                 }
             },
-            transformResponse: (response: string) => parseToJSON(response)
+            transformResponse: (response: string) => parseToJSON(response) as APIResponseLogin
         })
     })
 });
 
-export const { useGetLoginQuery } = apiGoogleDocs;
+export const { useGetLoginMutation } = apiGoogleDocs;
