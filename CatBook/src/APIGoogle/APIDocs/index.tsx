@@ -1,12 +1,8 @@
 import { BaseQueryFn, FetchArgs, FetchBaseQueryError, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { APISheetColumnOfTableLogin } from '../../Enums/APISheetColumnOfTableLogin';
-import { LocalStorageKeys } from '../../Enums/LocalStorageKeys';
-import AuthData from '../miki-916.json';
-//import AuthData from '../auto-kat.json';
-import { getBearerToken } from '../OAuth2';
-import { getLocalStorageString, setLocalStorage } from '../../LocalStorage';
+import { generateToken, getHeaders, getSpreadsheetIdLogin } from '../Common';
 
-type APIResponseLogin = {
+type APIResponseGetLogin = {
     table: {
         rows: {
             c: {
@@ -18,7 +14,7 @@ type APIResponseLogin = {
     }
 };
 
-type APIParamsLogin = {
+type APIParamsGetLogin = {
     login: string
 };
 
@@ -29,9 +25,7 @@ function parseToJSON(input: string) {
 const baseQuery = fetchBaseQuery({
     baseUrl: 'https://docs.google.com/a/google.com/spreadsheets/d',
     prepareHeaders: async (headers, { }) => {
-        headers.set('Authorization', `Bearer ${getLocalStorageString(LocalStorageKeys.bearerToken)}`);
-        headers.set('tqx', 'out:json');
-        return headers;
+        return getHeaders(headers);
     }
 });
 
@@ -43,13 +37,7 @@ const baseQueryWithReauth: BaseQueryFn<
     let result = await baseQuery(args, api, extraOptions);
     if (result.error && result.error.status === 401) {
         try {
-            var token = await getBearerToken({
-                aud: AuthData.token_uri,
-                iss: AuthData.client_email,
-                scope: 'https://www.googleapis.com/auth/spreadsheets',
-                private_key: AuthData.private_key
-            });
-            setLocalStorage(LocalStorageKeys.bearerToken, token);
+            await generateToken();
             result = await baseQuery(args, api, extraOptions);
         } catch (error) {
             //
@@ -62,11 +50,11 @@ export const apiGoogleDocs = createApi({
     reducerPath: 'apiGoogleDocs',
     baseQuery: baseQueryWithReauth,
     endpoints: builder => ({
-        getLogin: builder.mutation<APIResponseLogin, APIParamsLogin>({
+        getLogin: builder.mutation<APIResponseGetLogin, APIParamsGetLogin>({
             query: (arg) => {
                 return {
                     responseHandler: 'text',
-                    url: `${AuthData.spreadsheet_login}/gviz/tq`,
+                    url: `${getSpreadsheetIdLogin()}/gviz/tq`,
                     method: 'GET',
                     params: {
                         tq:
@@ -80,9 +68,9 @@ export const apiGoogleDocs = createApi({
                             ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.H_minusPalladium].toString().substring(0, 1)} IS NOT NULL AND 
                             ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.I_minusRhodium].toString().substring(0, 1)} IS NOT NULL`
                     }
-                }
+                };
             },
-            transformResponse: (response: string) => parseToJSON(response) as APIResponseLogin
+            transformResponse: (response: string) => parseToJSON(response) as APIResponseGetLogin
         })
     })
 });
