@@ -1,10 +1,10 @@
 import { BaseQueryFn, FetchArgs, FetchBaseQueryError, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { APISheetColumnOfTableLogin } from '../../Enums/APISheetColumnOfTableLogin';
-import { getLocalStorage, setLocalStorage } from '../../Database/DBA';
 import { LocalStorageKeys } from '../../Enums/LocalStorageKeys';
 import AuthData from '../miki-916.json';
 //import AuthData from '../auto-kat.json';
 import { getBearerToken } from '../OAuth2';
+import { getLocalStorageString, setLocalStorage } from '../../LocalStorage';
 
 type APIResponse = {
     table: {
@@ -29,9 +29,9 @@ function parseToJSON(input: string): APIResponse {
 const baseQuery = fetchBaseQuery({
     baseUrl: 'https://docs.google.com/a/google.com/spreadsheets/d',
     prepareHeaders: async (headers, { }) => {
-        let token = "";
+        let token = '';
         try {
-            token = await getLocalStorage(LocalStorageKeys.bearerToken);
+            token = await getLocalStorageString(LocalStorageKeys.bearerToken);
         } catch (error) {
             //
         }
@@ -62,7 +62,7 @@ const baseQueryWithReauth: BaseQueryFn<
         }
     }
     return result
-}
+};
 
 export const apiGoogleDocs = createApi({
     reducerPath: 'apiGoogleDocs',
@@ -73,12 +73,12 @@ export const apiGoogleDocs = createApi({
                 return {
                     responseHandler: 'text',
                     url: `${AuthData.spreadsheet_login}/gviz/tq`,
-                    params: { tq: `select * where B='${"m"}'` }
+                    params: { tq: `select * where B='${'m'}'` }
                 }
             },
             transformResponse: (response: string) => parseToJSON(response)
         })
     })
-})
+});
 
-export const { useGetLoginQuery } = apiGoogleDocs
+export const { useGetLoginQuery } = apiGoogleDocs;

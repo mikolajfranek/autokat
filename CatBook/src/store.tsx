@@ -9,7 +9,7 @@ export const store = configureStore({
     auth: Auth,
     [apiGoogleDocs.reducerPath]: apiGoogleDocs.reducer,
     [apiExchange.reducerPath]: apiExchange.reducer,
-    [apiMetal.reducerPath]: apiMetal.reducer,
+    [apiMetal.reducerPath]: apiMetal.reducer
   },
   devTools: process.env.NODE_ENV !== 'production',
   middleware: getDefaultMiddleware =>

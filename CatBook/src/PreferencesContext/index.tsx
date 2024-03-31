@@ -1,6 +1,6 @@
-import React from 'react';
+import { createContext } from 'react';
 
-export const PreferencesContext = React.createContext({
+export const PreferencesContext = createContext({
     toggleTheme: () => { },
-    isThemeDark: false,
+    isThemeDark: false
 });

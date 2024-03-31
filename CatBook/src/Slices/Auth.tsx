@@ -4,7 +4,7 @@ import { getLocalStorageBoolean, setLocalStorage } from '../LocalStorage';
 
 export interface AuthState {
     isAuthenticated: boolean;
-}
+};
 
 const initialState: AuthState = {
     isAuthenticated: getLocalStorageBoolean(LocalStorageKeys.isAuthenticated)

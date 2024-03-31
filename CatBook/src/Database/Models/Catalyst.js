@@ -21,6 +21,6 @@ export default class Course extends Model {
         await this.update(catalyst => {
             catalyst.thumbnail = inputThumbnail;
             catalyst.isThumbnail = true;
-        })
+        });
     }
 }

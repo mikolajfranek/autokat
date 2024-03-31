@@ -6,7 +6,7 @@ import { store } from './src/store';
 import App from './src';
 import { NavigationContainer, DarkTheme as NavigationDarkTheme, DefaultTheme as NavigationDefaultTheme } from '@react-navigation/native';
 import { adaptNavigationTheme, MD3LightTheme, MD3DarkTheme, PaperProvider } from 'react-native-paper';
-import React from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { getLocalStorageBoolean, setLocalStorage } from './src/LocalStorage';
 import { LocalStorageKeys } from './src/Enums/LocalStorageKeys';
 import { PreferencesContext } from './src/PreferencesContext';
@@ -35,14 +35,14 @@ const CombinedDarkTheme = {
 };
 
 function getComponentFunc() {
-    const [isThemeDark, setIsThemeDark] = React.useState(getLocalStorageBoolean(LocalStorageKeys.isThemeDark));
+    const [isThemeDark, setIsThemeDark] = useState(getLocalStorageBoolean(LocalStorageKeys.isThemeDark));
     let theme = isThemeDark ? CombinedDarkTheme : CombinedDefaultTheme;
-    const toggleTheme = React.useCallback(() => {
+    const toggleTheme = useCallback(() => {
         let value = !isThemeDark;
         setLocalStorage(LocalStorageKeys.isThemeDark, value);
         return setIsThemeDark(value);
     }, [isThemeDark]);
-    const preferences = React.useMemo(
+    const preferences = useMemo(
         () => ({
             toggleTheme,
             isThemeDark,

@@ -8,7 +8,7 @@ export default appSchema({
       columns: [
         { name: 'created_at', type: 'number' },
         { name: 'value', type: 'string', isOptional: false, isIndexed: true },
-      ],
+      ]
     }),
     tableSchema({
       name: 'courses',
@@ -19,7 +19,7 @@ export default appSchema({
         { name: 'rhodium', type: 'string', isOptional: false },
         { name: 'eur_pln', type: 'string', isOptional: false },
         { name: 'usd_pln', type: 'string', isOptional: false },
-      ],
+      ]
     }),
     tableSchema({
       name: 'catalysts',
@@ -35,7 +35,7 @@ export default appSchema({
         { name: 'rhodium', type: 'string', isOptional: false },
         { name: 'type', type: 'number', isOptional: false },
         { name: 'weight', type: 'string', isOptional: false },
-      ],
-    }),
+      ]
+    })
   ]
 })

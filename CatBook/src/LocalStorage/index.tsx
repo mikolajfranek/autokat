@@ -5,7 +5,7 @@ const storage = new MMKV();
 
 export function getLocalStorageString(key: LocalStorageKeys): string {
     let value = storage.getString(key.toString());
-    return value == undefined ? "" : value;
+    return value == undefined ? '' : value;
 }
 
 export function getLocalStorageBoolean(key: LocalStorageKeys): boolean {
