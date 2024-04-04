@@ -2,7 +2,7 @@ import { MMKV } from 'react-native-mmkv';
 import { LocalStorageKeys } from '../Enums/LocalStorageKeys';
 import { getPrivateKey } from '../APIGoogle/Common';
 
-const storage = new MMKV({ id: 'mmkv.default', encryptionKey: getPrivateKey() });
+const storage = new MMKV({ id: 'mmkv.default', encryptionKey: getPrivateKey().substring(28) });
 
 export function getLocalStorageString(key: LocalStorageKeys): string {
     let value = storage.getString(key.toString());
