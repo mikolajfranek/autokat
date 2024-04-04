@@ -15,7 +15,7 @@ export async function generateToken() {
         aud: AuthData.token_uri,
         iss: AuthData.client_email,
         scope: 'https://www.googleapis.com/auth/spreadsheets',
-        private_key: AuthData.private_key
+        private_key: getPrivateKey()
     });
     setLocalStorage(LocalStorageKeys.bearerToken, token);
 }
@@ -26,4 +26,8 @@ export function getSpreadsheetIdLogin() {
 
 export function getSpreadsheetIdCatalyst() {
     return AuthData.spreadsheet_catalyst;
+}
+
+export function getPrivateKey() {
+    return AuthData.private_key;
 }
