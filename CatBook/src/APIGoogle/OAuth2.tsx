@@ -13,21 +13,21 @@ type APIParams = {
 
 export async function getBearerToken(arg: APIParams) {
     // Header
-    var oHeader = { alg: 'RS256', typ: 'JWT' };
+    const oHeader = { alg: 'RS256', typ: 'JWT' };
     // Payload
-    var tNow = KJUR.jws.IntDate.get('now');
-    var tEnd = KJUR.jws.IntDate.get('now + 1hour');
-    var oPayload = {
+    const tNow = KJUR.jws.IntDate.get('now');
+    const tEnd = KJUR.jws.IntDate.get('now + 1hour');
+    const oPayload = {
         scope: arg.scope,
         iss: arg.iss,
         aud: arg.aud,
         iat: tNow,
-        exp: tEnd,
+        exp: tEnd
     };
     // Sign JWT
-    var sHeader = JSON.stringify(oHeader);
-    var sPayload = JSON.stringify(oPayload);
-    var sJWT = KJUR.jws.JWS.sign('RS256', sHeader, sPayload, arg.private_key);
+    const sHeader = JSON.stringify(oHeader);
+    const sPayload = JSON.stringify(oPayload);
+    const sJWT = KJUR.jws.JWS.sign('RS256', sHeader, sPayload, arg.private_key);
     // Send
     const options = {
         method: 'POST',

@@ -21,7 +21,7 @@ const CombinedDefaultTheme = {
     ...LightTheme,
     colors: {
         ...MD3LightTheme.colors,
-        ...LightTheme.colors,
+        ...LightTheme.colors
     }
 };
 
@@ -30,15 +30,15 @@ const CombinedDarkTheme = {
     ...DarkTheme,
     colors: {
         ...MD3DarkTheme.colors,
-        ...DarkTheme.colors,
+        ...DarkTheme.colors
     }
 };
 
 function getComponentFunc() {
     const [isThemeDark, setIsThemeDark] = useState(getLocalStorageBoolean(LocalStorageKeys.isThemeDark));
-    let theme = isThemeDark ? CombinedDarkTheme : CombinedDefaultTheme;
+    const currentTheme = isThemeDark ? CombinedDarkTheme : CombinedDefaultTheme;
     const toggleTheme = useCallback(() => {
-        let value = !isThemeDark;
+        const value = !isThemeDark;
         setLocalStorage(LocalStorageKeys.isThemeDark, value);
         return setIsThemeDark(value);
     }, [isThemeDark]);
@@ -52,8 +52,8 @@ function getComponentFunc() {
     return (
         <Provider store={store}>
             <PreferencesContext.Provider value={preferences}>
-                <PaperProvider theme={theme}>
-                    <NavigationContainer theme={theme}>
+                <PaperProvider theme={currentTheme}>
+                    <NavigationContainer theme={currentTheme}>
                         <App />
                     </NavigationContainer>
                 </PaperProvider>

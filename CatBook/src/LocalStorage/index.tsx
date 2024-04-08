@@ -5,12 +5,12 @@ import { getPrivateKey } from '../APIGoogle/Common';
 const storage = new MMKV({ id: 'mmkv.default', encryptionKey: getPrivateKey().substring(28) });
 
 export function getLocalStorageString(key: LocalStorageKeys): string {
-    let value = storage.getString(key.toString());
+    const value = storage.getString(key.toString());
     return value == undefined ? '' : value;
 }
 
 export function getLocalStorageBoolean(key: LocalStorageKeys): boolean {
-    let value = storage.getBoolean(key.toString());
+    const value = storage.getBoolean(key.toString());
     return value == undefined ? false : value;
 }
 

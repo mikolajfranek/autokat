@@ -2,7 +2,7 @@ import { BaseQueryFn, FetchArgs, FetchBaseQueryError, createApi, fetchBaseQuery 
 import { APISheetColumnOfTableLogin } from '../../Enums/APISheetColumnOfTableLogin';
 import { generateToken, getHeaders, getSpreadsheetIdLogin } from '../Common';
 
-type APIResponsePutUid = {
+export type APIResponsePutUid = {
     updatedRows: number,
     updatedColumns: number,
     updatedCells: number

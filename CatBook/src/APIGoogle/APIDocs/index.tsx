@@ -2,15 +2,17 @@ import { BaseQueryFn, FetchArgs, FetchBaseQueryError, createApi, fetchBaseQuery 
 import { APISheetColumnOfTableLogin } from '../../Enums/APISheetColumnOfTableLogin';
 import { generateToken, getHeaders, getSpreadsheetIdLogin } from '../Common';
 
-type APIResponseGetLogin = {
+export type LoginSheet = {
+    c: {
+        [key in APISheetColumnOfTableLogin]: {
+            v: string
+        }
+    }
+};
+
+export type APIResponseGetLogin = {
     table: {
-        rows: {
-            c: {
-                [key in APISheetColumnOfTableLogin]: {
-                    v: string
-                }
-            }
-        }[]
+        rows: LoginSheet[]
     }
 };
 

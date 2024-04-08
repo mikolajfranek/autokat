@@ -1,3 +1,3 @@
 export enum LocalStorageKeys {
-    isAuthenticated, isThemeDark, bearerToken
+    isAuthenticated, isThemeDark, bearerToken, loginSheet
 };

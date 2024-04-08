@@ -3,9 +3,8 @@ import { View } from 'react-native';
 import { useAppDispatch } from '../../hooks';
 import { setAuthenticated } from '../../Slices/Auth';
 import { Button, Text, TextInput } from 'react-native-paper';
+import { loadUser } from '../../APIGoogle/Common';
 import { useGetLoginMutation } from '../../APIGoogle/APIDocs';
-import { APISheetColumnOfTableLogin } from '../../Enums/APISheetColumnOfTableLogin';
-import { getUniqueId } from 'react-native-device-info';
 import { usePutUidMutation } from '../../APIGoogle/APISheets';
 
 export default function App(): React.JSX.Element {
@@ -34,30 +33,12 @@ export default function App(): React.JSX.Element {
                     onPress={async () => {
                         try {
                             setMessage('Trwa uwierzytelnianie...');
-                            if (login.length == 0)
-                                throw Error();
-                            const user = await getLogin({ login: login }).unwrap();
-                            const user_base = user.table.rows[0];
-                            const user_id = user_base.c[APISheetColumnOfTableLogin.A_id];
-                            const user_uid = user.table.rows[0].c[APISheetColumnOfTableLogin.C_uuid];
-                            const uid = await getUniqueId();
-                            if (user_uid != null) {
-                                if (user_uid.v != uid)
-                                    throw Error();
-                            } else {
-                                const result = await putUid({ id: user_id.v, uid: uid }).unwrap();
-                                if (result.updatedCells != 1 || result.updatedColumns != 1 || result.updatedRows != 1)
-                                    throw Error();
-                            }
-                            console.log('hurra');
-                            //save user to localstore
-                            //TODO
-                            throw Error();
-
+                            await loadUser(login, getLogin, putUid);
                             dispatch(setAuthenticated(true));
                             setMessage('');
                         } catch (error) {
-                            console.log(error);
+                            //TODO
+                            //console.log(error);
                             setMessage('Wystąpił błąd');
                         }
                     }}>

@@ -1,9 +1,9 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { LocalStorageKeys } from '../Enums/LocalStorageKeys';
 import { getLocalStorageBoolean, setLocalStorage } from '../LocalStorage';
 
 export interface AuthState {
-    isAuthenticated: boolean;
+    isAuthenticated: boolean
 };
 
 const initialState: AuthState = {
@@ -15,11 +15,11 @@ export const slice = createSlice({
     initialState,
     reducers: {
         setAuthenticated: (state, action: PayloadAction<boolean>) => {
-            let value = action.payload;
+            const value = action.payload;
             setLocalStorage(LocalStorageKeys.isAuthenticated, value);
             state.isAuthenticated = value;
         }
-    },
+    }
 });
 
 export const {
