@@ -27,6 +27,12 @@ export default function App(): React.JSX.Element {
                 const loginSheet = JSON.parse(getLocalStorageString(LocalStorageKeys.loginSheet)) as LoginSheet;
                 const loginSheet_login = loginSheet.c[APISheetColumnOfTableLogin.B_login].v;
                 await loadUser(loginSheet_login, getLogin, undefined);
+                //TODO
+                // get isRecentlyCreated() {
+                //     // in the last 4 hours
+                //     return this.createdAt &&
+                //         this.createdAt.getTime() > Date.now() - 1 * 4 * 3600 * 1000;
+                // }
             }
 
             appState.current = nextAppState;

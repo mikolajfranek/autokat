@@ -11,14 +11,20 @@ export default appSchema({
       ]
     }),
     tableSchema({
-      name: 'courses',
+      name: 'courses_metal',
       columns: [
         { name: 'created_at', type: 'number' },
         { name: 'platinum', type: 'string', isOptional: false },
         { name: 'palladium', type: 'string', isOptional: false },
-        { name: 'rhodium', type: 'string', isOptional: false },
+        { name: 'rhodium', type: 'string', isOptional: false }
+      ]
+    }),
+    tableSchema({
+      name: 'courses_exchange',
+      columns: [
+        { name: 'created_at', type: 'number' },
         { name: 'eur_pln', type: 'string', isOptional: false },
-        { name: 'usd_pln', type: 'string', isOptional: false },
+        { name: 'usd_pln', type: 'string', isOptional: false }
       ]
     }),
     tableSchema({
@@ -34,7 +40,7 @@ export default appSchema({
         { name: 'palladium', type: 'string', isOptional: false },
         { name: 'rhodium', type: 'string', isOptional: false },
         { name: 'type', type: 'number', isOptional: false },
-        { name: 'weight', type: 'string', isOptional: false },
+        { name: 'weight', type: 'string', isOptional: false }
       ]
     })
   ]

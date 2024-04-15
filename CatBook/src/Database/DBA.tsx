@@ -2,7 +2,7 @@ import { Database } from '@nozbe/watermelondb';
 import SQLiteAdapter from '@nozbe/watermelondb/adapters/sqlite';
 import schema from './Schema';
 import migrations from './Migrations';
-import Course from './Models/Course';
+import Course from './Models/CourseMetal';
 import Filter from './Models/Filter';
 import Catalyst from './Models/Catalyst';
 import { Alert } from 'react-native';
@@ -25,5 +25,5 @@ export const database = new Database({
   adapter,
   modelClasses: [
     Catalyst, Course, Filter
-  ],
+  ]
 });
