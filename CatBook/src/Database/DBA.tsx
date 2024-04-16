@@ -2,10 +2,11 @@ import { Database } from '@nozbe/watermelondb';
 import SQLiteAdapter from '@nozbe/watermelondb/adapters/sqlite';
 import schema from './Schema';
 import migrations from './Migrations';
-import Course from './Models/CourseMetal';
 import Filter from './Models/Filter';
 import Catalyst from './Models/Catalyst';
 import { Alert } from 'react-native';
+import CourseMetal from './Models/CourseMetal';
+import CourseExchange from './Models/CourseExchange';
 
 const adapter = new SQLiteAdapter({
   schema,
@@ -24,6 +25,6 @@ const adapter = new SQLiteAdapter({
 export const database = new Database({
   adapter,
   modelClasses: [
-    Catalyst, Course, Filter
+    Catalyst, CourseMetal, CourseExchange, Filter
   ]
 });

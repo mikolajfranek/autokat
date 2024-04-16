@@ -4,10 +4,14 @@ import { setAuthenticated } from '../../Slices/Auth';
 import { useAppDispatch } from '../../hooks';
 import { Button, Switch, Text } from 'react-native-paper';
 import { PreferencesContext } from '../../PreferencesContext';
+import { useGetExchangeMutation } from '../../APIExchange';
+import CourseExchange from '../../Database/Models/CourseExchange';
 
 export default function App(): React.JSX.Element {
     const dispatch = useAppDispatch();
     const { toggleTheme, isThemeDark } = React.useContext(PreferencesContext);
+    const [getExchange] = useGetExchangeMutation();
+
     return (
         <View style={{ flex: 1, justifyContent: 'center' }}>
             <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
@@ -36,7 +40,16 @@ export default function App(): React.JSX.Element {
                 icon='exchange'
                 onPress={async () => {
                     try {
-                        //todo...
+                        const eur = await getExchange({currency: 'eur'}).unwrap();
+                        const usd = await getExchange({currency: 'usd'}).unwrap();
+
+                        //effectiveDate
+                        console.log(eur.rates[0].mid);
+                        console.log(eur.rates[0].effectiveDate);
+
+                        //var item = await CourseExchange.add(eur, usd);
+                        //console.log(item);
+
                     } catch (error) {
                         Alert.alert(
                             'Wystąpił błąd',
