@@ -6,6 +6,7 @@ import { Button, Switch, Text } from 'react-native-paper';
 import { PreferencesContext } from '../../PreferencesContext';
 import { useGetExchangeMutation } from '../../APIExchange';
 import CourseExchange from '../../Database/Models/CourseExchange';
+import { Currency } from '../../Enums/Currency';
 
 export default function App(): React.JSX.Element {
     const dispatch = useAppDispatch();
@@ -40,8 +41,8 @@ export default function App(): React.JSX.Element {
                 icon='exchange'
                 onPress={async () => {
                     try {
-                        const eur = await getExchange({currency: 'eur'}).unwrap();
-                        const usd = await getExchange({currency: 'usd'}).unwrap();
+                        const eur = await getExchange({currency: Currency.eur}).unwrap();
+                        const usd = await getExchange({currency: Currency.usd}).unwrap();
 
                         //effectiveDate
                         console.log(eur.rates[0].mid);

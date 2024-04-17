@@ -17,6 +17,7 @@ export default class Course extends Model {
     @text('type') type;
     @text('weight') weight;
 
+    //TODO
     @writer async setThumbnail(inputThumbnail) {
         await this.update(catalyst => {
             catalyst.thumbnail = inputThumbnail;

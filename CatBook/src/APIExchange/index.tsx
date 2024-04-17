@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { Currency } from '../Enums/Currency';
 
 type Rates = {
     mid: string,
@@ -10,7 +11,7 @@ type APIResponse = {
 };
 
 type APIParams = {
-    currency: 'usd' | 'eur',
+    currency: Currency,
     dataKursu?: Date
 };
 

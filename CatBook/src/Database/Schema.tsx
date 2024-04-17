@@ -23,8 +23,9 @@ export default appSchema({
       name: 'courses_exchange',
       columns: [
         { name: 'created_at', type: 'number' },
-        { name: 'eur_pln', type: 'string', isOptional: false },
-        { name: 'usd_pln', type: 'string', isOptional: false }
+        { name: 'type', type: 'number', isOptional: false, isIndexed: true },
+        { name: 'mid', type: 'string', isOptional: false },
+        { name: 'effectived_at', type: 'number', isOptional: false }
       ]
     }),
     tableSchema({
