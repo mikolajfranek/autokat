@@ -10,7 +10,6 @@ import { getUniqueId } from 'react-native-device-info';
 
 export function getHeaders(headers: Headers): Headers {
     headers.set('Authorization', `Bearer ${getLocalStorageString(LocalStorageKeys.bearerToken)}`);
-    headers.set('tqx', 'out:json');
     return headers;
 }
 

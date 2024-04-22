@@ -26,7 +26,7 @@ export const apiExchange = createApi({
                     dataKursu = new Date();
                 return {
                     method: 'GET',
-                    url: `/api/exchangerates/rates/a/${currency}/${dataKursu.toLocaleDateString('sv-SE')}?format=json`
+                    url: `/api/exchangerates/rates/a/${Currency[currency]}/${dataKursu.toLocaleDateString('sv-SE')}?format=json`
                 };
             }
         })

@@ -80,7 +80,7 @@ export const apiGoogleDocs = createApi({
                     url: `${getSpreadsheetIdLogin()}/gviz/tq`,
                     method: 'GET',
                     params: {
-                        //TODO
+                        tqx: 'out:json',
                         tq:
                             `select * where ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.B_login].toString().substring(0, 1)}='${arg.login}' AND  
                             ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.A_id].toString().substring(0, 1)} IS NOT NULL AND 
@@ -98,24 +98,14 @@ export const apiGoogleDocs = createApi({
         }),
         getCatalyst: builder.mutation<APIResponseGetCatalyst, APIParamsGetCatalyst>({
             query: (arg) => {
+                console.log(arg.fromId);
                 return {
                     responseHandler: 'text',
                     url: `${getSpreadsheetIdCatalyst()}/gviz/tq`,
                     method: 'GET',
                     params: {
-                        //TODO
-                        tq: ''
-                            /*
-                            `select * where ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.B_login].toString().substring(0, 1)}='${arg.login}' AND  
-                            ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.A_id].toString().substring(0, 1)} IS NOT NULL AND 
-                            ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.B_login].toString().substring(0, 1)} IS NOT NULL AND 
-                            ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.D_licence].toString().substring(0, 1)} IS NOT NULL AND 
-                            ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.E_discount].toString().substring(0, 1)} IS NOT NULL AND 
-                            ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.F_visibility].toString().substring(0, 1)} IS NOT NULL AND 
-                            ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.G_minusPlatinum].toString().substring(0, 1)} IS NOT NULL AND 
-                            ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.H_minusPalladium].toString().substring(0, 1)} IS NOT NULL AND 
-                            ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.I_minusRhodium].toString().substring(0, 1)} IS NOT NULL`
-                            */
+                        tqx: 'out:json',
+                        tq: `select * where ${APISheetColumnOfTableCatalyst[APISheetColumnOfTableCatalyst.A_id].toString().substring(0, 1)}>${arg.fromId}`
                     }
                 };
             },
@@ -124,4 +114,4 @@ export const apiGoogleDocs = createApi({
     })
 });
 
-export const { useGetLoginMutation } = apiGoogleDocs;
+export const { useGetLoginMutation, useGetCatalystMutation } = apiGoogleDocs;

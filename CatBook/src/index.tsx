@@ -4,6 +4,7 @@ import { useAppSelector } from './hooks';
 import MaterialBottomTab from './GUI/MaterialBottomTab';
 import FormularzLogowania from './GUI/FormularzLogowania';
 import ModalTmp from './GUI/Modale/ModalTmp';
+import { name } from '../app.json';
 
 const Stack = createStackNavigator();
 
@@ -17,7 +18,7 @@ export default function App(): React.JSX.Element {
           <Stack.Screen
             name='Stack.Screen_MaterialBottomTab'
             component={MaterialBottomTab}
-            options={{ title: 'MaterialBottomTab' }} />
+            options={{ title: name }} />
           :
           (
             <Stack.Screen
