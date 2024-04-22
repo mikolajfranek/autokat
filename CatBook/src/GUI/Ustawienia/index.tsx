@@ -18,9 +18,6 @@ export default function App(): React.JSX.Element {
                 <Icon source='account-tie' size={48} />
                 <Text> Sławomir Szukała</Text>
             </View>
-            {/* TODO */}
-
-
             <Button
                 icon='mail'
                 onPress={() => Linking.openURL('mailto:autokat.katalizatory@gmail.com')}>
@@ -29,15 +26,15 @@ export default function App(): React.JSX.Element {
             <Button
                 icon='phone'
                 onPress={() => Linking.openURL('tel:+48510076585')}>
-                510–076–585
+                510 076 585
             </Button>
             <Button
                 icon='web'
-                onPress={() => Linking.openURL('https://katalizatorypoznan.pl')}>
+                onPress={() => Linking.openURL('https:katalizatorypoznan.pl')}>
                 katalizatorypoznan.pl
             </Button>
-            <Divider style={{ width: '100%', marginBottom: 15, marginTop: 15, height: 1 }} />
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Divider style={{ width: '100%', marginBottom: 10, marginTop: 10, height: 1 }} />
+            <View style={{ marginLeft: 0, flexDirection: 'row', alignItems: 'center' }}>
                 <Text
                     style={{ verticalAlign: 'middle' }}>Ciemny layout</Text>
                 <Switch
@@ -48,7 +45,7 @@ export default function App(): React.JSX.Element {
             </View>
             <Divider style={{ width: '100%', marginBottom: 10, marginTop: 10, height: 1 }} />
             <Button
-                icon='database'
+                icon='sync'
                 onPress={async () => {
                     try {
                         //todo...
@@ -61,7 +58,7 @@ export default function App(): React.JSX.Element {
                 Synchronizuj baze danych
             </Button>
             <Button
-                icon='currency-sign'
+                icon='download'
                 onPress={async () => {
                     try {
                         const eur = await getExchange({ currency: Currency.eur }).unwrap();
@@ -80,7 +77,7 @@ export default function App(): React.JSX.Element {
                             JSON.stringify(error));
                     }
                 }}>
-                Synchronizuj kursy walut
+                Pobierz kursy walut
             </Button>
             <Divider style={{ width: '100%', marginBottom: 10, marginTop: 10, height: 1 }} />
             <Button

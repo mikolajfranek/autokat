@@ -37,7 +37,7 @@
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
-		<string>armv7</string>
+		<string>arm64</string>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
@@ -45,12 +45,14 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
 		<string>Entypo.ttf</string>
 		<string>EvilIcons.ttf</string>
-		<string>Feather.ttfFontAwesome.ttfFontAwesome5_Brands.ttfFontAwesome5_Regular.ttfFontAwesome5_Solid.ttfFontAwesome6_Brands.ttfFontAwesome6_Regular.ttfFontAwesome6_Solid.ttfFontisto.ttfFoundation.ttfIonicons.ttfMaterialCommunityIcons.ttfMaterialIcons.ttfOcticons.ttfSimpleLineIcons.ttfZocial.ttf</string>
+		<string>Feather.ttf</string>
 		<string>FontAwesome.ttf</string>
 		<string>FontAwesome5_Brands.ttf</string>
 		<string>FontAwesome5_Regular.ttf</string>
