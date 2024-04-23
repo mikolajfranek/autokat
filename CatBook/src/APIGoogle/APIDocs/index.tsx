@@ -41,6 +41,17 @@ type APIParamsGetCatalyst = {
     fromId: number
 };
 
+//Catalyst count
+export type APIResponseGetCatalystCount = {
+    table: {
+        rows: {
+            c: {
+                v: string
+            }[]
+        }[]
+    }
+};
+
 function parseToJSON(input: string) {
     return JSON.parse(input.match(/{.*}/gm)![0]);
 }
@@ -82,7 +93,7 @@ export const apiGoogleDocs = createApi({
                     params: {
                         tqx: 'out:json',
                         tq:
-                            `select * where ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.B_login].toString().substring(0, 1)}='${arg.login}' AND  
+                            `select * where ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.B_login].toString().substring(0, 1)}='${arg.login}' AND 
                             ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.A_id].toString().substring(0, 1)} IS NOT NULL AND 
                             ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.B_login].toString().substring(0, 1)} IS NOT NULL AND 
                             ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.D_licence].toString().substring(0, 1)} IS NOT NULL AND 
@@ -98,7 +109,6 @@ export const apiGoogleDocs = createApi({
         }),
         getCatalyst: builder.mutation<APIResponseGetCatalyst, APIParamsGetCatalyst>({
             query: (arg) => {
-                console.log(arg.fromId);
                 return {
                     responseHandler: 'text',
                     url: `${getSpreadsheetIdCatalyst()}/gviz/tq`,
@@ -110,8 +120,23 @@ export const apiGoogleDocs = createApi({
                 };
             },
             transformResponse: (response: string) => parseToJSON(response) as APIResponseGetCatalyst
+        }),
+        getCatalystCount: builder.mutation<APIResponseGetCatalystCount, any>({
+            query: () => {
+                return {
+                    responseHandler: 'text',
+                    url: `${getSpreadsheetIdCatalyst()}/gviz/tq`,
+                    method: 'GET',
+                    params: {
+                        tqx: 'out:json',
+                        tq: `select count(${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.A_id].toString().substring(0, 1)}) where ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.A_id].toString().substring(0, 1)} IS NOT NULL AND 
+                        ${APISheetColumnOfTableLogin[APISheetColumnOfTableLogin.A_id].toString().substring(0, 1)} >= 1`
+                    }
+                };
+            },
+            transformResponse: (response: string) => parseToJSON(response) as APIResponseGetCatalystCount
         })
     })
 });
 
-export const { useGetLoginMutation, useGetCatalystMutation } = apiGoogleDocs;
+export const { useGetLoginMutation, useGetCatalystMutation, useGetCatalystCountMutation } = apiGoogleDocs;

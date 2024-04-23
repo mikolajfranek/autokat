@@ -11,7 +11,6 @@ export default function App(): React.JSX.Element {
     const dispatch = useAppDispatch();
     const { toggleTheme, isThemeDark } = React.useContext(PreferencesContext);
     const [getExchange] = useGetExchangeMutation();
-
     return (
         <View style={{ alignItems: 'center', margin: 15 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -55,7 +54,19 @@ export default function App(): React.JSX.Element {
                             JSON.stringify(error));
                     }
                 }}>
-                Synchronizuj baze danych
+                Synchronizuj baze danych (pełna)
+            </Button>            <Button
+                icon='sync'
+                onPress={async () => {
+                    try {
+                        //todo...
+                    } catch (error) {
+                        Alert.alert(
+                            'Wystąpił błąd',
+                            JSON.stringify(error));
+                    }
+                }}>
+                Synchronizuj baze danych (przyrostowa)
             </Button>
             <Button
                 icon='download'
@@ -78,6 +89,19 @@ export default function App(): React.JSX.Element {
                     }
                 }}>
                 Pobierz kursy walut
+            </Button>
+            <Button
+                icon='download'
+                onPress={async () => {
+                    try {
+                        //TODO
+                    } catch (error) {
+                        Alert.alert(
+                            'Wystąpił błąd',
+                            JSON.stringify(error));
+                    }
+                }}>
+                Pobierz kursy metali
             </Button>
             <Divider style={{ width: '100%', marginBottom: 10, marginTop: 10, height: 1 }} />
             <Button
