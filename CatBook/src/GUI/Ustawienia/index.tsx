@@ -55,7 +55,8 @@ export default function App(): React.JSX.Element {
                     }
                 }}>
                 Synchronizuj baze danych (pełna)
-            </Button>            <Button
+            </Button>
+            <Button
                 icon='sync'
                 onPress={async () => {
                     try {
