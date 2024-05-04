@@ -6,11 +6,18 @@ import { Button, Divider, Icon, Switch, Text } from 'react-native-paper';
 import { PreferencesContext } from '../../PreferencesContext';
 import { useGetExchangeMutation } from '../../APIExchange';
 import { Currency } from '../../Enums/Currency';
+import { useGetMetalsMutation } from '../../APIMetal';
+import { Metal } from '../../Enums/Metal';
+import CourseMetal from '../../Database/Models/CourseMetal';
+import { database } from '../../Database/DBA';
+import { Collection, Q } from '@nozbe/watermelondb';
 
 export default function App(): React.JSX.Element {
     const dispatch = useAppDispatch();
     const { toggleTheme, isThemeDark } = React.useContext(PreferencesContext);
     const [getExchange] = useGetExchangeMutation();
+
+    const [getMetal] = useGetMetalsMutation();
     return (
         <View style={{ alignItems: 'center', margin: 15 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -95,8 +102,33 @@ export default function App(): React.JSX.Element {
                 icon='download'
                 onPress={async () => {
                     try {
-                        //TODO
+                        const metal = await getMetal().unwrap();
+                        const platinum = metal.data.platinum.results[0].bid;
+                        const palladium = metal.data.palladium.results[0].bid;
+                        const rhodium = metal.data.rhodium.results[0].bid;
+
+                        //this working
+                        // await database.write(async () => {
+                        //     const newItem = await database.get('courses_exchange').create(item => {
+                        //         item.platinum = platinum;
+                        //         item.palladium = palladium;
+                        //         item.rhodium = rhodium;
+                        //     });
+                        // });
+
+
+                        database.get('courses_exchange')
+
+
+                        const numberOfStarredPosts = await database.get('courses_exchange')
+                            .query().fetchCount();
+
+                        console.log(numberOfStarredPosts);
+
+
+                        //console.log(item);
                     } catch (error) {
+                        console.error(error)
                         Alert.alert(
                             'Wystąpił błąd',
                             JSON.stringify(error));
