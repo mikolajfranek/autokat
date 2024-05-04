@@ -116,8 +116,14 @@ export default function App(): React.JSX.Element {
                         //     });
                         // });
 
+                        //https://www.mongodb.com/docs/atlas/device-sdks/sdk/react-native/install/#std-label-react-native-install
 
-                        database.get('courses_exchange')
+
+                        //collection.create
+                        //const courses = database.collections.get("courses_exchange") as CourseMetal;
+                        //courses.add(platinum, palladium, rhodium);
+
+                        // const starredPosts = await postsCollection.query(Q.where('is_starred', true)).fetch()
 
 
                         const numberOfStarredPosts = await database.get('courses_exchange')
