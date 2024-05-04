@@ -2,11 +2,11 @@ import { getLocalStorageString, setLocalStorage } from '../LocalStorage';
 import { LocalStorageKeys } from '../Enums/LocalStorageKeys';
 import { getBearerToken } from './OAuth2';
 import AuthData from './miki-916.json';
+//import AuthData from './auto-kat.json';
 import { APIResponseGetLogin } from './APIDocs';
 import { APIResponsePutUid } from './APISheets';
 import { APISheetColumnOfTableLogin } from '../Enums/APISheetColumnOfTableLogin';
 import { getUniqueId } from 'react-native-device-info';
-//import AuthData from './auto-kat.json';
 
 export function getHeaders(headers: Headers): Headers {
     headers.set('Authorization', `Bearer ${getLocalStorageString(LocalStorageKeys.bearerToken)}`);

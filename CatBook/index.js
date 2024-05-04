@@ -40,7 +40,7 @@ function getComponentFunc() {
     const toggleTheme = useCallback(() => {
         const value = !isThemeDark;
         setLocalStorage(LocalStorageKeys.isThemeDark, value);
-        return setIsThemeDark(value);
+        setIsThemeDark(value);
     }, [isThemeDark]);
     const preferences = useMemo(
         () => ({

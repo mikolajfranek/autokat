@@ -5,13 +5,13 @@ type Results = {
     results: {
         bid: string
     }[]
-};
+}
 
 type APIResponse = {
     data: {
         [key in keyof typeof Metal]: Results
     }
-};
+}
 
 export const apiMetal = createApi({
     reducerPath: 'apiMetal',

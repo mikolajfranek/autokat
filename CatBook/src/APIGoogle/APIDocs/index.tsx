@@ -10,17 +10,17 @@ export type LoginSheet = {
             v: string
         }
     }
-};
+}
 
 export type APIResponseGetLogin = {
     table: {
         rows: LoginSheet[]
     }
-};
+}
 
 type APIParamsGetLogin = {
     login: string
-};
+}
 
 //Catalyst
 export type CatalystSheet = {
@@ -29,17 +29,17 @@ export type CatalystSheet = {
             v: string
         }
     }
-};
+}
 
 export type APIResponseGetCatalyst = {
     table: {
         rows: CatalystSheet[]
     }
-};
+}
 
 type APIParamsGetCatalyst = {
     fromId: number
-};
+}
 
 //Catalyst count
 export type APIResponseGetCatalystCount = {
@@ -50,7 +50,7 @@ export type APIResponseGetCatalystCount = {
             }[]
         }[]
     }
-};
+}
 
 function parseToJSON(input: string) {
     return JSON.parse(input.match(/{.*}/gm)![0]);

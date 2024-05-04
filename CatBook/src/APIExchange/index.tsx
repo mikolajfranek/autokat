@@ -4,16 +4,16 @@ import { Currency } from '../Enums/Currency';
 type Rates = {
     mid: string,
     effectiveDate: string
-};
+}
 
 type APIResponse = {
     rates: Rates[]
-};
+}
 
 type APIParams = {
     currency: Currency,
     dataKursu?: Date
-};
+}
 
 export const apiExchange = createApi({
     reducerPath: 'apiExchange',

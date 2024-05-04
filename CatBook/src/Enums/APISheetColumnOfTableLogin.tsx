@@ -8,4 +8,4 @@ export enum APISheetColumnOfTableLogin {
     G_minusPlatinum,
     H_minusPalladium,
     I_minusRhodium
-};
+}

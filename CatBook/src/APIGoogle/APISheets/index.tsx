@@ -6,12 +6,12 @@ export type APIResponsePutUid = {
     updatedRows: number,
     updatedColumns: number,
     updatedCells: number
-};
+}
 
 type APIParamsPutUid = {
     id: string,
     uid: string
-};
+}
 
 const baseQuery = fetchBaseQuery({
     baseUrl: 'https://sheets.googleapis.com/v4/spreadsheets',

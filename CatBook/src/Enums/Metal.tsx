@@ -3,8 +3,8 @@ import { MetalSymbol } from './MetalSymbol';
 export enum Metal {
     platinum,
     palladium,
-    rhodium,
-};
+    rhodium
+}
 
 export function getSymbol(metal: Metal): MetalSymbol {
     switch (metal) {

@@ -9,4 +9,4 @@ export enum APISheetColumnOfTableCatalyst {
     H_type,
     I_idPicture,
     J_urlPicture
-};
+}
