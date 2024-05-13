@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createMaterialBottomTabNavigator } from 'react-native-paper/react-navigation';
-import Start from '../Start';
+import Katalizatory from '../Katalizatory';
 import Ustawienia from '../Ustawienia';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AppState } from 'react-native';
@@ -9,6 +9,8 @@ import { LoginSheet, useGetLoginMutation } from '../../APIGoogle/APIDocs';
 import { getLocalStorageString } from '../../LocalStorage';
 import { LocalStorageKeys } from '../../Enums/LocalStorageKeys';
 import { APISheetColumnOfTableLogin } from '../../Enums/APISheetColumnOfTableLogin';
+import KursyMetali from '../KursyMetali';
+import KursyWalut from '../KursyWalut';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -47,12 +49,26 @@ export default function App(): React.JSX.Element {
 
     return (
         <Tab.Navigator
-            initialRouteName="Screen_MaterialBottomTab_Start">
-            <Tab.Screen name="Screen_MaterialBottomTab_Start" component={Start}
+            initialRouteName="Screen_MaterialBottomTab_Katalizatory">
+            <Tab.Screen name="Screen_MaterialBottomTab_Katalizatory" component={Katalizatory}
                 options={{
-                    tabBarLabel: 'Start',
+                    tabBarLabel: 'Katalizatory',
                     tabBarIcon: ({ color }) => (
-                        <MaterialCommunityIcons name="home" color={color} size={26} />
+                        <MaterialCommunityIcons name="car" color={color} size={26} />
+                    ),
+                }} />
+            <Tab.Screen name="Screen_MaterialBottomTab_KursyMetali" component={KursyMetali}
+                options={{
+                    tabBarLabel: 'Kursy metali',
+                    tabBarIcon: ({ color }) => (
+                        <MaterialCommunityIcons name="gold" color={color} size={26} />
+                    ),
+                }} />
+            <Tab.Screen name="Screen_MaterialBottomTab_KursyWalut" component={KursyWalut}
+                options={{
+                    tabBarLabel: 'Kursy walut',
+                    tabBarIcon: ({ color }) => (
+                        <MaterialCommunityIcons name="currency-sign" color={color} size={26} />
                     ),
                 }} />
             <Tab.Screen name="Screen_MaterialBottomTab_Ustawienia" component={Ustawienia}

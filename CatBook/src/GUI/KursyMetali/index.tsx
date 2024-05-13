@@ -6,7 +6,7 @@ export default function App(): React.JSX.Element {
     return (
         <View style={{ flex: 1, justifyContent: 'center' }}>
             <Text style={{ alignSelf: 'center' }} >
-                Hello CatBook Start
+                Hello KursyMetali
             </Text>
         </View>
     );
