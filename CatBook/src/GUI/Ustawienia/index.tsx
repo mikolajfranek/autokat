@@ -8,7 +8,7 @@ import { useGetExchangeMutation } from '../../APIExchange';
 import { Currency } from '../../Enums/Currency';
 import { useGetMetalsMutation } from '../../APIMetal';
 import { Metal } from '../../Enums/Metal';
-import CourseMetal from '../../Database/Models/CourseMetal';
+import CourseMetal from '../../Database/Models/OldCourseMetal';
 import { database } from '../../Database/DBA';
 import { Collection, Q } from '@nozbe/watermelondb';
 
