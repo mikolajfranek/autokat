@@ -1193,7 +1193,7 @@ PODS:
     - React-utils (= 0.74.1)
   - RNDeviceInfo (10.13.2):
     - React-Core
-  - RNGestureHandler (2.16.1):
+  - RNGestureHandler (2.16.2):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1522,7 +1522,7 @@ SPEC CHECKSUMS:
   React-utils: 3285151c9d1e3a28a9586571fc81d521678c196d
   ReactCommon: f42444e384d82ab89184aed5d6f3142748b54768
   RNDeviceInfo: 42aadf1282ffa0a88dc38a504a7be145eb010dfa
-  RNGestureHandler: 2fb2c561d694d6a884850c8507c180a2cc2ed4e9
+  RNGestureHandler: 2282cfbcf86c360d29f44ace393203afd5c6cff7
   RNScreens: b32a9ff15bea7fcdbe5dff6477bc503f792b1208
   RNVectorIcons: 2a2f79274248390b80684ea3c4400bd374a15c90
   simdjson: e6bfae9ce4bcdc80452d388d593816f1ca2106f3
