@@ -1,4 +1,5 @@
 import 'react-native-gesture-handler'; //https://reactnavigation.org/docs/stack-navigator/
+import 'react-native-get-random-values'; //https://github.com/LinusU/react-native-get-random-values
 import { AppRegistry } from 'react-native';
 import { name } from './app.json';
 import { Provider } from 'react-redux';

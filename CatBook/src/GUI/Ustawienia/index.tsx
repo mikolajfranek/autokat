@@ -14,7 +14,7 @@ import { BSON, Types } from 'realm';
 export default function App(): React.JSX.Element {
     const dispatch = useAppDispatch();
     const { toggleTheme, isThemeDark } = React.useContext(PreferencesContext);
-    const { useQuery, useRealm } = LocalRealmContext;
+    const { useRealm } = LocalRealmContext;
     const realm = useRealm();
 
     const [getExchange] = useGetExchangeMutation();
@@ -83,34 +83,31 @@ export default function App(): React.JSX.Element {
                     try {
                         const eur = await getExchange({ currency: Currency.eur }).unwrap();
                         console.log('---');
+                        console.log(eur.rates[0].mid);
+                        console.log(eur.rates[0].effectiveDate);
+
                         realm.write(() => {
                             realm.create<CourseExchange>(CourseExchange, {
                                 _id: new BSON.ObjectId(),
                                 _type: Currency.eur,
-                                _value_mid: Types.Decimal128.fromString(eur.rates[0].mid),
+                                _value_mid: eur.rates[0].mid,
                                 _effectived_at: eur.rates[0].effectiveDate
                             });
                         });
 
-                        console.log(eur.rates[0].mid);
-                        console.log(eur.rates[0].effectiveDate);
 
 
-                        //const usd = await getExchange({ currency: Currency.usd }).unwrap();
+                        const usd = await getExchange({ currency: Currency.usd }).unwrap();
+                        realm.write(() => {
+                            realm.create<CourseExchange>(CourseExchange, {
+                                _id: new BSON.ObjectId(),
+                                _type: Currency.usd,
+                                _value_mid: usd.rates[0].mid,
+                                _effectived_at: usd.rates[0].effectiveDate
+                            });
+                        });
 
 
-
-                        //useRealm
-
-
-                        //effectiveDate
-
-                        // const sortedProfiles = useQuery(CourseExchange)
-                        //     //.filtered("type == $0", Currency.eur)
-                        //     .sorted('_id', true);
-                        // for (var item in sortedProfiles) {
-                        //     console.log(item);
-                        // }
 
                     } catch (error) {
                         console.log(error);

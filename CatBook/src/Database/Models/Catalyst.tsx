@@ -1,30 +1,32 @@
-import Realm, { ObjectSchema, Types } from "realm";
+import Realm, { BSON, ObjectSchema, Types } from "realm";
 
 export default class Catalyst extends Realm.Object<Catalyst> {
-    _id!: Types.Int;
-    type!: Types.Int;
-    name!: Types.String;
-    brand!: Types.String;
-    picture_id!: Types.String;
-    thumbnail?: Types.Data;
-    weight!: Types.Decimal128;
-    platinum!: Types.Decimal128;
-    palladium!: Types.Decimal128;
-    rhodium!: Types.Decimal128;
+    _id!: BSON.ObjectId;
+    _created_at: Types.Date = new Date();
+    _type!: Types.Int;
+    _name!: Types.String;
+    _brand!: Types.String;
+    _picture_id!: Types.String;
+    _thumbnail?: Types.Data;
+    _weight!: Types.Double;
+    _platinum!: Types.Double;
+    _palladium!: Types.Double;
+    _rhodium!: Types.Double;
 
     static schema: ObjectSchema = {
         name: 'Catalyst',
         properties: {
             _id: 'int',
-            type: { type: 'int', indexed: true },
-            name: { type: 'string', indexed: 'full-text' },
-            brand: { type: 'string', indexed: 'full-text' },
-            picture_id: 'string',
-            thumbnail: 'data?',
-            weight: 'decimal128',
-            platinum: 'decimal128',
-            palladium: 'decimal128',
-            rhodium: 'decimal128'
+            _created_at: { type: 'date', default: () => new Date() },
+            _type: { type: 'int', indexed: true },
+            _name: { type: 'string', indexed: 'full-text' },
+            _brand: { type: 'string', indexed: 'full-text' },
+            _picture_id: 'string',
+            _thumbnail: 'data?',
+            _weight: 'double',
+            _platinum: 'double',
+            _palladium: 'double',
+            _rhodium: 'double'
         },
         primaryKey: '_id'
     };
