@@ -12,7 +12,7 @@ type APIResponse = {
 
 type APIParams = {
     currency: Currency,
-    dataKursu?: Date
+    data_kursu?: Date
 }
 
 export const apiExchange = createApi({
@@ -21,7 +21,7 @@ export const apiExchange = createApi({
     endpoints: builder => ({
         getExchange: builder.mutation<APIResponse, APIParams>({
             query: (arg) => {
-                let { currency, dataKursu } = arg;
+                let { currency, data_kursu: dataKursu } = arg;
                 if (dataKursu == undefined)
                     dataKursu = new Date();
                 return {

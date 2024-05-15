@@ -6468,10 +6468,10 @@ react-is@^18.3.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.3.1.tgz#e83557dc12eae63a99e003a46388b1dcbb44db7e"
   integrity sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==
 
-react-native-device-info@^10.13.2:
-  version "10.13.2"
-  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-10.13.2.tgz#7bfd4eb991c3434b8a2c38224cb1f51f8e799d54"
-  integrity sha512-5EAls7uvGdZkVfp1KWHsR5BfJJHp/ux64+ZPj1865IcaUyrNQIWYFmrTHwTH8L/NGJUTBrzv+y6WODnN17LSbw==
+react-native-device-info@^11.0.0:
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-11.0.0.tgz#bd072a0c1e721b16a0af1e0c2f93bd1c804dbf0e"
+  integrity sha512-6iKqiHpy2wgAyS20QPQyC98xODNnR8vENmqz04jlq3Q9qmnddO3CYuhbRxPDSdqr5xPWtOcYk0GfCtoXhU92YQ==
 
 react-native-gesture-handler@^2.16.2:
   version "2.16.2"
@@ -6676,10 +6676,10 @@ readline@^1.3.0:
   resolved "https://registry.yarnpkg.com/readline/-/readline-1.3.0.tgz#c580d77ef2cfc8752b132498060dc9793a7ac01c"
   integrity sha512-k2d6ACCkiNYz222Fs/iNze30rRJ1iIicW7JuX/7/cozvih6YCkFZH+J6mAFDVgv0dRBaAyr4jDqC95R2y4IADg==
 
-realm@^12.8.0:
-  version "12.8.0"
-  resolved "https://registry.yarnpkg.com/realm/-/realm-12.8.0.tgz#628179aade23216d86343239db5797b46a0262da"
-  integrity sha512-U1w5+ncyURQFQTrshoGn3KV+pzR1rQlPT7s3Sw6HPIPVBH80EWU3mirwvqp6RQ+Qi32ctRrBMTNeGd5mzAyiSw==
+realm@^12.8.1:
+  version "12.8.1"
+  resolved "https://registry.yarnpkg.com/realm/-/realm-12.8.1.tgz#0e657fa0d643a06b1dbbb8cf478683af503a5b42"
+  integrity sha512-+zj2bvU0EACXvPBdvRsp2TybHPqPtftciTXsAlhrTWMiaoqC8FO6lriPbUs/JwsXz1w9otJXl5kXRBghPQHgLQ==
   dependencies:
     "@realm/fetch" "^0.1.1"
     bson "^4.7.2"

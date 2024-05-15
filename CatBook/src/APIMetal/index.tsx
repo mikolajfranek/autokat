@@ -3,7 +3,7 @@ import { Metal } from '../Enums/Metal';
 
 type Results = {
     results: {
-        bid: string
+        bid: number
     }[]
 }
 
@@ -13,13 +13,17 @@ type APIResponse = {
     }
 }
 
+type APIParams = {
+    data_kursu: Date
+};
+
 export const apiMetal = createApi({
     reducerPath: 'apiMetal',
     baseQuery: fetchBaseQuery({ baseUrl: 'https://kitco-gcdn-prod.stellate.sh' }),
     endpoints: builder => ({
-        getMetals: builder.mutation<APIResponse, void>({
-            query: () => {
-                const timestamp = Math.floor(Date.now() / 1000);
+        getMetals: builder.mutation<APIResponse, APIParams>({
+            query: (arg) => {
+                const timestamp = Math.floor(arg.data_kursu.getTime() / 1000);
                 return {
                     method: 'POST',
                     url: '',

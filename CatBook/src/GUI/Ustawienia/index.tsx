@@ -10,12 +10,21 @@ import { useGetMetalsMutation } from '../../APIMetal';
 import { LocalRealmContext } from '../../Database/LocalRealmContext';
 import CourseExchange from '../../Database/Models/CourseExchange';
 import { BSON, Types } from 'realm';
+import CourseMetal from '../../Database/Models/CourseMetal';
 
 export default function App(): React.JSX.Element {
     const dispatch = useAppDispatch();
     const { toggleTheme, isThemeDark } = React.useContext(PreferencesContext);
     const { useRealm } = LocalRealmContext;
     const realm = useRealm();
+
+
+
+    //const _id = BSON.ObjectId.createFromHexString("664515e8df2cc69c2fab06c7");
+    //const myTask = useObject<CourseExchange>(CourseExchange, _id);
+    //var current = realm._objectForObjectKey<CourseExchange>(CourseExchange, _id);
+
+
 
     const [getExchange] = useGetExchangeMutation();
     const [getMetal] = useGetMetalsMutation();
@@ -41,7 +50,7 @@ export default function App(): React.JSX.Element {
                 katalizatorypoznan.pl
             </Button>
             <Divider style={{ width: '100%', marginBottom: 10, marginTop: 10, height: 1 }} />
-            <View style={{ marginLeft: 0, flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Text
                     style={{ verticalAlign: 'middle' }}>Ciemny layout</Text>
                 <Switch
@@ -77,38 +86,27 @@ export default function App(): React.JSX.Element {
                 }}>
                 Synchronizuj baze danych (przyrostowa)
             </Button>
+
             <Button
                 icon='download'
                 onPress={async () => {
                     try {
                         const eur = await getExchange({ currency: Currency.eur }).unwrap();
-                        console.log('---');
-                        console.log(eur.rates[0].mid);
-                        console.log(eur.rates[0].effectiveDate);
-
-                        realm.write(() => {
-                            realm.create<CourseExchange>(CourseExchange, {
-                                _id: new BSON.ObjectId(),
-                                _type: Currency.eur,
-                                _value_mid: eur.rates[0].mid,
-                                _effectived_at: eur.rates[0].effectiveDate
-                            });
-                        });
-
-
-
                         const usd = await getExchange({ currency: Currency.usd }).unwrap();
+                        const eur_mid = eur.rates[0].mid;
+                        const eur_effectiveDate = eur.rates[0].effectiveDate;
+                        const usd_mid = usd.rates[0].mid;
+                        const usd_effectiveDate = usd.rates[0].effectiveDate;
                         realm.write(() => {
                             realm.create<CourseExchange>(CourseExchange, {
                                 _id: new BSON.ObjectId(),
-                                _type: Currency.usd,
-                                _value_mid: usd.rates[0].mid,
-                                _effectived_at: usd.rates[0].effectiveDate
+                                _value_eur_mid: eur_mid,
+                                _value_usd_mid: usd_mid,
+                                _eur_effectived_at: eur_effectiveDate,
+                                _usd_effectived_at: usd_effectiveDate
                             });
                         });
-
-
-
+                        //zapisz jeśli ...
                     } catch (error) {
                         console.log(error);
                         Alert.alert(
@@ -122,37 +120,22 @@ export default function App(): React.JSX.Element {
                 icon='download'
                 onPress={async () => {
                     try {
-                        const metal = await getMetal().unwrap();
-                        const platinum = metal.data.platinum.results[0].bid;
-                        const palladium = metal.data.palladium.results[0].bid;
-                        const rhodium = metal.data.rhodium.results[0].bid;
-
-                        //this working
-                        // await database.write(async () => {
-                        //     const newItem = await database.get('courses_exchange').create(item => {
-                        //         item.platinum = platinum;
-                        //         item.palladium = palladium;
-                        //         item.rhodium = rhodium;
-                        //     });
-                        // });
-
-                        //https://www.mongodb.com/docs/atlas/device-sdks/sdk/react-native/install/#std-label-react-native-install
-
-
-                        //collection.create
-                        //const courses = database.collections.get("courses_exchange") as CourseMetal;
-                        //courses.add(platinum, palladium, rhodium);
-
-                        // const starredPosts = await postsCollection.query(Q.where('is_starred', true)).fetch()
-
-
-                        //const numberOfStarredPosts = await database.get('courses_exchange')
-                        //.query().fetchCount();
-
-                        //console.log(numberOfStarredPosts);
-
-
-                        //console.log(item);
+                        const data_kursu = new Date();
+                        const metal = await getMetal({ data_kursu: data_kursu }).unwrap();
+                        const platinum_bid = metal.data.platinum.results[0].bid;
+                        const palladium_bid = metal.data.palladium.results[0].bid;
+                        const rhodium_bid = metal.data.rhodium.results[0].bid;
+                        console.log(data_kursu);
+                        realm.write(() => {
+                            realm.create<CourseMetal>(CourseMetal, {
+                                _id: new BSON.ObjectId(),
+                                _platinum_bid: platinum_bid,
+                                _palladium_bid: palladium_bid,
+                                _rhodium_bid: rhodium_bid,
+                                _effectived_at: data_kursu
+                            });
+                        });
+                        //zapisz jeśli ...
                     } catch (error) {
                         console.error(error)
                         Alert.alert(

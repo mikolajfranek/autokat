@@ -11,7 +11,7 @@ export default class CourseMetal extends Realm.Object<CourseMetal> {
     static schema: ObjectSchema = {
         name: 'CourseMetal',
         properties: {
-            _id: 'int',
+            _id: 'objectId',
             _created_at: { type: 'date', default: () => new Date() },
             _platinum_bid: 'double',
             _palladium_bid: 'double',
