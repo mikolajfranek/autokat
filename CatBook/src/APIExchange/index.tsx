@@ -3,7 +3,7 @@ import { Currency } from '../Enums/Currency';
 
 type Rates = {
     mid: string,
-    effectiveDate: string
+    effectiveDate: Date
 }
 
 type APIResponse = {

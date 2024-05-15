@@ -1,18 +1,19 @@
-import Realm, { BSON, ObjectSchema } from "realm";
+import Realm, { BSON, ObjectSchema, Types } from "realm";
 
-//https://www.mongodb.com/docs/atlas/device-sdks/sdk/react-native/quick-start/
-export class CourseExchange extends Realm.Object<CourseExchange> {
+export default class CourseExchange extends Realm.Object<CourseExchange> {
     _id!: BSON.ObjectId;
-    name!: string;
-    effectived_at?: string;
+    _type!: Types.Int;
+    _value_mid!: Types.Decimal128;
+    _effectived_at!: Types.Date;
 
     static schema: ObjectSchema = {
         name: 'CourseExchange',
         properties: {
             _id: 'objectId',
-            name: { type: 'string', indexed: 'full-text' },
-            effectived_at: { type: 'string' }
+            _type: { type: 'int', indexed: true },
+            _value_mid: 'decimal128',
+            _effectived_at: 'date'
         },
-        primaryKey: '_id',
+        primaryKey: '_id'
     };
 }

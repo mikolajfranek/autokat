@@ -7,16 +7,17 @@ import { PreferencesContext } from '../../PreferencesContext';
 import { useGetExchangeMutation } from '../../APIExchange';
 import { Currency } from '../../Enums/Currency';
 import { useGetMetalsMutation } from '../../APIMetal';
-import { Metal } from '../../Enums/Metal';
-import CourseMetal from '../../Database/Models/OldCourseMetal';
-import { database } from '../../Database/DBA';
-import { Collection, Q } from '@nozbe/watermelondb';
+import { LocalRealmContext } from '../../Database/LocalRealmContext';
+import CourseExchange from '../../Database/Models/CourseExchange';
+import { BSON, Types } from 'realm';
 
 export default function App(): React.JSX.Element {
     const dispatch = useAppDispatch();
     const { toggleTheme, isThemeDark } = React.useContext(PreferencesContext);
-    const [getExchange] = useGetExchangeMutation();
+    const { useQuery, useRealm } = LocalRealmContext;
+    const realm = useRealm();
 
+    const [getExchange] = useGetExchangeMutation();
     const [getMetal] = useGetMetalsMutation();
     return (
         <View style={{ alignItems: 'center', margin: 15 }}>
@@ -81,16 +82,38 @@ export default function App(): React.JSX.Element {
                 onPress={async () => {
                     try {
                         const eur = await getExchange({ currency: Currency.eur }).unwrap();
-                        const usd = await getExchange({ currency: Currency.usd }).unwrap();
+                        console.log('---');
+                        realm.write(() => {
+                            realm.create<CourseExchange>(CourseExchange, {
+                                _id: new BSON.ObjectId(),
+                                _type: Currency.eur,
+                                _value_mid: Types.Decimal128.fromString(eur.rates[0].mid),
+                                _effectived_at: eur.rates[0].effectiveDate
+                            });
+                        });
 
-                        //effectiveDate
                         console.log(eur.rates[0].mid);
                         console.log(eur.rates[0].effectiveDate);
 
-                        //var item = await CourseExchange.add(eur, usd);
-                        //console.log(item);
+
+                        //const usd = await getExchange({ currency: Currency.usd }).unwrap();
+
+
+
+                        //useRealm
+
+
+                        //effectiveDate
+
+                        // const sortedProfiles = useQuery(CourseExchange)
+                        //     //.filtered("type == $0", Currency.eur)
+                        //     .sorted('_id', true);
+                        // for (var item in sortedProfiles) {
+                        //     console.log(item);
+                        // }
 
                     } catch (error) {
+                        console.log(error);
                         Alert.alert(
                             'Wystąpił błąd',
                             JSON.stringify(error));
@@ -126,10 +149,10 @@ export default function App(): React.JSX.Element {
                         // const starredPosts = await postsCollection.query(Q.where('is_starred', true)).fetch()
 
 
-                        const numberOfStarredPosts = await database.get('courses_exchange')
-                            .query().fetchCount();
+                        //const numberOfStarredPosts = await database.get('courses_exchange')
+                        //.query().fetchCount();
 
-                        console.log(numberOfStarredPosts);
+                        //console.log(numberOfStarredPosts);
 
 
                         //console.log(item);

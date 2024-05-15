@@ -10,11 +10,7 @@ import { useState, useCallback, useMemo } from 'react';
 import { getLocalStorageBoolean, setLocalStorage } from './src/LocalStorage';
 import { LocalStorageKeys } from './src/Enums/LocalStorageKeys';
 import { PreferencesContext } from './src/PreferencesContext';
-import { RealmProvider } from '@realm/react';
-import { CourseExchange } from './src/Database/Models/CourseExchange';
-import { CourseMetal } from './src/Database/Models/CourseMetal';
-import { Catalyst } from './src/Database/Models/Catalyst';
-import { Filter } from './src/Database/Models/Filter';
+import { LocalRealmContext } from './src/Database/LocalRealmContext';
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
     reactNavigationLight: NavigationDefaultTheme,
@@ -39,7 +35,7 @@ const CombinedDarkTheme = {
     }
 };
 
-function getComponentFunc() {
+function getComponent() {
     const [isThemeDark, setIsThemeDark] = useState(getLocalStorageBoolean(LocalStorageKeys.isThemeDark));
     const currentTheme = isThemeDark ? CombinedDarkTheme : CombinedDefaultTheme;
     const toggleTheme = useCallback(() => {
@@ -50,16 +46,17 @@ function getComponentFunc() {
     const preferences = useMemo(
         () => ({
             toggleTheme,
-            isThemeDark,
+            isThemeDark
         }),
         [toggleTheme, isThemeDark]
     );
+    const { RealmProvider } = LocalRealmContext;
     return (
         <Provider store={store}>
             <PreferencesContext.Provider value={preferences}>
                 <PaperProvider theme={currentTheme}>
                     <NavigationContainer theme={currentTheme}>
-                        <RealmProvider schema={[CourseExchange, CourseMetal, Catalyst, Filter]}>
+                        <RealmProvider>
                             <App />
                         </RealmProvider>
                     </NavigationContainer>
@@ -69,4 +66,4 @@ function getComponentFunc() {
     );
 }
 
-AppRegistry.registerComponent(name, () => getComponentFunc);
+AppRegistry.registerComponent(name, () => getComponent);

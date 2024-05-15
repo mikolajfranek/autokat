@@ -1,16 +1,15 @@
-import Realm, { BSON, ObjectSchema } from "realm";
+import Realm, { ObjectSchema, Types } from "realm";
 
-// Define your object model
-export class Filter extends Realm.Object<Filter> {
-    _id!: BSON.ObjectId;
-    name!: string;
+export default class Filter extends Realm.Object<Filter> {
+    _id!: Types.Int;
+    name!: Types.String;
 
     static schema: ObjectSchema = {
         name: 'Filter',
         properties: {
-            _id: 'objectId',
-            name: { type: 'string', indexed: 'full-text' },
+            _id: 'int',
+            name: { type: 'string', indexed: 'full-text' }
         },
-        primaryKey: '_id',
+        primaryKey: '_id'
     };
 }
