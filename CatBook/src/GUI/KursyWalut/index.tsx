@@ -6,6 +6,22 @@ import CourseExchange from '../../Database/Models/CourseExchange';
 import { Currency } from '../../Enums/Currency';
 
 export default function App(): React.JSX.Element {
+/**
+ * problem, ze eur i usd mam w osobnych wierszach?
+ * 
+ * #aktualny widok
+ * aktualnie wykorzystywane kursy
+ * przycisk przejdź do listy
+ * 
+ * #lista
+ * sortowanie po desc
+ * przycisk pobierz kursy
+ * filtrowanie po dacie?
+ * oznaczenie aktualnego wykorzystywanego kursu..
+ * 
+ * 
+ */
+
     const { useQuery } = LocalRealmContext;
 
     const sortedProfiles = useQuery(CourseExchange)
