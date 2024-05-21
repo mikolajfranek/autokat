@@ -3,7 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { useAppSelector } from './hooks';
 import MaterialBottomTab from './GUI/MaterialBottomTab';
 import FormularzLogowania from './GUI/FormularzLogowania';
-import ModalTmp from './GUI/Modale/ModalTmp';
+import ModalKursyWalutWybierzDate from './GUI/Modale/ModalKursyWalutWybierzDate';
 import { name } from '../app.json';
 
 const Stack = createStackNavigator();
@@ -31,8 +31,8 @@ export default function App(): React.JSX.Element {
       {/* TODO presentation: {modal, transparentModal, card}  */}
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen
-          name='Stack.Screen_ModalTmp'
-          component={ModalTmp}
+          name='Stack.Screen_ModalKursyWalutWybierzDate'
+          component={ModalKursyWalutWybierzDate}
         />
       </Stack.Group>
     </Stack.Navigator>
