@@ -94,16 +94,15 @@ export default function App(): React.JSX.Element {
                         const eur = await getExchange({ currency: Currency.eur }).unwrap();
                         const usd = await getExchange({ currency: Currency.usd }).unwrap();
                         const eur_mid = eur.rates[0].mid;
-                        const eur_effectiveDate = eur.rates[0].effectiveDate;
                         const usd_mid = usd.rates[0].mid;
-                        const usd_effectiveDate = usd.rates[0].effectiveDate;
+                        const dates = [usd.rates[0].effectiveDate.getTime(), eur.rates[0].effectiveDate.getTime()];
+                        const effectiveDate = new Date(Math.max(...dates));
                         realm.write(() => {
                             realm.create<CourseExchange>(CourseExchange, {
                                 _id: new BSON.ObjectId(),
                                 _value_eur_mid: eur_mid,
                                 _value_usd_mid: usd_mid,
-                                _eur_effectived_at: eur_effectiveDate,
-                                _usd_effectived_at: usd_effectiveDate
+                                _effectived_at: effectiveDate,
                             });
                         });
                         //zapisz jeśli ...

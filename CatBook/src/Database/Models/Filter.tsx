@@ -8,7 +8,7 @@ export default class Filter extends Realm.Object<Filter> {
     static schema: ObjectSchema = {
         name: 'Filter',
         properties: {
-            _id: 'int',
+            _id: 'objectId',
             _created_at: { type: 'date', default: () => new Date() },
             _name: { type: 'string', indexed: 'full-text' }
         },

@@ -16,9 +16,9 @@ export default class Catalyst extends Realm.Object<Catalyst> {
     static schema: ObjectSchema = {
         name: 'Catalyst',
         properties: {
-            _id: 'int',
+            _id: 'objectId',
             _created_at: { type: 'date', default: () => new Date() },
-            _type: { type: 'int', indexed: true },
+            _type: 'int',
             _name: { type: 'string', indexed: 'full-text' },
             _brand: { type: 'string', indexed: 'full-text' },
             _picture_id: 'string',
