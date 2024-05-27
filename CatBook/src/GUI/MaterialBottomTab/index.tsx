@@ -26,7 +26,7 @@ export default function App(): React.JSX.Element {
                 nextAppState === 'active'
             ) {
                 console.log('App has come to the foreground!');
-                const loginSheet = JSON.parse(getLocalStorageString(LocalStorageKeys.loginSheet)) as LoginSheet;
+                const loginSheet = JSON.parse(getLocalStorageString(LocalStorageKeys.sheetLogin)) as LoginSheet;
                 const loginSheet_login = loginSheet.c[APISheetColumnOfTableLogin.B_login].v;
                 await loadUser(loginSheet_login, getLogin, undefined);
                 //TODO

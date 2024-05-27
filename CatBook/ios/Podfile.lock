@@ -1193,7 +1193,7 @@ PODS:
     - React-logger (= 0.74.1)
     - React-perflogger (= 0.74.1)
     - React-utils (= 0.74.1)
-  - RealmJS (12.8.1):
+  - RealmJS (12.9.0):
     - React
   - RNDeviceInfo (11.1.0):
     - React-Core
@@ -1522,7 +1522,7 @@ SPEC CHECKSUMS:
   React-runtimescheduler: e2152ed146b6a35c07386fc2ac4827b27e6aad12
   React-utils: 3285151c9d1e3a28a9586571fc81d521678c196d
   ReactCommon: f42444e384d82ab89184aed5d6f3142748b54768
-  RealmJS: 2c7fdb3991d7655fba5f88eb288f75eaf5cb9980
+  RealmJS: 7aa0e7dcc8959d28cee3ab302415a8893e50ad12
   RNDeviceInfo: b899ce37a403a4dea52b7cb85e16e49c04a5b88e
   RNGestureHandler: 2282cfbcf86c360d29f44ace393203afd5c6cff7
   RNScreens: b32a9ff15bea7fcdbe5dff6477bc503f792b1208

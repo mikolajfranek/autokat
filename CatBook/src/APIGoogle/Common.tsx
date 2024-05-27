@@ -51,5 +51,5 @@ export async function loadUser(login: string, getLogin: any, putUid: any) {
         if (result.updatedCells != 1 || result.updatedColumns != 1 || result.updatedRows != 1)
             throw Error();
     }
-    setLocalStorage(LocalStorageKeys.loginSheet, JSON.stringify(user_base));
+    setLocalStorage(LocalStorageKeys.sheetLogin, JSON.stringify(user_base));
 }
