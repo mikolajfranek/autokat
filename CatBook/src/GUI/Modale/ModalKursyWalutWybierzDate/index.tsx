@@ -29,7 +29,11 @@ export default function App(): React.JSX.Element {
             <View
                 style={{ flex: 1, width: 100, alignSelf: 'center' }}>
                 <Button
-                    onPress={() => navigation.goBack()}
+                    onPress={() => navigation.navigate({
+                        name: 'Screen_MaterialBottomTab_KursyWalut',
+                        params: { id: 'bbb' },
+                        merge: true
+                    })}
                     title="OK" />
             </View>
             {items.map(item => (

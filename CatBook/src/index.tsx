@@ -28,12 +28,11 @@ export default function App(): React.JSX.Element {
             />
           )
       }
-      {/* TODO presentation: {modal, transparentModal, card}  */}
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen
           name='Stack.Screen_ModalKursyWalutWybierzDate'
           component={ModalKursyWalutWybierzDate}
-        />
+          options={{ title: 'Wybierz datę' }} />
       </Stack.Group>
     </Stack.Navigator>
   );

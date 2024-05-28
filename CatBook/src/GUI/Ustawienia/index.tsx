@@ -4,12 +4,9 @@ import { setAuthenticated } from '../../Slices/Auth';
 import { useAppDispatch } from '../../hooks';
 import { Button, Divider, Icon, Switch, Text } from 'react-native-paper';
 import { PreferencesContext } from '../../PreferencesContext';
-import { useGetExchangeMutation } from '../../APIExchange';
-import { Currency } from '../../Enums/Currency';
 import { useGetMetalsMutation } from '../../APIMetal';
 import { LocalRealmContext } from '../../Database/LocalRealmContext';
-import CourseExchange from '../../Database/Models/CourseExchange';
-import { BSON, Types } from 'realm';
+import { BSON } from 'realm';
 import CourseMetal from '../../Database/Models/CourseMetal';
 
 export default function App(): React.JSX.Element {

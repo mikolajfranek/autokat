@@ -8,21 +8,23 @@ import { Currency } from '../../Enums/Currency';
 import { BSON } from 'realm';
 import { deleteLocalStorage, getLocalStorageStringOrUndefined } from '../../LocalStorage';
 import { LocalStorageKeys } from '../../Enums/LocalStorageKeys';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 export default function App(): React.JSX.Element {
+    const navigation = useNavigation();
+    const route = useRoute();
+
     const { useRealm } = LocalRealmContext;
     const realm = useRealm();
     const [getExchange] = useGetExchangeMutation();
-    const isNewestExchange = getLocalStorageStringOrUndefined(LocalStorageKeys.newestExchangeID) === undefined;
+    const newestExchangeID = getLocalStorageStringOrUndefined(LocalStorageKeys.newestExchangeID);
+    const isNewestExchange = newestExchangeID === undefined;
     return (
         <View style={{ alignItems: 'center', margin: 15 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text>Aktualnie:</Text>
-            </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
                 <Text>Data kursów:</Text>
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
                 <Text>Kurs EUR:  </Text>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -62,6 +64,7 @@ export default function App(): React.JSX.Element {
                 }}>
                 Pobierz kursy walut
             </Button>
+
             <Divider style={{ width: '100%', marginBottom: 10, marginTop: 10, height: 1 }} />
 
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -81,19 +84,13 @@ export default function App(): React.JSX.Element {
 
             <Button
                 icon='calendar-search'
-                onPress={async () => {
-                    try {
-                        //
-                    } catch (error) {
-                        console.log(error);
-                        Alert.alert(
-                            'Wystąpił błąd',
-                            JSON.stringify(error));
-                    }
-                }}>
+                onPress={() => navigation.navigate('Stack.Screen_ModalKursyWalutWybierzDate')}>
                 Wybierz inną datę
             </Button>
-          
+            <Text>
+
+                {route.params?.id}
+            </Text>
         </View>
     );
 }
