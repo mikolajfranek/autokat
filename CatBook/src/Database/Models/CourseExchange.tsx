@@ -1,3 +1,6 @@
+import React from "react";
+import { View } from "react-native";
+import { Text } from "react-native-paper";
 import Realm, { BSON, ObjectSchema, Types } from "realm";
 
 export default class CourseExchange extends Realm.Object<CourseExchange> {
@@ -18,4 +21,14 @@ export default class CourseExchange extends Realm.Object<CourseExchange> {
         },
         primaryKey: '_id'
     };
+
+    getJSX(): React.JSX.Element {
+        return (
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+                <Text>{this._value_eur_mid.toString()}</Text>
+                <Text style={{ marginLeft: 10 }}>{this._value_usd_mid.toString()}</Text>
+                <Text style={{ marginLeft: 10 }}>{this._effectived_at.toString()}</Text>
+            </View>
+        );
+    }
 }

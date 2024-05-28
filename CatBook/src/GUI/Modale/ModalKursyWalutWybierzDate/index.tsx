@@ -1,11 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Text, View } from 'react-native';
 import { LocalRealmContext } from '../../../Database/LocalRealmContext';
 import CourseExchange from '../../../Database/Models/CourseExchange';
+import { TextInput } from 'react-native-paper';
 
 export default function App(): React.JSX.Element {
     const navigation = useNavigation();
+    const [filtr, setFiltr] = useState('');
     /**
      * 
      * #lista jako modal 
@@ -19,15 +21,16 @@ export default function App(): React.JSX.Element {
         .sorted('_created_at', true);
 
     return (
-        <View style={{ flex: 2 }}>
-            <View
-                style={{ flex: 1, justifyContent: 'center' }}>
-                <Text style={{ alignSelf: 'center' }} >
-                    Hello CatBook ModalTmp
-                </Text>
+        <View style={{ flex: 2, justifyContent: 'center' }}>
+            <View style={{ margin: 10 }}>
+                {/* TODO maska yyyy-mm-dd */}
+                <TextInput
+                    placeholder='YYYY-MM-DD'
+                    onChangeText={newText => setFiltr(newText)}
+                />
             </View>
             <View
-                style={{ flex: 1, width: 100, alignSelf: 'center' }}>
+                style={{ flex: 2, width: 100, alignSelf: 'center' }}>
                 <Button
                     onPress={() => navigation.navigate({
                         name: 'Screen_MaterialBottomTab_KursyWalut',
@@ -36,14 +39,7 @@ export default function App(): React.JSX.Element {
                     })}
                     title="OK" />
             </View>
-            {items.map(item => (
-                <View style={{ marginTop: 10 }}>
-                    <Text>{item._id.toString()}</Text>
-                    <Text>{item._value_eur_mid.toString()}</Text>
-                    <Text>{item._value_usd_mid.toString()}</Text>
-                    <Text>{item._effectived_at.toString()}</Text>
-                </View>
-            ))}
+            {items.map(item => item.getJSX())}
         </View>
     );
 }
