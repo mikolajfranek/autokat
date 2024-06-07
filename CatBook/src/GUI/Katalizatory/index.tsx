@@ -11,3 +11,36 @@ export default function App(): React.JSX.Element {
         </View>
     );
 }
+
+/*
+
+
+            <Divider style={{ width: '100%', marginBottom: 10, marginTop: 10, height: 1 }} />
+            <Button
+                icon='sync'
+                onPress={async () => {
+                    try {
+                        //todo...
+                    } catch (error) {
+                        Alert.alert(
+                            'Wystąpił błąd',
+                            JSON.stringify(error));
+                    }
+                }}>
+                Synchronizuj baze danych (pełna)
+            </Button>
+            <Button
+                icon='sync'
+                onPress={async () => {
+                    try {
+                        //todo...
+                    } catch (error) {
+                        Alert.alert(
+                            'Wystąpił błąd',
+                            JSON.stringify(error));
+                    }
+                }}>
+                Synchronizuj baze danych (przyrostowa)
+            </Button>
+
+*/

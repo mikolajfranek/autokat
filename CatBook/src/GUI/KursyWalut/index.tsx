@@ -94,3 +94,13 @@ export default function App(): React.JSX.Element {
         </View>
     );
 }
+
+/*
+    //const _id = BSON.ObjectId.createFromHexString("664515e8df2cc69c2fab06c7");
+    //const myTask = useObject<CourseExchange>(CourseExchange, _id);
+    //var current = realm._objectForObjectKey<CourseExchange>(CourseExchange, _id);
+
+
+
+    const [getMetal] = useGetMetalsMutation();
+*/

@@ -26,3 +26,36 @@ export default function App(): React.JSX.Element {
         </View>
     );
 }
+
+/*
+
+            <Button
+                icon='download'
+                onPress={async () => {
+                    try {
+                        const data_kursu = new Date();
+                        const metal = await getMetal({ data_kursu: data_kursu }).unwrap();
+                        const platinum_bid = metal.data.platinum.results[0].bid;
+                        const palladium_bid = metal.data.palladium.results[0].bid;
+                        const rhodium_bid = metal.data.rhodium.results[0].bid;
+                        console.log(data_kursu);
+                        realm.write(() => {
+                            realm.create<CourseMetal>(CourseMetal, {
+                                _id: new BSON.ObjectId(),
+                                _platinum_bid: platinum_bid,
+                                _palladium_bid: palladium_bid,
+                                _rhodium_bid: rhodium_bid,
+                                _effectived_at: data_kursu
+                            });
+                        });
+                        //zapisz jeśli ...
+                    } catch (error) {
+                        console.error(error)
+                        Alert.alert(
+                            'Wystąpił błąd',
+                            JSON.stringify(error));
+                    }
+                }}>
+                Pobierz kursy metali
+            </Button>
+*/
