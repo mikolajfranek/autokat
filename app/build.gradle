@@ -8,7 +8,7 @@ android {
             storePassword 'autokat'
             keyAlias = 'autokat'
             keyPassword 'autokat'
-            storeFile file('F:\\Autokat\\keystore.jks')
+            storeFile file('F:\\#PROGRAMOWANIE\\Autokat\\keystore.jks')
         }
     }
     buildFeatures {
