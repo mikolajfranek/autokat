@@ -16,7 +16,7 @@ class Course {
             "https://api.nbp.pl/api/exchangerates/rates/a/usd"
         private const val MY_CATALYST_VALUES_URL_EUR_PLN =
             "https://api.nbp.pl/api/exchangerates/rates/a/eur"
-        private const val MY_CATALYST_VALUES_URL_CATALYST = "https://kitco-gcdn-prod.stellate.sh"
+        private const val MY_CATALYST_VALUES_URL_CATALYST = "https://kdb-gw.prod.kitco.com"
 
         private fun getUrlNBP(currency: Currency, date: LocalDate?): String {
             val basicURL = when (currency) {
