@@ -19,7 +19,7 @@ type APIParams = {
 
 export const apiMetal = createApi({
     reducerPath: 'apiMetal',
-    baseQuery: fetchBaseQuery({ baseUrl: 'https://kitco-gcdn-prod.stellate.sh' }),
+    baseQuery: fetchBaseQuery({ baseUrl: 'https://kdb-gw.prod.kitco.com' }),
     endpoints: builder => ({
         getMetals: builder.mutation<APIResponse, APIParams>({
             query: (arg) => {
