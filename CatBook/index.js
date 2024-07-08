@@ -10,6 +10,7 @@ import { store } from './src/store';
 import { LocalRealmContext } from './src/Database/LocalRealmContext';
 import { PreferencesContext } from './src/PreferencesContext';
 import App from './src';
+import Toast from 'react-native-toast-message';
 import { AppRegistry } from 'react-native';
 import { name } from './app.json';
 
@@ -53,17 +54,20 @@ function getComponent() {
     );
     const { RealmProvider } = LocalRealmContext;
     return (
-        <Provider store={store}>
-            <PreferencesContext.Provider value={preferences}>
-                <PaperProvider theme={currentTheme}>
-                    <NavigationContainer theme={currentTheme}>
-                        <RealmProvider>
-                            <App />
-                        </RealmProvider>
-                    </NavigationContainer>
-                </PaperProvider>
-            </PreferencesContext.Provider>
-        </Provider>
+        <>
+            <Provider store={store}>
+                <PreferencesContext.Provider value={preferences}>
+                    <PaperProvider theme={currentTheme}>
+                        <NavigationContainer theme={currentTheme}>
+                            <RealmProvider>
+                                <App />
+                            </RealmProvider>
+                        </NavigationContainer>
+                    </PaperProvider>
+                </PreferencesContext.Provider>
+            </Provider>
+            <Toast />
+        </>
     );
 }
 

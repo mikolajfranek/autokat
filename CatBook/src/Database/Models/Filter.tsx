@@ -1,4 +1,4 @@
-import Realm, { BSON, ObjectSchema, Types } from "realm";
+import Realm, { BSON, Types, ObjectSchema } from "realm";
 
 export default class Filter extends Realm.Object<Filter> {
     _id!: BSON.ObjectId;

@@ -1,4 +1,4 @@
-import Realm, { BSON, ObjectSchema, Types } from "realm";
+import Realm, { BSON, Types, ObjectSchema } from "realm";
 
 export default class CourseMetal extends Realm.Object<CourseMetal> {
     _id!: BSON.ObjectId;

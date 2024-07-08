@@ -1,8 +1,8 @@
+import { createRealmContext } from '@realm/react';
 import CourseExchange from './Models/CourseExchange';
 import CourseMetal from './Models/CourseMetal';
 import Catalyst from './Models/Catalyst';
 import Filter from './Models/Filter';
-import { createRealmContext } from '@realm/react';
 import Realm from "realm";
 
 export const LocalRealmContext = createRealmContext({
