@@ -1,13 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
+import sliceAuth from './Slices/Auth';
 import { apiGoogleDocs } from './APIGoogle/APIDocs';
 import { apiGoogleSheets } from './APIGoogle/APISheets';
 import { apiExchange } from './APIExchange';
 import { apiMetal } from './APIMetal';
-import Auth from './Slices/Auth';
 
 export const store = configureStore({
   reducer: {
-    auth: Auth,
+    auth: sliceAuth,
     [apiGoogleDocs.reducerPath]: apiGoogleDocs.reducer,
     [apiGoogleSheets.reducerPath]: apiGoogleSheets.reducer,
     [apiExchange.reducerPath]: apiExchange.reducer,
