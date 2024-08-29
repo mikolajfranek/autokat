@@ -1,4 +1,3 @@
 .DS_Store
-CatBook/src/APIGoogle/auto-kat.json
-CatBook/src/APIGoogle/catbook.json
-CatBook/src/APIGoogle/miki-916.json
+autokat/src/APIGoogle/auto-kat.json
+autokat/src/APIGoogle/miki-916.json
