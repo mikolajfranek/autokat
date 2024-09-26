@@ -5,6 +5,7 @@ import { Text } from "react-native-paper";
 
 export default class CourseExchange extends Realm.Object<CourseExchange> {
     _id!: BSON.ObjectId;
+    
     _created_at: Types.Date = new Date();
     _eur_effectived_at!: Types.Date;
     _eur_mid!: Types.Double;
@@ -15,6 +16,7 @@ export default class CourseExchange extends Realm.Object<CourseExchange> {
         name: 'CourseExchange',
         properties: {
             _id: 'objectId',
+
             _created_at: { type: 'date', default: () => new Date() },
             _eur_effectived_at: 'date',
             _eur_mid: 'double',

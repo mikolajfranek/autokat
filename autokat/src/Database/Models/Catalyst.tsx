@@ -2,7 +2,9 @@ import Realm, { BSON, Types, ObjectSchema } from "realm";
 
 export default class Catalyst extends Realm.Object<Catalyst> {
     _id!: BSON.ObjectId;
+    
     _created_at: Types.Date = new Date();
+    _ident!: Types.Int;
     _type!: Types.Int;
     _name!: Types.String;
     _brand!: Types.String;
@@ -17,7 +19,9 @@ export default class Catalyst extends Realm.Object<Catalyst> {
         name: 'Catalyst',
         properties: {
             _id: 'objectId',
+
             _created_at: { type: 'date', default: () => new Date() },
+            _ident: 'int',
             _type: 'int',
             _name: { type: 'string', indexed: 'full-text' },
             _brand: { type: 'string', indexed: 'full-text' },

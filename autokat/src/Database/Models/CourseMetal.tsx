@@ -2,6 +2,7 @@ import Realm, { BSON, Types, ObjectSchema } from "realm";
 
 export default class CourseMetal extends Realm.Object<CourseMetal> {
     _id!: BSON.ObjectId;
+    
     _created_at: Types.Date = new Date();
     _platinum_bid!: Types.Double;
     _palladium_bid!: Types.Double;
@@ -12,6 +13,7 @@ export default class CourseMetal extends Realm.Object<CourseMetal> {
         name: 'CourseMetal',
         properties: {
             _id: 'objectId',
+
             _created_at: { type: 'date', default: () => new Date() },
             _platinum_bid: 'double',
             _palladium_bid: 'double',

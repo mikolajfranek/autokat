@@ -104,7 +104,7 @@ export default function App(): React.JSX.Element {
 
 
             <Text>
-                {(route.params as any).id}
+                {(route.params as any)?.id}
             </Text>
         </View>
     );
