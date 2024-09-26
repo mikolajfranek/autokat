@@ -5,6 +5,8 @@ import Catalyst from './Models/Catalyst';
 import Filter from './Models/Filter';
 import Realm from "realm";
 
+Realm.setLogLevel('off');
+
 export const LocalRealmContext = createRealmContext({
     schema: [CourseExchange, CourseMetal, Catalyst, Filter],
 

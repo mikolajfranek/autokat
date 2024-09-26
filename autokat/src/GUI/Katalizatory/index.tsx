@@ -16,7 +16,7 @@ export default function App(): React.JSX.Element {
 
     const [getCatalyst] = useGetCatalystMutation();
     const [getCatalystCount] = useGetCatalystCountMutation();
-        
+
  
     return (
         <View style={{ flex: 1, justifyContent: 'center' }}>
@@ -24,7 +24,9 @@ export default function App(): React.JSX.Element {
                 icon='sync'
                 onPress={async () => {
                     try {
-
+                        realm.write(() => {
+                            realm.delete(itemsAll);
+                        });
 
                         const catalysts = await getCatalyst({ fromId:0 }).unwrap();
                         
@@ -45,10 +47,6 @@ export default function App(): React.JSX.Element {
                             });
                         });
 
-
-                  
-
-
                         //todo...
                     } catch (error) {
                         console.log(error);
@@ -63,9 +61,7 @@ export default function App(): React.JSX.Element {
                 icon='sync'
                 onPress={async () => {
                     try {
-                        realm.write(() => {
-                            realm.delete(itemsAll);
-                        });
+                       
                     } catch (error) {
                         console.log(error);
                         Alert.alert(
