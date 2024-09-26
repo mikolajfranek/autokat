@@ -17,6 +17,7 @@ export default function App(): React.JSX.Element {
     const [getCatalyst] = useGetCatalystMutation();
     const [getCatalystCount] = useGetCatalystCountMutation();
 
+    //TODO - gui, planowanie
  
     return (
         <View style={{ flex: 1, justifyContent: 'center' }}>
