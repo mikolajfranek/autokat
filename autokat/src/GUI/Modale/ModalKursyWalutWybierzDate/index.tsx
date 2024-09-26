@@ -36,7 +36,7 @@ export default function App(): React.JSX.Element {
                         name: 'Screen_MaterialBottomTab_KursyWalut',
                         params: { id: 'bbb' },
                         merge: true
-                    })}
+                    } as never)}
                     title="OK" />
             </View>
             {items.map(item => item.getJSX())}

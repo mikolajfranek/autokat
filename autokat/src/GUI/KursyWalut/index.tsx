@@ -86,7 +86,7 @@ export default function App(): React.JSX.Element {
                             //powinienem pobrać kursy ???
                         } else {
                             //jesli jest false przejdz od razu do listy (jako modal), zeby wybrac date
-                            navigation.navigate('Stack.Screen_ModalKursyWalutWybierzDate');
+                            navigation.navigate('Stack.Screen_ModalKursyWalutWybierzDate' as never);
                             //wartość zwrotna i zapisanie, odświeżenie widoku
                         }
                     }}
@@ -97,14 +97,14 @@ export default function App(): React.JSX.Element {
                 isNewestExchange == false &&
                 <Button
                     icon='calendar-search'
-                    onPress={() => navigation.navigate('Stack.Screen_ModalKursyWalutWybierzDate')}>
+                    onPress={() => navigation.navigate('Stack.Screen_ModalKursyWalutWybierzDate' as never)}>
                     Wybierz inną datę
                 </Button>
             }
 
 
             <Text>
-                {route.params?.id}
+                {(route.params as any).id}
             </Text>
         </View>
     );

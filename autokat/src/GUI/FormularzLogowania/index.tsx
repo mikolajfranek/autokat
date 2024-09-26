@@ -17,7 +17,7 @@ export default function App(): React.JSX.Element {
         <View style={{ flex: 2, margin: 10 }}>
             <View style={{ flex: 1, alignSelf: 'center', justifyContent: 'center' }}>
                 <Text variant='displayLarge'>
-                    CatBook
+                    AUTO-KAT
                 </Text>
             </View>
             <View style={{ flex: 1, justifyContent: 'center' }}>
