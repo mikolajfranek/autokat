@@ -3,7 +3,7 @@ import { createMaterialBottomTabNavigator } from 'react-native-paper/react-navig
 import Katalizatory from '../Katalizatory';
 import Ustawienia from '../Ustawienia';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { AppState } from 'react-native';
+import { AppState, Image } from 'react-native';
 import { loadUser } from '../../APIGoogle/Common';
 import { LoginSheet, useGetLoginMutation } from '../../APIGoogle/APIDocs';
 import { getLocalStorageString } from '../../LocalStorage';
@@ -11,10 +11,13 @@ import { LocalStorageKeys } from '../../Enums/LocalStorageKeys';
 import { APISheetColumnOfTableLogin } from '../../Enums/APISheetColumnOfTableLogin';
 import KursyMetali from '../KursyMetali';
 import KursyWalut from '../KursyWalut';
+import { Icon } from 'react-native-paper';
+import { PreferencesContext } from '../../PreferencesContext';
 
 const Tab = createMaterialBottomTabNavigator();
 
 export default function App(): React.JSX.Element {
+    const { toggleTheme, isThemeDark } = React.useContext(PreferencesContext);
     const [getLogin] = useGetLoginMutation();
     //TODOs
     const appState = useRef(AppState.currentState);
@@ -73,10 +76,28 @@ export default function App(): React.JSX.Element {
                 }} />
             <Tab.Screen name="Screen_MaterialBottomTab_Ustawienia" component={Ustawienia}
                 options={{
-                    tabBarLabel: 'Ustawienia',
+                    tabBarLabel: 'AUTO-KAT',
                     tabBarIcon: ({ color }) => (
-                        <MaterialCommunityIcons name="cog" color={color} size={26} />
-                    ),
+                        isThemeDark
+                            ?
+                            <Image
+                                source={require('../../Assets/ikona_white.png')} 
+                                style={{
+                                    resizeMode: 'contain',
+                                    flex: 1,
+                                    aspectRatio: 2
+                                }}
+                            />
+                            :
+                            <Image
+                                source={require('../../Assets/ikona_black.png')}
+                                style={{
+                                    resizeMode: 'contain',
+                                    flex: 1,
+                                    aspectRatio: 2
+                                }}
+                            />
+                    )
                 }} />
         </Tab.Navigator>
     );
